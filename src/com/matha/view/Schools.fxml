@@ -11,7 +11,7 @@
 
 <SplitPane dividerPositions="0.26806083650190116" maxHeight="1.7976931348623157E308" maxWidth="1.7976931348623157E308" minHeight="-Infinity" minWidth="-Infinity" orientation="VERTICAL" prefHeight="600.0" prefWidth="800.0" xmlns="http://javafx.com/javafx/8" xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.matha.controller.SchoolController">
   <items>
-    <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="100.0" prefWidth="160.0" style="-fx-background-color: lightcyan;">
+    <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="100.0" prefWidth="160.0">
          <children>
             <Label layoutX="282.0" layoutY="10.0" text="School Finder">
                <font>
@@ -27,14 +27,15 @@
             <TextField fx:id="phone" layoutX="71.0" layoutY="111.0" />
             <ChoiceBox fx:id="district" layoutX="291.0" layoutY="110.0" prefWidth="150.0" />
             <Button layoutX="676.0" layoutY="52.0" mnemonicParsing="false" onAction="#addSchool" prefHeight="83.0" prefWidth="85.0" text="Add School" />
-            <Button layoutX="563.0" layoutY="52.0" mnemonicParsing="false" onAction="#openSchool" prefHeight="25.0" prefWidth="90.0" text="Open School" />
+            <Button layoutX="563.0" layoutY="81.0" mnemonicParsing="false" onAction="#openSchool" prefHeight="25.0" prefWidth="90.0" text="Open School" />
             <Button layoutX="563.0" layoutY="110.0" mnemonicParsing="false" onAction="#deleteSchool" text="Delete School" />
             <Label layoutX="244.0" layoutY="85.0" text="State" />
-            <ChoiceBox fx:id="states" layoutX="291.0" layoutY="81.0" prefWidth="150.0" />
+            <ChoiceBox fx:id="states" layoutX="291.0" layoutY="81.0" onAction="#changeDistrict" prefWidth="150.0" />
+            <Button layoutX="563.0" layoutY="52.0" mnemonicParsing="false" onAction="#openSchool" prefHeight="25.0" prefWidth="90.0" text="Back" />
          </children></AnchorPane>
     <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="100.0" prefWidth="160.0">
          <children>
-            <TableView fx:id="tableView" layoutY="1.0" prefHeight="382.0" prefWidth="728.0">
+            <TableView fx:id="tableView" layoutY="1.0" prefHeight="435.0" prefWidth="798.0">
               <columns>
                 <TableColumn prefWidth="179.0" text="Name">
                   <cellValueFactory>
@@ -43,7 +44,7 @@
                 </TableColumn>
                 <TableColumn minWidth="5.0" prefWidth="127.0" text="City" />
                   <TableColumn prefWidth="123.0" text="Phone" />
-                  <TableColumn prefWidth="298.0" text="Address1" />
+                  <TableColumn prefWidth="299.0" text="Address1" />
               </columns>
             </TableView>
          </children></AnchorPane>

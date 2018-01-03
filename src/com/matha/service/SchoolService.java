@@ -5,8 +5,10 @@ import java.util.List;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import com.matha.domain.Book;
 import com.matha.domain.School;
 import com.matha.domain.State;
+import com.matha.repository.BookRepository;
 import com.matha.repository.SchoolRepository;
 import com.matha.repository.StateRepository;
 
@@ -19,6 +21,9 @@ public class SchoolService {
 	@Autowired
 	StateRepository stateRepoitory;
 
+	@Autowired
+	BookRepository bookRepository;
+
 	public List<School> fetchSchoolsLike(String schoolPart) {
 		return schoolRepoitory.findByNameLike(schoolPart);
 	}
@@ -29,5 +34,9 @@ public class SchoolService {
 
 	public List<State> fetchAllStates() {
 		return stateRepoitory.findAll();
+	}
+
+	public List<Book> fetchAllBooks() {
+		return bookRepository.findAll();
 	}
 }

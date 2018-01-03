@@ -1,64 +1,55 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
-<?import java.lang.*?>
-<?import java.net.*?>
-<?import javafx.geometry.*?>
-<?import javafx.scene.control.*?>
-<?import javafx.scene.layout.*?>
 <?import javafx.scene.text.*?>
+<?import javafx.scene.control.*?>
+<?import java.lang.*?>
+<?import javafx.scene.layout.*?>
+<?import javafx.scene.layout.AnchorPane?>
 
-<GridPane hgap="10.0" prefHeight="442.0" prefWidth="429.0" vgap="1.0" xmlns="http://javafx.com/javafx/8" xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.matha.controller.AddSchoolController">
-	<padding>
-		<Insets bottom="10" left="25" right="25" top="25" />
-	</padding>
-	<children>
-
-		<Text id="welcome-text" lineSpacing="1.0" text="Add School" textAlignment="CENTER" wrappingWidth="381.576171875" GridPane.columnIndex="0" GridPane.columnSpan="2" GridPane.rowIndex="0">
-			<font>
-				<Font size="14.0" />
-			</font>
-		</Text>
-
-		<Label text="Name" GridPane.columnIndex="0" GridPane.rowIndex="1" />
-
-		<TextField fx:id="name" GridPane.columnIndex="1" GridPane.rowIndex="1" />
-
-		<Label text="Address1" GridPane.columnIndex="0" GridPane.rowIndex="2" />
-		<TextField fx:id="address1" GridPane.columnIndex="1" GridPane.rowIndex="2" />
-		<Label text="Address2" GridPane.rowIndex="3" />
-		<TextField fx:id="address2" GridPane.columnIndex="1" GridPane.rowIndex="3" />
-		<Label text="City" GridPane.rowIndex="4" />
-		<TextField fx:id="city" GridPane.columnIndex="1" GridPane.rowIndex="4" />
-		<Label text="Ditrict" GridPane.rowIndex="5" />
-		<ChoiceBox fx:id="district" prefHeight="25.0" prefWidth="332.0" GridPane.columnIndex="1" GridPane.rowIndex="5" />
-		<Label text="PIN" GridPane.rowIndex="6" />
-		<TextField fx:id="pin" GridPane.columnIndex="1" GridPane.rowIndex="6" />
-		<Label text="Phone" GridPane.rowIndex="7" />
-		<TextField fx:id="phone" GridPane.columnIndex="1" GridPane.rowIndex="7" />
-		<TextField fx:id="email" GridPane.columnIndex="1" GridPane.rowIndex="8" />
-		<Label text="E-Mail" GridPane.rowIndex="8" />
-		<Button mnemonicParsing="false" onAction="#handleSave" text="Save" GridPane.columnIndex="1" GridPane.rowIndex="10" />
-	</children>
-
-	<stylesheets>
-		<URL value="@Login.css" />
-	</stylesheets>
-	<columnConstraints>
-		<ColumnConstraints />
-		<ColumnConstraints />
-	</columnConstraints>
-	<rowConstraints>
-		<RowConstraints />
-		<RowConstraints />
-		<RowConstraints />
-		<RowConstraints />
-		<RowConstraints />
-		<RowConstraints />
-		<RowConstraints />
-		<RowConstraints />
-		<RowConstraints />
-		<RowConstraints minHeight="10.0" prefHeight="30.0" />
-		<RowConstraints minHeight="10.0" prefHeight="30.0" />
-	</rowConstraints>
-
-</GridPane>
+<AnchorPane xmlns="http://javafx.com/javafx/8" xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.matha.controller.AddSchoolController">
+   <children>
+      <SplitPane dividerPositions="0.1020066889632107" orientation="VERTICAL" prefHeight="500.0" prefWidth="450.0">
+        <items>
+          <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="100.0" prefWidth="160.0">
+               <children>
+                  <Label alignment="CENTER" contentDisplay="CENTER" layoutX="140.0" layoutY="14.0" text="Add School" textAlignment="CENTER">
+                     <font>
+                        <Font name="Tahoma" size="24.0" />
+                     </font>
+                  </Label>
+               </children>
+            </AnchorPane>
+          <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="100.0" prefWidth="160.0">
+               <children>
+                  <Label layoutX="35.0" layoutY="30.0" text="Name" />
+                  <Label layoutX="20.0" layoutY="65.0" text="Address1" />
+                  <Label layoutX="20.0" layoutY="100.0" text="Address2" />
+                  <Label layoutX="20.0" layoutY="130.0" text="Address3" />
+                  <TextField fx:id="name" layoutX="75.0" layoutY="25.0" prefHeight="25.0" prefWidth="270.0" />
+                  <TextField fx:id="address1" layoutX="75.0" layoutY="60.0" prefHeight="25.0" prefWidth="270.0" />
+                  <TextField fx:id="address2" layoutX="75.0" layoutY="95.0" prefHeight="25.0" prefWidth="355.0" />
+                  <TextField fx:id="address3" layoutX="75.0" layoutY="130.0" prefHeight="25.0" prefWidth="355.0" />
+                  <Label layoutX="50.0" layoutY="170.0" text="City" />
+                  <TextField fx:id="city" layoutX="75.0" layoutY="165.0" prefHeight="25.0" prefWidth="355.0" />
+                  <Label layoutX="325.0" layoutY="265.0" text="PIN" />
+                  <TextField fx:id="pin" layoutX="320.0" layoutY="280.0" prefHeight="25.0" prefWidth="110.0" />
+                  <ChoiceBox fx:id="states" layoutX="20.0" layoutY="230.0" onAction="#changedState" prefHeight="25.0" prefWidth="190.0" />
+                  <Label layoutX="20.0" layoutY="215.0" text="State" />
+                  <Label layoutX="234.0" layoutY="215.0" text="District" />
+                  <ChoiceBox fx:id="districts" layoutX="230.0" layoutY="230.0" prefHeight="25.0" prefWidth="200.0" />
+                  <Label layoutX="20.0" layoutY="265.0" text="Phone1" />
+                  <TextField fx:id="phone1" layoutX="20.0" layoutY="280.0" prefHeight="25.0" prefWidth="130.0" />
+                  <Label layoutX="20.0" layoutY="365.0" text="E-Mail" />
+                  <TextField fx:id="email" layoutX="20.0" layoutY="380.0" prefHeight="25.0" prefWidth="190.0" />
+                  <Button layoutX="365.0" layoutY="25.0" mnemonicParsing="false" onAction="#handleCancel" prefHeight="60.0" prefWidth="65.0" text="Cancel" />
+                  <TextField fx:id="phone2" layoutX="170.0" layoutY="280.0" prefHeight="25.0" prefWidth="130.0" />
+                  <Label layoutX="170.0" layoutY="265.0" text="Phone2" />
+                  <Label layoutX="20.0" layoutY="315.0" text="Principal" />
+                  <TextField fx:id="principal" layoutX="20.0" layoutY="330.0" prefHeight="25.0" prefWidth="190.0" />
+                  <Button layoutX="230.0" layoutY="330.0" mnemonicParsing="false" onAction="#handleSave" prefHeight="75.0" prefWidth="200.0" text="Save" />
+               </children>
+            </AnchorPane>
+        </items>
+      </SplitPane>
+   </children>
+</AnchorPane>

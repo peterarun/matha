@@ -1,0 +1,524 @@
+serialId|bookNum|shortName|name|bookCategory|authorId|publisher|lanId|edition|volume|pages|price|remarks|status
+BK74|AFC|AFC|ABC FUN CAPITAL|{ "$ref" : "bookCategory", "$id" : 49}|50|{ "$ref" : "publisher", "$id" : 48}|46|1|1|0|0||1
+BK75|AFS|AFS|ABC FUN SMALL|{ "$ref" : "bookCategory", "$id" : 49}|50|{ "$ref" : "publisher", "$id" : 48}|46|1|1|0|0||1
+BK237|ALPP1|ALPP1|ACTIVE LEARNING PRE PRIMER SEM. I|{ "$ref" : "bookCategory", "$id" : 51}|50|{ "$ref" : "publisher", "$id" : 48}|46|1|1|0|0||1
+BK238|ALPP2|ALPP2|ACTIVE LEARNING PRE PRIMER SEM. II|{ "$ref" : "bookCategory", "$id" : 51}|50|{ "$ref" : "publisher", "$id" : 48}|46|1|1|0|0||1
+BK239|ALP1|ALP1|ACTIVE LEARNING PRIMER SEM. I|{ "$ref" : "bookCategory", "$id" : 51}|50|{ "$ref" : "publisher", "$id" : 48}|46|1|1|0|0||1
+BK240|ALP2|ALP2|ACTIVE LEARNING PRIMER SEM. II|{ "$ref" : "bookCategory", "$id" : 51}|50|{ "$ref" : "publisher", "$id" : 48}|46|1|1|0|0||1
+BK466|SC1|SC1|ACTIVE SCIENCE I|{ "$ref" : "bookCategory", "$id" : 51}|61|{ "$ref" : "publisher", "$id" : 55}|46|1|1|0|0||1
+BK467|SC2|SC2|ACTIVE SCIENCE II|{ "$ref" : "bookCategory", "$id" : 51}|61|{ "$ref" : "publisher", "$id" : 55}|46|1|1|0|0||1
+BK468|SC3|SC3|ACTIVE SCIENCE III|{ "$ref" : "bookCategory", "$id" : 51}|61|{ "$ref" : "publisher", "$id" : 55}|46|1|1|0|0||1
+BK469|SC4|SC4|ACTIVE SCIENCE IV|{ "$ref" : "bookCategory", "$id" : 51}|61|{ "$ref" : "publisher", "$id" : 55}|46|1|1|0|0||1
+BK208|ADA|ADA|AKSHARA DEEAPAM A|{ "$ref" : "bookCategory", "$id" : 49}|50|{ "$ref" : "publisher", "$id" : 45}|46|1|1|0|0||1
+BK196|ADB|ADB|AKSHARADEEPAM B|{ "$ref" : "bookCategory", "$id" : 49}|50|{ "$ref" : "publisher", "$id" : 48}|46|1|1|0|0||1
+BK197|AD1|AD1|AKSHARADEEPAM I|{ "$ref" : "bookCategory", "$id" : 49}|50|{ "$ref" : "publisher", "$id" : 48}|46|1|1|0|0||1
+BK198|AD2|AD2|AKSHARADEEPAM II|{ "$ref" : "bookCategory", "$id" : 49}|50|{ "$ref" : "publisher", "$id" : 48}|46|1|1|0|0||1
+BK199|AD3|AD3|AKSHARADEEPAM III|{ "$ref" : "bookCategory", "$id" : 49}|50|{ "$ref" : "publisher", "$id" : 48}|46|1|1|0|0||1
+BK200|AD4|AD4|AKSHARADEEPAM IV|{ "$ref" : "bookCategory", "$id" : 49}|50|{ "$ref" : "publisher", "$id" : 48}|46|1|1|0|0||1
+BK283|AL1|AL1|AKSHARALOKAM I|{ "$ref" : "bookCategory", "$id" : 51}|50|{ "$ref" : "publisher", "$id" : 45}|46|1|1|0|0||1
+BK284|AL2|AL2|AKSHARALOKAM II|{ "$ref" : "bookCategory", "$id" : 51}|50|{ "$ref" : "publisher", "$id" : 45}|46|1|1|0|0||1
+BK285|AL3|AL3|AKSHARALOKAM III|{ "$ref" : "bookCategory", "$id" : 51}|50|{ "$ref" : "publisher", "$id" : 45}|46|1|1|0|0||1
+BK286|AL4|AL4|AKSHARALOKAM IV|{ "$ref" : "bookCategory", "$id" : 51}|50|{ "$ref" : "publisher", "$id" : 45}|46|1|1|0|0||1
+BK287|AL5|AL5|AKSHARALOKAM V|{ "$ref" : "bookCategory", "$id" : 51}|50|{ "$ref" : "publisher", "$id" : 45}|46|1|1|0|0||1
+BK256|AJ1|AJ1|AKSHARJYOTI I|{ "$ref" : "bookCategory", "$id" : 51}|50|{ "$ref" : "publisher", "$id" : 45}|46|1|1|0|0||1
+BK257|AJ2|AJ2|AKSHARJYOTI II|{ "$ref" : "bookCategory", "$id" : 51}|50|{ "$ref" : "publisher", "$id" : 45}|46|1|1|0|0||1
+BK258|AJ3|AJ3|AKSHARJYOTI III|{ "$ref" : "bookCategory", "$id" : 51}|50|{ "$ref" : "publisher", "$id" : 45}|46|1|1|0|0||1
+BK259|AJ4|AJ4|AKSHARJYOTI IV|{ "$ref" : "bookCategory", "$id" : 51}|50|{ "$ref" : "publisher", "$id" : 45}|46|1|1|0|0||1
+BK499|AAR|AAR|ANUPAM AKSHAR RACHNA|{ "$ref" : "bookCategory", "$id" : 51}|61|{ "$ref" : "publisher", "$id" : 55}|46|1|1|0|0||1
+BK500|ASP|ASP|ANUPAM SHABAD PARICHAY|{ "$ref" : "bookCategory", "$id" : 51}|61|{ "$ref" : "publisher", "$id" : 55}|46|1|1|0|0||1
+BK509|ASR|ASR|ANUPAM SWAR RACHNA|{ "$ref" : "bookCategory", "$id" : 51}|61|{ "$ref" : "publisher", "$id" : 55}|46|1|1|0|0||1
+BK277|ASA|ASA|ART SKILLS A|{ "$ref" : "bookCategory", "$id" : 52}|50|{ "$ref" : "publisher", "$id" : 55}|46|1|1|0|0||1
+BK278|ASB|ASB|ART SKILLS B|{ "$ref" : "bookCategory", "$id" : 52}|50|{ "$ref" : "publisher", "$id" : 55}|46|1|1|0|0||1
+BK279|ASC|ASC|ART SKILLS C|{ "$ref" : "bookCategory", "$id" : 52}|50|{ "$ref" : "publisher", "$id" : 55}|46|1|1|0|0||1
+BK269|AS1|AS1|ART SKILLS I|{ "$ref" : "bookCategory", "$id" : 52}|50|{ "$ref" : "publisher", "$id" : 55}|46|1|1|0|0||1
+BK270|AS2|AS2|ART SKILLS II|{ "$ref" : "bookCategory", "$id" : 52}|50|{ "$ref" : "publisher", "$id" : 55}|46|1|1|0|0||1
+BK271|AS3|AS3|ART SKILLS III|{ "$ref" : "bookCategory", "$id" : 52}|50|{ "$ref" : "publisher", "$id" : 55}|46|1|1|0|0||1
+BK272|AS4|AS4|ART SKILLS IV|{ "$ref" : "bookCategory", "$id" : 52}|50|{ "$ref" : "publisher", "$id" : 55}|46|1|1|0|0||1
+BK273|AS5|AS5|ART SKILLS V|{ "$ref" : "bookCategory", "$id" : 52}|50|{ "$ref" : "publisher", "$id" : 55}|46|1|1|0|0||1
+BK274|AS6|AS6|ART SKILLS VI|{ "$ref" : "bookCategory", "$id" : 52}|50|{ "$ref" : "publisher", "$id" : 55}|46|1|1|0|0||1
+BK275|AS7|AS7|ART SKILLS VII|{ "$ref" : "bookCategory", "$id" : 52}|50|{ "$ref" : "publisher", "$id" : 55}|46|1|1|0|0||1
+BK276|AS8|AS8|ART SKILLS VIII|{ "$ref" : "bookCategory", "$id" : 52}|50|{ "$ref" : "publisher", "$id" : 55}|46|1|1|0|0||1
+BK456|ATLAS|ATLAS|ATLAS|{ "$ref" : "bookCategory", "$id" : 51}|61|{ "$ref" : "publisher", "$id" : 55}|46|1|1|0|0||1
+BK167|HASL6|HASL6|AVO SUNDAR LIKO PART VI|{ "$ref" : "bookCategory", "$id" : 49}|50|{ "$ref" : "publisher", "$id" : 55}|46|1|1|0|0||1
+BK168|HASL7|HASL7|AVO SUNDAR LIKO PART VII|{ "$ref" : "bookCategory", "$id" : 49}|50|{ "$ref" : "publisher", "$id" : 55}|46|1|1|0|0||1
+BK169|HASL8|HASL8|AVO SUNDAR LIKO PART VIII|{ "$ref" : "bookCategory", "$id" : 49}|50|{ "$ref" : "publisher", "$id" : 55}|46|1|1|0|0||1
+BK502|BOSA6|BOSA6|BE ONE STEP A HEAD VI|{ "$ref" : "bookCategory", "$id" : 51}|44|{ "$ref" : "publisher", "$id" : 45}|46|1|1|0|0||1
+BK503|BOSA7|BOSA7|BE ONE STEP A HEAD VII|{ "$ref" : "bookCategory", "$id" : 51}|50|{ "$ref" : "publisher", "$id" : 45}|46|1|1|0|0||1
+BK364|BEPB||BEGINERS ENGLISH PRIMER B|{ "$ref" : "bookCategory", "$id" : 43}|44|{ "$ref" : "publisher", "$id" : 55}|46|1|1|0|0||1
+BK215|BELT|BELT|BELT|{ "$ref" : "bookCategory", "$id" : 43}|47|{ "$ref" : "publisher", "$id" : 60}|46|1|1|0|0||1
+BK179|BOP4|BOP4|BITS OF PAPER IV|{ "$ref" : "bookCategory", "$id" : 52}|50|{ "$ref" : "publisher", "$id" : 55}|46|1|1|0|0||1
+BK180|BOP5|BOP5|BITS OF PAPER V|{ "$ref" : "bookCategory", "$id" : 52}|50|{ "$ref" : "publisher", "$id" : 55}|46|1|1|0|0||1
+BK538|BBUS1|BBUS1|BLUE BERRY ALL IN ONE  UKG SEM. I|{ "$ref" : "bookCategory", "$id" : 51}|44|{ "$ref" : "publisher", "$id" : 45}|46|1|1|0|0||1
+BK536|BBLS1|BBLS1|BLUE BERRY ALL IN ONE LKG SEM I|{ "$ref" : "bookCategory", "$id" : 51}|44|{ "$ref" : "publisher", "$id" : 45}|46|1|1|0|0||1
+BK537|BBLS2|BBLS2|BLUE BERRY ALL IN ONE LKG SEM II|{ "$ref" : "bookCategory", "$id" : 51}|44|{ "$ref" : "publisher", "$id" : 45}|46|1|1|0|0||1
+BK386|BBS1|BBS1|BLUE BERRY ALL IN ONE SEM. I|{ "$ref" : "bookCategory", "$id" : 51}|44|{ "$ref" : "publisher", "$id" : 45}|46|1|1|0|0||1
+BK387|BBS2|BBS2|BLUE BERRY ALL IN ONE SEM. II|{ "$ref" : "bookCategory", "$id" : 51}|44|{ "$ref" : "publisher", "$id" : 45}|46|1|1|0|0||1
+BK431|BBT1C1|BBT1C1|BLUE BERRY ALL IN ONE TERM I CLASS I|{ "$ref" : "bookCategory", "$id" : 51}|44|{ "$ref" : "publisher", "$id" : 45}|46|1|1|0|0||1
+BK434|BBT1C2|BBT1C2|BLUE BERRY ALL IN ONE TERM I CLASS II|{ "$ref" : "bookCategory", "$id" : 51}|44|{ "$ref" : "publisher", "$id" : 45}|46|1|1|0|0||1
+BK437|BBT1C3|BBT1C3|BLUE BERRY ALL IN ONE TERM I CLASS III|{ "$ref" : "bookCategory", "$id" : 51}|44|{ "$ref" : "publisher", "$id" : 45}|46|1|1|0|0||1
+BK440|BBT1C4|BBT1C4|BLUE BERRY ALL IN ONE TERM I CLASS IV|{ "$ref" : "bookCategory", "$id" : 51}|44|{ "$ref" : "publisher", "$id" : 45}|46|1|1|0|0||1
+BK443|BBT1C5|BBT1C5|BLUE BERRY ALL IN ONE TERM I CLASS V|{ "$ref" : "bookCategory", "$id" : 51}|44|{ "$ref" : "publisher", "$id" : 45}|46|1|1|0|0||1
+BK432|BBT2CI|BBT2C1|BLUE BERRY ALL IN ONE TERM II  CLASS I|{ "$ref" : "bookCategory", "$id" : 51}|44|{ "$ref" : "publisher", "$id" : 45}|46|1|1|0|0||1
+BK446|BBT2C1|BBT2C1|BLUE BERRY ALL IN ONE TERM II  CLASS I|{ "$ref" : "bookCategory", "$id" : 51}|44|{ "$ref" : "publisher", "$id" : 45}|46|1|1|0|0||1
+BK435|BBT2C2|BBT2C2|BLUE BERRY ALL IN ONE TERM II  CLASS II|{ "$ref" : "bookCategory", "$id" : 51}|44|{ "$ref" : "publisher", "$id" : 45}|46|1|1|0|0||1
+BK438|BBT2C3|BBT2C3|BLUE BERRY ALL IN ONE TERM II  CLASS III|{ "$ref" : "bookCategory", "$id" : 51}|44|{ "$ref" : "publisher", "$id" : 45}|46|1|1|0|0||1
+BK441|BBT2C4|BBT2C4|BLUE BERRY ALL IN ONE TERM II  CLASS IV|{ "$ref" : "bookCategory", "$id" : 51}|44|{ "$ref" : "publisher", "$id" : 45}|46|1|1|0|0||1
+BK444|BBT2C5|BBT2C5|BLUE BERRY ALL IN ONE TERM II  CLASS V|{ "$ref" : "bookCategory", "$id" : 51}|44|{ "$ref" : "publisher", "$id" : 45}|46|1|1|0|0||1
+BK433|BBT3C1|BBT3C1|BLUE BERRY ALL IN ONE TERM III  CLASS I|{ "$ref" : "bookCategory", "$id" : 51}|44|{ "$ref" : "publisher", "$id" : 45}|46|1|1|0|0||1
+BK436|BBT3C2|BBT3C2|BLUE BERRY ALL IN ONE TERM III  CLASS II|{ "$ref" : "bookCategory", "$id" : 51}|44|{ "$ref" : "publisher", "$id" : 45}|46|1|1|0|0||1
+BK439|BBT3C3|BBT3C3|BLUE BERRY ALL IN ONE TERM III  CLASS III|{ "$ref" : "bookCategory", "$id" : 51}|44|{ "$ref" : "publisher", "$id" : 45}|46|1|1|0|0||1
+BK442|BBT3C4|BBT3C4|BLUE BERRY ALL IN ONE TERM III  CLASS IV|{ "$ref" : "bookCategory", "$id" : 51}|44|{ "$ref" : "publisher", "$id" : 45}|46|1|1|0|0||1
+BK445|BBT3C5|BBT3C5|BLUE BERRY ALL IN ONE TERM III  CLASS V|{ "$ref" : "bookCategory", "$id" : 51}|44|{ "$ref" : "publisher", "$id" : 45}|46|1|1|0|0||1
+BK539|BBUS2|BBUS2|BLUE BERRY ALL IN ONE UKG SEM. II|{ "$ref" : "bookCategory", "$id" : 51}|44|{ "$ref" : "publisher", "$id" : 45}|46|1|1|0|0||1
+BK280|BEG&C5|BEG&C5|BRILLIANT ENGLISH GRAMMAR & COMPOSITION V|{ "$ref" : "bookCategory", "$id" : 51}|50|{ "$ref" : "publisher", "$id" : 55}|46|1|1|0|0||1
+BK156|BEG&C0|BEG&C0|BRILLIANT ENGLISH GRAMMER & COMPOSITION 0|{ "$ref" : "bookCategory", "$id" : 51}|50|{ "$ref" : "publisher", "$id" : 55}|46|1|1|0|0||1
+BK157|BEG&C1|BEG&C1|BRILLIANT ENGLISH GRAMMER & COMPOSITION 1|{ "$ref" : "bookCategory", "$id" : 51}|50|{ "$ref" : "publisher", "$id" : 55}|46|1|1|0|0||1
+BK159|BEG&C3|BEG&C3|BRILLIANT ENGLISH GRAMMER & COMPOSITION 1II|{ "$ref" : "bookCategory", "$id" : 51}|50|{ "$ref" : "publisher", "$id" : 55}|46|1|1|0|0||1
+BK158|BEG&C2|BEG&C2|BRILLIANT ENGLISH GRAMMER & COMPOSITION II|{ "$ref" : "bookCategory", "$id" : 51}|50|{ "$ref" : "publisher", "$id" : 55}|46|1|1|0|0||1
+BK462|BEG1|BEG1|BUDS ENGLISH GRAMMER I|{ "$ref" : "bookCategory", "$id" : 51}|44|{ "$ref" : "publisher", "$id" : 45}|46|1|1|0|0||1
+BK463|BEG2|BEG2|BUDS ENGLISH GRAMMER II|{ "$ref" : "bookCategory", "$id" : 51}|44|{ "$ref" : "publisher", "$id" : 45}|46|1|1|0|0||1
+BK464|BEG3|BEG3|BUDS ENGLISH GRAMMER III|{ "$ref" : "bookCategory", "$id" : 51}|44|{ "$ref" : "publisher", "$id" : 45}|46|1|1|0|0||1
+BK465|BEG4|BEG4|BUDS ENGLISH GRAMMER IV|{ "$ref" : "bookCategory", "$id" : 51}|44|{ "$ref" : "publisher", "$id" : 45}|46|1|1|0|0||1
+BK470|BEG5|BEG5|BUDS ENGLISH GRAMMER V|{ "$ref" : "bookCategory", "$id" : 51}|44|{ "$ref" : "publisher", "$id" : 45}|46|1|1|0|0||1
+BK471|BEG6|BEG6|BUDS ENGLISH GRAMMER VI|{ "$ref" : "bookCategory", "$id" : 51}|44|{ "$ref" : "publisher", "$id" : 45}|46|1|1|0|0||1
+BK472|BEG7|BEG7|BUDS ENGLISH GRAMMER VII|{ "$ref" : "bookCategory", "$id" : 51}|44|{ "$ref" : "publisher", "$id" : 45}|46|1|1|0|0||1
+BK103|CAB1|CAB1|CHIPS AND BITS I|{ "$ref" : "bookCategory", "$id" : 59}|50|{ "$ref" : "publisher", "$id" : 55}|46|1|1|0|0||1
+BK104|CAB2|CAB2|CHIPS AND BITS II|{ "$ref" : "bookCategory", "$id" : 59}|50|{ "$ref" : "publisher", "$id" : 55}|46|1|1|0|0||1
+BK105|CAB3|CAB3|CHIPS AND BITS III|{ "$ref" : "bookCategory", "$id" : 59}|50|{ "$ref" : "publisher", "$id" : 55}|46|1|1|0|0||1
+BK106|CAB4|CAB4|CHIPS AND BITS IV|{ "$ref" : "bookCategory", "$id" : 59}|50|{ "$ref" : "publisher", "$id" : 55}|46|1|1|0|0||1
+BK111|CAB9|CAB9|CHIPS AND BITS IX|{ "$ref" : "bookCategory", "$id" : 59}|50|{ "$ref" : "publisher", "$id" : 55}|46|1|1|0|0||1
+BK107|CAB5|CAB5|CHIPS AND BITS V|{ "$ref" : "bookCategory", "$id" : 59}|50|{ "$ref" : "publisher", "$id" : 55}|46|1|1|0|0||1
+BK108|CAB6|CAB6|CHIPS AND BITS VI|{ "$ref" : "bookCategory", "$id" : 59}|50|{ "$ref" : "publisher", "$id" : 55}|46|1|1|0|0||1
+BK109|CAB7|CAB7|CHIPS AND BITS VII|{ "$ref" : "bookCategory", "$id" : 59}|50|{ "$ref" : "publisher", "$id" : 55}|46|1|1|0|0||1
+BK110|CAB8|CAB8|CHIPS AND BITS VIII|{ "$ref" : "bookCategory", "$id" : 59}|50|{ "$ref" : "publisher", "$id" : 55}|46|2|1|0|0||1
+BK112|CAB10|CAB10|CHIPS AND BITS X|{ "$ref" : "bookCategory", "$id" : 59}|50|{ "$ref" : "publisher", "$id" : 55}|46|1|1|0|0||1
+BK163|COMPULIT1|COMPULIT1|COMPULIT PART I|{ "$ref" : "bookCategory", "$id" : 59}|50|{ "$ref" : "publisher", "$id" : 56}|46|1|1|0|0||1
+BK164|COMPULIT2|COMPULIT2|COMPULIT PART II|{ "$ref" : "bookCategory", "$id" : 59}|50|{ "$ref" : "publisher", "$id" : 56}|46|1|1|0|0||1
+BK165|COMPULIT3|COMPULIT3|COMPULIT PART III|{ "$ref" : "bookCategory", "$id" : 59}|50|{ "$ref" : "publisher", "$id" : 56}|46|1|1|0|0||1
+BK166|COMPULIT4|COMPULIT4|COMPULIT PART IV|{ "$ref" : "bookCategory", "$id" : 59}|50|{ "$ref" : "publisher", "$id" : 56}|46|1|1|0|0||1
+BK393|CS1|CS1|COMPUTER SPACE I|{ "$ref" : "bookCategory", "$id" : 51}|44|{ "$ref" : "publisher", "$id" : 45}|46|1|1|0|0||1
+BK394|CS2|CS2|COMPUTER SPACE II|{ "$ref" : "bookCategory", "$id" : 51}|44|{ "$ref" : "publisher", "$id" : 45}|46|1|1|0|0||1
+BK395|CS3|CS3|COMPUTER SPACE III|{ "$ref" : "bookCategory", "$id" : 51}|44|{ "$ref" : "publisher", "$id" : 45}|46|1|1|0|0||1
+BK396|CS4|CS4|COMPUTER SPACE IV|{ "$ref" : "bookCategory", "$id" : 51}|44|{ "$ref" : "publisher", "$id" : 45}|46|1|1|0|0||1
+BK397|CS5|CS5|COMPUTER SPACE V|{ "$ref" : "bookCategory", "$id" : 51}|44|{ "$ref" : "publisher", "$id" : 45}|46|1|1|0|0||1
+BK457|CS6|CS6|COMPUTER SPACE VI|{ "$ref" : "bookCategory", "$id" : 51}|61|{ "$ref" : "publisher", "$id" : 55}|46|1|1|0|0||1
+BK458|CS7|CS7|COMPUTER SPACE VII|{ "$ref" : "bookCategory", "$id" : 51}|61|{ "$ref" : "publisher", "$id" : 55}|46|1|1|0|0||1
+BK459|CS8|CS8|COMPUTER SPACE VIII|{ "$ref" : "bookCategory", "$id" : 51}|61|{ "$ref" : "publisher", "$id" : 55}|46|1|1|0|0||1
+BK207|CRAYONS|CRAYONS|CRAYONS|{ "$ref" : "bookCategory", "$id" : 52}|47|{ "$ref" : "publisher", "$id" : 60}|46|1|1|0|0||1
+BK288|C|C|CRAYONS|{ "$ref" : "bookCategory", "$id" : 52}|50|{ "$ref" : "publisher", "$id" : 45}|46|1|1|0|0||1
+BK115|DC1|DC1|DEEPU CONVERSATION I|{ "$ref" : "bookCategory", "$id" : 51}|50|{ "$ref" : "publisher", "$id" : 55}|46|1|1|0|0||1
+BK201|DC2|DC2|DEEPU CONVERSATION II|{ "$ref" : "bookCategory", "$id" : 51}|50|{ "$ref" : "publisher", "$id" : 55}|46|1|1|0|0||1
+BK202|DC3|DC3|DEEPU CONVERSATION III|{ "$ref" : "bookCategory", "$id" : 51}|50|{ "$ref" : "publisher", "$id" : 55}|46|1|1|0|0||1
+BK203|DC4|DC4|DEEPU CONVERSATION IV|{ "$ref" : "bookCategory", "$id" : 51}|50|{ "$ref" : "publisher", "$id" : 55}|46|1|1|0|0||1
+BK204|DC5|DC5|DEEPU CONVERSATION V|{ "$ref" : "bookCategory", "$id" : 51}|50|{ "$ref" : "publisher", "$id" : 55}|46|1|1|0|0||1
+BK231|ELPP1|ELPP1|EASY LEARNING PRE PRIMER I|{ "$ref" : "bookCategory", "$id" : 51}|50|{ "$ref" : "publisher", "$id" : 48}|46|1|1|0|0||1
+BK232|ELPP2|ELPP2|EASY LEARNING PRE PRIMER II|{ "$ref" : "bookCategory", "$id" : 51}|50|{ "$ref" : "publisher", "$id" : 48}|46|1|1|0|0||1
+BK233|ELPP3|ELPP3|EASY LEARNING PRE PRIMER III|{ "$ref" : "bookCategory", "$id" : 51}|50|{ "$ref" : "publisher", "$id" : 48}|46|1|1|0|0||1
+BK234|ELP1|ELP1|EASY LEARNING PRIMER I|{ "$ref" : "bookCategory", "$id" : 51}|50|{ "$ref" : "publisher", "$id" : 48}|46|1|1|0|0||1
+BK235|ELP2|ELP2|EASY LEARNING PRIMER II|{ "$ref" : "bookCategory", "$id" : 51}|50|{ "$ref" : "publisher", "$id" : 48}|46|1|1|0|0||1
+BK236|ELP3|ELP3|EASY LEARNING PRIMER III|{ "$ref" : "bookCategory", "$id" : 51}|50|{ "$ref" : "publisher", "$id" : 48}|46|1|1|0|0||1
+BK305|EFL1|EFL1|ENGLISH FOR LEARNERS I|{ "$ref" : "bookCategory", "$id" : 51}|50|{ "$ref" : "publisher", "$id" : 57}|46|1|1|0|0||1
+BK306|EFL2|EFL2|ENGLISH FOR LEARNERS II|{ "$ref" : "bookCategory", "$id" : 51}|50|{ "$ref" : "publisher", "$id" : 57}|46|1|1|0|0||1
+BK307|EFL3|EFL3|ENGLISH FOR LEARNERS III|{ "$ref" : "bookCategory", "$id" : 51}|50|{ "$ref" : "publisher", "$id" : 57}|46|1|1|0|0||1
+BK308|EFL4|EFL4|ENGLISH FOR LEARNERS IV|{ "$ref" : "bookCategory", "$id" : 51}|50|{ "$ref" : "publisher", "$id" : 57}|46|1|1|0|0||1
+BK79|EWCA|EWCA|ENJOY WITH COLOURS A|{ "$ref" : "bookCategory", "$id" : 52}|50|{ "$ref" : "publisher", "$id" : 48}|46|1|1|0|0||1
+BK80|EWCB |EWCB|ENJOY WITH COLOURS B|{ "$ref" : "bookCategory", "$id" : 52}|50|{ "$ref" : "publisher", "$id" : 48}|46|1|1|0|0||1
+BK81|EWC1|EWC1|ENJOY WITH COLOURS I|{ "$ref" : "bookCategory", "$id" : 52}|50|{ "$ref" : "publisher", "$id" : 48}|46|1|1|0|0||1
+BK82|EWC2|EWC2|ENJOY WITH COLOURS II|{ "$ref" : "bookCategory", "$id" : 52}|50|{ "$ref" : "publisher", "$id" : 48}|46|1|1|0|0||1
+BK83|EWC3|EWC3|ENJOY WITH COLOURS III|{ "$ref" : "bookCategory", "$id" : 52}|50|{ "$ref" : "publisher", "$id" : 48}|46|1|1|0|0||1
+BK84|EWC4|EWC4|ENJOY WITH COLOURS IV|{ "$ref" : "bookCategory", "$id" : 52}|50|{ "$ref" : "publisher", "$id" : 48}|46|1|1|0|0||1
+BK85|EWC5|EWC5|ENJOY WITH COLOURS V|{ "$ref" : "bookCategory", "$id" : 52}|50|{ "$ref" : "publisher", "$id" : 48}|46|1|1|0|0||1
+BK88|EWC6|EWC6|ENJOY WITH COLOURS VI|{ "$ref" : "bookCategory", "$id" : 52}|50|{ "$ref" : "publisher", "$id" : 48}|46|1|1|0|0||1
+BK89|EWC7|EWC7|ENJOY WITH COLOURS VII|{ "$ref" : "bookCategory", "$id" : 52}|50|{ "$ref" : "publisher", "$id" : 48}|46|1|1|0|0||1
+BK114|FOIT10|FOIT10|FOUNDATION OF INF. TEC. X|{ "$ref" : "bookCategory", "$id" : 59}|50|{ "$ref" : "publisher", "$id" : 55}|46|1|1|0|0||1
+BK113|FOIT9|FOIT9|FOUNDATION OF INF.TEC. IX|{ "$ref" : "bookCategory", "$id" : 59}|50|{ "$ref" : "publisher", "$id" : 55}|46|1|1|0|0||1
+BK77|FFA|FFA|FUN FAIR A|{ "$ref" : "bookCategory", "$id" : 52}|50|{ "$ref" : "publisher", "$id" : 48}|46|1|1|0|0||1
+BK78|FFB|FFB|FUN FAIR B|{ "$ref" : "bookCategory", "$id" : 52}|50|{ "$ref" : "publisher", "$id" : 48}|46|1|1|0|0||1
+BK86|FFC|FFC|FUN FAIR C|{ "$ref" : "bookCategory", "$id" : 52}|50|{ "$ref" : "publisher", "$id" : 48}|46|1|1|0|0||1
+BK87|FFD|FFD|FUN FAIR D|{ "$ref" : "bookCategory", "$id" : 52}|50|{ "$ref" : "publisher", "$id" : 48}|46|1|1|0|0||1
+BK530|FTCB|FTCB|FUN TO COLOUR  B|{ "$ref" : "bookCategory", "$id" : 52}|47|{ "$ref" : "publisher", "$id" : 48}|46|1|1|0|0||1
+BK531|FTC1|FTC1|FUN TO COLOUR  I|{ "$ref" : "bookCategory", "$id" : 52}|47|{ "$ref" : "publisher", "$id" : 48}|46|1|1|0|0||1
+BK533|FTCA|FTCA|FUN TO COLOUR A|{ "$ref" : "bookCategory", "$id" : 52}|47|{ "$ref" : "publisher", "$id" : 48}|46|1|1|0|0||1
+BK171|FWP|FWP|FUN WITH PICTURES|{ "$ref" : "bookCategory", "$id" : 54}|50|{ "$ref" : "publisher", "$id" : 55}|46|1|1|0|0||1
+BK118|GOA1|GOA1|GALLERY OF ART I|{ "$ref" : "bookCategory", "$id" : 52}|50|{ "$ref" : "publisher", "$id" : 55}|46|1|1|0|0||1
+BK119|GOA2|GOA2|GALLERY OF ART II|{ "$ref" : "bookCategory", "$id" : 52}|50|{ "$ref" : "publisher", "$id" : 55}|46|1|1|0|0||1
+BK120|GOA3|GOA3|GALLERY OF ART III|{ "$ref" : "bookCategory", "$id" : 52}|50|{ "$ref" : "publisher", "$id" : 55}|46|1|1|0|0||1
+BK121|GOA4|GOA4|GALLERY OF ART IV|{ "$ref" : "bookCategory", "$id" : 52}|50|{ "$ref" : "publisher", "$id" : 55}|46|1|1|0|0||1
+BK116|GOAA|GOAA|GALLERY OF ART PART A|{ "$ref" : "bookCategory", "$id" : 52}|50|{ "$ref" : "publisher", "$id" : 55}|46|1|1|0|0||1
+BK117|GOAB|GOAB|GALLERY OF ART PART B|{ "$ref" : "bookCategory", "$id" : 52}|50|{ "$ref" : "publisher", "$id" : 55}|46|1|1|0|0||1
+BK126|GOAC|GOAC|GALLERY OF ART PART C|{ "$ref" : "bookCategory", "$id" : 52}|50|{ "$ref" : "publisher", "$id" : 55}|46|1|1|0|0||1
+BK122|GOA5|GOA5|GALLERY OF ART V|{ "$ref" : "bookCategory", "$id" : 52}|50|{ "$ref" : "publisher", "$id" : 55}|46|1|1|0|0||1
+BK123|GOA6|GOA6|GALLERY OF ART VI|{ "$ref" : "bookCategory", "$id" : 52}|50|{ "$ref" : "publisher", "$id" : 55}|46|1|1|0|0||1
+BK124|GOA7|GOA7|GALLERY OF ART VII|{ "$ref" : "bookCategory", "$id" : 52}|50|{ "$ref" : "publisher", "$id" : 55}|46|1|1|0|0||1
+BK125|GOA8|GOA8|GALLERY OF ART VIII|{ "$ref" : "bookCategory", "$id" : 52}|50|{ "$ref" : "publisher", "$id" : 55}|46|1|1|0|0||1
+BK363|GAC0||GRAMMAR AND COMPOSITION 0|{ "$ref" : "bookCategory", "$id" : 43}|44|{ "$ref" : "publisher", "$id" : 55}|46|1|1|0|0||1
+BK355|GAC1||GRAMMAR AND COMPOSITION I|{ "$ref" : "bookCategory", "$id" : 51}|61|{ "$ref" : "publisher", "$id" : 55}|46|1|1|0|0||1
+BK356|GAC2||GRAMMAR AND COMPOSITION II|{ "$ref" : "bookCategory", "$id" : 51}|61|{ "$ref" : "publisher", "$id" : 55}|46|1|1|0|0||1
+BK357|GAC3||GRAMMAR AND COMPOSITION III|{ "$ref" : "bookCategory", "$id" : 51}|44|{ "$ref" : "publisher", "$id" : 55}|46|1|1|0|0||1
+BK358|GAC4||GRAMMAR AND COMPOSITION IV|{ "$ref" : "bookCategory", "$id" : 51}|61|{ "$ref" : "publisher", "$id" : 55}|46|1|1|0|0||1
+BK359|GAC5||GRAMMAR AND COMPOSITION V|{ "$ref" : "bookCategory", "$id" : 43}|44|{ "$ref" : "publisher", "$id" : 55}|46|1|1|0|0||1
+BK360|GAC6||GRAMMAR AND COMPOSITION VI|{ "$ref" : "bookCategory", "$id" : 43}|44|{ "$ref" : "publisher", "$id" : 55}|46|1|1|0|0||1
+BK361|GAC7||GRAMMAR AND COMPOSITION VII|{ "$ref" : "bookCategory", "$id" : 43}|44|{ "$ref" : "publisher", "$id" : 55}|46|1|1|0|0||1
+BK140|HL1|HL1|HAPPY LIVING I|{ "$ref" : "bookCategory", "$id" : 53}|50|{ "$ref" : "publisher", "$id" : 48}|46|1|1|0|0||1
+BK141|HL2|HL2|HAPPY LIVING II|{ "$ref" : "bookCategory", "$id" : 53}|50|{ "$ref" : "publisher", "$id" : 48}|46|1|1|0|0||1
+BK142|HL3|HL3|HAPPY LIVING III|{ "$ref" : "bookCategory", "$id" : 53}|50|{ "$ref" : "publisher", "$id" : 48}|46|1|1|0|0||1
+BK143|HL4|HL4|HAPPY LIVING IV|{ "$ref" : "bookCategory", "$id" : 53}|50|{ "$ref" : "publisher", "$id" : 48}|46|1|1|0|0||1
+BK144|HL5|HL5|HAPPY LIVING V|{ "$ref" : "bookCategory", "$id" : 53}|50|{ "$ref" : "publisher", "$id" : 48}|46|1|1|0|0||1
+BK20|HAG|HAG|HINDI AKSHAR GIAN|{ "$ref" : "bookCategory", "$id" : 51}|50|{ "$ref" : "publisher", "$id" : 48}|46|1|1|0|0||1
+BK57|HAM|HAM|HINDI AKSHAR MALA|{ "$ref" : "bookCategory", "$id" : 51}|50|{ "$ref" : "publisher", "$id" : 48}|46|1|1|0|0||1
+BK489|HAR|HAR|HINDI AKSHAR RACHANA|{ "$ref" : "bookCategory", "$id" : 51}|61|{ "$ref" : "publisher", "$id" : 55}|46|1|1|0|0||1
+BK173|HAAR|HAAR|HINDI ANUPAM AKSHAR RACHANA|{ "$ref" : "bookCategory", "$id" : 51}|47|{ "$ref" : "publisher", "$id" : 48}|46|1|1|0|0||1
+BK183|HBM1|HBM1|HINDI BHASHAMALA I|{ "$ref" : "bookCategory", "$id" : 51}|50|{ "$ref" : "publisher", "$id" : 57}|46|1|1|0|0||1
+BK184|HBM2|HBM2|HINDI BHASHAMALA II|{ "$ref" : "bookCategory", "$id" : 51}|50|{ "$ref" : "publisher", "$id" : 57}|46|1|1|0|0||1
+BK185|HBM3|HBM3|HINDI BHASHAMALA III|{ "$ref" : "bookCategory", "$id" : 51}|50|{ "$ref" : "publisher", "$id" : 48}|46|1|1|0|0||1
+BK186|HBM4|HBM4|HINDI BHASHAMALA IV|{ "$ref" : "bookCategory", "$id" : 51}|50|{ "$ref" : "publisher", "$id" : 57}|46|1|1|0|0||1
+BK350|BM1||HINDI BHIKERE MOTHI I|{ "$ref" : "bookCategory", "$id" : 62}|50|{ "$ref" : "publisher", "$id" : 55}|46|1|1|0|0||1
+BK351|BM2||HINDI BHIKERE MOTHI II|{ "$ref" : "bookCategory", "$id" : 62}|50|{ "$ref" : "publisher", "$id" : 55}|46|1|1|0|0||1
+BK352|BM3||HINDI BHIKERE MOTHI III|{ "$ref" : "bookCategory", "$id" : 62}|50|{ "$ref" : "publisher", "$id" : 55}|46|1|1|0|0||1
+BK353|BM4||HINDI BHIKERE MOTHI IV|{ "$ref" : "bookCategory", "$id" : 54}|61|{ "$ref" : "publisher", "$id" : 55}|46|1|1|0|0||1
+BK354|BM5||HINDI BHIKERE MOTHI V|{ "$ref" : "bookCategory", "$id" : 62}|61|{ "$ref" : "publisher", "$id" : 60}|46|1|1|0|0||1
+BK400|HGS1|HGS1|HINDI GAN SARITHA I|{ "$ref" : "bookCategory", "$id" : 51}|44|{ "$ref" : "publisher", "$id" : 45}|46|1|1|0|0||1
+BK401|HGS2|HGS2|HINDI GAN SARITHA II|{ "$ref" : "bookCategory", "$id" : 51}|44|{ "$ref" : "publisher", "$id" : 45}|46|1|1|0|0||1
+BK402|HGS3|HGS3|HINDI GAN SARITHA III|{ "$ref" : "bookCategory", "$id" : 51}|44|{ "$ref" : "publisher", "$id" : 45}|46|1|1|0|0||1
+BK403|HGS4|HGS4|HINDI GAN SARITHA IV|{ "$ref" : "bookCategory", "$id" : 51}|44|{ "$ref" : "publisher", "$id" : 45}|46|1|1|0|0||1
+BK479|HGS5|HGS5|HINDI GAN SARITHA V|{ "$ref" : "bookCategory", "$id" : 51}|44|{ "$ref" : "publisher", "$id" : 45}|46|1|1|0|0||1
+BK127|HMBB 0|HMBB 0|HINDI MATHRU BHASHA BHARATHI 0|{ "$ref" : "bookCategory", "$id" : 51}|50|{ "$ref" : "publisher", "$id" : 55}|46|1|1|0|0||1
+BK128|HMBB 1|HMBB 1|HINDI MATHRU BHASHA BHARATHI 1|{ "$ref" : "bookCategory", "$id" : 51}|50|{ "$ref" : "publisher", "$id" : 55}|46|1|1|0|0||1
+BK131|HMBB 4|HMBB 4|HINDI MATHRU BHASHA BHARATHI 1V|{ "$ref" : "bookCategory", "$id" : 51}|50|{ "$ref" : "publisher", "$id" : 55}|46|1|1|0|0||1
+BK129|HMBB 2|HMBB 2|HINDI MATHRU BHASHA BHARATHI II|{ "$ref" : "bookCategory", "$id" : 51}|50|{ "$ref" : "publisher", "$id" : 55}|46|1|1|0|0||1
+BK130|HMBB 3|HMBB 3|HINDI MATHRU BHASHA BHARATHI III|{ "$ref" : "bookCategory", "$id" : 51}|50|{ "$ref" : "publisher", "$id" : 55}|46|1|1|0|0||1
+BK132|HMBB 5|HMBB 5|HINDI MATHRU BHASHA BHARATHI V|{ "$ref" : "bookCategory", "$id" : 51}|50|{ "$ref" : "publisher", "$id" : 55}|46|1|1|0|0||1
+BK133|HMBB 6|HMBB 6|HINDI MATHRU BHASHA BHARATHI VI|{ "$ref" : "bookCategory", "$id" : 51}|50|{ "$ref" : "publisher", "$id" : 55}|46|1|1|0|0||1
+BK134|HMBB 7|HMBB 7|HINDI MATHRU BHASHA BHARATHI VII|{ "$ref" : "bookCategory", "$id" : 51}|50|{ "$ref" : "publisher", "$id" : 55}|46|1|1|0|0||1
+BK182|HMBB8|HMBB8|HINDI MATHRU BHASHA BHARATHI VIII|{ "$ref" : "bookCategory", "$id" : 51}|50|{ "$ref" : "publisher", "$id" : 55}|46|1|1|0|0||1
+BK332|HNU5||HINDI NAI UDAN PART V|{ "$ref" : "bookCategory", "$id" : 62}|50|{ "$ref" : "publisher", "$id" : 55}|46|1|1|0|0||1
+BK333|HNU6||HINDI NAI UDAN PART VI|{ "$ref" : "bookCategory", "$id" : 62}|50|{ "$ref" : "publisher", "$id" : 55}|46|1|1|0|0||1
+BK334|HNU7||HINDI NAI UDAN PART VII|{ "$ref" : "bookCategory", "$id" : 62}|50|{ "$ref" : "publisher", "$id" : 55}|46|1|1|0|0||1
+BK335|HNU8||HINDI NAI UDAN PART VIII|{ "$ref" : "bookCategory", "$id" : 62}|50|{ "$ref" : "publisher", "$id" : 55}|46|1|1|0|0||1
+BK388|HPB1|HPB1|HINDI PADAMALA BHAG I|{ "$ref" : "bookCategory", "$id" : 51}|44|{ "$ref" : "publisher", "$id" : 45}|46|1|1|0|0||1
+BK389|HPB2|HPPB2|HINDI PADAMALA BHAG II|{ "$ref" : "bookCategory", "$id" : 51}|44|{ "$ref" : "publisher", "$id" : 45}|46|1|1|0|0||1
+BK390|HPB3|HPB3|HINDI PADAMALA BHAG III|{ "$ref" : "bookCategory", "$id" : 51}|44|{ "$ref" : "publisher", "$id" : 45}|46|1|1|0|0||1
+BK391|HPB4|HPB4|HINDI PADAMALA BHAG IV|{ "$ref" : "bookCategory", "$id" : 51}|44|{ "$ref" : "publisher", "$id" : 45}|46|1|1|0|0||1
+BK392|HPB5|HPB5|HINDI PADAMALA BHAG V|{ "$ref" : "bookCategory", "$id" : 51}|44|{ "$ref" : "publisher", "$id" : 45}|46|1|1|0|0||1
+BK404|HPM1|HPM1|HINDI PADAMALA I|{ "$ref" : "bookCategory", "$id" : 51}|44|{ "$ref" : "publisher", "$id" : 45}|46|1|1|0|0||1
+BK405|HPM2|HPM2|HINDI PADAMALA II|{ "$ref" : "bookCategory", "$id" : 51}|44|{ "$ref" : "publisher", "$id" : 45}|46|1|1|0|0||1
+BK406|HPM3|HPM3|HINDI PADAMALA III|{ "$ref" : "bookCategory", "$id" : 51}|44|{ "$ref" : "publisher", "$id" : 45}|46|1|1|0|0||1
+BK407|HPM4|HPM4|HINDI PADAMALA IV|{ "$ref" : "bookCategory", "$id" : 51}|44|{ "$ref" : "publisher", "$id" : 45}|46|1|1|0|0||1
+BK455|HPP|HPP|HINDI PADAMALA PRAVESIKA|{ "$ref" : "bookCategory", "$id" : 51}|61|{ "$ref" : "publisher", "$id" : 55}|46|1|1|0|0||1
+BK408|HPM5|HPM5|HINDI PADAMALA V|{ "$ref" : "bookCategory", "$id" : 51}|44|{ "$ref" : "publisher", "$id" : 45}|46|1|1|0|0||1
+BK409|HPM6|HPM6|HINDI PADAMALA VI|{ "$ref" : "bookCategory", "$id" : 51}|44|{ "$ref" : "publisher", "$id" : 45}|46|1|1|0|0||1
+BK410|HPM7|HPM7|HINDI PADAMALA VII|{ "$ref" : "bookCategory", "$id" : 51}|44|{ "$ref" : "publisher", "$id" : 45}|46|1|1|0|0||1
+BK480|HPM8|HPM8|HINDI PADAMALA VIII|{ "$ref" : "bookCategory", "$id" : 51}|44|{ "$ref" : "publisher", "$id" : 45}|46|1|1|0|0||1
+BK501|HSP|HSP|HINDI SHABAD PARICHAY|{ "$ref" : "bookCategory", "$id" : 51}|61|{ "$ref" : "publisher", "$id" : 55}|46|1|1|0|0||1
+BK145|HSBDAG|HSBDAG|HINDI SHABDA JAN|{ "$ref" : "bookCategory", "$id" : 51}|47|{ "$ref" : "publisher", "$id" : 48}|46|1|1|0|0||1
+BK59|HSMO|HSMO|HINDI SULEK MALA 0|{ "$ref" : "bookCategory", "$id" : 49}|50|{ "$ref" : "publisher", "$id" : 48}|46|1|1|0|0||1
+BK60|HSM1|HSMI|HINDI SULEK MALA I|{ "$ref" : "bookCategory", "$id" : 49}|50|{ "$ref" : "publisher", "$id" : 48}|46|1|1|0|0||1
+BK61|HSM2|HSM2|HINDI SULEK MALA II|{ "$ref" : "bookCategory", "$id" : 49}|50|{ "$ref" : "publisher", "$id" : 48}|46|1|1|0|0||1
+BK62|HSM3|HSM3|HINDI SULEK MALA III|{ "$ref" : "bookCategory", "$id" : 49}|50|{ "$ref" : "publisher", "$id" : 48}|46|1|1|0|0||1
+BK63|HSM4|HSM4|HINDI SULEK MALA IV|{ "$ref" : "bookCategory", "$id" : 49}|50|{ "$ref" : "publisher", "$id" : 48}|46|1|1|0|0||1
+BK64|HSM5|HSM5|HINDI SULEK MALA V|{ "$ref" : "bookCategory", "$id" : 49}|50|{ "$ref" : "publisher", "$id" : 48}|46|1|1|0|0||1
+BK58|HSG|HSG|HINDI SWAR JAN|{ "$ref" : "bookCategory", "$id" : 51}|50|{ "$ref" : "publisher", "$id" : 48}|46|1|1|0|0||1
+BK490|HSR|HSR|HINDI SWAR RACHANA|{ "$ref" : "bookCategory", "$id" : 51}|61|{ "$ref" : "publisher", "$id" : 55}|46|1|1|0|0||1
+BK510|HVC|HVC|HINDI VARNA CHITRAVALI|{ "$ref" : "bookCategory", "$id" : 51}|44|{ "$ref" : "publisher", "$id" : 45}|46|1|1|0|0||1
+BK496|HV|HV|HINDI VARNACHITRAVALI|{ "$ref" : "bookCategory", "$id" : 51}|44|{ "$ref" : "publisher", "$id" : 45}|46|1|1|0|0||1
+BK336|HV1||HINDI VASUNDARA PADAMALA I|{ "$ref" : "bookCategory", "$id" : 62}|61|{ "$ref" : "publisher", "$id" : 55}|46|1|1|0|0||1
+BK337|HV2||HINDI VASUNDARA PADAMALA II|{ "$ref" : "bookCategory", "$id" : 62}|61|{ "$ref" : "publisher", "$id" : 55}|46|1|1|0|0||1
+BK338|HV3|HV3|HINDI VASUNDARA PADAMALA III|{ "$ref" : "bookCategory", "$id" : 62}|61|{ "$ref" : "publisher", "$id" : 55}|46|1|1|0|0||1
+BK339|HV4||HINDI VASUNDARA PADAMALA IV|{ "$ref" : "bookCategory", "$id" : 62}|61|{ "$ref" : "publisher", "$id" : 55}|46|1|1|0|0||1
+BK340|HV5||HINDI VASUNDARA PADAMALA V|{ "$ref" : "bookCategory", "$id" : 62}|61|{ "$ref" : "publisher", "$id" : 55}|46|1|1|0|0||1
+BK341|HV6||HINDI VASUNDARA PADAMALA VI|{ "$ref" : "bookCategory", "$id" : 62}|61|{ "$ref" : "publisher", "$id" : 55}|46|1|1|0|0||1
+BK342|HV7||HINDI VASUNDARA PADAMALA VII|{ "$ref" : "bookCategory", "$id" : 62}|61|{ "$ref" : "publisher", "$id" : 55}|46|1|1|0|0||1
+BK343|HV8||HINDI VASUNDARA PADAMALA VIII|{ "$ref" : "bookCategory", "$id" : 62}|61|{ "$ref" : "publisher", "$id" : 55}|46|1|1|0|0||1
+BK100|HVG1|HVG1|HINDI VIYAKARAN GYAN I|{ "$ref" : "bookCategory", "$id" : 51}|50|{ "$ref" : "publisher", "$id" : 48}|46|1|1|0|0||1
+BK101|HVG2|HVG2|HINDI VIYAKARAN GYAN II|{ "$ref" : "bookCategory", "$id" : 51}|50|{ "$ref" : "publisher", "$id" : 48}|46|1|1|0|0||1
+BK99|HVGP|HVGP|HINDI VIYAKARAN GYAN PRAVESHIKA|{ "$ref" : "bookCategory", "$id" : 51}|50|{ "$ref" : "publisher", "$id" : 48}|46|1|1|0|0||1
+BK420|IDS1C1|IDS1C1|I DISCOVER SEM. I CLASS I|{ "$ref" : "bookCategory", "$id" : 51}|44|{ "$ref" : "publisher", "$id" : 45}|46|1|1|0|0||1
+BK422|IDS1C2|IDS1C2|I DISCOVER SEM. I CLASS II|{ "$ref" : "bookCategory", "$id" : 51}|44|{ "$ref" : "publisher", "$id" : 45}|46|1|1|0|0||1
+BK424|IDS1C3|IDS1C3|I DISCOVER SEM. I CLASS III|{ "$ref" : "bookCategory", "$id" : 51}|44|{ "$ref" : "publisher", "$id" : 45}|46|1|1|0|0||1
+BK426|IDS1C4|IDS1C4|I DISCOVER SEM. I CLASS IV|{ "$ref" : "bookCategory", "$id" : 51}|44|{ "$ref" : "publisher", "$id" : 45}|46|1|1|0|0||1
+BK429|IDS1C5|IDS1C5|I DISCOVER SEM. I CLASS V|{ "$ref" : "bookCategory", "$id" : 51}|44|{ "$ref" : "publisher", "$id" : 45}|46|1|1|0|0||1
+BK421|IDS2C1|IDS2C1|I DISCOVER SEM. II  CLASS I|{ "$ref" : "bookCategory", "$id" : 51}|44|{ "$ref" : "publisher", "$id" : 45}|46|1|1|0|0||1
+BK423|IDS2C2|IDS2C2|I DISCOVER SEM. II  CLASS II|{ "$ref" : "bookCategory", "$id" : 51}|44|{ "$ref" : "publisher", "$id" : 45}|46|1|1|0|0||1
+BK425|IDS2C3|IDS2C3|I DISCOVER SEM. II  CLASS III|{ "$ref" : "bookCategory", "$id" : 51}|44|{ "$ref" : "publisher", "$id" : 45}|46|1|1|0|0||1
+BK427|IDS2C4|IDS2C4|I DISCOVER SEM. II  CLASS IV|{ "$ref" : "bookCategory", "$id" : 51}|44|{ "$ref" : "publisher", "$id" : 45}|46|1|1|0|0||1
+BK430|IDS2C5|IDS2C5|I DISCOVER SEM. II  CLASS V|{ "$ref" : "bookCategory", "$id" : 51}|44|{ "$ref" : "publisher", "$id" : 45}|46|1|1|0|0||1
+BK398|IAA|IAA|INCRDIBLE ART A|{ "$ref" : "bookCategory", "$id" : 51}|44|{ "$ref" : "publisher", "$id" : 45}|46|1|1|0|0||1
+BK399|IAB|IAB|INCRDIBLE ART B|{ "$ref" : "bookCategory", "$id" : 51}|44|{ "$ref" : "publisher", "$id" : 45}|46|1|1|0|0||1
+BK481|IAC|IAC|INCRDIBLE ART C|{ "$ref" : "bookCategory", "$id" : 51}|50|{ "$ref" : "publisher", "$id" : 45}|46|1|1|0|0||1
+BK482|IA1|IA1|INCRDIBLE ART I|{ "$ref" : "bookCategory", "$id" : 51}|50|{ "$ref" : "publisher", "$id" : 45}|46|1|1|0|0||1
+BK483|IA2|IA2|INCRDIBLE ART II|{ "$ref" : "bookCategory", "$id" : 51}|50|{ "$ref" : "publisher", "$id" : 55}|46|1|1|0|0||1
+BK484|IA3|IA3|INCRDIBLE ART III|{ "$ref" : "bookCategory", "$id" : 51}|50|{ "$ref" : "publisher", "$id" : 45}|46|1|1|0|0||1
+BK485|IA4|IA4|INCRDIBLE ART IV|{ "$ref" : "bookCategory", "$id" : 51}|50|{ "$ref" : "publisher", "$id" : 45}|46|1|1|0|0||1
+BK486|IA5|IA5|INCRDIBLE ART V|{ "$ref" : "bookCategory", "$id" : 51}|50|{ "$ref" : "publisher", "$id" : 45}|46|1|1|0|0||1
+BK301|IS6|IS6|INNOVATIVE SCIENCE VI|{ "$ref" : "bookCategory", "$id" : 51}|50|{ "$ref" : "publisher", "$id" : 55}|46|1|1|0|0||1
+BK302|IS7|IS7|INNOVATIVE SCIENCE VII|{ "$ref" : "bookCategory", "$id" : 51}|50|{ "$ref" : "publisher", "$id" : 55}|46|1|1|0|0||1
+BK289|ISS1|ISS1|INNOVATIVE SOCIAL STUDIES I|{ "$ref" : "bookCategory", "$id" : 51}|50|{ "$ref" : "publisher", "$id" : 55}|46|1|1|0|0||1
+BK290|ISS2|ISS2|INNOVATIVE SOCIAL STUDIES II|{ "$ref" : "bookCategory", "$id" : 51}|50|{ "$ref" : "publisher", "$id" : 55}|46|1|1|0|0||1
+BK291|ISS3|ISS3|INNOVATIVE SOCIAL STUDIES III|{ "$ref" : "bookCategory", "$id" : 51}|50|{ "$ref" : "publisher", "$id" : 55}|46|1|1|0|0||1
+BK292|ISS4|ISS4|INNOVATIVE SOCIAL STUDIES IV|{ "$ref" : "bookCategory", "$id" : 51}|50|{ "$ref" : "publisher", "$id" : 55}|46|1|1|0|0||1
+BK293|ISS5|ISS5|INNOVATIVE SOCIAL STUDIES V|{ "$ref" : "bookCategory", "$id" : 51}|50|{ "$ref" : "publisher", "$id" : 55}|46|1|1|0|0||1
+BK76|JINRP|JINRP|JOY IN READING PRIMER|{ "$ref" : "bookCategory", "$id" : 51}|50|{ "$ref" : "publisher", "$id" : 48}|46|1|1|0|0||1
+BK174|KFB OF ABC|KFB OF ABC|KIDS FIRST BOOK OF ABC|{ "$ref" : "bookCategory", "$id" : 51}|50|{ "$ref" : "publisher", "$id" : 55}|46|1|1|0|0||1
+BK209|KFBOABC|KFBOABC|KIDS FIRST BOOK OF ABC|{ "$ref" : "bookCategory", "$id" : 51}|50|{ "$ref" : "publisher", "$id" : 55}|46|1|1|0|0||1
+BK461|KNB50|KNB50|KIDS NUMBER BOOK 1-50|{ "$ref" : "bookCategory", "$id" : 51}|61|{ "$ref" : "publisher", "$id" : 55}|46|1|1|0|0||1
+BK532|KKWS|KKWS|KINDER KIDS WORK SHEET SETS|{ "$ref" : "bookCategory", "$id" : 51}|44|{ "$ref" : "publisher", "$id" : 45}|46|1|1|0|0||1
+BK98|LBD1-100|LBD1-100|L.B.D MATHEMATICS 1-100|{ "$ref" : "bookCategory", "$id" : 51}|50|{ "$ref" : "publisher", "$id" : 48}|46|1|1|0|0||1
+BK97|LBD1-50|LBD1-50|L.B.D MATHEMATICS 1-50|{ "$ref" : "bookCategory", "$id" : 51}|50|{ "$ref" : "publisher", "$id" : 48}|46|1|1|0|0||1
+BK93|LBDMP|LBDMP|L.B.D MATHEMATICS PRIMER|{ "$ref" : "bookCategory", "$id" : 51}|50|{ "$ref" : "publisher", "$id" : 48}|46|1|1|0|0||1
+BK511|LMM9|LMM9|LAB MANUAL MATHEMATICS IX|{ "$ref" : "bookCategory", "$id" : 51}|61|{ "$ref" : "publisher", "$id" : 55}|46|1|1|0|0||1
+BK512|LMM10|LMM10|LAB MANUAL MATHEMATICS X|{ "$ref" : "bookCategory", "$id" : 51}|61|{ "$ref" : "publisher", "$id" : 55}|46|1|1|0|0||1
+BK513|LMS9|LMS9|LAB MANUAL SCIENCE IX|{ "$ref" : "bookCategory", "$id" : 51}|61|{ "$ref" : "publisher", "$id" : 55}|46|1|1|0|0||1
+BK514|LMS10|LMS10|LAB MANUAL SCIENCE X|{ "$ref" : "bookCategory", "$id" : 51}|61|{ "$ref" : "publisher", "$id" : 55}|46|1|1|0|0||1
+BK330|1125|LBDMP|LEARNING BY DOING MATHS PRIMER|{ "$ref" : "bookCategory", "$id" : 51}|50|{ "$ref" : "publisher", "$id" : 48}|46|1|1|0|0||1
+BK90|LEPP|LEPP|LEARNING ENGLISH PRE-PRIMER|{ "$ref" : "bookCategory", "$id" : 51}|50|{ "$ref" : "publisher", "$id" : 48}|46|1|1|0|0||1
+BK91|LEP|LEP|LEARNING ENGLISH PRIMER|{ "$ref" : "bookCategory", "$id" : 51}|50|{ "$ref" : "publisher", "$id" : 48}|46|1|1|0|0||1
+BK322|LEWBP|LEWBP|LEARNING ENGLISH WORKBOOK PRIMER|{ "$ref" : "bookCategory", "$id" : 51}|50|{ "$ref" : "publisher", "$id" : 48}|46|1|1|0|0||1
+BK92|LEWP|LEWP|LEARNING ENGLISH WORKBOOK PRIMER |{ "$ref" : "bookCategory", "$id" : 49}|50|{ "$ref" : "publisher", "$id" : 48}|46|1|1|0|0||1
+BK73|LN100|LN100|LEARNING NUMBERS (1-100)|{ "$ref" : "bookCategory", "$id" : 51}|50|{ "$ref" : "publisher", "$id" : 48}|46|1|1|0|0||1
+BK72|LN50|LN50|LEARNING NUMBERS (1-50)|{ "$ref" : "bookCategory", "$id" : 51}|50|{ "$ref" : "publisher", "$id" : 48}|46|1|1|0|0||1
+BK153|L2WC|L2WC|LEARNING TO WRITE CAPITAL|{ "$ref" : "bookCategory", "$id" : 49}|50|{ "$ref" : "publisher", "$id" : 48}|46|1|1|0|0||1
+BK29|L2W1|L2W1|LEARNING TO WRITE PART I|{ "$ref" : "bookCategory", "$id" : 49}|50|{ "$ref" : "publisher", "$id" : 48}|46|1|1|0|0||1
+BK30|L2W2|L2W2|LEARNING TO WRITE PART II|{ "$ref" : "bookCategory", "$id" : 49}|50|{ "$ref" : "publisher", "$id" : 48}|46|1|1|0|0||1
+BK31|L2W3|L2W3|LEARNING TO WRITE PART III|{ "$ref" : "bookCategory", "$id" : 49}|50|{ "$ref" : "publisher", "$id" : 48}|46|1|1|0|0||1
+BK32|L2W4|L2W4|LEARNING TO WRITE PART IV|{ "$ref" : "bookCategory", "$id" : 49}|50|{ "$ref" : "publisher", "$id" : 48}|46|1|1|0|0||1
+BK33|L2W5|L2W5|LEARNING TO WRITE PART V|{ "$ref" : "bookCategory", "$id" : 49}|50|{ "$ref" : "publisher", "$id" : 48}|46|1|1|0|0||1
+BK34|L2W6|L2W6|LEARNING TO WRITE PART VI|{ "$ref" : "bookCategory", "$id" : 49}|50|{ "$ref" : "publisher", "$id" : 48}|46|1|1|0|0||1
+BK35|L2W7|L2W7|LEARNING TO WRITE PART VII|{ "$ref" : "bookCategory", "$id" : 49}|50|{ "$ref" : "publisher", "$id" : 48}|46|1|1|0|0||1
+BK36|L2W8|L2W8|LEARNING TO WRITE PART VIII|{ "$ref" : "bookCategory", "$id" : 49}|50|{ "$ref" : "publisher", "$id" : 48}|46|1|1|0|0||1
+BK13|L2WS&C|L2WS&C|LEARNING TO WRITE SMALL& CAPITAL|{ "$ref" : "bookCategory", "$id" : 49}|50|{ "$ref" : "publisher", "$id" : 48}|46|1|1|0|0||1
+BK7|101|LUL PP 1|LET US LEARN PRE PRIMER TERM I|{ "$ref" : "bookCategory", "$id" : 43}|47|{ "$ref" : "publisher", "$id" : 48}|46|2|1|0|92||1
+BK14|LULPP1|LULPP1|LET US LEARN PRE PRIMER TERM I|{ "$ref" : "bookCategory", "$id" : 51}|50|{ "$ref" : "publisher", "$id" : 48}|46|1|1|0|0||1
+BK8|102|LUL PP2|LET US LEARN PRE PRIMER TERM II|{ "$ref" : "bookCategory", "$id" : 43}|47|{ "$ref" : "publisher", "$id" : 48}|46|2|1|0|92||1
+BK15|LULPP2|LULPP2|LET US LEARN PRE PRIMER TERM II|{ "$ref" : "bookCategory", "$id" : 51}|50|{ "$ref" : "publisher", "$id" : 48}|46|1|1|0|0||1
+BK9|103|LUL PP3|LET US LEARN PRE PRIMER TERM III|{ "$ref" : "bookCategory", "$id" : 43}|47|{ "$ref" : "publisher", "$id" : 48}|46|1|1|0|92||1
+BK16|LULPP3|LULPP3|LET US LEARN PRE PRIMER TERM III|{ "$ref" : "bookCategory", "$id" : 51}|50|{ "$ref" : "publisher", "$id" : 48}|46|1|1|0|0||1
+BK10|104|LUL P4|LET US LEARN PRIMER TERM I|{ "$ref" : "bookCategory", "$id" : 43}|47|{ "$ref" : "publisher", "$id" : 48}|46|1|1|0|108||1
+BK17|LULP1|LULP1|LET US LEARN PRIMER TERM I|{ "$ref" : "bookCategory", "$id" : 51}|50|{ "$ref" : "publisher", "$id" : 48}|46|1|1|0|0||1
+BK11|105|LUL P5|LET US LEARN PRIMER TERM II|{ "$ref" : "bookCategory", "$id" : 43}|44|{ "$ref" : "publisher", "$id" : 48}|46|1|1|0|108||1
+BK18|LULP2|LULP2|LET US LEARN PRIMER TERM II|{ "$ref" : "bookCategory", "$id" : 51}|50|{ "$ref" : "publisher", "$id" : 48}|46|1|1|0|0||1
+BK12|106|LUL P6|LET US LEARN PRIMER TERM III|{ "$ref" : "bookCategory", "$id" : 43}|47|{ "$ref" : "publisher", "$id" : 48}|46|1|1|0|108||1
+BK19|LULP3|LULP3|LET US LEARN PRIMER TERM III|{ "$ref" : "bookCategory", "$id" : 51}|50|{ "$ref" : "publisher", "$id" : 48}|46|1|1|0|0||1
+BK518|LN20|LN20|LETS LEARN NUMBER 1 - 20|{ "$ref" : "bookCategory", "$id" : 51}|44|{ "$ref" : "publisher", "$id" : 45}|46|1|1|0|0||1
+BK497|LBM|LBM|LITTLE BUDS PRE SCHOOL ALL IN ONE MALAYALAM|{ "$ref" : "bookCategory", "$id" : 51}|44|{ "$ref" : "publisher", "$id" : 45}|46|1|1|0|0||1
+BK535|MCB3|MCB33|MAGIC COLOUR BOOK III|{ "$ref" : "bookCategory", "$id" : 52}|44|{ "$ref" : "publisher", "$id" : 45}|46|1|1|0|0||1
+BK534|MCB5|MCB5|MAGIC COLOUR BOOK V|{ "$ref" : "bookCategory", "$id" : 52}|44|{ "$ref" : "publisher", "$id" : 45}|46|1|1|0|0||1
+BK187|MP1|MP1|MALAYALA PADAVALI I|{ "$ref" : "bookCategory", "$id" : 51}|50|{ "$ref" : "publisher", "$id" : 57}|46|1|1|0|0||1
+BK188|MP2|MP2|MALAYALA PADAVALI II|{ "$ref" : "bookCategory", "$id" : 51}|50|{ "$ref" : "publisher", "$id" : 57}|46|1|1|0|0||1
+BK189|MP3|MP3|MALAYALA PADAVALI III|{ "$ref" : "bookCategory", "$id" : 51}|50|{ "$ref" : "publisher", "$id" : 57}|46|1|1|0|0||1
+BK190|MP4|MP4|MALAYALA PADAVALI IV|{ "$ref" : "bookCategory", "$id" : 51}|50|{ "$ref" : "publisher", "$id" : 57}|46|1|1|0|0||1
+BK152|MPU|MPU|MALAYALA PADAVALI UKG|{ "$ref" : "bookCategory", "$id" : 51}|50|{ "$ref" : "publisher", "$id" : 57}|46|1|1|0|0||1
+BK191|MPWB1|MPWB1|MALAYALA PADAVALI WORK BOOK I|{ "$ref" : "bookCategory", "$id" : 49}|50|{ "$ref" : "publisher", "$id" : 57}|46|1|1|0|0||1
+BK192|MPWB2|MPWB2|MALAYALA PADAVALI WORK BOOK II|{ "$ref" : "bookCategory", "$id" : 49}|50|{ "$ref" : "publisher", "$id" : 57}|46|1|1|0|0||1
+BK193|MPWB3|MPWB3|MALAYALA PADAVALI WORK BOOK III|{ "$ref" : "bookCategory", "$id" : 49}|50|{ "$ref" : "publisher", "$id" : 57}|46|1|1|0|0||1
+BK194|MPWB4|MPWB4|MALAYALA PADAVALI WORK BOOK IV|{ "$ref" : "bookCategory", "$id" : 49}|50|{ "$ref" : "publisher", "$id" : 57}|46|1|1|0|0||1
+BK460|MAP0|MAP0|MALAYALAM AKSHARA PARICHAYAM 0|{ "$ref" : "bookCategory", "$id" : 51}|44|{ "$ref" : "publisher", "$id" : 45}|46|1|1|0|0||1
+BK371|MEG9|MEG9|MAP EXPERT GEOGRAPHY IX|{ "$ref" : "bookCategory", "$id" : 51}|61|{ "$ref" : "publisher", "$id" : 55}|46|1|1|0|0||1
+BK372|MEH9|MEH9|MAP EXPERT HISTORY IX|{ "$ref" : "bookCategory", "$id" : 51}|61|{ "$ref" : "publisher", "$id" : 55}|46|1|1|0|0||1
+BK506|ME6|ME6|MAP EXPERT VI|{ "$ref" : "bookCategory", "$id" : 51}|61|{ "$ref" : "publisher", "$id" : 55}|46|1|1|0|0||1
+BK507|ME7|ME7|MAP EXPERT VII|{ "$ref" : "bookCategory", "$id" : 51}|61|{ "$ref" : "publisher", "$id" : 55}|46|1|1|0|0||1
+BK508|ME8|ME8|MAP EXPERT VIII|{ "$ref" : "bookCategory", "$id" : 51}|61|{ "$ref" : "publisher", "$id" : 55}|46|1|1|0|0||1
+BK213|MTEE|MTEE|MATHA TALENT EXCELLENT EXAMINATION|{ "$ref" : "bookCategory", "$id" : 49}|44|{ "$ref" : "publisher", "$id" : 60}|46|1|1|0|0||1
+BK325|MTEEL|MTEEL|MATHA TALENT EXCELLENT EXAMINATION LKG|{ "$ref" : "bookCategory", "$id" : 49}|50|{ "$ref" : "publisher", "$id" : 60}|46|1|1|0|0||1
+BK326|MTEEU|MTEEU|MATHA TALENT EXCELLENT EXAMINATION UKG|{ "$ref" : "bookCategory", "$id" : 49}|50|{ "$ref" : "publisher", "$id" : 60}|46|1|1|0|0||1
+BK94|MTPP|MTPP|MATHEMATICS TIMES PRE-PRIMER|{ "$ref" : "bookCategory", "$id" : 51}|50|{ "$ref" : "publisher", "$id" : 48}|46|1|1|0|0||1
+BK224|MLL|MLL|MATHRU LIPI LKG|{ "$ref" : "bookCategory", "$id" : 51}|50|{ "$ref" : "publisher", "$id" : 48}|46|1|1|0|0||1
+BK225|MLU|MLU|MATHRU LIPI UKG|{ "$ref" : "bookCategory", "$id" : 51}|50|{ "$ref" : "publisher", "$id" : 48}|46|1|1|0|0||1
+BK222|ML|ML|MATHRU MALAYALAM LKG|{ "$ref" : "bookCategory", "$id" : 51}|50|{ "$ref" : "publisher", "$id" : 48}|46|1|1|0|0||1
+BK223|MU|MU|MATHRU MALAYALAM UKG|{ "$ref" : "bookCategory", "$id" : 51}|50|{ "$ref" : "publisher", "$id" : 48}|46|1|1|0|0||1
+BK294|NIN1|MIM1|MATHS IN MINUTES I|{ "$ref" : "bookCategory", "$id" : 51}|50|{ "$ref" : "publisher", "$id" : 55}|46|1|1|0|0||1
+BK320|MIM1|MIM1|MATHS IN MINUTES I|{ "$ref" : "bookCategory", "$id" : 51}|50|{ "$ref" : "publisher", "$id" : 55}|46|1|1|0|0||1
+BK295|MIM2|MIM2|MATHS IN MINUTES II|{ "$ref" : "bookCategory", "$id" : 51}|50|{ "$ref" : "publisher", "$id" : 55}|46|1|1|0|0||1
+BK296|MIM3|MIM3|MATHS IN MINUTES III|{ "$ref" : "bookCategory", "$id" : 51}|50|{ "$ref" : "publisher", "$id" : 55}|46|1|1|0|0||1
+BK297|MIM4|MIM4|MATHS IN MINUTES IV|{ "$ref" : "bookCategory", "$id" : 51}|50|{ "$ref" : "publisher", "$id" : 55}|46|1|1|0|0||1
+BK298|MIM5|MIM5|MATHS IN MINUTES V|{ "$ref" : "bookCategory", "$id" : 51}|50|{ "$ref" : "publisher", "$id" : 55}|46|1|1|0|0||1
+BK149|MML|MML|MAZHAVILLU MALAYALA PADAVALI LKG|{ "$ref" : "bookCategory", "$id" : 51}|50|{ "$ref" : "publisher", "$id" : 56}|46|1|1|0|0||1
+BK150|MMU|MMU|MAZHAVILLU MALAYALA PADAVALI UKG|{ "$ref" : "bookCategory", "$id" : 51}|50|{ "$ref" : "publisher", "$id" : 56}|46|1|1|0|0||1
+BK321|MAB|MAB|MY ALPHABET BOOK|{ "$ref" : "bookCategory", "$id" : 51}|50|{ "$ref" : "publisher", "$id" : 48}|46|1|1|0|0||1
+BK366|MBBOP&L||MY BIG BOOK OF PLAY AND LEARN|{ "$ref" : "bookCategory", "$id" : 51}|61|{ "$ref" : "publisher", "$id" : 55}|46|1|1|0|0||1
+BK495|MFBOABC|MFBOABC|MY FIRST BOOK OF ABC|{ "$ref" : "bookCategory", "$id" : 51}|61|{ "$ref" : "publisher", "$id" : 55}|46|1|1|0|0||1
+BK365|MFB1-100||MY FIRST NUMBER BOOK 1-100|{ "$ref" : "bookCategory", "$id" : 43}|44|{ "$ref" : "publisher", "$id" : 55}|46|1|1|0|0||1
+BK373|MFNB100|MFNB100|MY FIRST NUMBER BOOK 1-100|{ "$ref" : "bookCategory", "$id" : 51}|50|{ "$ref" : "publisher", "$id" : 55}|46|1|1|0|0||1
+BK362|MFPD||MY FIRST PICTURE DICTIONARY|{ "$ref" : "bookCategory", "$id" : 43}|44|{ "$ref" : "publisher", "$id" : 55}|46|1|1|0|0||1
+BK475|MFSA|MFSA|MY FIRST SCHOOL ACTIVITY|{ "$ref" : "bookCategory", "$id" : 51}|44|{ "$ref" : "publisher", "$id" : 55}|46|1|1|0|0||1
+BK172|MLABC|MLABC|MY LITTLE ABC|{ "$ref" : "bookCategory", "$id" : 51}|47|{ "$ref" : "publisher", "$id" : 48}|46|1|1|0|0||1
+BK383|MLW1|MLW1|MY LITTLE WORLD I|{ "$ref" : "bookCategory", "$id" : 51}|47|{ "$ref" : "publisher", "$id" : 48}|46|1|1|0|0||1
+BK517|MLW2|MLW2|MY LITTLE WORLD II|{ "$ref" : "bookCategory", "$id" : 51}|47|{ "$ref" : "publisher", "$id" : 48}|46|1|1|0|0||1
+BK328|1123|MLW1|MY LITTLE WORLD PART I|{ "$ref" : "bookCategory", "$id" : 51}|50|{ "$ref" : "publisher", "$id" : 48}|46|1|1|0|0||1
+BK329|1124|MLW2|MY LITTLE WORLD PART II|{ "$ref" : "bookCategory", "$id" : 51}|50|{ "$ref" : "publisher", "$id" : 48}|46|1|1|0|0||1
+BK515|MLWPD1|MLWPD1|MY LITTLE WORLD PICTURE DICTIONERY I|{ "$ref" : "bookCategory", "$id" : 51}|47|{ "$ref" : "publisher", "$id" : 48}|46|2|1|0|0||1
+BK516|MLWPD2|MLWPD2|MY LITTLE WORLD PICTURE DICTIONERY II|{ "$ref" : "bookCategory", "$id" : 51}|47|{ "$ref" : "publisher", "$id" : 48}|46|1|1|0|0||1
+BK299|MNCM6|MNCM6|MY NEW COMPOSITE MATHEMATICS VI|{ "$ref" : "bookCategory", "$id" : 51}|50|{ "$ref" : "publisher", "$id" : 55}|46|1|1|0|0||1
+BK300|MNCM7|MNCM7|MY NEW COMPOSITE MATHEMATICS VII|{ "$ref" : "bookCategory", "$id" : 51}|50|{ "$ref" : "publisher", "$id" : 55}|46|1|1|0|0||1
+BK476|MSSA|MSSA|MY SECOND SCHOOL ACTIVITY|{ "$ref" : "bookCategory", "$id" : 51}|44|{ "$ref" : "publisher", "$id" : 55}|46|1|1|0|0||1
+BK477|MTSA|MTSA|MY THIRD SCHOOL ACTIVITY|{ "$ref" : "bookCategory", "$id" : 51}|44|{ "$ref" : "publisher", "$id" : 55}|46|1|1|0|0||1
+BK368|MWW1||MY WONDERFUL WORLD I|{ "$ref" : "bookCategory", "$id" : 51}|61|{ "$ref" : "publisher", "$id" : 55}|46|1|1|0|0||1
+BK154|HNUP|HNUP|NAYI UDAN HINDI PRAVESHIKA|{ "$ref" : "bookCategory", "$id" : 51}|50|{ "$ref" : "publisher", "$id" : 55}|46|1|1|0|0||1
+BK175|HNU1|HNU1|NAYI UDAN PART 1|{ "$ref" : "bookCategory", "$id" : 51}|50|{ "$ref" : "publisher", "$id" : 55}|46|1|1|0|0||1
+BK176|HNU2|HNU2|NAYI UDAN PART II|{ "$ref" : "bookCategory", "$id" : 51}|50|{ "$ref" : "publisher", "$id" : 55}|46|1|1|0|0||1
+BK177|HNU3|HNU3|NAYI UDAN PART III|{ "$ref" : "bookCategory", "$id" : 51}|50|{ "$ref" : "publisher", "$id" : 55}|46|1|1|0|0||1
+BK178|HNU4|HNU4|NAYI UDAN PART IV|{ "$ref" : "bookCategory", "$id" : 51}|50|{ "$ref" : "publisher", "$id" : 55}|46|1|1|0|0||1
+BK367|NCM1||NEW COMPOSITE MATHEMATICS I|{ "$ref" : "bookCategory", "$id" : 51}|61|{ "$ref" : "publisher", "$id" : 55}|46|1|1|0|0||1
+BK491|NCM2|NCM2|NEW COMPOSITE MATHS II|{ "$ref" : "bookCategory", "$id" : 51}|61|{ "$ref" : "publisher", "$id" : 55}|46|1|1|0|0||1
+BK492|NCM3|NCM3|NEW COMPOSITE MATHS III|{ "$ref" : "bookCategory", "$id" : 51}|61|{ "$ref" : "publisher", "$id" : 55}|46|1|1|0|0||1
+BK493|NCM4|NCM4|NEW COMPOSITE MATHS IV|{ "$ref" : "bookCategory", "$id" : 51}|61|{ "$ref" : "publisher", "$id" : 55}|46|1|1|0|0||1
+BK494|NCM5|NCM5|NEW COMPOSITE MATHS V|{ "$ref" : "bookCategory", "$id" : 51}|61|{ "$ref" : "publisher", "$id" : 55}|46|1|1|0|0||1
+BK344|NCM6||NEW COMPOSITE MATHS VI|{ "$ref" : "bookCategory", "$id" : 51}|61|{ "$ref" : "publisher", "$id" : 55}|46|1|1|0|0||1
+BK345|NCM7||NEW COMPOSITE MATHS VII|{ "$ref" : "bookCategory", "$id" : 51}|61|{ "$ref" : "publisher", "$id" : 55}|46|1|1|0|0||1
+BK216|NELPP1|NELPP1|NEW EASY LEARNING PRE - PRIMER I|{ "$ref" : "bookCategory", "$id" : 51}|50|{ "$ref" : "publisher", "$id" : 48}|46|1|1|0|0||1
+BK217|NELPP2|NELPP2|NEW EASY LEARNING PRE - PRIMER II|{ "$ref" : "bookCategory", "$id" : 51}|50|{ "$ref" : "publisher", "$id" : 48}|46|1|1|0|0||1
+BK218|NELPP3|NELPP3|NEW EASY LEARNING PRE - PRIMER III|{ "$ref" : "bookCategory", "$id" : 51}|50|{ "$ref" : "publisher", "$id" : 48}|46|1|1|0|0||1
+BK219|NELP1|NELP1|NEW EASY LEARNING PRIMER I|{ "$ref" : "bookCategory", "$id" : 51}|50|{ "$ref" : "publisher", "$id" : 48}|46|1|1|0|0||1
+BK220|NELP2|NELP2|NEW EASY LEARNING PRIMER II|{ "$ref" : "bookCategory", "$id" : 51}|50|{ "$ref" : "publisher", "$id" : 48}|46|1|1|0|0||1
+BK221|NELP3|NELP3|NEW EASY LEARNING PRIMER III|{ "$ref" : "bookCategory", "$id" : 51}|50|{ "$ref" : "publisher", "$id" : 48}|46|1|1|0|0||1
+BK260|NKW1|NKW1|NEW KNOWLEDGE WORLD I|{ "$ref" : "bookCategory", "$id" : 51}|50|{ "$ref" : "publisher", "$id" : 55}|46|1|1|0|0||1
+BK261|NKW2|NKW2|NEW KNOWLEDGE WORLD II|{ "$ref" : "bookCategory", "$id" : 51}|50|{ "$ref" : "publisher", "$id" : 55}|46|1|1|0|0||1
+BK262|NKW3|NKW3|NEW KNOWLEDGE WORLD III|{ "$ref" : "bookCategory", "$id" : 51}|50|{ "$ref" : "publisher", "$id" : 55}|46|1|1|0|0||1
+BK263|NKW4|NKW4|NEW KNOWLEDGE WORLD IV|{ "$ref" : "bookCategory", "$id" : 51}|50|{ "$ref" : "publisher", "$id" : 55}|46|1|1|0|0||1
+BK264|NKW5|NKW5|NEW KNOWLEDGE WORLD V|{ "$ref" : "bookCategory", "$id" : 51}|50|{ "$ref" : "publisher", "$id" : 55}|46|1|1|0|0||1
+BK265|NKW6|NKW6|NEW KNOWLEDGE WORLD VI|{ "$ref" : "bookCategory", "$id" : 51}|50|{ "$ref" : "publisher", "$id" : 55}|46|1|1|0|0||1
+BK266|NKW7|NKW7|NEW KNOWLEDGE WORLD VII|{ "$ref" : "bookCategory", "$id" : 51}|50|{ "$ref" : "publisher", "$id" : 55}|46|1|1|0|0||1
+BK267|NKW8|NKW8|NEW KNOWLEDGE WORLD VIII|{ "$ref" : "bookCategory", "$id" : 51}|50|{ "$ref" : "publisher", "$id" : 45}|46|1|1|0|0||1
+BK346|NSF1||NEW SEARCH AND FIND I|{ "$ref" : "bookCategory", "$id" : 54}|61|{ "$ref" : "publisher", "$id" : 55}|46|1|1|0|0||1
+BK347|NSF2||NEW SEARCH AND FIND II|{ "$ref" : "bookCategory", "$id" : 54}|61|{ "$ref" : "publisher", "$id" : 55}|46|1|1|0|0||1
+BK348|NSF3||NEW SEARCH AND FIND III|{ "$ref" : "bookCategory", "$id" : 54}|61|{ "$ref" : "publisher", "$id" : 55}|46|1|1|0|0||1
+BK349|NSF4||NEW SEARCH AND FIND IV|{ "$ref" : "bookCategory", "$id" : 54}|61|{ "$ref" : "publisher", "$id" : 55}|46|1|1|0|0||1
+BK181|NSF5|NSF5|NEW SEARCH AND FIND V|{ "$ref" : "bookCategory", "$id" : 54}|50|{ "$ref" : "publisher", "$id" : 55}|46|1|1|0|0||1
+BK160|NSF6|NSF6|NEW SEARCH AND FIND VI|{ "$ref" : "bookCategory", "$id" : 54}|50|{ "$ref" : "publisher", "$id" : 55}|46|1|1|0|0||1
+BK161|NSF7|NSF7|NEW SEARCH AND FIND VII|{ "$ref" : "bookCategory", "$id" : 54}|50|{ "$ref" : "publisher", "$id" : 55}|46|1|1|0|0||1
+BK162|NSF8|NSF8|NEW SEARCH AND FIND VIII|{ "$ref" : "bookCategory", "$id" : 54}|50|{ "$ref" : "publisher", "$id" : 55}|46|1|1|0|0||1
+BK268|OGE1|OGE11|OUR GREEN EARTH I|{ "$ref" : "bookCategory", "$id" : 51}|50|{ "$ref" : "publisher", "$id" : 45}|46|1|1|0|0||1
+BK498|OGE2|OGE2|OUR GREEN EARTH II|{ "$ref" : "bookCategory", "$id" : 51}|61|{ "$ref" : "publisher", "$id" : 55}|46|1|1|0|0||1
+BK66|PFI|PFI|PAPER FOLDING I|{ "$ref" : "bookCategory", "$id" : 52}|50|{ "$ref" : "publisher", "$id" : 48}|46|1|1|0|0||1
+BK67|PF2|PF2|PAPER FOLDING II|{ "$ref" : "bookCategory", "$id" : 52}|50|{ "$ref" : "publisher", "$id" : 48}|46|1|1|0|0||1
+BK68|PF3|PF3|PAPER FOLDING III|{ "$ref" : "bookCategory", "$id" : 52}|50|{ "$ref" : "publisher", "$id" : 48}|46|1|1|0|0||1
+BK69|PF4|PF4|PAPER FOLDING IV|{ "$ref" : "bookCategory", "$id" : 52}|50|{ "$ref" : "publisher", "$id" : 48}|46|1|1|0|0||1
+BK65|PF0|PF0|PAPER FOLDING O|{ "$ref" : "bookCategory", "$id" : 52}|50|{ "$ref" : "publisher", "$id" : 48}|46|1|1|0|0||1
+BK70|PF5|PF5|PAPER FOLDING V|{ "$ref" : "bookCategory", "$id" : 52}|50|{ "$ref" : "publisher", "$id" : 48}|46|1|1|0|0||1
+BK96|PW1|PW1|PRINT WRITING I|{ "$ref" : "bookCategory", "$id" : 49}|50|{ "$ref" : "publisher", "$id" : 48}|46|1|1|0|0||1
+BK412|PMP1|PMP1|PRIYA MALAYALA PADAVALI I|{ "$ref" : "bookCategory", "$id" : 51}|44|{ "$ref" : "publisher", "$id" : 45}|46|1|1|0|0||1
+BK413|PMP2|PMP2|PRIYA MALAYALA PADAVALI II|{ "$ref" : "bookCategory", "$id" : 51}|44|{ "$ref" : "publisher", "$id" : 45}|46|1|1|0|0||1
+BK414|PMP3|PMP3|PRIYA MALAYALA PADAVALI III|{ "$ref" : "bookCategory", "$id" : 51}|44|{ "$ref" : "publisher", "$id" : 45}|46|1|1|0|0||1
+BK415|PMP4|PMP4|PRIYA MALAYALA PADAVALI IV|{ "$ref" : "bookCategory", "$id" : 51}|44|{ "$ref" : "publisher", "$id" : 45}|46|1|1|0|0||1
+BK416|PMP5|PMP5|PRIYA MALAYALA PADAVALI V|{ "$ref" : "bookCategory", "$id" : 51}|44|{ "$ref" : "publisher", "$id" : 45}|46|1|1|0|0||1
+BK417|PMP6|PMP6|PRIYA MALAYALA PADAVALI VI|{ "$ref" : "bookCategory", "$id" : 51}|44|{ "$ref" : "publisher", "$id" : 45}|46|1|1|0|0||1
+BK418|PMP7|PMP7|PRIYA MALAYALA PADAVALI VII|{ "$ref" : "bookCategory", "$id" : 51}|44|{ "$ref" : "publisher", "$id" : 45}|46|1|1|0|0||1
+BK419|PMP8|PMP8|PRIYA MALAYALA PADAVALI VIII|{ "$ref" : "bookCategory", "$id" : 51}|44|{ "$ref" : "publisher", "$id" : 45}|46|1|1|0|0||1
+BK526|QPCO|QPCO|QUESTION PAPER COMPUTER|{ "$ref" : "bookCategory", "$id" : 43}|44|{ "$ref" : "publisher", "$id" : 60}|46|1|1|0|0||1
+BK521|QPE|QPE|QUESTION PAPER ENG.|{ "$ref" : "bookCategory", "$id" : 43}|44|{ "$ref" : "publisher", "$id" : 60}|46|1|1|0|0||1
+BK527|QPGK|QPGK|QUESTION PAPER G.K|{ "$ref" : "bookCategory", "$id" : 43}|44|{ "$ref" : "publisher", "$id" : 60}|46|1|1|0|0||1
+BK528|QPHI|QPHI|QUESTION PAPER HINDI|{ "$ref" : "bookCategory", "$id" : 43}|44|{ "$ref" : "publisher", "$id" : 60}|46|1|1|0|0||1
+BK525|QPMAL|QPMAL|QUESTION PAPER MALAYALAM|{ "$ref" : "bookCategory", "$id" : 43}|44|{ "$ref" : "publisher", "$id" : 60}|46|1|1|0|0||1
+BK524|QPMATHS|QPMATHS|QUESTION PAPER MATHEMATICS|{ "$ref" : "bookCategory", "$id" : 43}|44|{ "$ref" : "publisher", "$id" : 60}|46|1|1|0|0||1
+BK529|QPMS|QPMS|QUESTION PAPER MORAL SCIENCE|{ "$ref" : "bookCategory", "$id" : 43}|44|{ "$ref" : "publisher", "$id" : 60}|46|1|1|0|0||1
+BK522|QPSC|QPSC|QUESTION PAPER SCIENCE|{ "$ref" : "bookCategory", "$id" : 43}|44|{ "$ref" : "publisher", "$id" : 60}|46|1|1|0|0||1
+BK523|QPSS|QPSS|QUESTION PAPER SOCIAL STUDIES|{ "$ref" : "bookCategory", "$id" : 43}|44|{ "$ref" : "publisher", "$id" : 60}|46|1|1|0|0||1
+BK148|QP|QP|QUESTION PAPERS|{ "$ref" : "bookCategory", "$id" : 43}|44|{ "$ref" : "publisher", "$id" : 55}|46|1|1|0|0||1
+BK212|QPLP|QPLP|QUESTION PAPERS FOR L.P.|{ "$ref" : "bookCategory", "$id" : 49}|44|{ "$ref" : "publisher", "$id" : 60}|46|1|1|0|0||1
+BK210|QPL|QPL|QUESTION PAPERS FOR LKG|{ "$ref" : "bookCategory", "$id" : 49}|44|{ "$ref" : "publisher", "$id" : 60}|46|1|1|0|0||1
+BK211|QPU|QPU|QUESTION PAPERS FOR UKG|{ "$ref" : "bookCategory", "$id" : 49}|44|{ "$ref" : "publisher", "$id" : 60}|46|1|1|0|0||1
+BK170|RAINBOWA|RAINBOWA|RAINBOW A|{ "$ref" : "bookCategory", "$id" : 51}|50|{ "$ref" : "publisher", "$id" : 48}|46|1|1|0|0||1
+BK48|RTK1|RTKI|RAISE THE KNOWLEDGE PART I|{ "$ref" : "bookCategory", "$id" : 54}|50|{ "$ref" : "publisher", "$id" : 48}|46|1|1|0|0||1
+BK49|RTK2|RTK2|RAISE THE KNOWLEDGE PART II|{ "$ref" : "bookCategory", "$id" : 54}|50|{ "$ref" : "publisher", "$id" : 48}|46|1|1|0|0||1
+BK50|RTK3|RTK3|RAISE THE KNOWLEDGE PART III|{ "$ref" : "bookCategory", "$id" : 54}|50|{ "$ref" : "publisher", "$id" : 48}|46|1|1|0|0||1
+BK51|RTK4|RTK4|RAISE THE KNOWLEDGE PART IV|{ "$ref" : "bookCategory", "$id" : 54}|50|{ "$ref" : "publisher", "$id" : 48}|46|1|1|0|0||1
+BK155|RTK5|RTK5|RAISE THE KNOWLEDGE V|{ "$ref" : "bookCategory", "$id" : 54}|50|{ "$ref" : "publisher", "$id" : 48}|46|1|1|0|0||1
+BK5|1|RW|RAPID WRITING|{ "$ref" : "bookCategory", "$id" : 43}|44|{ "$ref" : "publisher", "$id" : 45}|46|1|1|0|36|d,u,u f,f|1
+BK6|2|RW2|RAPID WRITING|{ "$ref" : "bookCategory", "$id" : 43}|44|{ "$ref" : "publisher", "$id" : 45}|46|1|1|0|30||1
+BK21|RW1|RW1|RAPID WRITING PART I|{ "$ref" : "bookCategory", "$id" : 49}|50|{ "$ref" : "publisher", "$id" : 48}|46|1|1|0|0||1
+BK22|RW2|RW2|RAPID WRITING PART II|{ "$ref" : "bookCategory", "$id" : 49}|50|{ "$ref" : "publisher", "$id" : 48}|46|1|1|0|0||1
+BK23|RW3|RW3|RAPID WRITING PART III|{ "$ref" : "bookCategory", "$id" : 49}|50|{ "$ref" : "publisher", "$id" : 48}|46|1|1|0|0||1
+BK24|RW4|RW4|RAPID WRITING PART IV|{ "$ref" : "bookCategory", "$id" : 49}|50|{ "$ref" : "publisher", "$id" : 48}|46|1|1|0|0||1
+BK25|RW5|RW5|RAPID WRITING PART V|{ "$ref" : "bookCategory", "$id" : 49}|50|{ "$ref" : "publisher", "$id" : 48}|46|1|1|0|0||1
+BK26|RW6|RW6|RAPID WRITING PART VI|{ "$ref" : "bookCategory", "$id" : 49}|50|{ "$ref" : "publisher", "$id" : 48}|46|1|1|0|0||1
+BK27|RW7|RW7|RAPID WRITING PART VII|{ "$ref" : "bookCategory", "$id" : 49}|50|{ "$ref" : "publisher", "$id" : 48}|46|1|1|0|0||1
+BK28|RW8|RW8|RAPID WRITING PART VIII|{ "$ref" : "bookCategory", "$id" : 49}|50|{ "$ref" : "publisher", "$id" : 48}|46|1|1|0|0||1
+BK384|RFEPP|RFEPP|READY FOR ENGLISH PRE PRIMER|{ "$ref" : "bookCategory", "$id" : 51}|47|{ "$ref" : "publisher", "$id" : 48}|46|1|1|0|0||1
+BK327|1122|RFEP|READY FOR ENGLISH PRIMER|{ "$ref" : "bookCategory", "$id" : 51}|47|{ "$ref" : "publisher", "$id" : 48}|46|1|1|0|0||1
+BK385|RFMPP50|RFMPP50|READY FOR MATHEMATICS PP 1-50|{ "$ref" : "bookCategory", "$id" : 51}|47|{ "$ref" : "publisher", "$id" : 48}|46|1|1|0|0||1
+BK331|1126|RFM1-50|READY FOR MATHS PRE PRIMER 1-50|{ "$ref" : "bookCategory", "$id" : 51}|50|{ "$ref" : "publisher", "$id" : 48}|46|1|1|0|0||1
+BK151|MSPL|MSPL|SACHITHRA PADAVALI LKG|{ "$ref" : "bookCategory", "$id" : 51}|50|{ "$ref" : "publisher", "$id" : 57}|46|1|1|0|0||1
+BK428|SHB1|SHB1|SARAL HINDI BHASHA I|{ "$ref" : "bookCategory", "$id" : 51}|44|{ "$ref" : "publisher", "$id" : 45}|46|1|1|0|0||1
+BK411|SAM|SAM|SCHOOL ATLAS FOR MIDDLE|{ "$ref" : "bookCategory", "$id" : 43}|61|{ "$ref" : "publisher", "$id" : 55}|46|1|1|0|0||1
+BK520|SE9|SE9|SCIENCE EXPLORATION IX|{ "$ref" : "bookCategory", "$id" : 51}|61|{ "$ref" : "publisher", "$id" : 55}|46|1|1|0|0||1
+BK519|SE10|SE10|SCIENCE EXPLORATION X|{ "$ref" : "bookCategory", "$id" : 51}|61|{ "$ref" : "publisher", "$id" : 55}|46|1|1|0|0||1
+BK227|SH1|SC1|SCIENCE HORIZON I|{ "$ref" : "bookCategory", "$id" : 51}|50|{ "$ref" : "publisher", "$id" : 55}|46|1|1|0|0||1
+BK226|SH2|SH2|SCIENCE HORIZON II|{ "$ref" : "bookCategory", "$id" : 51}|50|{ "$ref" : "publisher", "$id" : 55}|46|1|1|0|0||1
+BK228|SH3|SH3|SCIENCE HORIZON III|{ "$ref" : "bookCategory", "$id" : 51}|50|{ "$ref" : "publisher", "$id" : 55}|46|1|1|0|0||1
+BK229|SH4|SH4|SCIENCE HORIZON IV|{ "$ref" : "bookCategory", "$id" : 51}|50|{ "$ref" : "publisher", "$id" : 55}|46|1|1|0|0||1
+BK504|SH0|SH0|SCIENCE HORIZON O|{ "$ref" : "bookCategory", "$id" : 51}|61|{ "$ref" : "publisher", "$id" : 55}|46|1|1|0|0||1
+BK230|SH5|SH5|SCIENCE HORIZON V|{ "$ref" : "bookCategory", "$id" : 51}|50|{ "$ref" : "publisher", "$id" : 55}|46|1|1|0|0||1
+BK473|SLK9|SLK9|SCIENCE LAB KIT IX|{ "$ref" : "bookCategory", "$id" : 51}|61|{ "$ref" : "publisher", "$id" : 45}|46|1|1|0|0||1
+BK474|SLK10|SLK10|SCIENCE LAB KIT X|{ "$ref" : "bookCategory", "$id" : 51}|61|{ "$ref" : "publisher", "$id" : 55}|46|1|1|0|0||1
+BK95|SAS1|SAS1|SING A SONG I|{ "$ref" : "bookCategory", "$id" : 51}|50|{ "$ref" : "publisher", "$id" : 48}|46|1|1|0|0||1
+BK382|SAS2||SING A SONG II|{ "$ref" : "bookCategory", "$id" : 51}|47|{ "$ref" : "publisher", "$id" : 48}|46|1|1|0|0||1
+BK487|SANR1|SANR1|SING ALONG NURSERY RHYMES I|{ "$ref" : "bookCategory", "$id" : 51}|61|{ "$ref" : "publisher", "$id" : 55}|46|1|1|0|0||1
+BK488|SANR2|SANR2|SING ALONG NURSERY RHYMES II|{ "$ref" : "bookCategory", "$id" : 51}|61|{ "$ref" : "publisher", "$id" : 55}|46|1|1|0|0||1
+BK249|SE1|SE1|SPOKEN ENGLISH I|{ "$ref" : "bookCategory", "$id" : 51}|50|{ "$ref" : "publisher", "$id" : 45}|46|1|1|0|0||1
+BK250|SE2|SE2|SPOKEN ENGLISH II|{ "$ref" : "bookCategory", "$id" : 51}|50|{ "$ref" : "publisher", "$id" : 45}|46|1|1|0|0||1
+BK251|SE3|SE3|SPOKEN ENGLISH III|{ "$ref" : "bookCategory", "$id" : 51}|50|{ "$ref" : "publisher", "$id" : 45}|46|1|1|0|0||1
+BK252|SE4|SE4|SPOKEN ENGLISH IV|{ "$ref" : "bookCategory", "$id" : 51}|50|{ "$ref" : "publisher", "$id" : 45}|46|1|1|0|0||1
+BK253|SE5|SE5|SPOKEN ENGLISH V|{ "$ref" : "bookCategory", "$id" : 51}|50|{ "$ref" : "publisher", "$id" : 45}|46|1|1|0|0||1
+BK254|SE6|SE6|SPOKEN ENGLISH VI|{ "$ref" : "bookCategory", "$id" : 51}|50|{ "$ref" : "publisher", "$id" : 45}|46|1|1|0|0||1
+BK255|SE7|SE7|SPOKEN ENGLISH VII|{ "$ref" : "bookCategory", "$id" : 51}|50|{ "$ref" : "publisher", "$id" : 45}|46|1|1|0|0||1
+BK369|SUMP||START UP MATHS PRIMER|{ "$ref" : "bookCategory", "$id" : 51}|61|{ "$ref" : "publisher", "$id" : 55}|46|1|1|0|0||1
+BK309| SOW9|SOW9|STREAM OF WISDOM IX|{ "$ref" : "bookCategory", "$id" : 51}|50|{ "$ref" : "publisher", "$id" : 48}|46|1|1|0|0||1
+BK311|SOW9|SOW9|STREAM OF WISDOM IX|{ "$ref" : "bookCategory", "$id" : 51}|50|{ "$ref" : "publisher", "$id" : 45}|46|1|1|0|0||1
+BK310|SOW10|SOW10|STREAM OF WISDOM X|{ "$ref" : "bookCategory", "$id" : 51}|50|{ "$ref" : "publisher", "$id" : 48}|46|1|1|0|0||1
+BK282|SHBAC|SHBAC|STUDENTS HAND BOOK & COVER|{ "$ref" : "bookCategory", "$id" : 53}|50|{ "$ref" : "publisher", "$id" : 45}|46|1|1|0|0||1
+BK195|SHBC|SHBC|STUDENTS HAND BOOK & COVER|{ "$ref" : "bookCategory", "$id" : 49}|50|{ "$ref" : "publisher", "$id" : 48}|46|1|1|0|0||1
+BK205|IDLKG|IDLKG|STUDENTS ID CARD|{ "$ref" : "bookCategory", "$id" : 43}|50|{ "$ref" : "publisher", "$id" : 60}|46|1|1|0|0||1
+BK206|SIDC|SIDC|STUDENTS ID CARD|{ "$ref" : "bookCategory", "$id" : 43}|50|{ "$ref" : "publisher", "$id" : 60}|46|1|1|0|0||1
+BK214|T|T|T - SHIRT|{ "$ref" : "bookCategory", "$id" : 43}|47|{ "$ref" : "publisher", "$id" : 60}|46|1|1|0|0||1
+BK71|TABLES|TABLES|TABLES FOR JUNIORS|{ "$ref" : "bookCategory", "$id" : 51}|50|{ "$ref" : "publisher", "$id" : 48}|46|1|1|0|0||1
+BK447|TE1|TE1|TALK ENGLISH I|{ "$ref" : "bookCategory", "$id" : 51}|61|{ "$ref" : "publisher", "$id" : 55}|46|1|1|0|0||1
+BK448|TE2|TE2|TALK ENGLISH II|{ "$ref" : "bookCategory", "$id" : 51}|61|{ "$ref" : "publisher", "$id" : 55}|46|1|1|0|0||1
+BK449|TE3|TE3|TALK ENGLISH III|{ "$ref" : "bookCategory", "$id" : 51}|61|{ "$ref" : "publisher", "$id" : 55}|46|1|1|0|0||1
+BK450|TE4|TE4|TALK ENGLISH IV|{ "$ref" : "bookCategory", "$id" : 51}|61|{ "$ref" : "publisher", "$id" : 55}|46|1|1|0|0||1
+BK451|TE5|TE5|TALK ENGLISH V|{ "$ref" : "bookCategory", "$id" : 51}|50|{ "$ref" : "publisher", "$id" : 55}|46|1|1|0|0||1
+BK452|TE6|TE6|TALK ENGLISH VI|{ "$ref" : "bookCategory", "$id" : 51}|61|{ "$ref" : "publisher", "$id" : 55}|46|1|1|0|0||1
+BK453|TE7|TE7|TALK ENGLISH VII|{ "$ref" : "bookCategory", "$id" : 51}|61|{ "$ref" : "publisher", "$id" : 55}|46|1|1|0|0||1
+BK454|TE8|TE8|TALK ENGLISH VIII|{ "$ref" : "bookCategory", "$id" : 51}|61|{ "$ref" : "publisher", "$id" : 55}|46|1|1|0|0||1
+BK312|CE1|CE1|THE COMPUTER EXPRESS I|{ "$ref" : "bookCategory", "$id" : 51}|50|{ "$ref" : "publisher", "$id" : 55}|46|1|1|0|0||1
+BK313|CE2|CE2|THE COMPUTER EXPRESS II|{ "$ref" : "bookCategory", "$id" : 51}|50|{ "$ref" : "publisher", "$id" : 55}|46|1|1|0|0||1
+BK314|CE3|CE3|THE COMPUTER EXPRESS III|{ "$ref" : "bookCategory", "$id" : 51}|50|{ "$ref" : "publisher", "$id" : 55}|46|1|1|0|0||1
+BK315|CE4|CE4|THE COMPUTER EXPRESS IV|{ "$ref" : "bookCategory", "$id" : 51}|50|{ "$ref" : "publisher", "$id" : 55}|46|1|1|0|0||1
+BK316|CE5|CE5|THE COMPUTER EXPRESS V|{ "$ref" : "bookCategory", "$id" : 51}|50|{ "$ref" : "publisher", "$id" : 55}|46|1|1|0|0||1
+BK317|CE6|CE6|THE COMPUTER EXPRESS VI|{ "$ref" : "bookCategory", "$id" : 51}|50|{ "$ref" : "publisher", "$id" : 55}|46|1|1|0|0||1
+BK318|CE7|CE7|THE COMPUTER EXPRESS VII|{ "$ref" : "bookCategory", "$id" : 51}|50|{ "$ref" : "publisher", "$id" : 55}|46|1|1|0|0||1
+BK319|CE8|CE8|THE COMPUTER EXPRESS VIII|{ "$ref" : "bookCategory", "$id" : 51}|50|{ "$ref" : "publisher", "$id" : 55}|46|1|1|0|0||1
+BK44|W2H1|W2H1|THE WAY TO HAPPINESS PART I|{ "$ref" : "bookCategory", "$id" : 53}|50|{ "$ref" : "publisher", "$id" : 48}|46|1|1|0|0||1
+BK45|W2H2|W2H2|THE WAY TO HAPPINESS PART II|{ "$ref" : "bookCategory", "$id" : 53}|50|{ "$ref" : "publisher", "$id" : 48}|46|1|1|0|0||1
+BK46|W2H3|W2H3|THE WAY TO HAPPINESS PART III|{ "$ref" : "bookCategory", "$id" : 53}|50|{ "$ref" : "publisher", "$id" : 48}|46|1|1|0|0||1
+BK47|W2H4|W2H4|THE WAY TO HAPPINESS PART IV|{ "$ref" : "bookCategory", "$id" : 53}|50|{ "$ref" : "publisher", "$id" : 48}|46|1|1|0|0||1
+BK53|W2H5|W2H5|THE WAY TO HAPPINESS V|{ "$ref" : "bookCategory", "$id" : 53}|50|{ "$ref" : "publisher", "$id" : 48}|46|1|1|0|0||1
+BK54|W2H6|W2H6|THE WAY TO HAPPINESS VI|{ "$ref" : "bookCategory", "$id" : 53}|50|{ "$ref" : "publisher", "$id" : 48}|46|1|1|0|0||1
+BK55|W2H7|W2H7|THE WAY TO HAPPINESS VII|{ "$ref" : "bookCategory", "$id" : 53}|50|{ "$ref" : "publisher", "$id" : 48}|46|1|1|0|0||1
+BK56|W2H8|W2H8|THE WAY TO HAPPINESS VIII|{ "$ref" : "bookCategory", "$id" : 53}|50|{ "$ref" : "publisher", "$id" : 48}|46|1|1|0|0||1
+BK370|TT||TIME TABLES|{ "$ref" : "bookCategory", "$id" : 51}|61|{ "$ref" : "publisher", "$id" : 55}|46|1|1|0|0||1
+BK42|T2CA|T2CA|TIME TO COLOUR PART A|{ "$ref" : "bookCategory", "$id" : 52}|50|{ "$ref" : "publisher", "$id" : 48}|46|1|1|0|0||1
+BK43|T2CB|T2CB|TIME TO COLOUR PART B|{ "$ref" : "bookCategory", "$id" : 52}|50|{ "$ref" : "publisher", "$id" : 48}|46|1|1|0|0||1
+BK37|T2C1|T2C1|TIME TO COLOUR PART I|{ "$ref" : "bookCategory", "$id" : 52}|50|{ "$ref" : "publisher", "$id" : 48}|46|1|1|0|0||1
+BK38|T2C2|T2C2|TIME TO COLOUR PART II|{ "$ref" : "bookCategory", "$id" : 52}|50|{ "$ref" : "publisher", "$id" : 48}|46|1|1|0|0||1
+BK39|T2C3|T2C3|TIME TO COLOUR PART III|{ "$ref" : "bookCategory", "$id" : 52}|50|{ "$ref" : "publisher", "$id" : 48}|46|1|1|0|0||1
+BK40|T2C4|T2C4|TIME TO COLOUR PART IV|{ "$ref" : "bookCategory", "$id" : 52}|50|{ "$ref" : "publisher", "$id" : 48}|46|1|1|0|0||1
+BK41|T2C5|T2C5|TIME TO COLOUR PART V|{ "$ref" : "bookCategory", "$id" : 52}|50|{ "$ref" : "publisher", "$id" : 48}|46|1|1|0|0||1
+BK374|VP1|VP1|VASUNDARA HINDI PADAMALA I|{ "$ref" : "bookCategory", "$id" : 51}|61|{ "$ref" : "publisher", "$id" : 55}|46|1|1|0|0||1
+BK375|VP2|VP2|VASUNDARA HINDI PADAMALA II|{ "$ref" : "bookCategory", "$id" : 51}|61|{ "$ref" : "publisher", "$id" : 55}|46|1|1|0|0||1
+BK376|VP3|VP3|VASUNDARA HINDI PADAMALA III|{ "$ref" : "bookCategory", "$id" : 51}|61|{ "$ref" : "publisher", "$id" : 55}|46|1|1|0|0||1
+BK377|VP4|VP4|VASUNDARA HINDI PADAMALA IV|{ "$ref" : "bookCategory", "$id" : 51}|61|{ "$ref" : "publisher", "$id" : 55}|46|1|1|0|0||1
+BK378|VP5|VP5|VASUNDARA HINDI PADAMALA V|{ "$ref" : "bookCategory", "$id" : 51}|61|{ "$ref" : "publisher", "$id" : 55}|46|1|1|0|0||1
+BK379|VP6|VP6|VASUNDARA HINDI PADAMALA VI|{ "$ref" : "bookCategory", "$id" : 51}|61|{ "$ref" : "publisher", "$id" : 55}|46|1|1|0|0||1
+BK380|VP7|VP7|VASUNDARA HINDI PADAMALA VII|{ "$ref" : "bookCategory", "$id" : 51}|61|{ "$ref" : "publisher", "$id" : 55}|46|1|1|0|0||1
+BK381|VP8|VP8|VASUNDARA HINDI PADAMALA VIII|{ "$ref" : "bookCategory", "$id" : 51}|61|{ "$ref" : "publisher", "$id" : 55}|46|1|1|0|0||1
+BK478|VWB1|VWB1|VASUNDRA WORK BOOK I|{ "$ref" : "bookCategory", "$id" : 51}|44|{ "$ref" : "publisher", "$id" : 55}|46|1|1|0|0||1
+BK303|WAW1|WAW1|WE AND WORLD VI|{ "$ref" : "bookCategory", "$id" : 51}|50|{ "$ref" : "publisher", "$id" : 55}|46|1|1|0|0||1
+BK505|WAW6|WAW6|WE AND WORLD VI|{ "$ref" : "bookCategory", "$id" : 51}|61|{ "$ref" : "publisher", "$id" : 55}|46|1|1|0|0||1
+BK304|WAW7|WAW7|WE AND WORLD VII|{ "$ref" : "bookCategory", "$id" : 51}|50|{ "$ref" : "publisher", "$id" : 55}|46|1|1|0|0||1
+BK241|WW1|WW1|WRITE WELL I|{ "$ref" : "bookCategory", "$id" : 49}|50|{ "$ref" : "publisher", "$id" : 60}|46|1|1|0|0||1
+BK242|WW2|WW2|WRITE WELL II|{ "$ref" : "bookCategory", "$id" : 49}|50|{ "$ref" : "publisher", "$id" : 48}|46|1|1|0|0||1
+BK243|WW3|WW3|WRITE WELL III|{ "$ref" : "bookCategory", "$id" : 51}|50|{ "$ref" : "publisher", "$id" : 48}|46|1|1|0|0||1
+BK244|WW4|WW4|WRITE WELL IV|{ "$ref" : "bookCategory", "$id" : 51}|50|{ "$ref" : "publisher", "$id" : 48}|46|1|1|0|0||1
+BK245|WW5|WW5|WRITE WELL V|{ "$ref" : "bookCategory", "$id" : 49}|50|{ "$ref" : "publisher", "$id" : 48}|46|1|1|0|0||1
+BK246|WW6|WW6|WRITE WELL VI|{ "$ref" : "bookCategory", "$id" : 49}|50|{ "$ref" : "publisher", "$id" : 48}|46|1|1|0|0||1
+BK247|WW7|WW7|WRITE WELL VII|{ "$ref" : "bookCategory", "$id" : 49}|50|{ "$ref" : "publisher", "$id" : 48}|46|1|1|0|0||1
+BK248|WW8|WW8|WRITE WELL VIII|{ "$ref" : "bookCategory", "$id" : 49}|50|{ "$ref" : "publisher", "$id" : 48}|46|1|1|0|0||1

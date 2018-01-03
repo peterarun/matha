@@ -34,25 +34,11 @@
 	    <version>5.0.2.RELEASE</version>
 	</dependency>
 	
-	<!-- https://mvnrepository.com/artifact/org.springframework/spring-context -->
-	<dependency>
-	    <groupId>org.springframework</groupId>
-	    <artifactId>spring-context</artifactId>
-	    <version>5.0.2.RELEASE</version>
-	</dependency>
-
 	<!-- https://mvnrepository.com/artifact/org.mongodb/mongo-java-driver -->
 	<dependency>
 	    <groupId>org.mongodb</groupId>
 	    <artifactId>mongo-java-driver</artifactId>
 	    <version>3.4.3</version>
-	</dependency>
-
-	<!-- https://mvnrepository.com/artifact/org.springframework.data/spring-data-commons -->
-	<dependency>
-	    <groupId>org.springframework.data</groupId>
-	    <artifactId>spring-data-commons</artifactId>
-	    <version>2.0.2.RELEASE</version>
 	</dependency>
 
 	<!-- https://mvnrepository.com/artifact/org.springframework.data/spring-data-mongodb -->
@@ -62,5 +48,26 @@
 	    <version>2.0.2.RELEASE</version>
 	</dependency>
   
+	  <!-- https://mvnrepository.com/artifact/org.springframework.data/spring-data-jpa -->
+	<dependency>
+	    <groupId>org.springframework.data</groupId>
+	    <artifactId>spring-data-jpa</artifactId>
+	    <version>2.0.2.RELEASE</version>
+	</dependency>
+	  
+	<!-- https://mvnrepository.com/artifact/org.controlsfx/controlsfx -->
+	<dependency>
+	    <groupId>org.controlsfx</groupId>
+	    <artifactId>controlsfx</artifactId>
+	    <version>8.40.14</version>
+	</dependency>
+
+	<!-- https://mvnrepository.com/artifact/com.fasterxml.jackson.core/jackson-core -->
+	<dependency>
+	    <groupId>com.fasterxml.jackson.core</groupId>
+	    <artifactId>jackson-core</artifactId>
+	    <version>2.9.3</version>
+	</dependency>
+
   </dependencies>
 </project>
