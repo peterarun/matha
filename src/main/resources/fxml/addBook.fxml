@@ -1,0 +1,41 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.scene.text.*?>
+<?import javafx.scene.control.*?>
+<?import java.lang.*?>
+<?import javafx.scene.layout.*?>
+<?import javafx.scene.layout.AnchorPane?>
+
+<AnchorPane prefHeight="361.0" prefWidth="450.0" xmlns="http://javafx.com/javafx/8" xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.matha.controller.AddBookController">
+   <children>
+      <SplitPane dividerPositions="0.19498607242339833" orientation="VERTICAL" prefHeight="361.0" prefWidth="450.0">
+        <items>
+          <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="100.0" prefWidth="160.0">
+               <children>
+                  <Label alignment="CENTER" contentDisplay="CENTER" layoutX="174.0" layoutY="16.0" text="Add Book" textAlignment="CENTER">
+                     <font>
+                        <Font name="Tahoma" size="24.0" />
+                     </font>
+                  </Label>
+               </children>
+            </AnchorPane>
+          <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="240.0" prefWidth="448.0">
+               <children>
+                  <Label layoutX="19.0" layoutY="29.0" text="Name" />
+                  <TextField fx:id="name" layoutX="72.0" layoutY="25.0" prefHeight="25.0" prefWidth="358.0" />
+                  <ChoiceBox fx:id="publishers" layoutX="19.0" layoutY="118.0" prefHeight="25.0" prefWidth="190.0" />
+                  <Label layoutX="19.0" layoutY="103.0" text="Publisher" />
+                  <Label layoutX="234.0" layoutY="103.0" text="Category" />
+                  <ChoiceBox fx:id="categories" layoutX="230.0" layoutY="118.0" prefHeight="25.0" prefWidth="200.0" />
+                  <Button fx:id="cancelBtn" layoutX="19.0" layoutY="159.0" mnemonicParsing="false" onAction="#handleCancel" prefHeight="25.0" prefWidth="190.0" text="Cancel" />
+                  <Button layoutX="229.0" layoutY="159.0" mnemonicParsing="false" onAction="#handleSave" prefHeight="25.0" prefWidth="200.0" text="Save" />
+                  <TextField fx:id="bookNo" layoutX="72.0" layoutY="70.0" prefHeight="25.0" prefWidth="138.0" />
+                  <Label layoutX="19.0" layoutY="73.0" text="Book No" />
+                  <Label layoutX="234.0" layoutY="73.0" text="ShortName" />
+                  <TextField fx:id="shortName" layoutX="306.0" layoutY="70.0" prefHeight="25.0" prefWidth="123.0" />
+               </children>
+            </AnchorPane>
+        </items>
+      </SplitPane>
+   </children>
+</AnchorPane>

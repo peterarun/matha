@@ -1,0 +1,150 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.scene.text.*?>
+<?import java.lang.*?>
+<?import javafx.scene.control.*?>
+<?import javafx.scene.layout.*?>
+<?import javafx.scene.layout.AnchorPane?>
+<?import javafx.scene.control.cell.PropertyValueFactory?>
+
+<Pane xmlns="http://javafx.com/javafx/8" xmlns:fx="http://javafx.com/fxml/1"
+	fx:controller="com.matha.controller.SchoolDetailsController">
+	<children>
+		<SplitPane dividerPositions="0.3417085427135678" maxHeight="-Infinity"
+			maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity"
+			orientation="VERTICAL" prefHeight="400.0" prefWidth="600.0">
+			<items>
+				<AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="100.0"
+					prefWidth="160.0">
+					<children>
+						<TextArea fx:id="address" editable="false" layoutX="10.0"
+							layoutY="60.0" prefHeight="60.0" prefWidth="370.0" />
+						<Label fx:id="schoolName" layoutX="8.0" layoutY="14.0"
+							prefHeight="35.0" prefWidth="477.0">
+							<font>
+								<Font size="24.0" />
+							</font>
+						</Label>
+						<Button layoutX="500.0" layoutY="24.0" mnemonicParsing="false"
+							prefHeight="25.0" prefWidth="85.0" text="Statement" />
+					</children>
+				</AnchorPane>
+				<AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="100.0"
+					prefWidth="160.0">
+					<children>
+						<TabPane prefHeight="259.0" prefWidth="600.0"
+							tabClosingPolicy="UNAVAILABLE">
+							<tabs>
+								<Tab closable="false" text="Orders">
+									<content>
+										<AnchorPane minHeight="0.0" minWidth="0.0"
+											prefHeight="180.0" prefWidth="200.0">
+											<children>
+												<TableView fx:id="txnData" prefHeight="230.0"
+													prefWidth="500.0">
+													<columns>
+														<TableColumn prefWidth="99.0" text="Order No.">
+															<cellValueFactory>
+																<PropertyValueFactory property="id" />
+															</cellValueFactory>
+														</TableColumn>
+														<TableColumn minWidth="0.0" prefWidth="83.0"
+															text="Date">
+															<cellValueFactory>
+																<PropertyValueFactory property="orderDate" />
+															</cellValueFactory>
+														</TableColumn>
+														<TableColumn prefWidth="235.0" text="Book Count">
+															<cellValueFactory>
+																<PropertyValueFactory property="orderCount" />
+															</cellValueFactory>
+														</TableColumn>
+													</columns>
+												</TableView>
+												<Button layoutX="520.0" layoutY="30.0"
+													mnemonicParsing="false" onAction="#addOrder" prefHeight="25.0"
+													prefWidth="60.0" text="Add" />
+												<Button layoutX="520.0" layoutY="80.0"
+													mnemonicParsing="false" onAction="#editOrder" prefHeight="25.0"
+													prefWidth="60.0" text="Edit" />
+												<Button layoutX="520.0" layoutY="130.0"
+													mnemonicParsing="false" onAction="#deleteOrder" prefHeight="25.0"
+													prefWidth="60.0" text="Delete" />
+											</children>
+										</AnchorPane>
+									</content>
+								</Tab>
+								<Tab closable="false" text="Bills">
+									<content>
+										<AnchorPane minHeight="0.0" minWidth="0.0"
+											prefHeight="180.0" prefWidth="200.0">
+											<children>
+												<TableView prefHeight="230.0" prefWidth="500.0">
+													<columns>
+														<TableColumn prefWidth="150.0" text="Bill No." />
+														<TableColumn prefWidth="200.0" text="Date" />
+														<TableColumn prefWidth="150.0" text="Despatch Per" />
+													</columns>
+												</TableView>
+												<Button layoutX="523.0" layoutY="36.0"
+													mnemonicParsing="false" onAction="#addBill" text="Add" />
+												<Button layoutX="523.0" layoutY="90.0"
+													mnemonicParsing="false" onAction="#editBill" text="Edit" />
+												<Button layoutX="524.0" layoutY="149.0"
+													mnemonicParsing="false" onAction="#deleteBill" text="Delete" />
+											</children>
+										</AnchorPane>
+									</content>
+								</Tab>
+								<Tab text="Credit Note">
+									<content>
+										<AnchorPane minHeight="0.0" minWidth="0.0"
+											prefHeight="180.0" prefWidth="200.0">
+											<children>
+												<TableView prefHeight="230.0" prefWidth="500.0">
+													<columns>
+														<TableColumn prefWidth="150.0" text="Note No." />
+														<TableColumn prefWidth="200.0" text="Date" />
+													</columns>
+												</TableView>
+												<Button layoutX="520.0" layoutY="39.0"
+													mnemonicParsing="false" onAction="#addCredit" text="Add" />
+												<Button layoutX="520.0" layoutY="90.0"
+													mnemonicParsing="false" onAction="#editCredit" text="Edit" />
+												<Button layoutX="520.0" layoutY="142.0"
+													mnemonicParsing="false" onAction="#deleteCredit" text="Delete" />
+											</children>
+										</AnchorPane>
+									</content>
+								</Tab>
+								<Tab text="Payments">
+									<content>
+										<AnchorPane minHeight="0.0" minWidth="0.0"
+											prefHeight="180.0" prefWidth="200.0">
+											<children>
+												<TableView prefHeight="230.0" prefWidth="500.0">
+													<columns>
+														<TableColumn prefWidth="200.0" text="Date" />
+														<TableColumn prefWidth="130.0" text="Credit" />
+														<TableColumn prefWidth="130.0" text="Debit" />
+														<TableColumn prefWidth="135.0" text="Balance" />
+													</columns>
+												</TableView>
+												<Button layoutX="518.0" layoutY="38.0"
+													mnemonicParsing="false" onAction="#addPayment" text="Add" />
+												<Button layoutX="518.0" layoutY="90.0"
+													mnemonicParsing="false" onAction="#editPayment" text="Edit" />
+												<Button layoutX="518.0" layoutY="146.0"
+													mnemonicParsing="false" onAction="#deletePayment" text="Delete" />
+											</children>
+										</AnchorPane>
+									</content>
+								</Tab>
+							</tabs>
+						</TabPane>
+					</children>
+				</AnchorPane>
+			</items>
+		</SplitPane>
+	</children>
+</Pane>
