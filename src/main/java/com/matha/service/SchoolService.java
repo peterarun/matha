@@ -162,7 +162,6 @@ public class SchoolService {
 		}
 		saveOrderItems(orderItems);
 		pur.setOrderItem(new HashSet<>(orderItems));
-		entityManager.refresh(pur.getOrderItem());
 		purchaseRepoitory.save(pur);
 
 	}
