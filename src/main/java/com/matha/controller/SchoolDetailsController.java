@@ -173,7 +173,7 @@ public class SchoolDetailsController {
 	}
 
 	private void prepareAndShowStage(ActionEvent e, Scene childScene) {
-		Stage stage = LoadUtils.loadChildStage(e, addOrderScene);
+		Stage stage = LoadUtils.loadChildStage(e, childScene);
 		stage.setOnHiding(new EventHandler<WindowEvent>() {
 			@Override
 			public void handle(final WindowEvent event) {

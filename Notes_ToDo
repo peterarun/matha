@@ -1,5 +1,5 @@
 Book - Serial Number generation/update - TBD. BK<NUM> is the format. 
-
+BookPurchase - new table created from Purchase with mapping to Publisher instead of Supplier
 
 Open Issues:
 State not populating in Edit School

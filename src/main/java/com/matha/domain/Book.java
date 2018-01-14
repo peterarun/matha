@@ -14,7 +14,7 @@ import org.hibernate.annotations.GenericGenerator;
 @Table(name = "Book")
 public class Book {
 
-	@Id
+//	@Id
 	@Column(name = "SerialId")
 	@GenericGenerator(name = "kaugen", strategy = "increment")
 	@GeneratedValue(generator = "kaugen")
@@ -23,7 +23,9 @@ public class Book {
 	@Column(name = "Bname")
 	private String name;
 
-	// @Id
+	@Id
+	@GenericGenerator(name = "kaugen", strategy = "guid")
+	@GeneratedValue(generator = "kaugen")
 	@Column(name = "Bookno")
 	private String bookNum;
 

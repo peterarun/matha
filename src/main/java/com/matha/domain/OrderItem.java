@@ -30,6 +30,10 @@ public class OrderItem implements Serializable {
 	@JoinColumn(name = "SerialId")
 	private Order order;
 
+	@ManyToOne
+	@JoinColumn(name = "PurchaseId")
+	private Purchase purchase;
+	
 	@OneToOne
 	@JoinColumn(name = "BkNo")
 	private Book book;
@@ -53,6 +57,11 @@ public class OrderItem implements Serializable {
 		return book.getPublisher().getName();
 	}
 	
+	public String getSchoolName()
+	{
+		return this.order.getSchool().getName();
+	}
+	
 	public Integer getId() {
 		return id;
 	}
@@ -67,6 +76,14 @@ public class OrderItem implements Serializable {
 
 	public void setOrder(Order order) {
 		this.order = order;
+	}
+
+	public Purchase getPurchase() {
+		return purchase;
+	}
+
+	public void setPurchase(Purchase purchase) {
+		this.purchase = purchase;
 	}
 
 	public Book getBook() {
@@ -99,6 +116,11 @@ public class OrderItem implements Serializable {
 
 	public void setSerialNum(int serialNum) {
 		this.serialNum = serialNum;
+	}
+	
+	public String getOrderId()
+	{
+		return this.order.getId();
 	}
 
 	@Override

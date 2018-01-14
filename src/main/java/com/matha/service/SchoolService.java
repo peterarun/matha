@@ -1,6 +1,11 @@
 package com.matha.service;
 
+import java.util.HashSet;
 import java.util.List;
+
+import javax.persistence.EntityManager;
+import javax.persistence.PersistenceContext;
+import javax.transaction.Transactional;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -11,6 +16,7 @@ import com.matha.domain.District;
 import com.matha.domain.Order;
 import com.matha.domain.OrderItem;
 import com.matha.domain.Publisher;
+import com.matha.domain.Purchase;
 import com.matha.domain.School;
 import com.matha.domain.State;
 import com.matha.repository.BookRepository;
@@ -19,11 +25,15 @@ import com.matha.repository.DistrictRepository;
 import com.matha.repository.OrderItemRepository;
 import com.matha.repository.OrderRepository;
 import com.matha.repository.PublisherRepository;
+import com.matha.repository.PurchaseRepository;
 import com.matha.repository.SchoolRepository;
 import com.matha.repository.StateRepository;
 
 @Service
 public class SchoolService {
+
+	@PersistenceContext
+	private EntityManager entityManager;
 
 	@Autowired
 	SchoolRepository schoolRepoitory;
@@ -48,6 +58,9 @@ public class SchoolService {
 
 	@Autowired
 	private CategoryRepository categoryRepository;
+
+	@Autowired
+	private PurchaseRepository purchaseRepoitory;
 
 	public List<Publisher> fetchAllPublishers() {
 		return publisherRepository.findAll();
@@ -114,6 +127,10 @@ public class SchoolService {
 		return orderItemRepository.findAll();
 	}
 
+	public List<OrderItem> fetchOrderItemsForPublisher(Publisher pub) {
+		return orderItemRepository.fetchOrdersForPublisher(pub);
+	}
+
 	public List<Order> fetchOrders() {
 		return orderRepository.findAll();
 	}
@@ -133,6 +150,25 @@ public class SchoolService {
 
 	public void deleteSchool(School school) {
 		schoolRepoitory.delete(school);
+	}
+
+	@Transactional
+	public void savePurchase(Purchase pur, List<OrderItem> orderItems) {
+
+		purchaseRepoitory.save(pur);
+
+		for (OrderItem orderItem : orderItems) {
+			orderItem.setPurchase(pur);
+		}
+		saveOrderItems(orderItems);
+		pur.setOrderItem(new HashSet<>(orderItems));
+		entityManager.refresh(pur.getOrderItem());
+		purchaseRepoitory.save(pur);
+
+	}
+
+	public List<Purchase> fetchPurchasesForPublisher(Publisher pub) {
+		return purchaseRepoitory.findAllByPublisher(pub);
 	}
 
 }
