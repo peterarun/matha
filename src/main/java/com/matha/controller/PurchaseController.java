@@ -17,18 +17,22 @@ import com.matha.service.SchoolService;
 import com.matha.util.Converters;
 import com.matha.util.LoadUtils;
 import com.matha.util.UtilConstants;
+import com.matha.util.Utils;
 
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
+import javafx.scene.Node;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
 import javafx.scene.control.ChoiceBox;
+import javafx.scene.control.Label;
 import javafx.scene.control.SelectionMode;
 import javafx.scene.control.TableView;
 import javafx.stage.Stage;
+import javafx.stage.Window;
 
 @Component
 public class PurchaseController {
@@ -41,7 +45,7 @@ public class PurchaseController {
 
 	@FXML
 	private TableView<OrderItem> orderData;
-	
+
 	@FXML
 	private TableView<Purchase> purchaseData;
 
@@ -67,9 +71,9 @@ public class PurchaseController {
 		Publisher pub = publishers.getSelectionModel().getSelectedItem();
 		List<OrderItem> orderItems = schoolService.fetchOrderItemsForPublisher(pub);
 		orderData.setItems(FXCollections.observableList(orderItems));
-		
+
 		List<Purchase> purchases = schoolService.fetchPurchasesForPublisher(pub);
-		purchaseData.setItems(FXCollections.observableList(purchases));	
+		purchaseData.setItems(FXCollections.observableList(purchases));
 	}
 
 	@FXML
@@ -126,7 +130,7 @@ public class PurchaseController {
 		try {
 
 			Purchase purchase = this.purchaseData.getSelectionModel().getSelectedItem();
-								
+
 			FXMLLoader createOrderLoader = LoadUtils.loadFxml(this, UtilConstants.createPurchaseFxmlFile);
 			Parent addOrderRoot = createOrderLoader.load();
 			CreatePurchaseController ctrl = createOrderLoader.getController();
@@ -137,17 +141,40 @@ public class PurchaseController {
 		} catch (Exception e) {
 			e.printStackTrace();
 		}
-		
+
 	}
 
 	@FXML
-	public void loadPurchases()
-	{
+	public void loadPurchases() {
 		Publisher pub = publishers.getSelectionModel().getSelectedItem();
 		List<Purchase> purchases = schoolService.fetchPurchasesForPublisher(pub);
-		purchaseData.setItems(FXCollections.observableList(purchases));		
+		purchaseData.setItems(FXCollections.observableList(purchases));
 	}
-	
+
+	@FXML
+	public void printOrder(ActionEvent ev) {
+		try {
+
+			FXMLLoader createOrderLoader = LoadUtils.loadFxml(this, UtilConstants.printOrderFxmlFile);
+			Parent addOrderRoot;
+
+			addOrderRoot = createOrderLoader.load();
+			PrintOrderController ctrl = createOrderLoader.getController();
+			HashMap<String, Book> bookMap = new HashMap<>();
+
+			OrderItem orderItem = orderData.getSelectionModel().getSelectedItem();
+			Publisher pub = publishers.getSelectionModel().getSelectedItem();
+			ctrl.initData(orderItem, pub);			
+
+			Scene parentScene = ((Node) ev.getSource()).getScene();
+			Window parentWindow = parentScene.getWindow();
+			
+			Utils.print(addOrderRoot, parentWindow, new Label());
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+	}
+
 	private void prepareAndShowStage(ActionEvent e, Scene childScene) {
 		Stage stage = LoadUtils.loadChildStage(e, childScene);
 		stage.show();

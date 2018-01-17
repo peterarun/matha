@@ -41,4 +41,9 @@ public class Publisher {
 		return builder.toString();
 	}
 
+	public String getAddress() {
+
+		return name;
+	}
+
 }

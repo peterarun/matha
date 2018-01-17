@@ -32,65 +32,66 @@
 									<children>
 										<TableView fx:id="orderData" prefHeight="407.0" prefWidth="659.0">
 											<columns>
-												<TableColumn prefWidth="129.0" text="Order Num">
+												<TableColumn prefWidth="193.0" text="Order Num">
 													<cellValueFactory>
 														<PropertyValueFactory property="orderId" />
 													</cellValueFactory>
 												</TableColumn>
-												<TableColumn prefWidth="248.0" text="School">
-													<cellValueFactory>
-														<PropertyValueFactory property="schoolName" />
-													</cellValueFactory>
-												</TableColumn>												
-												<TableColumn prefWidth="114.0" text="Book">
+												<TableColumn prefWidth="336.0" text="Book">
 													<cellValueFactory>
 														<PropertyValueFactory property="bookName" />
 													</cellValueFactory>
-												</TableColumn>												
+												</TableColumn>
+												<TableColumn prefWidth="129.0" text="Count">
+													<cellValueFactory>
+														<PropertyValueFactory property="count" />
+													</cellValueFactory>												
+												</TableColumn>
 											</columns>
 										</TableView>
-										<Button layoutX="706.0" layoutY="64.0" mnemonicParsing="false" onAction="#editOrder" text="Edit Order" />
-										<Button layoutX="675.0" layoutY="112.0" mnemonicParsing="false" onAction="#createPurchase" text="Create Purchase" />
+										<Button layoutX="675.0" layoutY="75.0" mnemonicParsing="false" onAction="#editOrder" text="Edit Order" />
+										<Button layoutX="675.0" layoutY="112.0" mnemonicParsing="false" onAction="#createPurchase" text="Create Invoice" />
+										<Button layoutX="675.0" layoutY="155.0" mnemonicParsing="false" onAction="#printOrder" text="Print Order" />
 									</children>
 								</AnchorPane>
 							</content>
 						</Tab>
-						<Tab text="Purchases">
+						<Tab text="Invoices">
 							<content>
 								<AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="180.0" prefWidth="200.0">
 									<children>
 										<TableView fx:id="purchaseData" layoutY="1.0" prefHeight="405.0" prefWidth="674.0">
 											<columns>
-												<TableColumn prefWidth="124.0" text="Purchase No">
+												<TableColumn prefWidth="124.0" text="Invoice No">
 													<cellValueFactory>
 														<PropertyValueFactory property="id" />
-													</cellValueFactory>												
+													</cellValueFactory>
 												</TableColumn>
 												<TableColumn prefWidth="107.0" text="Net Amount">
 													<cellValueFactory>
 														<PropertyValueFactory property="netAmount" />
-													</cellValueFactory>												
+													</cellValueFactory>
 												</TableColumn>
 												<TableColumn prefWidth="95.0" text="Paid">
 													<cellValueFactory>
 														<PropertyValueFactory property="paidAmount" />
-													</cellValueFactory>												
+													</cellValueFactory>
 												</TableColumn>
 												<TableColumn prefWidth="109.0" text="Balance">
 													<cellValueFactory>
 														<PropertyValueFactory property="amountToPay" />
-													</cellValueFactory>																																				
+													</cellValueFactory>
 												</TableColumn>
 												<TableColumn prefWidth="103.0" text="Delivered">
 													<cellValueFactory>
 														<PropertyValueFactory property="deliveryDate" />
-													</cellValueFactory>																								
+													</cellValueFactory>
 												</TableColumn>
-                                    			<TableColumn prefWidth="114.0" text="GR No." >
+												<TableColumn prefWidth="114.0" text="GR No.">
 													<cellValueFactory>
 														<PropertyValueFactory property="grNo" />
-													</cellValueFactory>                                    			
-                                    			</TableColumn>
+													</cellValueFactory>
+												</TableColumn>
 											</columns>
 										</TableView>
 										<Button layoutX="691.0" layoutY="83.0" mnemonicParsing="false" onAction="#editPurchase" text="Edit Purchase" />
