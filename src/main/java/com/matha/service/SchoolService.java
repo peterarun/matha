@@ -1,5 +1,6 @@
 package com.matha.service;
 
+import java.time.LocalDate;
 import java.util.HashSet;
 import java.util.List;
 
@@ -12,6 +13,8 @@ import org.springframework.stereotype.Service;
 
 import com.matha.domain.Book;
 import com.matha.domain.BookCategory;
+import com.matha.domain.CashBook;
+import com.matha.domain.CashHead;
 import com.matha.domain.District;
 import com.matha.domain.Order;
 import com.matha.domain.OrderItem;
@@ -20,6 +23,8 @@ import com.matha.domain.Purchase;
 import com.matha.domain.School;
 import com.matha.domain.State;
 import com.matha.repository.BookRepository;
+import com.matha.repository.CashBookRepository;
+import com.matha.repository.CashHeadRepository;
 import com.matha.repository.CategoryRepository;
 import com.matha.repository.DistrictRepository;
 import com.matha.repository.OrderItemRepository;
@@ -61,6 +66,12 @@ public class SchoolService {
 
 	@Autowired
 	private PurchaseRepository purchaseRepoitory;
+
+	@Autowired
+	private CashBookRepository cashBookRepository;
+
+	@Autowired
+	private CashHeadRepository cashHeadRepository;
 
 	public List<Publisher> fetchAllPublishers() {
 		return publisherRepository.findAll();
@@ -168,6 +179,31 @@ public class SchoolService {
 
 	public List<Purchase> fetchPurchasesForPublisher(Publisher pub) {
 		return purchaseRepoitory.findAllByPublisher(pub);
+	}
+
+	public void saveCashBook(CashBook item) {
+		cashBookRepository.save(item);
+
+	}
+
+	public List<CashBook> getAllTransactions() {
+		return cashBookRepository.findAllByOrderByTxnDateDesc();
+	}
+
+	public void deleteTransaction(CashBook cashHead) {
+		cashBookRepository.delete(cashHead);
+	}
+
+	public void saveCashHead(String cashHeadStr) {
+		CashHead cashHead = new CashHead();
+		cashHead.setCashHeadName(cashHeadStr);
+		cashHeadRepository.save(cashHead);
+	}
+
+	public List<CashBook> searchTransactions(LocalDate fromDate, LocalDate toDate, String entryId, String entryDesc,
+			CashHead cashHead) {
+		// TODO Auto-generated method stub
+		return null;
 	}
 
 }
