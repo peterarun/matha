@@ -10,6 +10,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
 import com.matha.domain.Book;
+import com.matha.domain.Order;
 import com.matha.domain.OrderItem;
 import com.matha.domain.Publisher;
 import com.matha.domain.Purchase;
@@ -24,13 +25,18 @@ import javafx.collections.ObservableList;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
+import javafx.scene.Group;
 import javafx.scene.Node;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
 import javafx.scene.control.ChoiceBox;
 import javafx.scene.control.Label;
+import javafx.scene.control.Pagination;
 import javafx.scene.control.SelectionMode;
 import javafx.scene.control.TableView;
+import javafx.scene.control.TreeItem;
+import javafx.scene.control.TreeTableView;
+import javafx.scene.layout.BorderPane;
 import javafx.stage.Stage;
 import javafx.stage.Window;
 
@@ -50,6 +56,12 @@ public class PurchaseController {
 	private TableView<Purchase> purchaseData;
 
 	@FXML
+	private Pagination orderPaginator;
+
+	@FXML
+	private TreeTableView<Order> orders;
+
+	@FXML
 	protected void initialize() {
 		orderData.getSelectionModel().setSelectionMode(SelectionMode.MULTIPLE);
 
@@ -58,12 +70,34 @@ public class PurchaseController {
 		publishers.getSelectionModel().selectFirst();
 		publishers.setConverter(Converters.getPublisherConverter());
 
-		Publisher pub = publishers.getSelectionModel().getSelectedItem();
-		List<OrderItem> orderItems = schoolService.fetchOrderItemsForPublisher(pub);
-		orderData.setItems(FXCollections.observableList(orderItems));
+		// Publisher pub = publishers.getSelectionModel().getSelectedItem();
+		// List<OrderItem> orderItems = schoolService.fetchOrderItemsForPublisher(pub);
+		// orderData.setItems(FXCollections.observableList(orderItems));
+		//
+		// List<Purchase> purchases = schoolService.fetchPurchasesForPublisher(pub);
+		// purchaseData.setItems(FXCollections.observableList(purchases));
+	}
 
-		List<Purchase> purchases = schoolService.fetchPurchasesForPublisher(pub);
-		purchaseData.setItems(FXCollections.observableList(purchases));
+	private Node createPage(int pageIndex) {
+
+		int rowsPerPage = 10;
+		// int fromIndex = pageIndex * rowsPerPage;
+		// int toIndex = Math.min(fromIndex + rowsPerPage, data.size());
+		// orders.setItems(FXCollections.observableArrayList(data.subList(fromIndex,
+		// toIndex)));
+
+		Publisher pub = publishers.getSelectionModel().getSelectedItem();
+		List<Order> orderList = schoolService.fetchOrders(pub, pageIndex, rowsPerPage).getContent();
+
+		orders.setShowRoot(false);
+		TreeItem<Order> root = new TreeItem<Order>();
+		root.setExpanded(true);
+		for (Order o : orderList) {
+			root.getChildren().add(new TreeItem<Order>(o));
+		}
+
+		orders.setRoot(root);
+		return new BorderPane(orders);
 	}
 
 	@FXML
@@ -164,11 +198,11 @@ public class PurchaseController {
 
 			OrderItem orderItem = orderData.getSelectionModel().getSelectedItem();
 			Publisher pub = publishers.getSelectionModel().getSelectedItem();
-			ctrl.initData(orderItem, pub);			
+			ctrl.initData(orderItem, pub);
 
 			Scene parentScene = ((Node) ev.getSource()).getScene();
 			Window parentWindow = parentScene.getWindow();
-			
+
 			Utils.print(addOrderRoot, parentWindow, new Label());
 		} catch (Exception e) {
 			e.printStackTrace();

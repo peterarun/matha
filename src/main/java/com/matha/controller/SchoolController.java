@@ -35,6 +35,8 @@ import javafx.scene.control.SplitPane;
 import javafx.scene.control.TableView;
 import javafx.scene.control.TextField;
 import javafx.scene.input.KeyEvent;
+import javafx.scene.input.MouseButton;
+import javafx.scene.input.MouseEvent;
 import javafx.stage.Stage;
 import javafx.stage.WindowEvent;
 
@@ -78,6 +80,40 @@ public class SchoolController {
 		district.setConverter(Converters.getDistrictConverter());
 		states.setConverter(Converters.getStateConverter());
 		this.initData();
+		
+		tableView.setOnMouseClicked(new EventHandler<MouseEvent>() {
+		    @Override
+		    public void handle(MouseEvent mouseEvent) {
+		        if(mouseEvent.getButton().equals(MouseButton.PRIMARY)){
+		            if(mouseEvent.getClickCount() == 2){
+		                System.out.println("Double clicked");
+		                openSchool(mouseEvent);
+		            }
+		        }
+		    }
+
+			private void openSchool(MouseEvent mouseEvent) {
+
+				try
+				{
+				FXMLLoader fxmlLoader = LoadUtils.loadFxml(this, "/fxml/SchoolDetails.fxml");
+				root = fxmlLoader.load();
+				School school = tableView.getSelectionModel().getSelectedItem();
+				SchoolDetailsController ctrl = fxmlLoader.getController();
+				ctrl.initData(school);
+
+				SplitPane aPane = (SplitPane) ((Node) mouseEvent.getSource()).getParent().getParent().getParent();
+				Scene scene = new Scene(root, aPane.getWidth(), aPane.getHeight());
+				Stage stage = LoadUtils.loadChildStage(mouseEvent, scene);
+				stage.show();
+				}
+				catch(Exception e)
+				{
+					e.printStackTrace();
+				}
+				
+			}
+		});
 	}
 
 	private void initData() {

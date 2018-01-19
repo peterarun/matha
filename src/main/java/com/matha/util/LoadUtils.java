@@ -2,7 +2,7 @@ package com.matha.util;
 
 import com.matha.sales.SalesApplication;
 
-import javafx.event.ActionEvent;
+import javafx.event.Event;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Node;
 import javafx.scene.Scene;
@@ -26,7 +26,7 @@ public class LoadUtils {
 		return fxmlLoader;
 	}
 
-	public static Stage loadChildStage(ActionEvent e, Scene childScene) {
+	public static Stage loadChildStage(Event e, Scene childScene) {
 		Scene parentScene = ((Node) e.getSource()).getScene();
 		Window parentWindow = parentScene.getWindow();
 		Stage stage = loadPopupScene(parentWindow, childScene);

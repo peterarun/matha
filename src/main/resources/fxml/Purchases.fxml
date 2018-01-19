@@ -30,28 +30,16 @@
 							<content>
 								<AnchorPane prefHeight="200.0" prefWidth="200.0">
 									<children>
-										<TableView fx:id="orderData" prefHeight="407.0" prefWidth="659.0">
-											<columns>
-												<TableColumn prefWidth="193.0" text="Order Num">
-													<cellValueFactory>
-														<PropertyValueFactory property="orderId" />
-													</cellValueFactory>
-												</TableColumn>
-												<TableColumn prefWidth="336.0" text="Book">
-													<cellValueFactory>
-														<PropertyValueFactory property="bookName" />
-													</cellValueFactory>
-												</TableColumn>
-												<TableColumn prefWidth="129.0" text="Count">
-													<cellValueFactory>
-														<PropertyValueFactory property="count" />
-													</cellValueFactory>												
-												</TableColumn>
-											</columns>
-										</TableView>
 										<Button layoutX="675.0" layoutY="75.0" mnemonicParsing="false" onAction="#editOrder" text="Edit Order" />
 										<Button layoutX="675.0" layoutY="112.0" mnemonicParsing="false" onAction="#createPurchase" text="Create Invoice" />
 										<Button layoutX="675.0" layoutY="155.0" mnemonicParsing="false" onAction="#printOrder" text="Print Order" />
+                              <Pagination fx:id="orderPaginator" maxPageIndicatorCount="5" prefHeight="405.0" prefWidth="666.0" />
+                              <TreeTableView fx:id="orderTreeTable" layoutX="-1.0" prefHeight="356.0" prefWidth="657.0">
+                                <columns>
+                                  <TreeTableColumn prefWidth="121.0" text="Order Num" />
+                                  <TreeTableColumn prefWidth="322.0" text="School" />
+                                </columns>
+                              </TreeTableView>
 									</children>
 								</AnchorPane>
 							</content>

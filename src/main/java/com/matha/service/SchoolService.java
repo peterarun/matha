@@ -9,6 +9,8 @@ import javax.persistence.PersistenceContext;
 import javax.transaction.Transactional;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
 import org.springframework.stereotype.Service;
 
 import com.matha.domain.Book;
@@ -206,4 +208,9 @@ public class SchoolService {
 		return null;
 	}
 
+	public Page<Order> fetchOrders(Publisher pub, int page, int size) {
+		PageRequest pageable = new PageRequest(page, size);		
+		Page<Order> orderList = orderRepository.fetchOrdersForPublisher(pub, pageable);
+		return orderList;
+	}
 }

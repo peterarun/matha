@@ -48,7 +48,13 @@ public class AddOrderController {
 
 	@FXML
 	private DatePicker orderDate;
+	
+	@FXML
+	private DatePicker despatchDate;
 
+	@FXML
+	private TextField desLocation;
+	
 	@FXML
 	private TableView<OrderItem> addedBooks;
 
@@ -62,7 +68,7 @@ public class AddOrderController {
 		System.out.println("initData");
 		this.school = school;
 		this.bookMap = bookMap;
-		this.orderDate.setValue(LocalDate.now());
+//		this.orderDate.setValue(LocalDate.now());
 
 		List<String> items = new ArrayList<>(bookMap.keySet());
 		TextFields.bindAutoCompletion(bookText, items);
@@ -93,10 +99,13 @@ public class AddOrderController {
 		Order item = new Order();
 		item.setOrderItem(addedBooks.getItems());
 		srvc.saveOrderItems(item.getOrderItem());
-		item.setId(orderNum.getText());
+		item.setSerialNo(orderNum.getText());
 		item.setSchool(school);
 		LocalDate dt = orderDate.getValue();
 		item.setOrderDate(dt);
+		item.setDeliveryDate(despatchDate.getValue());
+		item.setDesLocation(desLocation.getText());
+		
 		srvc.saveOrder(item);
 
 		((Stage) cancelBtn.getScene().getWindow()).close();

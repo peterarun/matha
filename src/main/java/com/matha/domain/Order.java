@@ -7,6 +7,7 @@ import java.util.List;
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.FetchType;
+import javax.persistence.GeneratedValue;
 import javax.persistence.Id;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
@@ -15,6 +16,7 @@ import javax.persistence.Table;
 
 import org.hibernate.annotations.Cascade;
 import org.hibernate.annotations.CascadeType;
+import org.hibernate.annotations.GenericGenerator;
 
 @Entity
 @Table(name = "SOrder")
@@ -23,8 +25,13 @@ public class Order implements Serializable {
 	private static final long serialVersionUID = 2735264048303888145L;
 
 	@Id
+	@GenericGenerator(name="orderId", strategy="com.matha.generator.OrderIdGenerator")
+	@GeneratedValue(generator="orderId")
 	@Column(name = "SerialId")
 	private String id;
+
+	@Column(name = "SerialNo")
+	private String serialNo;
 
 	@ManyToOne
 	@JoinColumn(name = "CustId")
@@ -39,7 +46,10 @@ public class Order implements Serializable {
 	private LocalDate orderDate;
 
 	@Column(name = "DlyDate")
-	private String deliveryDate;
+	private LocalDate deliveryDate;
+	
+	@Column(name= "desLocation")
+	private String desLocation;
 
 	public Integer getOrderCount() {
 		return orderItem == null ? 0 : orderItem.size();
@@ -51,6 +61,14 @@ public class Order implements Serializable {
 
 	public void setId(String id) {
 		this.id = id;
+	}
+
+	public String getSerialNo() {
+		return serialNo;
+	}
+
+	public void setSerialNo(String serialNo) {
+		this.serialNo = serialNo;
 	}
 
 	public School getSchool() {
@@ -77,12 +95,20 @@ public class Order implements Serializable {
 		this.orderDate = dt;
 	}
 
-	public String getDeliveryDate() {
+	public LocalDate getDeliveryDate() {
 		return deliveryDate;
 	}
 
-	public void setDeliveryDate(String deliveryDate) {
+	public void setDeliveryDate(LocalDate deliveryDate) {
 		this.deliveryDate = deliveryDate;
+	}
+
+	public String getDesLocation() {
+		return desLocation;
+	}
+
+	public void setDesLocation(String desLocation) {
+		this.desLocation = desLocation;
 	}
 
 	@Override
