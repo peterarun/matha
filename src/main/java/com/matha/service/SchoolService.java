@@ -3,6 +3,7 @@ package com.matha.service;
 import java.time.LocalDate;
 import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
 
 import javax.persistence.EntityManager;
 import javax.persistence.PersistenceContext;
@@ -11,6 +12,7 @@ import javax.transaction.Transactional;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Sort.Direction;
 import org.springframework.stereotype.Service;
 
 import com.matha.domain.Book;
@@ -22,6 +24,8 @@ import com.matha.domain.Order;
 import com.matha.domain.OrderItem;
 import com.matha.domain.Publisher;
 import com.matha.domain.Purchase;
+import com.matha.domain.Sales;
+import com.matha.domain.SalesTransaction;
 import com.matha.domain.School;
 import com.matha.domain.State;
 import com.matha.repository.BookRepository;
@@ -33,6 +37,8 @@ import com.matha.repository.OrderItemRepository;
 import com.matha.repository.OrderRepository;
 import com.matha.repository.PublisherRepository;
 import com.matha.repository.PurchaseRepository;
+import com.matha.repository.SalesRepository;
+import com.matha.repository.SalesTxnRepository;
 import com.matha.repository.SchoolRepository;
 import com.matha.repository.StateRepository;
 
@@ -74,7 +80,13 @@ public class SchoolService {
 
 	@Autowired
 	private CashHeadRepository cashHeadRepository;
+	
+	@Autowired
+	private SalesRepository salesRepository;
 
+	@Autowired
+	private SalesTxnRepository salesTxnRepository;
+	
 	public List<Publisher> fetchAllPublishers() {
 		return publisherRepository.findAll();
 	}
@@ -147,6 +159,10 @@ public class SchoolService {
 	public List<Order> fetchOrders() {
 		return orderRepository.findAll();
 	}
+	
+	public List<Order> fetchOrders(List<String> orderIds) {
+		return orderRepository.findAll(orderIds);
+	}
 
 	public List<Order> fetchOrderForSchool(School school) {
 		return orderRepository.findAllBySchool(school);
@@ -209,8 +225,27 @@ public class SchoolService {
 	}
 
 	public Page<Order> fetchOrders(Publisher pub, int page, int size) {
-		PageRequest pageable = new PageRequest(page, size);		
+		PageRequest pageable = new PageRequest(page, size, Direction.DESC, "orderDate");		
 		Page<Order> orderList = orderRepository.fetchOrdersForPublisher(pub, pageable);
 		return orderList;
+	}
+	
+	@Transactional
+	public void saveSales(Sales sales)
+	{
+		Set<Order> orders = sales.getOrder();
+		for (Order order : orders)
+		{
+			List<OrderItem> orderItems = order.getOrderItem();
+			orderItemRepository.save(orderItems);
+		}
+		
+		SalesTransaction txn = sales.getSalesTxn();
+		salesTxnRepository.save(txn);
+		
+		salesRepository.save(sales);
+		
+		txn.setSale(sales);
+		salesTxnRepository.save(txn);
 	}
 }

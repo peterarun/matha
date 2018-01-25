@@ -1,5 +1,7 @@
 package com.matha.domain;
 
+import java.io.Serializable;
+
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.Id;
@@ -9,7 +11,12 @@ import javax.persistence.Table;
 
 @Entity
 @Table(name = "Districts")
-public class District {
+public class District implements Serializable{
+
+	/**
+	 * 
+	 */
+	private static final long serialVersionUID = 6647801337701991704L;
 
 	@Id
 	@Column(name = "name")

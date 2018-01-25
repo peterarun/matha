@@ -15,6 +15,7 @@ import com.matha.service.SchoolService;
 import com.matha.util.LoadUtils;
 
 import javafx.collections.FXCollections;
+import javafx.collections.ObservableList;
 import javafx.event.ActionEvent;
 import javafx.event.EventHandler;
 import javafx.fxml.FXML;
@@ -24,17 +25,20 @@ import javafx.scene.Scene;
 import javafx.scene.control.Alert;
 import javafx.scene.control.Alert.AlertType;
 import javafx.scene.control.ButtonType;
+import javafx.scene.control.DatePicker;
 import javafx.scene.control.Label;
+import javafx.scene.control.SelectionMode;
 import javafx.scene.control.TableView;
 import javafx.scene.control.TextArea;
 import javafx.scene.control.TextField;
 import javafx.stage.Stage;
 import javafx.stage.WindowEvent;
 
-@Component
-public class SchoolDetailsController {
+import static com.matha.util.UtilConstants.*;
 
-	private final String createOrderFxmlFile = "/fxml/createOrder.fxml";
+@Component
+public class SchoolDetailsController
+{
 
 	private Parent addOrderRoot;
 	private Scene addOrderScene;
@@ -58,10 +62,17 @@ public class SchoolDetailsController {
 	@FXML
 	private TextField email;
 
+	@FXML
+	private DatePicker fromDate;
+
+	@FXML
+	private DatePicker toDate;
+
 	private HashMap<String, Book> bookMap;
 
 	@FXML
-	protected void initialize() throws IOException {
+	protected void initialize() throws IOException
+	{
 
 		// if (addOrderRoot == null) {
 		// addOrderRoot = createOrderLoader.load();
@@ -75,13 +86,16 @@ public class SchoolDetailsController {
 		List<Book> schools = schoolService.fetchAllBooks();
 		// LOGGER.info(schools.toString());
 		bookMap = new HashMap<>();
-		for (Book bookIn : schools) {
+		for (Book bookIn : schools)
+		{
 			bookMap.put(bookIn.getName(), bookIn);
 		}
 
+		txnData.getSelectionModel().setSelectionMode(SelectionMode.MULTIPLE);
 	}
 
-	public void initData(School school) {
+	public void initData(School school)
+	{
 		schoolName.setText(school.getName());
 		address.setText(school.addressText());
 		txnData.setItems(FXCollections.observableList(schoolService.fetchOrderForSchool(school)));
@@ -89,30 +103,33 @@ public class SchoolDetailsController {
 	}
 
 	@FXML
-	void addOrder(ActionEvent e) throws IOException {
+	void addOrder(ActionEvent e) throws IOException
+	{
 
 		FXMLLoader createOrderLoader = LoadUtils.loadFxml(this, createOrderFxmlFile);
 		addOrderRoot = createOrderLoader.load();
 		AddOrderController ctrl = createOrderLoader.getController();
-		ctrl.initData(this.school, this.bookMap);
+		ctrl.initData(this.school, this.bookMap, null);
 		addOrderScene = new Scene(addOrderRoot);
 		prepareAndShowStage(e, addOrderScene);
 	}
 
 	@FXML
-	void editOrder(ActionEvent e) throws IOException {
+	void editOrder(ActionEvent e) throws IOException
+	{
 		FXMLLoader createOrderLoader = LoadUtils.loadFxml(this, createOrderFxmlFile);
 		addOrderRoot = createOrderLoader.load();
 		AddOrderController ctrl = createOrderLoader.getController();
-		ctrl.initData(this.school, this.bookMap);
 		Order selectedOrder = txnData.getSelectionModel().getSelectedItem();
-		ctrl.updateFormData(selectedOrder);
+		ctrl.initData(this.school, this.bookMap, selectedOrder);		
+//		ctrl.updateFormData(selectedOrder);
 		addOrderScene = new Scene(addOrderRoot);
 		prepareAndShowStage(e, addOrderScene);
 	}
 
 	@FXML
-	void deleteOrder(ActionEvent event) {
+	void deleteOrder(ActionEvent event)
+	{
 
 		Order selectedOrder = txnData.getSelectionModel().getSelectedItem();
 		Alert alert = new Alert(AlertType.CONFIRMATION);
@@ -121,62 +138,101 @@ public class SchoolDetailsController {
 		alert.setContentText("Click Ok to Delete");
 
 		Optional<ButtonType> result = alert.showAndWait();
-		if (result.get() == ButtonType.OK) {
+		if (result.get() == ButtonType.OK)
+		{
 			schoolService.deleteOrder(selectedOrder);
 			initData(this.school);
 		}
 	}
 
 	@FXML
-	void addBill(ActionEvent event) {
+	void createBill(ActionEvent event)
+	{
+
+		try
+		{
+			FXMLLoader createBillLoader = LoadUtils.loadFxml(this, addBillFxmlFile);
+			Parent addBillRoot = createBillLoader.load();
+			AddBillController ctrl = createBillLoader.getController();
+			ObservableList<Order> selectedOrder = txnData.getSelectionModel().getSelectedItems();
+			ctrl.initData(selectedOrder, this.school);
+			Scene addBillScene = new Scene(addBillRoot);
+			prepareAndShowStage(event, addBillScene);
+
+		} catch (Exception e)
+		{
+			e.printStackTrace();
+		}
 
 	}
 
 	@FXML
-	void editBill(ActionEvent event) {
+	void addBill(ActionEvent event)
+	{
 
 	}
 
 	@FXML
-	void deleteBill(ActionEvent event) {
+	void editBill(ActionEvent event)
+	{
 
 	}
 
 	@FXML
-	void addCredit(ActionEvent event) {
+	void deleteBill(ActionEvent event)
+	{
 
 	}
 
 	@FXML
-	void editCredit(ActionEvent event) {
+	void addCredit(ActionEvent event)
+	{
 
 	}
 
 	@FXML
-	void deleteCredit(ActionEvent event) {
+	void editCredit(ActionEvent event)
+	{
 
 	}
 
 	@FXML
-	void addPayment(ActionEvent event) {
+	void deleteCredit(ActionEvent event)
+	{
 
 	}
 
 	@FXML
-	void editPayment(ActionEvent event) {
+	void addPayment(ActionEvent event)
+	{
 
 	}
 
 	@FXML
-	void deletePayment(ActionEvent event) {
+	void editPayment(ActionEvent event)
+	{
 
 	}
 
-	private void prepareAndShowStage(ActionEvent e, Scene childScene) {
+	@FXML
+	void deletePayment(ActionEvent event)
+	{
+
+	}
+
+	@FXML
+	void generateStmt(ActionEvent event)
+	{
+
+	}
+
+	private void prepareAndShowStage(ActionEvent e, Scene childScene)
+	{
 		Stage stage = LoadUtils.loadChildStage(e, childScene);
 		stage.setOnHiding(new EventHandler<WindowEvent>() {
 			@Override
-			public void handle(final WindowEvent event) {
+			public void handle(final WindowEvent event)
+			{
 				System.out.println("Calling close");
 				initData(school);
 			}

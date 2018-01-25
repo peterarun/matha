@@ -15,15 +15,16 @@ import org.hibernate.annotations.GenericGenerator;
 
 @Entity
 @Table(name = "SOrderDet")
-public class OrderItem implements Serializable {
+public class OrderItem implements Serializable
+{
 
 	private static final long serialVersionUID = -2960499864752422068L;
 
 	@Id
 	@Column(name = "OrderDetId")
-//	@GeneratedValue(strategy = IDENTITY)
-	@GenericGenerator(name="kaugen" , strategy="increment")
-	@GeneratedValue(generator="kaugen")
+	// @GeneratedValue(strategy = IDENTITY)
+	@GenericGenerator(name = "kaugen", strategy = "increment")
+	@GeneratedValue(generator = "kaugen")
 	private Integer id;
 
 	@ManyToOne
@@ -33,7 +34,7 @@ public class OrderItem implements Serializable {
 	@ManyToOne
 	@JoinColumn(name = "PurchaseId")
 	private Purchase purchase;
-	
+
 	@OneToOne
 	@JoinColumn(name = "BkNo")
 	private Book book;
@@ -47,84 +48,121 @@ public class OrderItem implements Serializable {
 	@Column(name = "SlNo")
 	private int serialNum;
 
+	@Column(name = "BookPrice")
+	private Double bookPrice;
+
+	public double getTotal()
+	{
+		return getBookPrice() * count;
+	}
+
+	public Double getBookPrice()
+	{
+		if (bookPrice == null)
+		{
+			return book.getPrice();
+		}
+		return bookPrice;
+	}
+
+	public void setBookPrice(Double bookPrice)
+	{
+		this.bookPrice = bookPrice;
+	}
+
 	public String getBookName()
 	{
 		return book.getName();
 	}
-	
+
 	public String getPublisherName()
 	{
 		return book.getPublisher().getName();
 	}
-	
+
 	public String getSchoolName()
 	{
 		return this.order.getSchool().getName();
 	}
-	
-	public Integer getId() {
+
+	public Integer getId()
+	{
 		return id;
 	}
 
-	public void setId(Integer id) {
+	public void setId(Integer id)
+	{
 		this.id = id;
 	}
 
-	public Order getOrder() {
+	public Order getOrder()
+	{
 		return order;
 	}
 
-	public void setOrder(Order order) {
+	public void setOrder(Order order)
+	{
 		this.order = order;
 	}
 
-	public Purchase getPurchase() {
+	public Purchase getPurchase()
+	{
 		return purchase;
 	}
 
-	public void setPurchase(Purchase purchase) {
+	public void setPurchase(Purchase purchase)
+	{
 		this.purchase = purchase;
 	}
 
-	public Book getBook() {
+	public Book getBook()
+	{
 		return book;
 	}
 
-	public void setBook(Book book) {
+	public void setBook(Book book)
+	{
 		this.book = book;
 	}
 
-	public String getBookId() {
+	public String getBookId()
+	{
 		return bookId;
 	}
 
-	public void setBookId(String bookId) {
+	public void setBookId(String bookId)
+	{
 		this.bookId = bookId;
 	}
 
-	public int getCount() {
+	public int getCount()
+	{
 		return count;
 	}
 
-	public void setCount(int count) {
+	public void setCount(int count)
+	{
 		this.count = count;
 	}
 
-	public int getSerialNum() {
+	public int getSerialNum()
+	{
 		return serialNum;
 	}
 
-	public void setSerialNum(int serialNum) {
+	public void setSerialNum(int serialNum)
+	{
 		this.serialNum = serialNum;
 	}
-	
+
 	public String getOrderId()
 	{
 		return this.order.getId();
 	}
 
 	@Override
-	public String toString() {
+	public String toString()
+	{
 		StringBuilder builder = new StringBuilder();
 		builder.append("OrderItem [id=");
 		builder.append(id);

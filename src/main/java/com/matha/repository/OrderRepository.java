@@ -9,7 +9,6 @@ import org.springframework.data.jpa.repository.Query;
 import org.springframework.stereotype.Repository;
 
 import com.matha.domain.Order;
-import com.matha.domain.OrderItem;
 import com.matha.domain.Publisher;
 import com.matha.domain.School;
 
@@ -19,7 +18,7 @@ public interface OrderRepository extends JpaRepository<Order, String> {
 //	@Query("Select o.order from OrderItem o, School s where o.order.school=s and s.id=:school.id")
 	public List<Order> findAllBySchool(School school);
 	
-	@Query("select ord from Publisher pub, Book book, OrderItem oDet, Order ord where book.bookNum = oDet.book.bookNum and ord = oDet.order and pub = book.publisher and pub=?1")
+	@Query("select distinct ord from Order ord, Publisher pub, Book book, OrderItem oDet where book.bookNum = oDet.book.bookNum and ord = oDet.order and pub = book.publisher and pub=?1")
 	public Page<Order> fetchOrdersForPublisher(Publisher pub, Pageable pageable);
 	
 	@Query(value = "SELECT NEXT VALUE FOR SOrderSeq", nativeQuery = true)

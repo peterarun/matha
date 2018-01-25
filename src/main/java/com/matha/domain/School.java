@@ -197,17 +197,29 @@ public class School implements Serializable {
 
 	public String addressText() {
 		StringBuilder builder = new StringBuilder();
-		builder.append(address1);
-		builder.append(NEW_LINE);
-		builder.append(address2);
-		builder.append(NEW_LINE);
-		builder.append(city);
-		builder.append(NEW_LINE);
-		builder.append(pin);
-		builder.append(NEW_LINE);
-		builder.append(state);
-		builder.append(NEW_LINE);
-		builder.append(district);
+		if (address1 != null) {
+			builder.append(address1);
+			builder.append(NEW_LINE);
+		}
+		if (address2 != null) {
+			builder.append(address2);
+			builder.append(NEW_LINE);
+		}
+		if (city != null) {
+			builder.append(city);
+			builder.append(NEW_LINE);
+		}
+		if (pin != null) {
+			builder.append(pin);
+			builder.append(NEW_LINE);
+		}
+		if (state != null) {
+			builder.append(state.getId());
+			builder.append(NEW_LINE);
+		}
+		if (district != null) {
+			builder.append(district.getId());
+		}
 		return builder.toString();
 	}
 

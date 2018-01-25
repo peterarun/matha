@@ -63,13 +63,18 @@ public class AddOrderController {
 
 	@Autowired
 	private SchoolService srvc;
+	
+	private Order order;
 
-	public void initData(School school, Map<String, Book> bookMap) {
+	public void initData(School school, Map<String, Book> bookMap, Order selectedOrder) {
 		System.out.println("initData");
 		this.school = school;
 		this.bookMap = bookMap;
+		this.order = selectedOrder;
 //		this.orderDate.setValue(LocalDate.now());
 
+		updateFormData(selectedOrder);
+		
 		List<String> items = new ArrayList<>(bookMap.keySet());
 		TextFields.bindAutoCompletion(bookText, items);
 
@@ -96,7 +101,15 @@ public class AddOrderController {
 	@FXML
 	void saveData(ActionEvent e) {
 
-		Order item = new Order();
+		Order item;
+		if(this.order == null)
+		{
+			item = new Order();
+		}
+		else
+		{
+			item = this.order;
+		}
 		item.setOrderItem(addedBooks.getItems());
 		srvc.saveOrderItems(item.getOrderItem());
 		item.setSerialNo(orderNum.getText());
@@ -117,7 +130,11 @@ public class AddOrderController {
 	}
 
 	public void updateFormData(Order selectedOrder) {
-		this.orderNum.setText(selectedOrder.getId());
+		if(selectedOrder == null)
+		{
+			return;
+		}
+		this.orderNum.setText(selectedOrder.getSerialNo());
 		this.orderDate.setValue(selectedOrder.getOrderDate());
 		this.addedBooks.setItems(FXCollections.observableList(selectedOrder.getOrderItem()));
 	}

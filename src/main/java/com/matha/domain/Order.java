@@ -18,15 +18,18 @@ import org.hibernate.annotations.Cascade;
 import org.hibernate.annotations.CascadeType;
 import org.hibernate.annotations.GenericGenerator;
 
+import javassist.expr.Instanceof;
+
 @Entity
 @Table(name = "SOrder")
-public class Order implements Serializable {
+public class Order implements Serializable, Comparable
+{
 
 	private static final long serialVersionUID = 2735264048303888145L;
 
 	@Id
-	@GenericGenerator(name="orderId", strategy="com.matha.generator.OrderIdGenerator")
-	@GeneratedValue(generator="orderId")
+	@GenericGenerator(name = "orderId", strategy = "com.matha.generator.OrderIdGenerator")
+	@GeneratedValue(generator = "orderId")
 	@Column(name = "SerialId")
 	private String id;
 
@@ -36,6 +39,10 @@ public class Order implements Serializable {
 	@ManyToOne
 	@JoinColumn(name = "CustId")
 	private School school;
+
+	@ManyToOne
+	@JoinColumn(name = "SaleId")
+	private Sales sale;
 
 	@OneToMany(fetch = FetchType.EAGER)
 	@JoinColumn(name = "SerialId")
@@ -47,72 +54,103 @@ public class Order implements Serializable {
 
 	@Column(name = "DlyDate")
 	private LocalDate deliveryDate;
-	
-	@Column(name= "desLocation")
+
+	@Column(name = "desLocation")
 	private String desLocation;
 
-	public Integer getOrderCount() {
+	public Integer getOrderCount()
+	{
 		return orderItem == null ? 0 : orderItem.size();
 	}
 
-	public String getId() {
+	public String getId()
+	{
 		return id;
 	}
 
-	public void setId(String id) {
+	public void setId(String id)
+	{
 		this.id = id;
 	}
 
-	public String getSerialNo() {
+	public String getSerialNo()
+	{
 		return serialNo;
 	}
 
-	public void setSerialNo(String serialNo) {
+	public void setSerialNo(String serialNo)
+	{
 		this.serialNo = serialNo;
 	}
 
-	public School getSchool() {
+	public String getSchoolName()
+	{
+		return school.getName();
+	}
+
+	public School getSchool()
+	{
 		return school;
 	}
 
-	public void setSchool(School school) {
+	public void setSchool(School school)
+	{
 		this.school = school;
 	}
 
-	public List<OrderItem> getOrderItem() {
+	public Sales getSale()
+	{
+		return sale;
+	}
+
+	public void setSale(Sales sale)
+	{
+		this.sale = sale;
+	}
+
+	public List<OrderItem> getOrderItem()
+	{
 		return orderItem;
 	}
 
-	public void setOrderItem(List<OrderItem> orderItem) {
+	public void setOrderItem(List<OrderItem> orderItem)
+	{
 		this.orderItem = orderItem;
 	}
 
-	public LocalDate getOrderDate() {
+	public LocalDate getOrderDate()
+	{
 		return orderDate;
 	}
 
-	public void setOrderDate(LocalDate dt) {
+	public void setOrderDate(LocalDate dt)
+	{
 		this.orderDate = dt;
 	}
 
-	public LocalDate getDeliveryDate() {
+	public LocalDate getDeliveryDate()
+	{
 		return deliveryDate;
 	}
 
-	public void setDeliveryDate(LocalDate deliveryDate) {
+	public void setDeliveryDate(LocalDate deliveryDate)
+	{
 		this.deliveryDate = deliveryDate;
 	}
 
-	public String getDesLocation() {
+	public String getDesLocation()
+	{
 		return desLocation;
 	}
 
-	public void setDesLocation(String desLocation) {
+	public void setDesLocation(String desLocation)
+	{
 		this.desLocation = desLocation;
 	}
 
 	@Override
-	public String toString() {
+	public String toString()
+	{
 		StringBuilder builder = new StringBuilder();
 		builder.append("Order [id=");
 		builder.append(id);
@@ -126,6 +164,20 @@ public class Order implements Serializable {
 		builder.append(deliveryDate);
 		builder.append("]");
 		return builder.toString();
+	}
+
+	@Override
+	public int compareTo(Object o)
+	{
+		if(o != null && o instanceof Order && ((Order)o).getId() != null)
+		{
+			Order order = (Order)o;
+			if(order.getId() != null && this.getId() != null && order.getId().equals(this.getId()))
+			{
+				return 0;
+			}
+		}
+		return -1;
 	}
 
 }

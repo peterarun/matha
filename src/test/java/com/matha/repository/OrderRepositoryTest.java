@@ -30,7 +30,7 @@ public class OrderRepositoryTest {
 
 	@Test
 	public void testPaginatedResult() {
-		PageRequest pageable = new PageRequest(1, 5);
+		PageRequest pageable = new PageRequest(1, 5, Sort.Direction.DESC, "orderDate");
 		Publisher pub = publisherRepository.findOne("48");
 		Page<Order> orderList = orderService.fetchOrdersForPublisher(pub, pageable);
 		for(Order o: orderList)

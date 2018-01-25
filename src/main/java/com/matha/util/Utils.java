@@ -2,6 +2,9 @@ package com.matha.util;
 
 import java.util.Optional;
 
+import javafx.print.PageLayout;
+import javafx.print.PageOrientation;
+import javafx.print.Paper;
 import javafx.print.Printer;
 import javafx.print.PrinterJob;
 import javafx.scene.Node;
@@ -43,16 +46,17 @@ public class Utils {
 		
 		// Create a printer job for the default printer
 		PrinterJob job = PrinterJob.createPrinterJob(printer);
+		Paper paper = Paper.A3;
+		PageOrientation orient = PageOrientation.PORTRAIT;
+		PageLayout lout = printer.createPageLayout(paper, orient, 0, 0, 0, 0);
 
 		if (job != null && job.showPrintDialog(parentWindow))
 		{
-			
-
 			// Show the printer job status
 			jobStatus.textProperty().bind(job.jobStatusProperty().asString());
 
 			// Print the node
-			boolean printed = job.printPage(node);
+			boolean printed = job.printPage(lout, node);
 
 			if (printed)
 			{
