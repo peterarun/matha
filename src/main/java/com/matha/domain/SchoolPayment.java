@@ -1,5 +1,7 @@
 package com.matha.domain;
 
+import java.time.LocalDate;
+
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
@@ -25,6 +27,16 @@ public class SchoolPayment {
 	@JoinColumn(name = "TxnId")
 	private SalesTransaction salesTxn;
 
+	public LocalDate getTxnDate()
+	{
+		return salesTxn.getTxnDate();
+	}
+	
+	public Double getAmount()
+	{
+		return salesTxn.getAmount();
+	}
+	
 	public Integer getId() {
 		return id;
 	}

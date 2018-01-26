@@ -63,18 +63,18 @@
 											<children>
 												<TableView fx:id="billData" prefHeight="230.0" prefWidth="500.0">
 													<columns>
-														<TableColumn prefWidth="101.0" text="Receipt No." >
+														<TableColumn prefWidth="101.0" text="Receipt No.">
 															<cellValueFactory>
 																<PropertyValueFactory property="invoiceNo" />
 															</cellValueFactory>														
 														</TableColumn>
-														<TableColumn prefWidth="132.0" text="Date" >
+														<TableColumn prefWidth="132.0" text="Date">
 															<cellValueFactory>
 																<PropertyValueFactory property="invoiceDate" />
 															</cellValueFactory>														
 														</TableColumn>
 														<TableColumn prefWidth="145.0" text="Despatch Per" />
-                                          				<TableColumn prefWidth="121.0" text="Amount" >
+                                          				<TableColumn prefWidth="121.0" text="Amount">
 															<cellValueFactory>
 																<PropertyValueFactory property="netAmount" />
 															</cellValueFactory>                                          				
@@ -105,16 +105,27 @@
 										</AnchorPane>
 									</content>
 								</Tab>
-								<Tab text="Payments">
+								<Tab fx:id="paymentTab" onSelectionChanged="#loadPayments" text="Payments">
 									<content>
 										<AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="180.0" prefWidth="200.0">
 											<children>
-												<TableView prefHeight="230.0" prefWidth="500.0">
+												<TableView fx:id="paymentData" prefHeight="230.0" prefWidth="500.0">
 													<columns>
-														<TableColumn prefWidth="200.0" text="Date" />
-														<TableColumn prefWidth="130.0" text="Credit" />
-														<TableColumn prefWidth="130.0" text="Debit" />
-														<TableColumn prefWidth="135.0" text="Balance" />
+														<TableColumn prefWidth="200.0" text="Date">
+															<cellValueFactory>
+																<PropertyValueFactory property="txnDate" />
+															</cellValueFactory>  														
+														</TableColumn>
+														<TableColumn prefWidth="130.0" text="Amount">
+															<cellValueFactory>
+																<PropertyValueFactory property="amount" />
+															</cellValueFactory>														
+														</TableColumn>
+														<TableColumn prefWidth="130.0" text="Mode">
+															<cellValueFactory>
+																<PropertyValueFactory property="paymentMode" />
+															</cellValueFactory>														
+														</TableColumn>
 													</columns>
 												</TableView>
 												<Button layoutX="518.0" layoutY="38.0" mnemonicParsing="false" onAction="#addPayment" text="Add" />
@@ -124,13 +135,33 @@
 										</AnchorPane>
 									</content>
 								</Tab>
-                        <Tab text="Statement">
+                        <Tab fx:id="statementTab" onSelectionChanged="#loadStatement" text="Statement">
                           <content>
                             <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="180.0" prefWidth="200.0">
                                  <children>
-                                    <DatePicker fx:id="fromDate" layoutX="59.0" layoutY="25.0" promptText="From Date" />
-                                    <DatePicker fx:id="toDate" layoutX="309.0" layoutY="25.0" promptText="To Date" />
-                                    <Button layoutX="59.0" layoutY="79.0" mnemonicParsing="false" onAction="#generateStmt" text="Generate" />
+                                    <DatePicker fx:id="fromDate" layoutX="434.0" layoutY="32.0" prefHeight="25.0" prefWidth="140.0" promptText="From Date" />
+                                    <DatePicker fx:id="toDate" layoutX="434.0" layoutY="80.0" prefHeight="25.0" prefWidth="140.0" promptText="To Date" />
+                                    <Button layoutX="434.0" layoutY="129.0" mnemonicParsing="false" onAction="#generateStmt" prefHeight="25.0" prefWidth="140.0" text="Generate" />
+                                    <TableView fx:id="transactionData" layoutX="14.0" layoutY="15.0" prefHeight="200.0" prefWidth="410.0">
+                                      <columns>
+                                        <TableColumn prefWidth="108.0" text="Date">
+											<cellValueFactory>
+												<PropertyValueFactory property="txnDate" />
+											</cellValueFactory>		                                        
+                                        </TableColumn>
+                                        <TableColumn prefWidth="128.0" text="Amount">
+											<cellValueFactory>
+												<PropertyValueFactory property="amount" />
+											</cellValueFactory>		                                        
+                                        </TableColumn>
+                                        <TableColumn prefWidth="172.0" text="Type">
+											<cellValueFactory>
+												<PropertyValueFactory property="type" />
+											</cellValueFactory>		                                        
+                                        </TableColumn>
+                                      </columns>
+                                    </TableView>
+                                    <Button layoutX="434.0" layoutY="172.0" mnemonicParsing="false" onAction="#generateStmt" prefHeight="25.0" prefWidth="140.0" text="Print" />
                                  </children>
                               </AnchorPane>
                           </content>

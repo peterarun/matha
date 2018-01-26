@@ -95,14 +95,12 @@ public class AddBillController
 	private ListView<String> orderList;
 
 	private School school;
-
+	private Sales selectedSale;
 	// private Order order;
 
 	private Map<String, Order> orderMap = new HashMap<>();
 	private Collector<Order, ?, Map<String, Order>> orderMapCollector = Collectors.toMap(o -> o.getSerialNo(), o -> o);
 	private Collector<OrderItem, ?, Double> summingDblCollector = Collectors.summingDouble(OrderItem::getTotal);
-
-	Sales selectedSale;
 
 	void initData(ObservableList<Order> ordersIn, School schoolIn, Sales sale)
 	{
@@ -279,10 +277,13 @@ public class AddBillController
 	void saveData(ActionEvent event)
 	{
 
-		Sales sale = new Sales();
-		if (this.selectedSale != null)
+		Sales sale = selectedSale;
+		if (selectedSale == null)
 		{
-			sale = this.selectedSale;
+			sale = new Sales();
+			SalesTransaction salesTxn = new SalesTransaction();
+			salesTxn.setSchool(school);
+			sale.setSalesTxn(salesTxn);
 		}
 		if (!StringUtils.isEmpty(discAmt.getText()))
 		{
@@ -315,7 +316,7 @@ public class AddBillController
 			sale.setSubTotal(subTotalVal);
 		}
 
-		SalesTransaction txn = new SalesTransaction();
+		SalesTransaction txn = sale.getSalesTxn();
 		if (StringUtils.isEmpty(netAmt.getText()))
 		{
 			txn.setAmount(0.0);
@@ -326,11 +327,8 @@ public class AddBillController
 			txn.setAmount(netAmtVal);
 		}
 		String note = "Sales Bill Note";
-		txn.setNote(note);
-		txn.setSchool(this.school);
+		txn.setNote(note);		
 		txn.setTxnDate(billDate.getValue());
-
-		sale.setSalesTxn(txn);
 
 		schoolService.saveSales(sale);
 

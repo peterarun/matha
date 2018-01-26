@@ -1,9 +1,11 @@
 package com.matha.controller;
 
 import static com.matha.util.UtilConstants.addBillFxmlFile;
+import static com.matha.util.UtilConstants.addPaymentFxmlFile;
 import static com.matha.util.UtilConstants.createOrderFxmlFile;
 
 import java.io.IOException;
+import java.time.LocalDate;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Optional;
@@ -14,13 +16,16 @@ import org.springframework.stereotype.Component;
 import com.matha.domain.Book;
 import com.matha.domain.Order;
 import com.matha.domain.Sales;
+import com.matha.domain.SalesTransaction;
 import com.matha.domain.School;
+import com.matha.domain.SchoolPayment;
 import com.matha.service.SchoolService;
 import com.matha.util.LoadUtils;
 
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.event.ActionEvent;
+import javafx.event.Event;
 import javafx.event.EventHandler;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
@@ -32,6 +37,7 @@ import javafx.scene.control.ButtonType;
 import javafx.scene.control.DatePicker;
 import javafx.scene.control.Label;
 import javafx.scene.control.SelectionMode;
+import javafx.scene.control.Tab;
 import javafx.scene.control.TableView;
 import javafx.scene.control.TextArea;
 import javafx.scene.control.TextField;
@@ -54,6 +60,18 @@ public class SchoolDetailsController
 
 	@FXML
 	private TableView<Sales> billData;
+
+	@FXML
+	private Tab paymentTab;
+
+	@FXML
+	private TableView<SchoolPayment> paymentData;
+
+	@FXML
+	private Tab statementTab;
+
+	@FXML
+	private TableView<SalesTransaction> transactionData;
 
 	@FXML
 	private TextArea address;
@@ -93,7 +111,7 @@ public class SchoolDetailsController
 		bookMap = new HashMap<>();
 		for (Book bookIn : schools)
 		{
-			bookMap.put(bookIn.getName(), bookIn);
+			bookMap.put(bookIn.getName() + bookIn.getPublisherName(), bookIn);
 		}
 
 		txnData.getSelectionModel().setSelectionMode(SelectionMode.MULTIPLE);
@@ -251,8 +269,32 @@ public class SchoolDetailsController
 	}
 
 	@FXML
+	void loadPayments(Event event)
+	{
+		if (paymentTab.isSelected())
+		{
+			List<SchoolPayment> paymentList = schoolService.fetchPayments(school);
+			ObservableList<SchoolPayment> paymentItems = FXCollections.observableList(paymentList);
+			paymentData.setItems(paymentItems);
+		}
+	}
+
+	@FXML
 	void addPayment(ActionEvent event)
 	{
+		try
+		{
+			FXMLLoader createBillLoader = LoadUtils.loadFxml(this, addPaymentFxmlFile);
+			Parent addBillRoot = createBillLoader.load();
+			AddPaymentController ctrl = createBillLoader.getController();
+			ctrl.initData(this.school, null);
+			Scene addBillScene = new Scene(addBillRoot);
+			prepareAndShowStage(event, addBillScene, paymentEventHandler);
+
+		} catch (Exception e)
+		{
+			e.printStackTrace();
+		}
 
 	}
 
@@ -260,18 +302,64 @@ public class SchoolDetailsController
 	void editPayment(ActionEvent event)
 	{
 
+		try
+		{
+			FXMLLoader createBillLoader = LoadUtils.loadFxml(this, addPaymentFxmlFile);
+			Parent addBillRoot = createBillLoader.load();
+			AddPaymentController ctrl = createBillLoader.getController();
+			SchoolPayment sPayment = paymentData.getSelectionModel().getSelectedItem();
+			ctrl.initData(this.school, sPayment);
+			Scene addBillScene = new Scene(addBillRoot);
+			prepareAndShowStage(event, addBillScene, paymentEventHandler);
+
+		} catch (Exception e)
+		{
+			e.printStackTrace();
+		}
+
 	}
 
 	@FXML
 	void deletePayment(ActionEvent event)
 	{
 
+		SchoolPayment selectedPayment = paymentData.getSelectionModel().getSelectedItem();
+		Alert alert = new Alert(AlertType.CONFIRMATION);
+		alert.setTitle("Delete Payment Confirmation");
+		alert.setHeaderText("Are you sure you want to delete the payment: " + selectedPayment.getAmount());
+		alert.setContentText("Click Ok to Delete");
+
+		Optional<ButtonType> result = alert.showAndWait();
+		if (result.get() == ButtonType.OK)
+		{
+			schoolService.deletePayment(selectedPayment);
+			loadPayments(event);
+		}
+
+	}
+
+	@FXML
+	void loadStatement(Event e)
+	{
+		if (statementTab.isSelected())
+		{
+			LocalDate toDateVal = LocalDate.now();
+			LocalDate fromDateVal = toDateVal.minusMonths(6);
+			fromDate.setValue(fromDateVal);
+			toDate.setValue(toDateVal);
+			List<SalesTransaction> txnItems = schoolService.fetchTransactions(school, fromDateVal, toDateVal);
+			transactionData.setItems(FXCollections.observableList(txnItems));
+		}
 	}
 
 	@FXML
 	void generateStmt(ActionEvent event)
 	{
+		LocalDate toDateVal = toDate.getValue();
+		LocalDate fromDateVal = fromDate.getValue();
 
+		List<SalesTransaction> txnItems = schoolService.fetchTransactions(school, fromDateVal, toDateVal);
+		transactionData.setItems(FXCollections.observableList(txnItems));
 	}
 
 	private void prepareAndShowStage(ActionEvent e, Scene childScene)
@@ -287,4 +375,19 @@ public class SchoolDetailsController
 		});
 		stage.show();
 	}
+
+	private void prepareAndShowStage(ActionEvent e, Scene childScene, EventHandler<WindowEvent> eventHandler)
+	{
+		Stage stage = LoadUtils.loadChildStage(e, childScene);
+		stage.setOnHiding(eventHandler);
+		stage.show();
+	}
+
+	private EventHandler<WindowEvent> paymentEventHandler = new EventHandler<WindowEvent>() {
+		@Override
+		public void handle(final WindowEvent event)
+		{
+			loadPayments(event);
+		}
+	};
 }

@@ -46,6 +46,16 @@ public class SalesTransaction {
 	@Column(name = "Note")
 	private String note;
 
+	public String getType()
+	{
+		String type = "";
+		if(sale != null) type = "Book Bill";
+		else if(paymentId != null) type = "Payment";
+		else if(returnId != null) type = "Credit Note";
+		
+		return type;
+	}
+	
 	public Integer getId() {
 		return id;
 	}

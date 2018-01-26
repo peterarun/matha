@@ -27,6 +27,7 @@ import com.matha.domain.Purchase;
 import com.matha.domain.Sales;
 import com.matha.domain.SalesTransaction;
 import com.matha.domain.School;
+import com.matha.domain.SchoolPayment;
 import com.matha.domain.State;
 import com.matha.repository.BookRepository;
 import com.matha.repository.CashBookRepository;
@@ -39,6 +40,7 @@ import com.matha.repository.PublisherRepository;
 import com.matha.repository.PurchaseRepository;
 import com.matha.repository.SalesRepository;
 import com.matha.repository.SalesTxnRepository;
+import com.matha.repository.SchoolPayRepository;
 import com.matha.repository.SchoolRepository;
 import com.matha.repository.StateRepository;
 
@@ -87,7 +89,10 @@ public class SchoolService
 
 	@Autowired
 	private SalesTxnRepository salesTxnRepository;
-	
+
+	@Autowired
+	private SchoolPayRepository schoolPayRepository;
+
 	public List<Publisher> fetchAllPublishers()
 	{
 		return publisherRepository.findAll();
@@ -275,12 +280,12 @@ public class SchoolService
 
 		txn.setSale(sales);
 		salesTxnRepository.save(txn);
-		
+
 		for (Order order : orders)
 		{
 			order.setSale(sales);
 			orderRepository.save(order);
-			
+
 			List<OrderItem> orderItems = order.getOrderItem();
 			orderItemRepository.save(orderItems);
 		}
@@ -302,5 +307,35 @@ public class SchoolService
 		orderRepository.save(orders);
 		salesTxnRepository.delete(selectedSale.getSalesTxn());
 		salesRepository.delete(selectedSale);
+	}
+
+	@Transactional
+	public void savePayment(SchoolPayment sPayment)
+	{
+		SalesTransaction txn = sPayment.getSalesTxn();
+		salesTxnRepository.save(txn);
+
+		schoolPayRepository.save(sPayment);
+
+		txn.setPaymentId(sPayment);
+		salesTxnRepository.save(txn);
+
+	}
+
+	public List<SchoolPayment> fetchPayments(School school)
+	{
+		return schoolPayRepository.findAllBySchool(school);
+	}
+
+	@Transactional
+	public void deletePayment(SchoolPayment selectedPayment)
+	{
+		salesTxnRepository.delete(selectedPayment.getSalesTxn());
+		schoolPayRepository.delete(selectedPayment);
+	}
+
+	public List<SalesTransaction> fetchTransactions(School school, LocalDate fromDateVal, LocalDate toDateVal)
+	{
+		return salesTxnRepository.findByFromToDate(school, fromDateVal, toDateVal);
 	}
 }
