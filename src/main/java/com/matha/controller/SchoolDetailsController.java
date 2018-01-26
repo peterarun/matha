@@ -1,5 +1,8 @@
 package com.matha.controller;
 
+import static com.matha.util.UtilConstants.addBillFxmlFile;
+import static com.matha.util.UtilConstants.createOrderFxmlFile;
+
 import java.io.IOException;
 import java.util.HashMap;
 import java.util.List;
@@ -10,6 +13,7 @@ import org.springframework.stereotype.Component;
 
 import com.matha.domain.Book;
 import com.matha.domain.Order;
+import com.matha.domain.Sales;
 import com.matha.domain.School;
 import com.matha.service.SchoolService;
 import com.matha.util.LoadUtils;
@@ -34,8 +38,6 @@ import javafx.scene.control.TextField;
 import javafx.stage.Stage;
 import javafx.stage.WindowEvent;
 
-import static com.matha.util.UtilConstants.*;
-
 @Component
 public class SchoolDetailsController
 {
@@ -49,6 +51,9 @@ public class SchoolDetailsController
 
 	@FXML
 	private TableView<Order> txnData;
+
+	@FXML
+	private TableView<Sales> billData;
 
 	@FXML
 	private TextArea address;
@@ -100,6 +105,9 @@ public class SchoolDetailsController
 		address.setText(school.addressText());
 		txnData.setItems(FXCollections.observableList(schoolService.fetchOrderForSchool(school)));
 		this.school = school;
+
+		List<Sales> billDataList = schoolService.fetchBills(school);
+		billData.setItems(FXCollections.observableList(billDataList));
 	}
 
 	@FXML
@@ -121,8 +129,8 @@ public class SchoolDetailsController
 		addOrderRoot = createOrderLoader.load();
 		AddOrderController ctrl = createOrderLoader.getController();
 		Order selectedOrder = txnData.getSelectionModel().getSelectedItem();
-		ctrl.initData(this.school, this.bookMap, selectedOrder);		
-//		ctrl.updateFormData(selectedOrder);
+		ctrl.initData(this.school, this.bookMap, selectedOrder);
+		// ctrl.updateFormData(selectedOrder);
 		addOrderScene = new Scene(addOrderRoot);
 		prepareAndShowStage(e, addOrderScene);
 	}
@@ -155,7 +163,7 @@ public class SchoolDetailsController
 			Parent addBillRoot = createBillLoader.load();
 			AddBillController ctrl = createBillLoader.getController();
 			ObservableList<Order> selectedOrder = txnData.getSelectionModel().getSelectedItems();
-			ctrl.initData(selectedOrder, this.school);
+			ctrl.initData(selectedOrder, this.school, null);
 			Scene addBillScene = new Scene(addBillRoot);
 			prepareAndShowStage(event, addBillScene);
 
@@ -169,19 +177,59 @@ public class SchoolDetailsController
 	@FXML
 	void addBill(ActionEvent event)
 	{
+		try
+		{
+			FXMLLoader createBillLoader = LoadUtils.loadFxml(this, addBillFxmlFile);
+			Parent addBillRoot = createBillLoader.load();
+			AddBillController ctrl = createBillLoader.getController();
+			ObservableList<Order> selectedOrder = txnData.getSelectionModel().getSelectedItems();
+			ctrl.initData(selectedOrder, this.school, null);
+			Scene addBillScene = new Scene(addBillRoot);
+			prepareAndShowStage(event, addBillScene);
 
+		} catch (Exception e)
+		{
+			e.printStackTrace();
+		}
 	}
 
 	@FXML
 	void editBill(ActionEvent event)
 	{
 
+		try
+		{
+			Sales selectedSale = billData.getSelectionModel().getSelectedItem();
+			FXMLLoader createBillLoader = LoadUtils.loadFxml(this, addBillFxmlFile);
+			Parent addBillRoot = createBillLoader.load();
+			AddBillController ctrl = createBillLoader.getController();
+			ObservableList<Order> selectedOrder = txnData.getSelectionModel().getSelectedItems();
+			ctrl.initData(selectedOrder, this.school, selectedSale);
+			Scene addBillScene = new Scene(addBillRoot);
+			prepareAndShowStage(event, addBillScene);
+
+		} catch (Exception e)
+		{
+			e.printStackTrace();
+		}
+
 	}
 
 	@FXML
 	void deleteBill(ActionEvent event)
 	{
+		Sales selectedSale = billData.getSelectionModel().getSelectedItem();
+		Alert alert = new Alert(AlertType.CONFIRMATION);
+		alert.setTitle("Delete Bill Confirmation");
+		alert.setHeaderText("Are you sure you want to delete the bill: " + selectedSale.getInvoiceNo());
+		alert.setContentText("Click Ok to Delete");
 
+		Optional<ButtonType> result = alert.showAndWait();
+		if (result.get() == ButtonType.OK)
+		{
+			schoolService.deleteOrder(selectedSale);
+			initData(this.school);
+		}
 	}
 
 	@FXML

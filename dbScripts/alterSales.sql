@@ -10,5 +10,5 @@ GO
 alter table Sales add TxnId int null;
 GO
 
-alter table Sales add OrderId nvarchar(15) null;
+alter table Sales add discType bit null;
 GO

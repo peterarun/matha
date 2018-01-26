@@ -22,6 +22,7 @@ import com.matha.domain.School;
 import com.matha.service.SchoolService;
 
 import javafx.beans.property.ReadOnlyStringWrapper;
+import javafx.beans.value.ChangeListener;
 import javafx.beans.value.ObservableValue;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
@@ -38,6 +39,7 @@ import javafx.scene.control.TableColumn.CellDataFeatures;
 import javafx.scene.control.TableColumn.CellEditEvent;
 import javafx.scene.control.TableView;
 import javafx.scene.control.TextField;
+import javafx.scene.control.Toggle;
 import javafx.scene.control.ToggleGroup;
 import javafx.scene.control.cell.TextFieldTableCell;
 import javafx.scene.input.KeyEvent;
@@ -85,8 +87,8 @@ public class AddBillController
 
 	@FXML
 	private TableView<OrderItem> addedBooks;
-	
-	@FXML 
+
+	@FXML
 	private TableColumn<OrderItem, String> priceColumn;
 
 	@FXML
@@ -94,50 +96,89 @@ public class AddBillController
 
 	private School school;
 
-//	private Order order;
+	// private Order order;
 
 	private Map<String, Order> orderMap = new HashMap<>();
 	private Collector<Order, ?, Map<String, Order>> orderMapCollector = Collectors.toMap(o -> o.getSerialNo(), o -> o);
 	private Collector<OrderItem, ?, Double> summingDblCollector = Collectors.summingDouble(OrderItem::getTotal);
 
-	void initData(ObservableList<Order> orders, School schoolIn)
+	Sales selectedSale;
+
+	void initData(ObservableList<Order> ordersIn, School schoolIn, Sales sale)
 	{
+		this.selectedSale = sale;
+		if (sale != null && (ordersIn == null || ordersIn.isEmpty()))
+		{
+			ordersIn = FXCollections.observableList(new ArrayList<Order>(sale.getOrder()));
+			this.billDate.setValue(sale.getInvoiceDate());
+			if (sale.getDiscType() != null)
+			{
+				this.discAmt.setText(sale.getDiscAmt().toString());
+				if (sale.getDiscType())
+				{
+					this.rupeeRad.setSelected(true);
+				}
+				else
+				{
+					this.percentRad.setSelected(true);
+					this.rupeeRad.setSelected(false);
+				}
+
+			}
+		}
 		addedBooks.getSelectionModel().cellSelectionEnabledProperty().set(true);
 		priceColumn.setCellFactory(TextFieldTableCell.forTableColumn());
 		priceColumn.setCellValueFactory(new Callback<CellDataFeatures<OrderItem, String>, ObservableValue<String>>() {
-		     public ObservableValue<String> call(CellDataFeatures<OrderItem, String> p) {
-		         // p.getValue() returns the Person instance for a particular TableView row
-		         return new ReadOnlyStringWrapper(p.getValue().getBookPrice().toString());
-		     }
-		  });
-		 
+			public ObservableValue<String> call(CellDataFeatures<OrderItem, String> p)
+			{
+				// p.getValue() returns the Person instance for a particular TableView row
+				return new ReadOnlyStringWrapper(p.getValue().getBookPrice().toString());
+			}
+		});
 
-		priceColumn.setOnEditCommit(
-            new EventHandler<CellEditEvent<OrderItem, String>>() {
-                public void handle(CellEditEvent<OrderItem, String> t) {
-                    ((OrderItem) t.getTableView().getItems().get(
-                        t.getTablePosition().getRow())
-                        ).setBookPrice(Double.parseDouble(t.getNewValue()));
-                }
-            }
-        );
-        
-		
+		priceColumn.setOnEditCommit(new EventHandler<CellEditEvent<OrderItem, String>>() {
+			public void handle(CellEditEvent<OrderItem, String> t)
+			{
+
+				OrderItem oItem = ((OrderItem) t.getTableView().getItems().get(t.getTablePosition().getRow()));
+				oItem.setBookPrice(Double.parseDouble(t.getNewValue()));
+				t.getTableView().refresh();
+				loadSubTotal();
+				calcNetAmount(discAmt.getText());
+			}
+		});
+
 		this.school = schoolIn;
 		List<Order> allOrders = schoolService.fetchOrderForSchool(schoolIn);
-
 		orderMap = allOrders.stream().collect(orderMapCollector);
 
 		List<String> items = new ArrayList<>(orderMap.keySet());
 		TextFields.bindAutoCompletion(orderNum, items);
 
-		List<String> orderStrings = orders.stream().map(o -> o.getSerialNo()).collect(Collectors.toList());
+		List<String> orderStrings = ordersIn.stream().map(o -> o.getSerialNo()).collect(Collectors.toList());
 		orderList.setItems(FXCollections.observableList(orderStrings));
-		loadBooksAndSubTotal(orders);
-		calcNetAmount(discAmt.getText());
+
+		// To avoid different objects of the same type getting loaded.
+		for (Order order : ordersIn)
+		{
+			orderMap.put(order.getSerialNo(), order);
+		}
+		loadBooksAndSubTotal(ordersIn);
+		// calcNetAmount(discAmt.getText());
+
+		discType.selectedToggleProperty().addListener(new ChangeListener<Toggle>() {
+			public void changed(ObservableValue<? extends Toggle> ov, Toggle old_toggle, Toggle new_toggle)
+			{
+				if (discType.getSelectedToggle() != null)
+				{
+					calcNetAmount(discAmt.getText());
+				}
+			}
+		});
+
 		LOGGER.info("Test");
 	}
-	
+
 	private void loadBooksAndSubTotal(List<Order> ordersIn)
 	{
 		double subTotalVal = 0;
@@ -146,10 +187,32 @@ public class AddBillController
 		{
 			List<OrderItem> orderItems = orderIn.getOrderItem();
 			subTotalVal += orderItems.stream().collect(summingDblCollector);
-			
+
 			bookItems.addAll(orderItems.stream().collect(Collectors.toList()));
 		}
-		addedBooks.setItems(FXCollections.observableList(bookItems));
+
+		ObservableList<OrderItem> bookList = FXCollections.observableArrayList();
+		bookList.addAll(bookItems);
+
+		addedBooks.setItems(bookList);
+		subTotal.setText(String.valueOf(subTotalVal));
+		calcNetAmount(discAmt.getText());
+	}
+
+	private void loadSubTotal()
+	{
+		double subTotalVal = 0;
+
+		// ObservableList<String> orderListIn = orderList.getItems();
+		// for (String string : orderListIn)
+		// {
+		// Order orderIn = orderMap.get(string);
+		// subTotalVal += orderIn.getOrderItem().stream().collect(summingDblCollector);
+		// }
+		// subTotal.setText(String.valueOf(subTotalVal));
+		//
+		ObservableList<OrderItem> orderListIn = addedBooks.getItems();
+		subTotalVal += orderListIn.stream().collect(summingDblCollector);
 		subTotal.setText(String.valueOf(subTotalVal));
 	}
 
@@ -158,20 +221,32 @@ public class AddBillController
 	{
 		String discAmtStr = discAmt.getText();
 		discAmtStr += ke.getCharacter();
-		calcNetAmount(discAmtStr);
+		if (!StringUtils.isEmpty(discAmtStr))
+		{
+			calcNetAmount(discAmtStr);
+		}
 	}
 
 	@FXML
 	void addOrderNum(ActionEvent e)
 	{
-
 		orderList.getItems().add(orderNum.getText());
 		orderNum.clear();
+
+		List<Order> ordersIn = new ArrayList<Order>();
+		ObservableList<String> orderListIn = orderList.getItems();
+		for (String string : orderListIn)
+		{
+			ordersIn.add(orderMap.get(string));
+		}
+		loadBooksAndSubTotal(ordersIn);
 	}
 
 	private void calcNetAmount(String discAmtStr)
 	{
-		Double netTotalDbl = Double.NaN;
+		String netTotalStr = netAmt.getText();
+		Double netTotalDbl = StringUtils.isEmpty(netTotalStr) ? 0.0 : Double.parseDouble(netTotalStr);
+
 		String subTotalStr = this.subTotal.getText();
 		if (subTotalStr != null)
 		{
@@ -184,7 +259,7 @@ public class AddBillController
 				{
 					if (rupeeRad.isSelected())
 					{
-						netTotalDbl -= discAmtDbl;
+						netTotalDbl = subTotalDbl - discAmtDbl;
 					}
 					else if (percentRad.isSelected())
 					{
@@ -205,23 +280,35 @@ public class AddBillController
 	{
 
 		Sales sale = new Sales();
+		if (this.selectedSale != null)
+		{
+			sale = this.selectedSale;
+		}
 		if (!StringUtils.isEmpty(discAmt.getText()))
 		{
 			Double discAmtVal = Double.parseDouble(discAmt.getText());
 			sale.setDiscAmt(discAmtVal);
+			if (rupeeRad.isSelected())
+			{
+				sale.setDiscType(true);
+			}
+			else if (percentRad.isSelected())
+			{
+				sale.setDiscType(false);
+			}
 		}
-				
-		TreeSet<Order> orders = new TreeSet<>(); 
+
+		TreeSet<Order> orders = new TreeSet<>();
 		ObservableList<String> selectedOrders = this.orderList.getItems();
-		for (String orderId: selectedOrders)
+		for (String orderId : selectedOrders)
 		{
-			if(this.orderMap.containsKey(orderId))
+			if (this.orderMap.containsKey(orderId))
 			{
 				orders.add(this.orderMap.get(orderId));
 			}
 		}
 		sale.setOrder(orders);
-		
+
 		if (!StringUtils.isEmpty(subTotal.getText()))
 		{
 			Double subTotalVal = Double.parseDouble(subTotal.getText());
@@ -233,20 +320,20 @@ public class AddBillController
 		{
 			txn.setAmount(0.0);
 		}
-		else 
+		else
 		{
 			Double netAmtVal = Double.parseDouble(netAmt.getText());
 			txn.setAmount(netAmtVal);
 		}
 		String note = "Sales Bill Note";
-		txn.setNote(note);		
+		txn.setNote(note);
 		txn.setSchool(this.school);
 		txn.setTxnDate(billDate.getValue());
-		
+
 		sale.setSalesTxn(txn);
-		
+
 		schoolService.saveSales(sale);
-		
+
 		((Stage) cancelBtn.getScene().getWindow()).close();
 	}
 
@@ -264,6 +351,14 @@ public class AddBillController
 		{
 			orderList.getItems().remove(orderNumSel);
 		}
+
+		List<Order> ordersIn = new ArrayList<Order>();
+		ObservableList<String> orderListIn = orderList.getItems();
+		for (String string : orderListIn)
+		{
+			ordersIn.add(orderMap.get(string));
+		}
+		loadBooksAndSubTotal(ordersIn);
 	}
 
 }
