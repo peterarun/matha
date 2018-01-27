@@ -2,6 +2,7 @@ package com.matha.controller;
 
 import java.util.List;
 
+import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
@@ -10,7 +11,6 @@ import com.matha.domain.BookCategory;
 import com.matha.domain.Publisher;
 import com.matha.service.SchoolService;
 import com.matha.util.Converters;
-import com.matha.util.SchoolConverter;
 
 import javafx.collections.FXCollections;
 import javafx.event.ActionEvent;
@@ -21,7 +21,8 @@ import javafx.scene.control.TextField;
 import javafx.stage.Stage;
 
 @Component
-public class AddBookController {
+public class AddBookController
+{
 
 	@Autowired
 	private SchoolService srvc;
@@ -39,13 +40,19 @@ public class AddBookController {
 	private TextField shortName;
 
 	@FXML
+	private TextField inventory;
+
+	@FXML
 	private ChoiceBox<Publisher> publishers;
 
 	@FXML
 	private ChoiceBox<BookCategory> categories;
 
+	private Book book;
+
 	@FXML
-	protected void initialize() {
+	protected void initialize()
+	{
 		List<BookCategory> bookCategories = srvc.fetchAllBookCategories();
 		categories.setConverter(Converters.getCategoryConverter());
 		categories.setItems(FXCollections.observableList(bookCategories));
@@ -55,25 +62,41 @@ public class AddBookController {
 		publishers.setItems(FXCollections.observableList(bookPublishers));
 	}
 
-	public void initEdit(Book selectedItem) {
+	public void initEdit(Book selectedItem)
+	{
+		this.book = selectedItem;
 		this.name.setText(selectedItem.getName());
 		this.bookNo.setText(selectedItem.getBookNum());
 		this.shortName.setText(selectedItem.getShortName());
+		if (selectedItem.getInventory() != null)
+		{
+			this.inventory.setText(StringUtils.defaultString(selectedItem.getInventory().toString()));
+		}
 		this.categories.getSelectionModel().select(selectedItem.getCategory());
 		this.publishers.getSelectionModel().select(selectedItem.getPublisher());
-		this.name.setText(selectedItem.getName());
 	}
 
 	@FXML
-	void handleCancel(ActionEvent event) {
+	void handleCancel(ActionEvent event)
+	{
 		((Stage) cancelBtn.getScene().getWindow()).close();
 	}
 
 	@FXML
-	void handleSave(ActionEvent event) {
-
-		Book bookObj = SchoolConverter.createBookObj(name, bookNo, shortName, categories, publishers);
+	void handleSave(ActionEvent event)
+	{
+		Book bookObj = book;
+		if (bookObj == null)
+		{
+			bookObj = new Book();
+		}
+		bookObj.setName(name.getText());
+		bookObj.setBookNum(bookNo.getText());
+		bookObj.setShortName(shortName.getText());
+		bookObj.setPublisher(publishers.getSelectionModel().getSelectedItem());
+		bookObj.setCategory(categories.getSelectionModel().getSelectedItem());
 		srvc.saveBook(bookObj);
+
 		((Stage) cancelBtn.getScene().getWindow()).close();
 	}
 

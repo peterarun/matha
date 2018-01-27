@@ -15,4 +15,7 @@ public interface SalesTxnRepository extends JpaRepository<SalesTransaction, Inte
 
 	@Query("select salesTxn from SalesTransaction salesTxn where salesTxn.school = ?1 and salesTxn.txnDate between ?2 and ?3")
 	List<SalesTransaction> findByFromToDate(School school, LocalDate fromDate, LocalDate toDate);
+	
+	@Query("select sum(salesTxn.amount) from SalesTransaction salesTxn where salesTxn.school = ?1 ")
+	Double findBalance(School school);
 }

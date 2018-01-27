@@ -8,9 +8,10 @@ GO
 SET QUOTED_IDENTIFIER ON
 GO
 
-CREATE TABLE [dbo].[SchoolReturn](
+CREATE TABLE [dbo].[PPayment](
 	[SerialId] [int] PRIMARY KEY IDENTITY(1,1),
-	[TxnId] [int] NULL
+	[Mode] [nvarchar](10) NULL,
+	[TxnId] [int] NOT NULL
 ) ON [PRIMARY]
 GO
 

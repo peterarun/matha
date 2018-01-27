@@ -8,21 +8,19 @@ import javax.persistence.GeneratedValue;
 import javax.persistence.Id;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
-import javax.persistence.OneToOne;
 import javax.persistence.Table;
 
 import org.hibernate.annotations.GenericGenerator;
 
 @Entity
 @Table(name = "SOrderDet")
-public class OrderItem implements Serializable
+public class OrderItem implements Serializable, Comparable<OrderItem>
 {
 
 	private static final long serialVersionUID = -2960499864752422068L;
 
 	@Id
 	@Column(name = "OrderDetId")
-	// @GeneratedValue(strategy = IDENTITY)
 	@GenericGenerator(name = "kaugen", strategy = "increment")
 	@GeneratedValue(generator = "kaugen")
 	private Integer id;
@@ -35,12 +33,9 @@ public class OrderItem implements Serializable
 	@JoinColumn(name = "PurchaseId")
 	private Purchase purchase;
 
-	@OneToOne
+	@ManyToOne()
 	@JoinColumn(name = "BkNo")
 	private Book book;
-
-	@Column(name = "BookId")
-	private String bookId;
 
 	@Column(name = "Qty")
 	private int count;
@@ -50,6 +45,14 @@ public class OrderItem implements Serializable
 
 	@Column(name = "BookPrice")
 	private Double bookPrice;
+
+	@ManyToOne()
+	@JoinColumn(name = "ReturnId")
+	private SchoolReturn bookReturn;
+
+	@ManyToOne()
+	@JoinColumn(name = "PurReturnId")
+	private PurchaseReturn purchReturn;
 
 	public double getTotal()
 	{
@@ -68,6 +71,16 @@ public class OrderItem implements Serializable
 	public void setBookPrice(Double bookPrice)
 	{
 		this.bookPrice = bookPrice;
+	}
+
+	public SchoolReturn getBookReturn()
+	{
+		return bookReturn;
+	}
+
+	public void setBookReturn(SchoolReturn bookReturn)
+	{
+		this.bookReturn = bookReturn;
 	}
 
 	public String getBookName()
@@ -125,16 +138,6 @@ public class OrderItem implements Serializable
 		this.book = book;
 	}
 
-	public String getBookId()
-	{
-		return bookId;
-	}
-
-	public void setBookId(String bookId)
-	{
-		this.bookId = bookId;
-	}
-
 	public int getCount()
 	{
 		return count;
@@ -170,14 +173,28 @@ public class OrderItem implements Serializable
 		builder.append(order);
 		builder.append(", book=");
 		builder.append(book);
-		builder.append(", bookId=");
-		builder.append(bookId);
+		// builder.append(", bookId=");
+		// builder.append(bookId);
 		builder.append(", count=");
 		builder.append(count);
 		builder.append(", serialNum=");
 		builder.append(serialNum);
 		builder.append("]");
 		return builder.toString();
+	}
+
+	@Override
+	public int compareTo(OrderItem o)
+	{
+		if (o != null && o.getId() != null && this.getId() != null && this.getId().equals(o.getId()))
+		{
+			return 0;
+		}
+		else
+		{
+			return -1;
+		}
+
 	}
 
 }

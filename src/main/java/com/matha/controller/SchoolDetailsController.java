@@ -1,6 +1,6 @@
 package com.matha.controller;
 
-import static com.matha.util.UtilConstants.addBillFxmlFile;
+import static com.matha.util.UtilConstants.*;
 import static com.matha.util.UtilConstants.addPaymentFxmlFile;
 import static com.matha.util.UtilConstants.createOrderFxmlFile;
 
@@ -19,6 +19,7 @@ import com.matha.domain.Sales;
 import com.matha.domain.SalesTransaction;
 import com.matha.domain.School;
 import com.matha.domain.SchoolPayment;
+import com.matha.domain.SchoolReturn;
 import com.matha.service.SchoolService;
 import com.matha.util.LoadUtils;
 
@@ -74,10 +75,19 @@ public class SchoolDetailsController
 	private TableView<SalesTransaction> transactionData;
 
 	@FXML
+	private Tab creditNoteTab;
+
+	@FXML
+	private TableView<SchoolReturn> creditNoteData;
+
+	@FXML
 	private TextArea address;
 
 	@FXML
 	private TextField phone;
+	
+	@FXML
+	private TextField outBalance;
 
 	@FXML
 	private Label schoolName;
@@ -111,7 +121,7 @@ public class SchoolDetailsController
 		bookMap = new HashMap<>();
 		for (Book bookIn : schools)
 		{
-			bookMap.put(bookIn.getName() + bookIn.getPublisherName(), bookIn);
+			bookMap.put(bookIn.getName() + " - " + bookIn.getPublisherName(), bookIn);
 		}
 
 		txnData.getSelectionModel().setSelectionMode(SelectionMode.MULTIPLE);
@@ -119,11 +129,16 @@ public class SchoolDetailsController
 
 	public void initData(School school)
 	{
+		this.school = school; 
+		Double balance = schoolService.fetchBalance(school);
+		if(balance != null)
+		{
+		outBalance.setText(balance.toString());
+		}
 		schoolName.setText(school.getName());
 		address.setText(school.addressText());
 		txnData.setItems(FXCollections.observableList(schoolService.fetchOrderForSchool(school)));
-		this.school = school;
-
+		
 		List<Sales> billDataList = schoolService.fetchBills(school);
 		billData.setItems(FXCollections.observableList(billDataList));
 	}
@@ -251,21 +266,67 @@ public class SchoolDetailsController
 	}
 
 	@FXML
+	void loadCreditNotes(Event e)
+	{
+		if (creditNoteTab.isSelected())
+		{
+			List<SchoolReturn> creditNotes = schoolService.fetchReturnsForSchool(this.school);
+			creditNoteData.setItems(FXCollections.observableList(creditNotes));
+		}
+	}
+
+	@FXML
 	void addCredit(ActionEvent event)
 	{
+		try
+		{
+			FXMLLoader createReturnLoader = LoadUtils.loadFxml(this, addReturnFxmlFile);
+			Parent addReturnRoot = createReturnLoader.load();
+			AddReturnController ctrl = createReturnLoader.getController();
+			ctrl.initData(this.school, null);
+			Scene addCreditNoteScene = new Scene(addReturnRoot);
+			prepareAndShowStage(event, addCreditNoteScene, returnEventHandler);
+
+		} catch (Exception e)
+		{
+			e.printStackTrace();
+		}
 
 	}
 
 	@FXML
 	void editCredit(ActionEvent event)
 	{
+		try
+		{
+			FXMLLoader createReturnLoader = LoadUtils.loadFxml(this, addReturnFxmlFile);
+			Parent addReturnRoot = createReturnLoader.load();
+			AddReturnController ctrl = createReturnLoader.getController();
+			ctrl.initData(this.school, this.creditNoteData.getSelectionModel().getSelectedItem());
+			Scene addCreditNoteScene = new Scene(addReturnRoot);
+			prepareAndShowStage(event, addCreditNoteScene, returnEventHandler);
 
+		} catch (Exception e)
+		{
+			e.printStackTrace();
+		}
 	}
 
 	@FXML
 	void deleteCredit(ActionEvent event)
 	{
+		SchoolReturn selectedPayment = creditNoteData.getSelectionModel().getSelectedItem();
+		Alert alert = new Alert(AlertType.CONFIRMATION);
+		alert.setTitle("Delete Return Confirmation");
+		alert.setHeaderText("Are you sure you want to delete the Credit Note: " + selectedPayment.getAmount());
+		alert.setContentText("Click Ok to Delete");
 
+		Optional<ButtonType> result = alert.showAndWait();
+		if (result.get() == ButtonType.OK)
+		{
+			schoolService.deleteReturn(selectedPayment);
+			loadCreditNotes(event);
+		}
 	}
 
 	@FXML
@@ -388,6 +449,14 @@ public class SchoolDetailsController
 		public void handle(final WindowEvent event)
 		{
 			loadPayments(event);
+		}
+	};
+
+	private EventHandler<WindowEvent> returnEventHandler = new EventHandler<WindowEvent>() {
+		@Override
+		public void handle(final WindowEvent event)
+		{
+			loadCreditNotes(event);
 		}
 	};
 }

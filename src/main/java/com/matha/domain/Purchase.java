@@ -4,202 +4,180 @@ import java.io.Serializable;
 import java.time.LocalDate;
 import java.util.Set;
 
+import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.FetchType;
-import javax.persistence.GeneratedValue;
-import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.JoinColumn;
-import javax.persistence.ManyToOne;
 import javax.persistence.OneToMany;
+import javax.persistence.OneToOne;
 import javax.persistence.Table;
-
-import org.hibernate.annotations.Cascade;
-import org.hibernate.annotations.CascadeType;
-
-import com.matha.util.UtilConstants;
 
 @Entity
 @Table(name = "BookPurchase")
-public class Purchase implements Serializable {
-
-	private static final long serialVersionUID = -5481240318711096172L;
+public class Purchase implements Serializable
+{
+	/**
+	 * 
+	 */
+	private static final long serialVersionUID = -3847049966939941709L;
 
 	@Id
-	@GeneratedValue(strategy = GenerationType.IDENTITY)
-	private Integer id;
+	@Column(name = "Id")
+	private String id;
 
-	@ManyToOne()
-	@JoinColumn(name = "publisher")
-	private Publisher publisher;
+	@Column(name = "DespatchedTo")
+	private String despatchedTo;
 
-	@OneToMany(fetch = FetchType.EAGER, mappedBy = "purchase")
-	@Cascade({CascadeType.SAVE_UPDATE, CascadeType.PERSIST, CascadeType.MERGE})
-	private Set<OrderItem> orderItem;
+	@Column(name = "DocumentsThrough")
+	private String docsThrough;
 
-	private LocalDate purchaseDate;
+	@Column(name = "DespatchPer")
+	private String despatchPer;
 
-	private LocalDate deliveryDate;
+	@Column(name = "GrNo")
+	private String grNum;
 
+	@Column(name = "Packages")
+	private Integer packages;
+
+	@Column(name = "Discount")
+	private Double discAmt;
+
+	@Column(name = "DiscountType")
+	private Boolean discType;
+
+	@Column(name = "SubTotal")
 	private Double subTotal;
 
-	private String discountType;
+	@Column(name = "PurchaseDate")
+	private LocalDate purchaseDate;
 
-	private Double discount;
+	@OneToOne
+	@JoinColumn(name = "TxnId")
+	private PurchaseTransaction salesTxn;
 
-	private String grNo;
+	@OneToMany(mappedBy = "purchase", fetch = FetchType.EAGER)
+	private Set<OrderItem> orderItems;
 
-	private String invoiceNo;
-
-	private Double paidAmount;
-
-	private String notes;
-
-	public Double getNetAmount() {
-
-		Double value = null;
-		if (subTotal != null) {
-			if (this.discount != null) {
-				value = UtilConstants.discTypes[0].equals(this.discountType) ? this.subTotal - this.discount
-						: this.subTotal - this.subTotal * this.discount / 100;
-			} else {
-				value = this.subTotal;
-			}
-		}
-
-		return value;
-	}
-
-	public Double getAmountToPay() {
-		if (this.getNetAmount() == null) {
-			return null;
-		}
-		return this.getNetAmount() - (this.paidAmount == null ? 0 : this.paidAmount);
-	}
-
-	public Integer getId() {
+	public String getId()
+	{
 		return id;
 	}
 
-	public void setId(Integer id) {
+	public void setId(String id)
+	{
 		this.id = id;
 	}
 
-	public Publisher getPublisher() {
-		return publisher;
+	public String getDespatchedTo()
+	{
+		return despatchedTo;
 	}
 
-	public void setPublisher(Publisher publisher) {
-		this.publisher = publisher;
+	public void setDespatchedTo(String despatchedTo)
+	{
+		this.despatchedTo = despatchedTo;
 	}
 
-	public Set<OrderItem> getOrderItem() {
-		return orderItem;
+	public String getDocsThrough()
+	{
+		return docsThrough;
 	}
 
-	public void setOrderItem(Set<OrderItem> orderItem) {
-		this.orderItem = orderItem;
+	public void setDocsThrough(String docsThrough)
+	{
+		this.docsThrough = docsThrough;
 	}
 
-	public LocalDate getPurchaseDate() {
-		return purchaseDate;
+	public String getDespatchPer()
+	{
+		return despatchPer;
 	}
 
-	public void setPurchaseDate(LocalDate purchaseDate) {
-		this.purchaseDate = purchaseDate;
+	public void setDespatchPer(String despatchPer)
+	{
+		this.despatchPer = despatchPer;
 	}
 
-	public LocalDate getDeliveryDate() {
-		return deliveryDate;
+	public String getGrNum()
+	{
+		return grNum;
 	}
 
-	public void setDeliveryDate(LocalDate deliveryDate) {
-		this.deliveryDate = deliveryDate;
+	public void setGrNum(String grNum)
+	{
+		this.grNum = grNum;
 	}
 
-	public Double getSubTotal() {
+	public Integer getPackages()
+	{
+		return packages;
+	}
+
+	public void setPackages(Integer packages)
+	{
+		this.packages = packages;
+	}
+
+	public Double getDiscAmt()
+	{
+		return discAmt;
+	}
+
+	public void setDiscAmt(Double discAmt)
+	{
+		this.discAmt = discAmt;
+	}
+
+	public Boolean getDiscType()
+	{
+		return discType;
+	}
+
+	public void setDiscType(Boolean discType)
+	{
+		this.discType = discType;
+	}
+
+	public Double getSubTotal()
+	{
 		return subTotal;
 	}
 
-	public void setSubTotal(Double subTotal) {
+	public void setSubTotal(Double subTotal)
+	{
 		this.subTotal = subTotal;
 	}
 
-	public String getDiscountType() {
-		return discountType;
+	public LocalDate getPurchaseDate()
+	{
+		return purchaseDate;
 	}
 
-	public void setDiscountType(String discountType) {
-		this.discountType = discountType;
+	public void setPurchaseDate(LocalDate purchaseDate)
+	{
+		this.purchaseDate = purchaseDate;
 	}
 
-	public Double getDiscount() {
-		return discount;
+	public PurchaseTransaction getSalesTxn()
+	{
+		return salesTxn;
 	}
 
-	public void setDiscount(Double discount) {
-		this.discount = discount;
+	public void setSalesTxn(PurchaseTransaction salesTxn)
+	{
+		this.salesTxn = salesTxn;
 	}
 
-	public String getGrNo() {
-		return grNo;
+	public Set<OrderItem> getOrderItems()
+	{
+		return orderItems;
 	}
 
-	public void setGrNo(String grNo) {
-		this.grNo = grNo;
-	}
-
-	public String getInvoiceNo() {
-		return invoiceNo;
-	}
-
-	public void setInvoiceNo(String invoiceNo) {
-		this.invoiceNo = invoiceNo;
-	}
-
-	public Double getPaidAmount() {
-		return paidAmount;
-	}
-
-	public void setPaidAmount(Double paidAmount) {
-		this.paidAmount = paidAmount;
-	}
-
-	public String getNotes() {
-		return notes;
-	}
-
-	public void setNotes(String notes) {
-		this.notes = notes;
-	}
-
-	@Override
-	public String toString() {
-		StringBuilder builder = new StringBuilder();
-		builder.append("Purchase [id=");
-		builder.append(id);
-		builder.append(", publisher=");
-		builder.append(publisher);
-		builder.append(", purchaseDate=");
-		builder.append(purchaseDate);
-		builder.append(", deliveryDate=");
-		builder.append(deliveryDate);
-		builder.append(", subTotal=");
-		builder.append(subTotal);
-		builder.append(", discountType=");
-		builder.append(discountType);
-		builder.append(", discount=");
-		builder.append(discount);
-		builder.append(", grNo=");
-		builder.append(grNo);
-		builder.append(", invoiceNo=");
-		builder.append(invoiceNo);
-		builder.append(", paidAmount=");
-		builder.append(paidAmount);
-		builder.append(", notes=");
-		builder.append(notes);
-		builder.append("]");
-		return builder.toString();
+	public void setOrderItems(Set<OrderItem> order)
+	{
+		this.orderItems = order;
 	}
 
 }

@@ -108,16 +108,16 @@ public class CreatePurchaseController {
 			pur = new Purchase();
 		}
 		pur.setPurchaseDate(this.purchaseDate.getValue());
-		pur.setGrNo(grNum.getText());
-		pur.setNotes(notes.getText());
-		pur.setPublisher(this.publisher);
-		pur.setDiscount(
-				StringUtils.isEmpty(this.discQty.getText()) ? null : Double.parseDouble(this.discQty.getText()));
-		pur.setDiscountType(this.discType.getSelectionModel().getSelectedItem());
-		pur.setDeliveryDate(this.deliveryDate.getValue());
-		pur.setInvoiceNo(this.invoiceNum.getText());
-		pur.setPaidAmount(
-				StringUtils.isEmpty(this.paidAmount.getText()) ? null : Double.parseDouble(this.paidAmount.getText()));
+//		pur.setGrNo(grNum.getText());
+//		pur.setNotes(notes.getText());
+//		pur.setPublisher(this.publisher);
+//		pur.setDiscount(
+//				StringUtils.isEmpty(this.discQty.getText()) ? null : Double.parseDouble(this.discQty.getText()));
+//		pur.setDiscountType(this.discType.getSelectionModel().getSelectedItem());
+//		pur.setDeliveryDate(this.deliveryDate.getValue());
+//		pur.setInvoiceNo(this.invoiceNum.getText());
+//		pur.setPaidAmount(
+//				StringUtils.isEmpty(this.paidAmount.getText()) ? null : Double.parseDouble(this.paidAmount.getText()));
 		pur.setSubTotal(
 				StringUtils.isEmpty(this.subTotal.getText()) ? null : Double.parseDouble(this.subTotal.getText()));
 
@@ -187,19 +187,19 @@ public class CreatePurchaseController {
 	public void initEdit(Purchase purchase) {
 
 		this.purchase = purchase;
-		List<OrderItem> orderList = new ArrayList<>(purchase.getOrderItem());
-		addedOrders.setItems(FXCollections.observableList(orderList));
-		this.publisher = purchase.getPublisher();
-		this.purchaseDate.setValue(purchase.getPurchaseDate());
-		this.discType.setItems(FXCollections.observableArrayList(discTypes));
-		this.subTotal.setText(purchase.getSubTotal() == null ? "" : String.valueOf(purchase.getSubTotal()));
-		this.grNum.setText(purchase.getGrNo());
-		this.invoiceNum.setText(purchase.getInvoiceNo());
-		this.notes.setText(purchase.getNotes());
-		this.purchaseNum.setText(purchase.getId() == null ? "" : String.valueOf(purchase.getId()));
-		this.deliveryDate.setValue(purchase.getDeliveryDate());
-		this.discQty.setText(purchase.getDiscount() == null ? "" : String.valueOf(purchase.getDiscount()));
-		this.discType.getSelectionModel().select(purchase.getDiscountType());
+//		List<OrderItem> orderList = new ArrayList<>(purchase.getOrderItem());
+//		addedOrders.setItems(FXCollections.observableList(orderList));
+//		this.publisher = purchase.getPublisher();
+//		this.purchaseDate.setValue(purchase.getPurchaseDate());
+//		this.discType.setItems(FXCollections.observableArrayList(discTypes));
+//		this.subTotal.setText(purchase.getSubTotal() == null ? "" : String.valueOf(purchase.getSubTotal()));
+//		this.grNum.setText(purchase.getGrNo());
+//		this.invoiceNum.setText(purchase.getInvoiceNo());
+//		this.notes.setText(purchase.getNotes());
+//		this.purchaseNum.setText(purchase.getId() == null ? "" : String.valueOf(purchase.getId()));
+//		this.deliveryDate.setValue(purchase.getDeliveryDate());
+//		this.discQty.setText(purchase.getDiscount() == null ? "" : String.valueOf(purchase.getDiscount()));
+//		this.discType.getSelectionModel().select(purchase.getDiscountType());
 
 	}
 }

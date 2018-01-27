@@ -18,11 +18,9 @@ import org.hibernate.annotations.Cascade;
 import org.hibernate.annotations.CascadeType;
 import org.hibernate.annotations.GenericGenerator;
 
-import javassist.expr.Instanceof;
-
 @Entity
 @Table(name = "SOrder")
-public class Order implements Serializable, Comparable
+public class Order implements Serializable, Comparable<Order>
 {
 
 	private static final long serialVersionUID = 2735264048303888145L;
@@ -167,12 +165,11 @@ public class Order implements Serializable, Comparable
 	}
 
 	@Override
-	public int compareTo(Object o)
+	public int compareTo(Order order)
 	{
-		if(o != null && o instanceof Order && ((Order)o).getId() != null)
+		if (order != null && order.getId() != null)
 		{
-			Order order = (Order)o;
-			if(order.getId() != null && this.getId() != null && order.getId().equals(this.getId()))
+			if (order.getId() != null && this.getId() != null && order.getId().equals(this.getId()))
 			{
 				return 0;
 			}

@@ -5,59 +5,68 @@
 <?import java.lang.*?>
 <?import javafx.scene.layout.*?>
 
-<VBox maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="600.0" prefWidth="800.0" xmlns="http://javafx.com/javafx/8" xmlns:fx="http://javafx.com/fxml/1">
-   <children>
-      <MenuBar>
-        <menus>
-          <Menu mnemonicParsing="false" text="File">
-            <items>
-              <MenuItem mnemonicParsing="false" text="Close" />
-            </items>
-          </Menu>
-          <Menu mnemonicParsing="false" text="Edit">
-            <items>
-              <MenuItem mnemonicParsing="false" text="Delete" />
-            </items>
-          </Menu>
-          <Menu mnemonicParsing="false" text="Help">
-            <items>
-              <MenuItem mnemonicParsing="false" text="About" />
-            </items>
-          </Menu>
-        </menus>
-      </MenuBar>
-      <TabPane prefHeight="555.0" prefWidth="800.0" tabClosingPolicy="UNAVAILABLE" tabMaxWidth="200.0" tabMinWidth="100.0">
-        <tabs>
-          <Tab text="Sales">
-            <content>
-            <fx:include source="Schools.fxml" />
-            </content>
-          </Tab>
-          <Tab text="Purchases">
-            <content>
-	          <fx:include source="Purchases.fxml" />
-            </content>
-          </Tab>
-            <Tab text="Accounts">
-              <content>
-                <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="180.0" prefWidth="200.0" />
-              </content>
-            </Tab>
-            <Tab text="CashBook">
-            <content>
-	          <fx:include source="CashBook.fxml" />
-            </content>
-            </Tab>
-            <Tab text="Book Management">
-              <content>
-                <fx:include source="Books.fxml" />
-              </content>
-            </Tab>
-        </tabs>
-      </TabPane>
-      <Label alignment="CENTER_RIGHT" contentDisplay="RIGHT" prefHeight="17.0" prefWidth="801.0" text="All Rights Reserved - Matha Agencies" textAlignment="RIGHT" />
-   </children>
-   <effect>
-      <DropShadow />
-   </effect>
+<VBox fx:controller="com.matha.controller.LandingController"
+	maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity"
+	minWidth="-Infinity" prefHeight="600.0" prefWidth="800.0"
+	xmlns="http://javafx.com/javafx/8" xmlns:fx="http://javafx.com/fxml/1">
+	<children>
+		<MenuBar>
+			<menus>
+				<Menu mnemonicParsing="false" text="File">
+					<items>
+						<MenuItem mnemonicParsing="false" text="Close" />
+					</items>
+				</Menu>
+				<Menu mnemonicParsing="false" text="Edit">
+					<items>
+						<MenuItem mnemonicParsing="false" text="Delete" />
+					</items>
+				</Menu>
+				<Menu mnemonicParsing="false" text="Help">
+					<items>
+						<MenuItem mnemonicParsing="false" text="About" />
+					</items>
+				</Menu>
+			</menus>
+		</MenuBar>
+		<TabPane prefHeight="555.0" prefWidth="800.0"
+			tabClosingPolicy="UNAVAILABLE" tabMaxWidth="200.0" tabMinWidth="100.0">
+			<tabs>
+				<Tab text="Sales">
+					<content>
+						<fx:include source="Schools.fxml" />
+					</content>
+				</Tab>
+				<Tab fx:id="purchaseTab" onSelectionChanged="#loadPurchasePage"
+					text="Purchases">
+					<content>
+						<AnchorPane prefHeight="200.0" prefWidth="200.0">
+						</AnchorPane>
+					</content>
+				</Tab>
+				<Tab text="Accounts">
+					<content>
+						<AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="180.0"
+							prefWidth="200.0" />
+					</content>
+				</Tab>
+				<Tab fx:id="cashBookTab" text="CashBook">
+					<content>
+						<fx:include source="CashBook.fxml" />
+					</content>
+				</Tab>
+				<Tab fx:id="bookMgmtTab" text="Book Management">
+					<content>
+						<fx:include source="Books.fxml" />
+					</content>
+				</Tab>
+			</tabs>
+		</TabPane>
+		<Label alignment="CENTER_RIGHT" contentDisplay="RIGHT"
+			prefHeight="17.0" prefWidth="801.0" text="All Rights Reserved - Matha Agencies"
+			textAlignment="RIGHT" />
+	</children>
+	<effect>
+		<DropShadow />
+	</effect>
 </VBox>

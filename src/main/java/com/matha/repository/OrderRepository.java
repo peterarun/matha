@@ -23,4 +23,7 @@ public interface OrderRepository extends JpaRepository<Order, String> {
 	
 	@Query(value = "SELECT NEXT VALUE FOR SOrderSeq", nativeQuery = true)
 	public Long fetchNextSeqVal();
+
+	@Query("select distinct ord from Order ord, Publisher pub, Book book, OrderItem oDet where book = oDet.book and ord = oDet.order and pub = book.publisher and pub=?1")
+	public List<Order> fetchOrdersForPublisher(Publisher pub);
 }

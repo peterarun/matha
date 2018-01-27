@@ -27,6 +27,7 @@ import javafx.scene.control.Alert.AlertType;
 import javafx.scene.control.ButtonType;
 import javafx.scene.control.TableView;
 import javafx.scene.control.TextField;
+import javafx.scene.control.TextInputDialog;
 import javafx.scene.input.KeyEvent;
 import javafx.stage.Stage;
 import javafx.stage.WindowEvent;
@@ -94,7 +95,25 @@ public class BookController {
 	}
 
 	@FXML
-	void openBook(ActionEvent event) {
+	void addInventory(ActionEvent event) {
+
+		Book selBook = this.tableView.getSelectionModel().getSelectedItem();
+		TextInputDialog dialog = new TextInputDialog("0");
+		dialog.setTitle("Add Inventory");
+		dialog.setHeaderText("Book: " + selBook.getName());
+		dialog.setContentText("Inventory quantity to be added:");
+
+		// Traditional way to get the response value.
+		Optional<String> result = dialog.showAndWait();
+		if (result.isPresent()){
+		    String qtyStr = result.get();
+		    if(StringUtils.isNotBlank(qtyStr))
+		    {
+		    	Integer addedVal = Integer.parseInt(qtyStr);
+				selBook.setInventory(selBook.getInventory() + addedVal);
+				srvc.saveBook(selBook);
+		    }
+		}
 
 	}
 

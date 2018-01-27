@@ -19,7 +19,7 @@ import org.hibernate.annotations.CascadeType;
 
 @Entity
 @Table(name = "SchoolReturn")
-public class SchoolReturn {
+public class PurchaseReturn {
 
 	@Id
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -28,9 +28,9 @@ public class SchoolReturn {
 
 	@OneToOne
 	@JoinColumn(name = "TxnId")
-	private SalesTransaction salesTxn;
+	private PurchaseTransaction salesTxn;
 
-	@OneToMany(fetch= FetchType.EAGER, mappedBy = "bookReturn")
+	@OneToMany(fetch= FetchType.EAGER, mappedBy = "purchReturn")
 	@Cascade({CascadeType.SAVE_UPDATE, CascadeType.DELETE})	
 	private Set<OrderItem> orderItem;
 	
@@ -57,11 +57,11 @@ public class SchoolReturn {
 		this.id = id;
 	}
 
-	public SalesTransaction getSalesTxn() {
+	public PurchaseTransaction getSalesTxn() {
 		return salesTxn;
 	}
 
-	public void setSalesTxn(SalesTransaction salesTxn) {
+	public void setSalesTxn(PurchaseTransaction salesTxn) {
 		this.salesTxn = salesTxn;
 	}
 

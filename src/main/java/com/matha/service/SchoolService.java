@@ -28,6 +28,7 @@ import com.matha.domain.Sales;
 import com.matha.domain.SalesTransaction;
 import com.matha.domain.School;
 import com.matha.domain.SchoolPayment;
+import com.matha.domain.SchoolReturn;
 import com.matha.domain.State;
 import com.matha.repository.BookRepository;
 import com.matha.repository.CashBookRepository;
@@ -42,6 +43,7 @@ import com.matha.repository.SalesRepository;
 import com.matha.repository.SalesTxnRepository;
 import com.matha.repository.SchoolPayRepository;
 import com.matha.repository.SchoolRepository;
+import com.matha.repository.SchoolReturnRepository;
 import com.matha.repository.StateRepository;
 
 @Service
@@ -92,6 +94,9 @@ public class SchoolService
 
 	@Autowired
 	private SchoolPayRepository schoolPayRepository;
+
+	@Autowired
+	private SchoolReturnRepository schoolReturnRepository;
 
 	public List<Publisher> fetchAllPublishers()
 	{
@@ -178,6 +183,16 @@ public class SchoolService
 		return orderItemRepository.fetchOrdersForPublisher(pub);
 	}
 
+	public List<OrderItem> fetchOrderItemsForSchool(School school)
+	{
+		return orderItemRepository.fetchOrderItemsForSchool(school);
+	}
+
+	public List<Book> fetchBooksForSchool(School school)
+	{
+		return orderItemRepository.fetchBooksForSchool(school);
+	}
+
 	public List<Order> fetchOrders()
 	{
 		return orderRepository.findAll();
@@ -220,7 +235,7 @@ public class SchoolService
 			orderItem.setPurchase(pur);
 		}
 		saveOrderItems(orderItems);
-		pur.setOrderItem(new HashSet<>(orderItems));
+		pur.setOrderItems(new HashSet<>(orderItems));
 		purchaseRepoitory.save(pur);
 
 	}
@@ -229,7 +244,7 @@ public class SchoolService
 	{
 		return purchaseRepoitory.findAllByPublisher(pub);
 	}
-
+	
 	public void saveCashBook(CashBook item)
 	{
 		cashBookRepository.save(item);
@@ -267,6 +282,12 @@ public class SchoolService
 		return orderList;
 	}
 
+	public List<Order> fetchAllOrders(Publisher pub)
+	{		
+		List<Order> orderList = orderRepository.fetchOrdersForPublisher(pub);
+		return orderList;
+	}	
+	
 	@Transactional
 	public void saveSales(Sales sales)
 	{
@@ -337,5 +358,36 @@ public class SchoolService
 	public List<SalesTransaction> fetchTransactions(School school, LocalDate fromDateVal, LocalDate toDateVal)
 	{
 		return salesTxnRepository.findByFromToDate(school, fromDateVal, toDateVal);
+	}
+
+	@Transactional
+	public void saveSchoolReturn(SchoolReturn returnIn)
+	{
+		SalesTransaction txn = returnIn.getSalesTxn();
+		salesTxnRepository.save(txn);
+
+		orderItemRepository.save(returnIn.getOrderItem());
+		schoolReturnRepository.save(returnIn);
+		returnIn.getOrderItem().forEach(it -> it.setBookReturn(returnIn));
+		orderItemRepository.save(returnIn.getOrderItem());
+
+		txn.setReturnId(returnIn);
+		salesTxnRepository.save(txn);
+
+	}
+	
+	public Double fetchBalance(School school)
+	{
+		return salesTxnRepository.findBalance(school);
+	}
+
+	public List<SchoolReturn> fetchReturnsForSchool(School school)
+	{
+		return schoolReturnRepository.findAllBySchool(school);
+	}
+
+	public void deleteReturn(SchoolReturn selectedReturn)
+	{
+		schoolReturnRepository.delete(selectedReturn);
 	}
 }

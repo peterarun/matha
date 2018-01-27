@@ -2,6 +2,10 @@ package com.matha.util;
 
 import java.util.Optional;
 
+import com.matha.domain.OrderItem;
+
+import javafx.beans.property.ReadOnlyStringWrapper;
+import javafx.beans.value.ObservableValue;
 import javafx.print.PageLayout;
 import javafx.print.PageOrientation;
 import javafx.print.Paper;
@@ -11,22 +15,48 @@ import javafx.scene.Node;
 import javafx.scene.control.ChoiceDialog;
 import javafx.scene.control.Label;
 import javafx.scene.control.TextField;
+import javafx.scene.control.TableColumn.CellDataFeatures;
 import javafx.stage.Window;
+import javafx.util.Callback;
 
-public class Utils {
+public class Utils
+{
 
-	public static Double getDoubleVal(TextField txt) {
+	public static Double getDoubleVal(TextField txt)
+	{
 		Double dblVal = null;
 		String txtStr = txt.getText();
-		if (txtStr != null) {
+		if (txtStr != null)
+		{
 			dblVal = Double.parseDouble(txtStr);
 		}
 		return dblVal;
 	}
 
-	public static void print(Node node, Window parentWindow, Label jobStatus) {
+	public static String getStringVal(Double txt)
+	{
+		String txtVal = null;
+		if (txt != null)
+		{
+			txtVal = String.format("%.2f", txt);
+		}
+		return txtVal;
+	}
 
-		if(jobStatus == null)
+	public static String getStringVal(Integer txt)
+	{
+		String txtVal = null;
+		if (txt != null)
+		{
+			txtVal = txt.toString();
+		}
+		return txtVal;
+	}
+
+	public static void print(Node node, Window parentWindow, Label jobStatus)
+	{
+
+		if (jobStatus == null)
 		{
 			jobStatus = new Label();
 		}
@@ -40,10 +70,11 @@ public class Utils {
 		dialog.setContentText("Choose a printer from available printers");
 		dialog.setTitle("Printer Choice");
 		Optional<Printer> opt = dialog.showAndWait();
-		if (opt.isPresent()) {
-		    printer = opt.get();
+		if (opt.isPresent())
+		{
+			printer = opt.get();
 		}
-		
+
 		// Create a printer job for the default printer
 		PrinterJob job = PrinterJob.createPrinterJob(printer);
 		Paper paper = Paper.A3;
@@ -75,5 +106,17 @@ public class Utils {
 			// Write Error Message
 			jobStatus.setText("Could not create a printer job.");
 		}
+	}
+
+	public static Callback<CellDataFeatures<OrderItem, String>, ObservableValue<String>> fetchPriceColumnFactory()
+	{
+		Callback<CellDataFeatures<OrderItem, String>, ObservableValue<String>> priceColumnFactory = new Callback<CellDataFeatures<OrderItem, String>, ObservableValue<String>>() {
+			public ObservableValue<String> call(CellDataFeatures<OrderItem, String> p)
+			{
+				// p.getValue() returns the Person instance for a particular TableView row
+				return new ReadOnlyStringWrapper(p.getValue().getBookPrice().toString());
+			}
+		};
+		return priceColumnFactory;
 	}
 }

@@ -39,7 +39,7 @@ import javafx.stage.Stage;
 import javafx.stage.Window;
 
 @Component
-public class PurchaseController
+public class LandingController
 {
 
 	private static final int ROWS_PER_PAGE = 10;
@@ -51,7 +51,7 @@ public class PurchaseController
 	private ChoiceBox<Publisher> publishers;
 
 	@FXML
-	private Tab ordersTab;
+	private Tab purchaseTab;
 
 	@FXML
 	private TableView<Order> orderTable;
@@ -82,18 +82,6 @@ public class PurchaseController
 
 	@FXML
 	private Tab statementTab;
-
-	@FXML
-	protected void initialize()
-	{
-		orderTable.getSelectionModel().setSelectionMode(SelectionMode.MULTIPLE);
-		orderPaginator.setPageFactory(this::createPage);
-
-		List<Publisher> allPublishers = schoolService.fetchAllPublishers();
-		publishers.setConverter(Converters.getPublisherConverter());
-		publishers.setItems(FXCollections.observableList(allPublishers));
-		publishers.getSelectionModel().selectFirst();
-	}
 
 	private Node createPage(int pageIndex)
 	{
@@ -199,12 +187,23 @@ public class PurchaseController
 	}
 
 	@FXML
-	public void loadOrders()
+	public void loadPurchasePage()
 	{
-		if (ordersTab.isSelected())
+		if (purchaseTab.isSelected())
 		{
-			int idx = orderPaginator.getCurrentPageIndex();
-			loadOrderTable(idx);
+			try
+			{
+				FXMLLoader createOrderLoader = LoadUtils.loadFxml(this, UtilConstants.purchasePageFxmlFile);
+				Parent addOrderRoot = createOrderLoader.load();
+//				Stage stage = new Stage();
+//				stage.setScene(addOrderRoot.getScene());
+				purchaseTab.setContent(addOrderRoot);
+//				stage.show();
+
+			} catch (Exception e)
+			{
+				e.printStackTrace();
+			}
 		}
 	}
 

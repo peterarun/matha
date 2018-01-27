@@ -26,7 +26,7 @@
 			<children>
 				<TabPane layoutY="1.0" prefHeight="464.0" prefWidth="798.0">
 					<tabs>
-						<Tab text="Orders">
+						<Tab fx:id="ordersTab" onSelectionChanged="#loadOrders" text="Orders">
 							<content>
 								<AnchorPane prefHeight="200.0" prefWidth="200.0">
 									<children>
@@ -65,7 +65,7 @@
 								</AnchorPane>
 							</content>
 						</Tab>
-						<Tab text="Invoices">
+						<Tab fx:id="purchaseBillTab" onSelectionChanged="#loadPurchases" text="Purchase Bills">
 							<content>
 								<AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="180.0" prefWidth="200.0">
 									<children>
@@ -76,24 +76,9 @@
 														<PropertyValueFactory property="id" />
 													</cellValueFactory>
 												</TableColumn>
-												<TableColumn prefWidth="107.0" text="Net Amount">
+												<TableColumn prefWidth="107.0" text="Date">
 													<cellValueFactory>
 														<PropertyValueFactory property="netAmount" />
-													</cellValueFactory>
-												</TableColumn>
-												<TableColumn prefWidth="95.0" text="Paid">
-													<cellValueFactory>
-														<PropertyValueFactory property="paidAmount" />
-													</cellValueFactory>
-												</TableColumn>
-												<TableColumn prefWidth="109.0" text="Balance">
-													<cellValueFactory>
-														<PropertyValueFactory property="amountToPay" />
-													</cellValueFactory>
-												</TableColumn>
-												<TableColumn prefWidth="103.0" text="Delivered">
-													<cellValueFactory>
-														<PropertyValueFactory property="deliveryDate" />
 													</cellValueFactory>
 												</TableColumn>
 												<TableColumn prefWidth="114.0" text="GR No.">
@@ -101,13 +86,30 @@
 														<PropertyValueFactory property="grNo" />
 													</cellValueFactory>
 												</TableColumn>
+                                    <TableColumn prefWidth="95.0" text="Packages" />
+                                    <TableColumn prefWidth="75.0" text="Units" />
+                                    <TableColumn prefWidth="75.0" text="Amount" />
 											</columns>
 										</TableView>
-										<Button layoutX="691.0" layoutY="83.0" mnemonicParsing="false" onAction="#editPurchase" text="Edit Purchase" />
 									</children>
 								</AnchorPane>
 							</content>
 						</Tab>
+                  <Tab fx:id="returnsTab" onSelectionChanged="#loadReturns" text="Returns">
+                    <content>
+                      <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="180.0" prefWidth="200.0" />
+                    </content>
+                  </Tab>
+                  <Tab fx:id="paymentTab" onSelectionChanged="#loadPayments" text="Payments">
+                    <content>
+                      <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="180.0" prefWidth="200.0" />
+                    </content>
+                  </Tab>
+                  <Tab fx:id="statementTab" onSelectionChanged="#loadStatement" text="Statement">
+                    <content>
+                      <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="180.0" prefWidth="200.0" />
+                    </content>
+                  </Tab>
 					</tabs>
 				</TabPane>
 			</children>
