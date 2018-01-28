@@ -122,7 +122,7 @@ public class CreatePurchaseController {
 				StringUtils.isEmpty(this.subTotal.getText()) ? null : Double.parseDouble(this.subTotal.getText()));
 
 		List<OrderItem> orderItems = this.addedOrders.getItems();
-		srvc.savePurchase(pur, orderItems);
+//		srvc.savePurchase(pur, orderItems);
 
 		((Stage) cancelBtn.getScene().getWindow()).close();
 	}

@@ -1,8 +1,7 @@
 package com.matha.controller;
 
-import static com.matha.util.UtilConstants.RUPEE_SIGN;
-import static com.matha.util.Utils.fetchPriceColumnFactory;
-import static com.matha.util.Utils.getStringVal;
+import static com.matha.util.UtilConstants.*;
+import static com.matha.util.Utils.*;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -61,6 +60,9 @@ public class AddPurchaseBillController
 	private TextField publisherDetails;
 
 	@FXML
+	private Label message;
+
+	@FXML
 	private TextField invoiceNum;
 
 	@FXML
@@ -89,7 +91,7 @@ public class AddPurchaseBillController
 
 	@FXML
 	private TextField note;
-	
+
 	@FXML
 	private TableView<OrderItem> addedBooks;
 
@@ -143,6 +145,7 @@ public class AddPurchaseBillController
 				t.getTableView().refresh();
 				loadSubTotal();
 				calcNetAmount(discAmt.getText());
+				calculateTotalQty();
 			}
 		});
 		this.publisherDetails.setText(this.publisher.getName());
@@ -170,16 +173,14 @@ public class AddPurchaseBillController
 				List<String> orderIdList = orderSet.stream().map(Order::getId).collect(Collectors.toList());
 				this.orderList.setItems(FXCollections.observableList(orderIdList));
 
-				int bookQty = 0;
 				List<OrderItem> bookItems = new ArrayList<OrderItem>();
 
 				if (purchaseIn.getOrderItems() != null)
 				{
 					bookItems.addAll(purchaseIn.getOrderItems());
-					bookQty += purchaseIn.getOrderItems().stream().collect(Collectors.summingInt(OrderItem::getCount));
 				}
 				this.addedBooks.setItems(FXCollections.observableList(bookItems));
-				this.totalCount.setText(getStringVal(bookQty));
+				this.calculateTotalQty();
 			}
 			if (!purchaseIn.getDiscType())
 			{
@@ -212,6 +213,7 @@ public class AddPurchaseBillController
 				orderMap.put(order.getSerialNo(), order);
 			}
 			loadBooksAndSubTotal(ordersIn);
+			calculateTotalQty();
 		}
 
 		discType.selectedToggleProperty().addListener(new ChangeListener<Toggle>() {
@@ -220,6 +222,8 @@ public class AddPurchaseBillController
 				if (discType.getSelectedToggle() != null)
 				{
 					calcNetAmount(discAmt.getText());
+					loadDiscSymbol();
+					calculateTotalQty();
 				}
 			}
 		});
@@ -253,13 +257,13 @@ public class AddPurchaseBillController
 
 		ObservableList<OrderItem> orderListIn = addedBooks.getItems();
 		subTotalVal += orderListIn.stream().collect(summingDblCollector);
-		subTotal.setText(String.valueOf(subTotalVal));
+		subTotal.setText(getStringVal(subTotalVal));
 	}
 
 	@FXML
 	private void updateNetAmt(KeyEvent ke)
 	{
-		String discAmtStr = discAmt.getText();
+		String discAmtStr = StringUtils.defaultString(discAmt.getText());
 		discAmtStr += ke.getCharacter();
 		if (!StringUtils.isEmpty(discAmtStr))
 		{
@@ -299,70 +303,101 @@ public class AddPurchaseBillController
 				{
 					if (rupeeRad.isSelected())
 					{
-						netTotalDbl = subTotalDbl + discAmtDbl;
+						netTotalDbl = subTotalDbl - discAmtDbl;
 					}
 					else if (percentRad.isSelected())
 					{
-						netTotalDbl = subTotalDbl + subTotalDbl * discAmtDbl / 100;
+						netTotalDbl = subTotalDbl - subTotalDbl * discAmtDbl / 100;
 					}
 				}
 				else
 				{
 					netTotalDbl = subTotalDbl;
 				}
-				netAmt.setText(String.valueOf(netTotalDbl));
 			}
 		}
+		netAmt.setText(getStringVal(netTotalDbl));
+	}
+
+	private void calculateTotalQty()
+	{
+		ObservableList<OrderItem> orderItems = addedBooks.getItems();
+		int bookQty = 0;
+		bookQty += orderItems.stream().collect(Collectors.summingInt(OrderItem::getCount));
+		this.totalCount.setText(getStringVal(bookQty));
 	}
 
 	@FXML
 	void saveData(ActionEvent event)
 	{
-		Purchase sale = this.purchase;
-		if (sale == null)
+		try
 		{
-			sale = new Purchase();
-			PurchaseTransaction salesTxn = new PurchaseTransaction();
-			salesTxn.setPublisher(this.publisher);
-			sale.setSalesTxn(salesTxn);
-		}
-		if (!StringUtils.isEmpty(discAmt.getText()))
-		{
-			Double discAmtVal = Double.parseDouble(discAmt.getText());
-			sale.setDiscAmt(discAmtVal);
-			if (percentRad.isSelected())
+			this.validateData();
+			Purchase sale = this.purchase;
+			if (sale == null)
 			{
-				sale.setDiscType(true);
+				sale = new Purchase();
+				sale.setId(this.invoiceNum.getText());
 			}
-			else if (rupeeRad.isSelected())
+			PurchaseTransaction salesTxn = sale.getSalesTxn();
+			if (salesTxn == null)
 			{
-				sale.setDiscType(false);
+				salesTxn = new PurchaseTransaction();
+				salesTxn.setPublisher(this.publisher);
 			}
-		}
+			preparePurchase(sale);
+			prepareTransaction(salesTxn);
 
-		if (!StringUtils.isEmpty(subTotal.getText()))
-		{
-			Double subTotalVal = Double.parseDouble(subTotal.getText());
-			sale.setSubTotal(subTotalVal);
-		}
+			schoolService.savePurchase(sale, this.addedBooks.getItems(), salesTxn);
 
-		PurchaseTransaction txn = sale.getSalesTxn();
-		if (StringUtils.isEmpty(netAmt.getText()))
-		{
-			txn.setAmount(0.0);
+			((Stage) cancelBtn.getScene().getWindow()).close();
 		}
-		else
+		catch (Throwable t)
 		{
-			Double netAmtVal = Double.parseDouble(netAmt.getText());
-			txn.setAmount(netAmtVal);
+			t.printStackTrace();
+			loadMessage(t.getMessage());
 		}
-	
+	}
+
+	private void validateData()
+	{
+		StringBuilder errorMsg = new StringBuilder("Error: ");
+		if (StringUtils.isBlank(this.invoiceNum.getText()))
+		{
+			errorMsg.append("Please provide an Invoice number");
+			loadMessage(errorMsg.toString());
+		}
+		else if (this.invoiceDate.getValue() == null)
+		{
+			errorMsg.append("Please provide a date");
+			loadMessage(errorMsg.toString());
+		}
+	}
+
+	private void preparePurchase(Purchase sale)
+	{
+		sale.setDiscAmt(getDoubleVal(this.discAmt));
+		if (percentRad.isSelected())
+		{
+			sale.setDiscType(true);
+		}
+		else if (rupeeRad.isSelected())
+		{
+			sale.setDiscType(false);
+		}
+		sale.setSubTotal(getDoubleVal(this.subTotal));
+		sale.setDespatchedTo(this.despatchedTo.getText());
+		sale.setDocsThrough(this.docsThrough.getText());
+		sale.setDespatchPer(this.despatchedPer.getText());
+		sale.setGrNum(this.grNum.getText());
+		sale.setPackages(getIntegerVal(this.packageCount));
+	}
+
+	private void prepareTransaction(PurchaseTransaction txn)
+	{
+		txn.setAmount(getDoubleVal(this.netAmt));
 		txn.setNote(this.note.getText());
 		txn.setTxnDate(this.invoiceDate.getValue());
-
-		schoolService.savePurchase(sale, this.addedBooks.getItems());
-
-		((Stage) cancelBtn.getScene().getWindow()).close();
 	}
 
 	@FXML
@@ -389,4 +424,21 @@ public class AddPurchaseBillController
 		loadBooksAndSubTotal(ordersIn);
 	}
 
+	private void loadMessage(String msg)
+	{
+		message.setText(msg);
+		message.setVisible(true);
+	}
+
+	private void loadDiscSymbol()
+	{
+		if (this.percentRad.isSelected())
+		{
+			this.discTypeInd.setText(PERCENT_SIGN);
+		}
+		else if (this.rupeeRad.isSelected())
+		{
+			this.discTypeInd.setText(RUPEE_SIGN);
+		}
+	}
 }

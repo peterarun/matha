@@ -32,9 +32,10 @@
 		<TabPane prefHeight="555.0" prefWidth="800.0"
 			tabClosingPolicy="UNAVAILABLE" tabMaxWidth="200.0" tabMinWidth="100.0">
 			<tabs>
-				<Tab text="Sales">
+				<Tab fx:id="salesTab" onSelectionChanged="#loadSalesPage" text="Sales">
 					<content>
-						<fx:include source="Schools.fxml" />
+						<AnchorPane prefHeight="200.0" prefWidth="200.0">
+						</AnchorPane>
 					</content>
 				</Tab>
 				<Tab fx:id="purchaseTab" onSelectionChanged="#loadPurchasePage"
@@ -50,14 +51,18 @@
 							prefWidth="200.0" />
 					</content>
 				</Tab>
-				<Tab fx:id="cashBookTab" text="CashBook">
+				<Tab fx:id="cashBookTab" onSelectionChanged="#loadCashBook"
+					text="CashBook">
 					<content>
-						<fx:include source="CashBook.fxml" />
+						<AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="180.0"
+							prefWidth="200.0" />
 					</content>
 				</Tab>
-				<Tab fx:id="bookMgmtTab" text="Book Management">
+				<Tab fx:id="bookMgmtTab" onSelectionChanged="#loadBooksPage"
+					text="Book Management">
 					<content>
-						<fx:include source="Books.fxml" />
+						<AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="180.0"
+							prefWidth="200.0" />
 					</content>
 				</Tab>
 			</tabs>

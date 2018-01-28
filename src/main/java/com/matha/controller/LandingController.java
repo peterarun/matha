@@ -1,189 +1,56 @@
 package com.matha.controller;
 
-import java.io.IOException;
-import java.util.HashMap;
-import java.util.HashSet;
-import java.util.List;
-import java.util.Set;
+import static com.matha.util.UtilConstants.booksFxml;
+import static com.matha.util.UtilConstants.cashBookFxml;
+import static com.matha.util.UtilConstants.purchasePageFxmlFile;
+import static com.matha.util.UtilConstants.schoolsFxml;
 
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
-import com.matha.domain.Book;
-import com.matha.domain.Order;
-import com.matha.domain.Publisher;
-import com.matha.domain.Purchase;
-import com.matha.service.SchoolService;
-import com.matha.util.Converters;
 import com.matha.util.LoadUtils;
-import com.matha.util.UtilConstants;
-import com.matha.util.Utils;
 
-import javafx.beans.binding.Bindings;
-import javafx.collections.FXCollections;
-import javafx.collections.ObservableList;
-import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
-import javafx.scene.Node;
 import javafx.scene.Parent;
-import javafx.scene.Scene;
-import javafx.scene.control.ChoiceBox;
-import javafx.scene.control.Label;
-import javafx.scene.control.Pagination;
-import javafx.scene.control.SelectionMode;
 import javafx.scene.control.Tab;
-import javafx.scene.control.TableView;
-import javafx.scene.layout.BorderPane;
-import javafx.stage.Stage;
-import javafx.stage.Window;
 
 @Component
 public class LandingController
 {
 
-	private static final int ROWS_PER_PAGE = 10;
-
-	@Autowired
-	private SchoolService schoolService;
-
 	@FXML
-	private ChoiceBox<Publisher> publishers;
+	private Tab salesTab;
 
 	@FXML
 	private Tab purchaseTab;
 
 	@FXML
-	private TableView<Order> orderTable;
-
-	// @FXML
-	// private TableView<OrderItem> orderData;
+	private Tab cashBookTab;
 
 	@FXML
-	private Pagination orderPaginator;
+	private Tab bookMgmtTab;
 
-	// @FXML
-	// private TreeTableView<Object> orders;
-	//
-	// @FXML
-	// private TreeTableColumn<Order, String> orderNumCol;
-
-	@FXML
-	private Tab purchaseBillTab;
-
-	@FXML
-	private TableView<Purchase> purchaseData;
-
-	@FXML
-	private Tab returnsTab;
-
-	@FXML
-	private Tab paymentTab;
-
-	@FXML
-	private Tab statementTab;
-
-	private Node createPage(int pageIndex)
-	{
-		loadOrderTable(pageIndex);
-
-		orderTable.prefHeightProperty()
-				.bind(Bindings.size(orderTable.getItems()).multiply(orderTable.getFixedCellSize()).add(30));
-
-		return new BorderPane(orderTable);
-	}
-
-	@FXML
-	void changedState(ActionEvent event)
-	{
-		Publisher pub = publishers.getSelectionModel().getSelectedItem();
-		int idx = orderPaginator.getCurrentPageIndex();
-		List<Order> orderList = schoolService.fetchOrders(pub, idx, ROWS_PER_PAGE).getContent();
-		orderTable.setItems(FXCollections.observableList(orderList));
-	}
-
-	@FXML
-	void editOrder(ActionEvent event)
+	private void loadPage(Tab tabIn, String fxmlFile)
 	{
 		try
 		{
-			FXMLLoader createOrderLoader = LoadUtils.loadFxml(this, UtilConstants.createOrderFxmlFile);
-			Parent addOrderRoot;
-
-			addOrderRoot = createOrderLoader.load();
-
-			AddOrderController ctrl = createOrderLoader.getController();
-
-			List<Book> schools = schoolService.fetchAllBooks();
-			// LOGGER.info(schools.toString());
-			HashMap<String, Book> bookMap = new HashMap<>();
-			for (Book bookIn : schools)
-			{
-				bookMap.put(bookIn.getName(), bookIn);
-			}
-
-			Order order = orderTable.getSelectionModel().getSelectedItem();
-
-			ctrl.initData(order.getSchool(), bookMap, order);
-			Scene addOrderScene = new Scene(addOrderRoot);
-			prepareAndShowStage(event, addOrderScene);
-		} catch (IOException e)
-		{
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		}
-	}
-
-	@FXML
-	void createPurchase(ActionEvent event)
-	{
-
-		try
-		{
-			ObservableList<Order> selectedOrders = orderTable.getSelectionModel().getSelectedItems();
-			Set<Order> orderSet = new HashSet<>(selectedOrders);
-
-			FXMLLoader createOrderLoader = LoadUtils.loadFxml(this, UtilConstants.createPurchaseFxmlFile);
+			FXMLLoader createOrderLoader = LoadUtils.loadFxml(this, fxmlFile);
 			Parent addOrderRoot = createOrderLoader.load();
-			AddPurchaseBillController ctrl = createOrderLoader.getController();
-			ctrl.initData(orderSet, this.publishers.getSelectionModel().getSelectedItem(), null);
-			Scene addOrderScene = new Scene(addOrderRoot);
-			prepareAndShowStage(event, addOrderScene);
-
-		} catch (Exception e)
+			tabIn.setContent(addOrderRoot);
+		}
+		catch (Exception e)
 		{
 			e.printStackTrace();
-		}
+		}					
 	}
-
+	
 	@FXML
-	void editPurchase(ActionEvent event)
+	public void loadSalesPage()
 	{
-
-		try
+		if (salesTab.isSelected())
 		{
-
-			Purchase purchase = this.purchaseData.getSelectionModel().getSelectedItem();
-
-			FXMLLoader createOrderLoader = LoadUtils.loadFxml(this, UtilConstants.createPurchaseFxmlFile);
-			Parent addOrderRoot = createOrderLoader.load();
-			AddPurchaseBillController ctrl = createOrderLoader.getController();
-			ctrl.initData(null, this.publishers.getSelectionModel().getSelectedItem(), purchase);
-			Scene addOrderScene = new Scene(addOrderRoot);
-			prepareAndShowStage(event, addOrderScene);
-
-		} catch (Exception e)
-		{
-			e.printStackTrace();
+			loadPage(salesTab, schoolsFxml);
 		}
-
-	}
-
-	private void loadOrderTable(int idx)
-	{
-		Publisher pub = publishers.getSelectionModel().getSelectedItem();
-		List<Order> orderList = schoolService.fetchOrders(pub, idx, ROWS_PER_PAGE).getContent();
-		orderTable.setItems(FXCollections.observableList(orderList));
 	}
 
 	@FXML
@@ -191,89 +58,25 @@ public class LandingController
 	{
 		if (purchaseTab.isSelected())
 		{
-			try
-			{
-				FXMLLoader createOrderLoader = LoadUtils.loadFxml(this, UtilConstants.purchasePageFxmlFile);
-				Parent addOrderRoot = createOrderLoader.load();
-//				Stage stage = new Stage();
-//				stage.setScene(addOrderRoot.getScene());
-				purchaseTab.setContent(addOrderRoot);
-//				stage.show();
-
-			} catch (Exception e)
-			{
-				e.printStackTrace();
-			}
+			loadPage(purchaseTab, purchasePageFxmlFile);
 		}
 	}
 
 	@FXML
-	public void loadPurchases()
+	public void loadCashBook()
 	{
-		if (purchaseBillTab.isSelected())
+		if (cashBookTab.isSelected())
 		{
-			Publisher pub = publishers.getSelectionModel().getSelectedItem();
-			List<Purchase> purchaseList = schoolService.fetchPurchasesForPublisher(pub);
-			purchaseData.setItems(FXCollections.observableList(purchaseList));
+			loadPage(cashBookTab, cashBookFxml);		
 		}
 	}
 
 	@FXML
-	public void loadReturns()
+	public void loadBooksPage()
 	{
-		if (returnsTab.isSelected())
+		if (bookMgmtTab.isSelected())
 		{
-
+			loadPage(bookMgmtTab, booksFxml);	
 		}
-	}
-
-	@FXML
-	public void loadPayments()
-	{
-		if (paymentTab.isSelected())
-		{
-
-		}
-	}
-
-	@FXML
-	public void loadStatement()
-	{
-		if (statementTab.isSelected())
-		{
-
-		}
-	}
-
-	@FXML
-	public void printOrder(ActionEvent ev)
-	{
-		try
-		{
-
-			FXMLLoader createOrderLoader = LoadUtils.loadFxml(this, UtilConstants.printOrderFxmlFile);
-			Parent addOrderRoot;
-
-			addOrderRoot = createOrderLoader.load();
-			PrintOrderController ctrl = createOrderLoader.getController();
-
-			Order orderItem = orderTable.getSelectionModel().getSelectedItem();
-			Publisher pub = publishers.getSelectionModel().getSelectedItem();
-			ctrl.initData(orderItem, pub);
-
-			Scene parentScene = ((Node) ev.getSource()).getScene();
-			Window parentWindow = parentScene.getWindow();
-
-			Utils.print(addOrderRoot, parentWindow, new Label());
-		} catch (Exception e)
-		{
-			e.printStackTrace();
-		}
-	}
-
-	private void prepareAndShowStage(ActionEvent e, Scene childScene)
-	{
-		Stage stage = LoadUtils.loadChildStage(e, childScene);
-		stage.show();
 	}
 }

@@ -9,7 +9,7 @@ SET QUOTED_IDENTIFIER ON
 GO
 
 CREATE TABLE [dbo].[BookPurchase](
-	[Id] [int] PRIMARY KEY,
+	[Id] [nvarchar](20) PRIMARY KEY,
 	[DespatchedTo] [nvarchar](20) NULL,
 	[DocumentsThrough] [nvarchar](20) NULL,
 	[DespatchPer] [nvarchar](20) NULL,	

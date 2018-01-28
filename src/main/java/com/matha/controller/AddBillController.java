@@ -171,6 +171,7 @@ public class AddBillController
 				{
 					calcNetAmount(discAmt.getText());
 				}
+				
 			}
 		});
 
@@ -246,11 +247,11 @@ public class AddBillController
 				{
 					if (rupeeRad.isSelected())
 					{
-						netTotalDbl = subTotalDbl + discAmtDbl;
+						netTotalDbl = subTotalDbl - discAmtDbl;
 					}
 					else if (percentRad.isSelected())
 					{
-						netTotalDbl = subTotalDbl + subTotalDbl * discAmtDbl / 100;
+						netTotalDbl = subTotalDbl - subTotalDbl * discAmtDbl / 100;
 					}
 				}
 				else

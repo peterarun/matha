@@ -190,6 +190,12 @@ public class PurchaseController
 		}
 
 	}
+	
+	@FXML
+	void deletePurchase(ActionEvent event)
+	{
+		
+	}
 
 	private void loadOrderTable(int idx)
 	{

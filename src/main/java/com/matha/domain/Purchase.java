@@ -3,6 +3,7 @@ package com.matha.domain;
 import java.io.Serializable;
 import java.time.LocalDate;
 import java.util.Set;
+import java.util.stream.Collectors;
 
 import javax.persistence.Column;
 import javax.persistence.Entity;
@@ -53,13 +54,34 @@ public class Purchase implements Serializable
 	@Column(name = "PurchaseDate")
 	private LocalDate purchaseDate;
 
-	@OneToOne
+	@OneToOne	
 	@JoinColumn(name = "TxnId")
 	private PurchaseTransaction salesTxn;
 
 	@OneToMany(mappedBy = "purchase", fetch = FetchType.EAGER)
 	private Set<OrderItem> orderItems;
 
+	public LocalDate getTxnDate()
+	{
+		return this.getSalesTxn().getTxnDate();
+	}
+	
+	public Integer getUnitCount()
+	{
+		int unitCount = 0;
+		if(getOrderItems() != null)
+		{
+			getOrderItems().stream().collect(Collectors.summingInt(OrderItem::getCount));
+		}
+		
+		return unitCount;
+	}
+	
+	public Double getNetAmount()
+	{
+		return this.getSalesTxn().getAmount();
+	}
+	
 	public String getId()
 	{
 		return id;

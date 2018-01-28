@@ -24,6 +24,7 @@ import com.matha.domain.Order;
 import com.matha.domain.OrderItem;
 import com.matha.domain.Publisher;
 import com.matha.domain.Purchase;
+import com.matha.domain.PurchaseTransaction;
 import com.matha.domain.Sales;
 import com.matha.domain.SalesTransaction;
 import com.matha.domain.School;
@@ -39,6 +40,7 @@ import com.matha.repository.OrderItemRepository;
 import com.matha.repository.OrderRepository;
 import com.matha.repository.PublisherRepository;
 import com.matha.repository.PurchaseRepository;
+import com.matha.repository.PurchaseTxnRepository;
 import com.matha.repository.SalesRepository;
 import com.matha.repository.SalesTxnRepository;
 import com.matha.repository.SchoolPayRepository;
@@ -97,6 +99,9 @@ public class SchoolService
 
 	@Autowired
 	private SchoolReturnRepository schoolReturnRepository;
+
+	@Autowired
+	private PurchaseTxnRepository purchaseTxnRepository;
 
 	public List<Publisher> fetchAllPublishers()
 	{
@@ -225,11 +230,16 @@ public class SchoolService
 	}
 
 	@Transactional
-	public void savePurchase(Purchase pur, List<OrderItem> orderItems)
+	public void savePurchase(Purchase pur, List<OrderItem> orderItems, PurchaseTransaction txn)
 	{
-
-		purchaseRepoitory.save(pur);
-
+		purchaseTxnRepository.save(txn);
+		
+		pur.setSalesTxn(txn);
+		pur = purchaseRepoitory.save(pur);
+						
+		txn.setPurchase(pur);
+		purchaseTxnRepository.save(txn);
+		
 		for (OrderItem orderItem : orderItems)
 		{
 			orderItem.setPurchase(pur);

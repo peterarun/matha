@@ -2,6 +2,8 @@ package com.matha.util;
 
 import java.util.Optional;
 
+import org.apache.commons.lang.StringUtils;
+
 import com.matha.domain.OrderItem;
 
 import javafx.beans.property.ReadOnlyStringWrapper;
@@ -26,13 +28,24 @@ public class Utils
 	{
 		Double dblVal = null;
 		String txtStr = txt.getText();
-		if (txtStr != null)
+		if (StringUtils.isNotBlank(txtStr))
 		{
 			dblVal = Double.parseDouble(txtStr);
 		}
 		return dblVal;
 	}
 
+	public static Integer getIntegerVal(TextField txt)
+	{
+		Integer dblVal = null;
+		String txtStr = txt.getText();
+		if (StringUtils.isNotBlank(txtStr))
+		{
+			dblVal = Integer.parseInt(txtStr);
+		}
+		return dblVal;
+	}
+	
 	public static String getStringVal(Double txt)
 	{
 		String txtVal = null;
