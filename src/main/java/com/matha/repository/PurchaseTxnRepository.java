@@ -18,4 +18,8 @@ public interface PurchaseTxnRepository extends JpaRepository<PurchaseTransaction
 	
 	@Query("select sum(salesTxn.amount) from PurchaseTransaction salesTxn where salesTxn.publisher = ?1 ")
 	Double findBalance(Publisher school);
+	
+	PurchaseTransaction findByNextTxnIsNull();
+
+	PurchaseTransaction findByPrevTxnIsNull();
 }

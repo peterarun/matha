@@ -24,6 +24,8 @@ import com.matha.domain.Order;
 import com.matha.domain.OrderItem;
 import com.matha.domain.Publisher;
 import com.matha.domain.Purchase;
+import com.matha.domain.PurchasePayment;
+import com.matha.domain.PurchaseReturn;
 import com.matha.domain.PurchaseTransaction;
 import com.matha.domain.Sales;
 import com.matha.domain.SalesTransaction;
@@ -39,7 +41,9 @@ import com.matha.repository.DistrictRepository;
 import com.matha.repository.OrderItemRepository;
 import com.matha.repository.OrderRepository;
 import com.matha.repository.PublisherRepository;
+import com.matha.repository.PurchasePayRepository;
 import com.matha.repository.PurchaseRepository;
+import com.matha.repository.PurchaseReturnRepository;
 import com.matha.repository.PurchaseTxnRepository;
 import com.matha.repository.SalesRepository;
 import com.matha.repository.SalesTxnRepository;
@@ -102,6 +106,12 @@ public class SchoolService
 
 	@Autowired
 	private PurchaseTxnRepository purchaseTxnRepository;
+
+	@Autowired
+	private PurchasePayRepository purchasePayRepository;
+
+	@Autowired
+	private PurchaseReturnRepository purchaseReturnRepository;
 
 	public List<Publisher> fetchAllPublishers()
 	{
@@ -229,17 +239,60 @@ public class SchoolService
 		schoolRepoitory.delete(school);
 	}
 
+	private PurchaseTransaction savePurchaseTransaction(PurchaseTransaction txn)
+	{
+		if (txn.getPrevTxn() == null)
+		{
+			PurchaseTransaction prevTxn = purchaseTxnRepository.findByNextTxnIsNull();
+			
+			if(prevTxn != null)
+			{
+				txn.setPrevTxn(prevTxn);
+				txn.setBalance(prevTxn.getBalance() + txn.getAmount());
+				// The following false update is done to avoid the Unique Key Violation
+				PurchaseTransaction nextTxn = prevTxn.getPrevTxn() == null ? prevTxn : prevTxn.getPrevTxn();   	
+				txn.setNextTxn(nextTxn);
+				txn = purchaseTxnRepository.save(txn);
+				// Following is to remove the false update above
+				txn.setNextTxn(null);
+				prevTxn.setNextTxn(txn);
+				prevTxn = purchaseTxnRepository.save(prevTxn);				
+			}
+			else
+			{
+				txn.setBalance(txn.getAmount());
+			}			
+			txn = purchaseTxnRepository.save(txn);
+		}
+		else
+		{
+			PurchaseTransaction prevTxn = txn.getPrevTxn();
+			txn.setBalance(prevTxn.getBalance() + txn.getAmount());
+			PurchaseTransaction nextTxn = txn.getNextTxn();
+			PurchaseTransaction currTxn = txn; 
+			while(nextTxn != null)
+			{
+				nextTxn.setBalance(currTxn.getBalance() + nextTxn.getAmount());
+				purchaseTxnRepository.save(nextTxn);
+				currTxn = nextTxn; 
+				nextTxn = currTxn.getNextTxn();
+			}
+		}
+		txn = purchaseTxnRepository.save(txn);
+		return txn;
+	}
+
 	@Transactional
 	public void savePurchase(Purchase pur, List<OrderItem> orderItems, PurchaseTransaction txn)
 	{
-		purchaseTxnRepository.save(txn);
-		
+		txn = savePurchaseTransaction(txn);
+
 		pur.setSalesTxn(txn);
 		pur = purchaseRepoitory.save(pur);
-						
+
 		txn.setPurchase(pur);
 		purchaseTxnRepository.save(txn);
-		
+
 		for (OrderItem orderItem : orderItems)
 		{
 			orderItem.setPurchase(pur);
@@ -254,7 +307,27 @@ public class SchoolService
 	{
 		return purchaseRepoitory.findAllByPublisher(pub);
 	}
-	
+
+	@Transactional
+	public void deletePurchase(Purchase pur)
+	{
+		PurchaseTransaction txn = pur.getSalesTxn();
+		purchaseRepoitory.delete(pur);
+		purchaseTxnRepository.delete(txn);
+	}
+
+	public void savePurchasePay(PurchasePayment sPayment, PurchaseTransaction sTxn)
+	{
+		purchaseTxnRepository.save(sTxn);
+
+		sPayment.setSalesTxn(sTxn);
+		sPayment = purchasePayRepository.save(sPayment);
+
+		sTxn.setPayment(sPayment);
+		purchaseTxnRepository.save(sTxn);
+
+	}
+
 	public void saveCashBook(CashBook item)
 	{
 		cashBookRepository.save(item);
@@ -278,8 +351,7 @@ public class SchoolService
 		cashHeadRepository.save(cashHead);
 	}
 
-	public List<CashBook> searchTransactions(LocalDate fromDate, LocalDate toDate, String entryId, String entryDesc,
-			CashHead cashHead)
+	public List<CashBook> searchTransactions(LocalDate fromDate, LocalDate toDate, String entryId, String entryDesc, CashHead cashHead)
 	{
 		// TODO Auto-generated method stub
 		return null;
@@ -293,11 +365,11 @@ public class SchoolService
 	}
 
 	public List<Order> fetchAllOrders(Publisher pub)
-	{		
+	{
 		List<Order> orderList = orderRepository.fetchOrdersForPublisher(pub);
 		return orderList;
-	}	
-	
+	}
+
 	@Transactional
 	public void saveSales(Sales sales)
 	{
@@ -385,7 +457,7 @@ public class SchoolService
 		salesTxnRepository.save(txn);
 
 	}
-	
+
 	public Double fetchBalance(School school)
 	{
 		return salesTxnRepository.findBalance(school);
@@ -400,4 +472,27 @@ public class SchoolService
 	{
 		schoolReturnRepository.delete(selectedReturn);
 	}
+
+	public List<Book> fetchBooksForPublisher(Publisher publisher)
+	{
+		return bookRepository.findAllByPublisher(publisher);
+	}
+
+	@Transactional
+	public void savePurchaseReturn(PurchaseReturn returnIn, PurchaseTransaction txn)
+	{
+		purchaseTxnRepository.save(txn);
+
+		returnIn.setSalesTxn(txn);
+		purchaseReturnRepository.save(returnIn);
+
+		txn.setPurchaseReturn(returnIn);
+		purchaseTxnRepository.save(txn);
+
+		orderItemRepository.save(returnIn.getOrderItem());
+		purchaseReturnRepository.save(returnIn);
+		returnIn.getOrderItem().forEach(it -> it.setPurchReturn(returnIn));
+		orderItemRepository.save(returnIn.getOrderItem());
+	}
+
 }

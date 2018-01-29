@@ -4,6 +4,7 @@ import java.io.IOException;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
+import java.util.Optional;
 import java.util.Set;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -23,20 +24,25 @@ import javafx.beans.binding.Bindings;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.event.ActionEvent;
+import javafx.event.EventHandler;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Node;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
+import javafx.scene.control.Alert;
+import javafx.scene.control.ButtonType;
 import javafx.scene.control.ChoiceBox;
 import javafx.scene.control.Label;
 import javafx.scene.control.Pagination;
 import javafx.scene.control.SelectionMode;
 import javafx.scene.control.Tab;
 import javafx.scene.control.TableView;
+import javafx.scene.control.Alert.AlertType;
 import javafx.scene.layout.BorderPane;
 import javafx.stage.Stage;
 import javafx.stage.Window;
+import javafx.stage.WindowEvent;
 
 @Component
 public class PurchaseController
@@ -160,7 +166,7 @@ public class PurchaseController
 			AddPurchaseBillController ctrl = createOrderLoader.getController();
 			ctrl.initData(orderSet, this.publishers.getSelectionModel().getSelectedItem(), null);
 			Scene addOrderScene = new Scene(addOrderRoot);
-			prepareAndShowStage(event, addOrderScene);
+			prepareAndShowStage(event, addOrderScene, purchaseEventHandler);
 
 		} catch (Exception e)
 		{
@@ -182,7 +188,7 @@ public class PurchaseController
 			AddPurchaseBillController ctrl = createOrderLoader.getController();
 			ctrl.initData(null, this.publishers.getSelectionModel().getSelectedItem(), purchase);
 			Scene addOrderScene = new Scene(addOrderRoot);
-			prepareAndShowStage(event, addOrderScene);
+			prepareAndShowStage(event, addOrderScene, purchaseEventHandler);
 
 		} catch (Exception e)
 		{
@@ -194,7 +200,18 @@ public class PurchaseController
 	@FXML
 	void deletePurchase(ActionEvent event)
 	{
-		
+		Purchase purchase = this.purchaseData.getSelectionModel().getSelectedItem();		
+		Alert alert = new Alert(AlertType.CONFIRMATION);
+		alert.setTitle("Delete Purchase Bill Confirmation");
+		alert.setHeaderText("Are you sure you want to delete the purchase: " + purchase.getId());
+		alert.setContentText("Click Ok to Delete");
+
+		Optional<ButtonType> result = alert.showAndWait();
+		if (result.get() == ButtonType.OK)
+		{
+			schoolService.deletePurchase(purchase);
+			loadPurchases();
+		}
 	}
 
 	private void loadOrderTable(int idx)
@@ -212,13 +229,17 @@ public class PurchaseController
 			int idx = orderPaginator.getCurrentPageIndex();
 			loadOrderTable(idx);
 		}
+		else
+		{
+			orderTable.getSelectionModel().clearSelection();
+		}
 	}
 
 	@FXML
 	public void loadPurchases()
 	{
 		if (purchaseBillTab.isSelected())
-		{
+		{			
 			Publisher pub = publishers.getSelectionModel().getSelectedItem();
 			List<Purchase> purchaseList = schoolService.fetchPurchasesForPublisher(pub);
 			purchaseData.setItems(FXCollections.observableList(purchaseList));
@@ -283,4 +304,19 @@ public class PurchaseController
 		Stage stage = LoadUtils.loadChildStage(e, childScene);
 		stage.show();
 	}
+	
+	private void prepareAndShowStage(ActionEvent e, Scene childScene, EventHandler<WindowEvent> eventHandler)
+	{
+		Stage stage = LoadUtils.loadChildStage(e, childScene);
+		stage.setOnHiding(eventHandler);
+		stage.show();
+	}
+	
+	private EventHandler<WindowEvent> purchaseEventHandler = new EventHandler<WindowEvent>() {
+		@Override
+		public void handle(final WindowEvent event)
+		{
+			loadPurchases();
+		}
+	};
 }

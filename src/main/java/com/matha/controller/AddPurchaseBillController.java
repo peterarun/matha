@@ -332,7 +332,10 @@ public class AddPurchaseBillController
 	{
 		try
 		{
-			this.validateData();
+			if(!this.validateData())
+			{
+				return;
+			}
 			Purchase sale = this.purchase;
 			if (sale == null)
 			{
@@ -359,19 +362,23 @@ public class AddPurchaseBillController
 		}
 	}
 
-	private void validateData()
+	private boolean validateData()
 	{
+		boolean valid = true;
 		StringBuilder errorMsg = new StringBuilder("Error: ");
 		if (StringUtils.isBlank(this.invoiceNum.getText()))
 		{
 			errorMsg.append("Please provide an Invoice number");
 			loadMessage(errorMsg.toString());
+			valid = false;
 		}
 		else if (this.invoiceDate.getValue() == null)
 		{
 			errorMsg.append("Please provide a date");
 			loadMessage(errorMsg.toString());
+			valid = false;
 		}
+		return valid;
 	}
 
 	private void preparePurchase(Purchase sale)

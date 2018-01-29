@@ -44,8 +44,19 @@ public class PurchaseTransaction
 	@JoinColumn(name = "ReturnId")
 	private PurchaseReturn purchaseReturn;
 
+	@Column(name = "Balance")
+	private Double balance;
+
 	@Column(name = "Note")
 	private String note;
+
+	@OneToOne
+	@JoinColumn(name = "PrevTxnId")
+	private PurchaseTransaction prevTxn;
+
+	@OneToOne
+	@JoinColumn(name = "NextTxnId")
+	private PurchaseTransaction nextTxn;
 
 	public String getType()
 	{
@@ -138,6 +149,36 @@ public class PurchaseTransaction
 	public void setNote(String note)
 	{
 		this.note = note;
+	}
+
+	public Double getBalance()
+	{
+		return balance;
+	}
+
+	public void setBalance(Double balance)
+	{
+		this.balance = balance;
+	}
+
+	public PurchaseTransaction getPrevTxn()
+	{
+		return prevTxn;
+	}
+
+	public void setPrevTxn(PurchaseTransaction prevTxn)
+	{
+		this.prevTxn = prevTxn;
+	}
+
+	public PurchaseTransaction getNextTxn()
+	{
+		return nextTxn;
+	}
+
+	public void setNextTxn(PurchaseTransaction nextTxn)
+	{
+		this.nextTxn = nextTxn;
 	}
 
 }

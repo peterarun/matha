@@ -83,6 +83,16 @@ public class OrderItem implements Serializable, Comparable<OrderItem>
 		this.bookReturn = bookReturn;
 	}
 
+	public PurchaseReturn getPurchReturn()
+	{
+		return purchReturn;
+	}
+
+	public void setPurchReturn(PurchaseReturn purchReturn)
+	{
+		this.purchReturn = purchReturn;
+	}
+
 	public String getBookName()
 	{
 		return book.getName();

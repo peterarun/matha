@@ -71,7 +71,7 @@ public class Purchase implements Serializable
 		int unitCount = 0;
 		if(getOrderItems() != null)
 		{
-			getOrderItems().stream().collect(Collectors.summingInt(OrderItem::getCount));
+			unitCount = getOrderItems().stream().collect(Collectors.summingInt(OrderItem::getCount));
 		}
 		
 		return unitCount;

@@ -18,7 +18,7 @@
 						<Font name="Tahoma" size="24.0" />
 					</font>
 				</Label>
-				<TextField fx:id="publisherDetails" editable="false" layoutX="121.0" layoutY="55.0" prefHeight="37.0" prefWidth="350.0">
+				<TextField fx:id="publisherDetails" editable="false" focusTraversable="false" layoutX="121.0" layoutY="55.0" prefHeight="37.0" prefWidth="350.0">
 					<font>
 						<Font size="18.0" />
 					</font>

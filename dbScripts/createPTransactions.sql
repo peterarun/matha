@@ -16,7 +16,10 @@ CREATE TABLE [dbo].[PTransactions](
 	[Note] [nvarchar](100) NULL,
 	[PurchaseId] [varchar](15) NULL,
 	[PaymentId] [int] NULL,
-	[ReturnId] [int] NULL
+	[ReturnId] [int] NULL,
+	[Balance] [decimal](12,2) NOT NULL,
+	[PrevTxnId] [int] UNIQUE,
+	[NextTxnId] [int] UNIQUE
 ) ON [PRIMARY]
 GO
 
