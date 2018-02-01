@@ -19,7 +19,8 @@ CREATE TABLE [dbo].[PTransactions](
 	[ReturnId] [int] NULL,
 	[Balance] [decimal](12,2) NOT NULL,
 	[PrevTxnId] [int] UNIQUE,
-	[NextTxnId] [int] UNIQUE
+	[NextTxnId] [int] UNIQUE,
+	[Direction] [int] NOT NULL
 ) ON [PRIMARY]
 GO
 

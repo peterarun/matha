@@ -71,6 +71,39 @@ public class PurchaseTransaction
 		return type;
 	}
 
+	public Integer getMultiplier()
+	{
+		Integer multiplier = null;
+		if (purchase != null)
+		{
+			multiplier = 1;
+		}
+		else if(payment != null || purchaseReturn != null)
+		{
+			multiplier = -1;
+		}
+		return multiplier;
+	}
+	
+	public String getDirection()
+	{
+		String multiplier = null;
+		if (purchase != null)
+		{
+			multiplier = "CR";
+		}
+		else if(payment != null || purchaseReturn != null)
+		{
+			multiplier = "DR";
+		}
+		return multiplier;
+	}
+	
+	public Double getNetForBalance()
+	{
+		return this.amount * getMultiplier();
+	}
+	
 	public Integer getId()
 	{
 		return id;

@@ -158,14 +158,14 @@ public class AddPurchaseRetController
 			salesTxn.setPublisher(publisher);
 		}
 		
-		returnIn.setOrderItem(new TreeSet<>());	
-		returnIn.getOrderItem().addAll(this.addedBooks.getItems());
+		TreeSet<OrderItem> orderItems = new TreeSet<>();	
+		orderItems.addAll(this.addedBooks.getItems());
 		
 		salesTxn.setTxnDate(this.returnDate.getValue());
 		salesTxn.setNote(this.notes.getText());
 		salesTxn.setAmount(getDoubleVal(this.subTotal));	
 		
-		schoolService.savePurchaseReturn(returnIn, salesTxn);
+		schoolService.savePurchaseReturn(returnIn, salesTxn, orderItems);
 		((Stage) cancelBtn.getScene().getWindow()).close();
 	}
 

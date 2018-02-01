@@ -12,6 +12,7 @@ import javax.transaction.Transactional;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Sort;
 import org.springframework.data.domain.Sort.Direction;
 import org.springframework.stereotype.Service;
 
@@ -248,7 +249,7 @@ public class SchoolService
 			if(prevTxn != null)
 			{
 				txn.setPrevTxn(prevTxn);
-				txn.setBalance(prevTxn.getBalance() + txn.getAmount());
+				txn.setBalance(prevTxn.getBalance() + txn.getNetForBalance());
 				// The following false update is done to avoid the Unique Key Violation
 				PurchaseTransaction nextTxn = prevTxn.getPrevTxn() == null ? prevTxn : prevTxn.getPrevTxn();   	
 				txn.setNextTxn(nextTxn);
@@ -267,12 +268,12 @@ public class SchoolService
 		else
 		{
 			PurchaseTransaction prevTxn = txn.getPrevTxn();
-			txn.setBalance(prevTxn.getBalance() + txn.getAmount());
+			txn.setBalance(prevTxn.getBalance() + txn.getNetForBalance());
 			PurchaseTransaction nextTxn = txn.getNextTxn();
 			PurchaseTransaction currTxn = txn; 
 			while(nextTxn != null)
 			{
-				nextTxn.setBalance(currTxn.getBalance() + nextTxn.getAmount());
+				nextTxn.setBalance(currTxn.getBalance() + nextTxn.getNetForBalance());
 				purchaseTxnRepository.save(nextTxn);
 				currTxn = nextTxn; 
 				nextTxn = currTxn.getNextTxn();
@@ -316,9 +317,45 @@ public class SchoolService
 		purchaseTxnRepository.delete(txn);
 	}
 
+	@Transactional
+	public void savePurchaseReturn(PurchaseReturn returnIn, PurchaseTransaction txn, Set<OrderItem> orderItems)
+	{
+		txn = savePurchaseTransaction(txn);		
+
+		returnIn.setSalesTxn(txn);
+		returnIn = purchaseReturnRepository.save(returnIn);
+
+		txn.setPurchaseReturn(returnIn);
+		txn = purchaseTxnRepository.save(txn);
+		
+		PurchaseReturn returnFinal = returnIn;
+		orderItems.forEach(it -> it.setPurchReturn(returnFinal));
+		orderItemRepository.save(orderItems);
+		
+	}
+	
+	public List<PurchaseReturn> fetchPurchaseReturns(Publisher pub)
+	{
+		Sort dateSort = new Sort(new Sort.Order(Direction.DESC, "salesTxn.txnDate"));
+		return purchaseReturnRepository.findAllByPublisher(pub, dateSort);
+	}	
+	
+	public void deletePurchaseReturn(PurchaseReturn purchase)
+	{
+		// TODO Auto-generated method stub
+		
+	}
+	
+	public List<PurchasePayment> fetchPurchasePayments(Publisher pub)
+	{
+		Sort dateSort = new Sort(new Sort.Order(Direction.DESC, "salesTxn.txnDate"));
+		return purchasePayRepository.findAllByPublisher(pub, dateSort);
+	}	
+	
+	@Transactional
 	public void savePurchasePay(PurchasePayment sPayment, PurchaseTransaction sTxn)
 	{
-		purchaseTxnRepository.save(sTxn);
+		sTxn = savePurchaseTransaction(sTxn);
 
 		sPayment.setSalesTxn(sTxn);
 		sPayment = purchasePayRepository.save(sPayment);
@@ -326,6 +363,12 @@ public class SchoolService
 		sTxn.setPayment(sPayment);
 		purchaseTxnRepository.save(sTxn);
 
+	}
+	
+	public void deletePurchasePayment(PurchasePayment purchase)
+	{
+		// TODO Auto-generated method stub
+		
 	}
 
 	public void saveCashBook(CashBook item)
@@ -344,6 +387,11 @@ public class SchoolService
 		cashBookRepository.delete(cashHead);
 	}
 
+	public List<PurchaseTransaction> fetchPurTransactions(Publisher pub, LocalDate fromDateVal, LocalDate toDateVal, Sort sort)
+	{
+		return purchaseTxnRepository.findByFromToDate(pub, fromDateVal, toDateVal, sort);
+	}
+	
 	public void saveCashHead(String cashHeadStr)
 	{
 		CashHead cashHead = new CashHead();
@@ -476,23 +524,6 @@ public class SchoolService
 	public List<Book> fetchBooksForPublisher(Publisher publisher)
 	{
 		return bookRepository.findAllByPublisher(publisher);
-	}
-
-	@Transactional
-	public void savePurchaseReturn(PurchaseReturn returnIn, PurchaseTransaction txn)
-	{
-		purchaseTxnRepository.save(txn);
-
-		returnIn.setSalesTxn(txn);
-		purchaseReturnRepository.save(returnIn);
-
-		txn.setPurchaseReturn(returnIn);
-		purchaseTxnRepository.save(txn);
-
-		orderItemRepository.save(returnIn.getOrderItem());
-		purchaseReturnRepository.save(returnIn);
-		returnIn.getOrderItem().forEach(it -> it.setPurchReturn(returnIn));
-		orderItemRepository.save(returnIn.getOrderItem());
 	}
 
 }

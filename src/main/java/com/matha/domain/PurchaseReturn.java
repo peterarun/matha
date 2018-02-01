@@ -2,6 +2,7 @@ package com.matha.domain;
 
 import java.time.LocalDate;
 import java.util.Set;
+import java.util.stream.Collectors;
 
 import javax.persistence.Column;
 import javax.persistence.Entity;
@@ -33,6 +34,17 @@ public class PurchaseReturn {
 	@OneToMany(fetch= FetchType.EAGER, mappedBy = "purchReturn")
 	@Cascade({CascadeType.SAVE_UPDATE, CascadeType.DELETE})	
 	private Set<OrderItem> orderItem;
+	
+	public Integer getUnitCount()
+	{
+		int unitCount = 0;
+		if(getOrderItem() != null)
+		{
+			unitCount = getOrderItem().stream().collect(Collectors.summingInt(OrderItem::getCount));
+		}
+		
+		return unitCount;
+	}
 	
 	public String getNotes()
 	{
