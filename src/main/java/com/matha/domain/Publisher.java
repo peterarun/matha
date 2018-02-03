@@ -5,6 +5,8 @@ import javax.persistence.Entity;
 import javax.persistence.Id;
 import javax.persistence.Table;
 
+import org.apache.commons.lang.StringUtils;
+
 import static com.matha.util.UtilConstants.*;
 
 @Entity
@@ -170,9 +172,9 @@ public class Publisher
 	public String getStmtAddress()
 	{
 		StringBuilder builder = new StringBuilder();		
-		builder.append(address1 == null ? "" : address1 + ", ");
-		builder.append(address2 == null ? "" : address2 + ", ");
-		builder.append(address3 == null ? "" : address3);
+		builder.append(StringUtils.isBlank(address1) ? "" : address1);
+		builder.append(StringUtils.isBlank(address2) ? "" : ", " + address2);
+		builder.append(StringUtils.isBlank(address3) ? "" : ", " + address3);
 		return builder.toString();
 	}
 
@@ -181,14 +183,19 @@ public class Publisher
 		StringBuilder builder = new StringBuilder();
 		builder.append(name);
 		builder.append(NEW_LINE);
-		builder.append(address1);
-		builder.append(NEW_LINE);
+		if(!StringUtils.isBlank(address1))
+		{
+			builder.append(address1);
+			builder.append(NEW_LINE);
+		}		
+		if(!StringUtils.isBlank(address2))
+		{
 		builder.append(address2);
 		builder.append(NEW_LINE);
+		}
 		builder.append("Phone Numbers: ");
-		builder.append(phone1);
-		builder.append("; ");
-		builder.append(phone2);
+		builder.append(StringUtils.isBlank(phone1) ? "" : phone1);
+		builder.append(StringUtils.isBlank(phone2) ? "" : "; " + phone2);
 		return builder.toString();
 	}
 
