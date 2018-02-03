@@ -21,6 +21,9 @@
 				</Label>
 				<Label layoutX="42.0" layoutY="53.0" text="Publisher" />
 				<ChoiceBox fx:id="publishers" layoutX="94.0" layoutY="49.0" onAction="#changedState" prefHeight="25.0" prefWidth="380.0" />
+            <Button layoutX="521.0" layoutY="49.0" mnemonicParsing="false" onAction="#editPublisher" text="Edit Publisher" />
+            <TextArea fx:id="publisherDet" layoutX="94.0" layoutY="85.0" prefHeight="62.0" prefWidth="380.0" />
+            <Button layoutX="521.0" layoutY="85.0" mnemonicParsing="false" onAction="#addPublisher" prefHeight="62.0" prefWidth="89.0" text="Add Publisher" />
 			</children>
 		</AnchorPane>
 		<AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="100.0" prefWidth="160.0">
@@ -152,22 +155,22 @@
 									<children>
 										<TableView fx:id="paymentData" layoutX="14.0" layoutY="14.0" prefHeight="379.0" prefWidth="598.0">
 											<columns>
-												<TableColumn prefWidth="88.0" text="Payment No." >
+												<TableColumn prefWidth="88.0" text="Payment No.">
 													<cellValueFactory>
 														<PropertyValueFactory property="id" />
 													</cellValueFactory>												
 												</TableColumn>
-												<TableColumn prefWidth="109.0" text="Date" >
+												<TableColumn prefWidth="109.0" text="Date">
 													<cellValueFactory>
 														<PropertyValueFactory property="txnDate" />
 													</cellValueFactory>												
 												</TableColumn>
-												<TableColumn prefWidth="105.0" text="Mode" >
+												<TableColumn prefWidth="105.0" text="Mode">
 													<cellValueFactory>
 														<PropertyValueFactory property="paymentMode" />
 													</cellValueFactory>
 												</TableColumn>												
-												<TableColumn prefWidth="87.0" text="Amount" >
+												<TableColumn prefWidth="87.0" text="Amount">
 													<cellValueFactory>
 														<PropertyValueFactory property="amount" />
 													</cellValueFactory>												
@@ -181,7 +184,7 @@
 								</AnchorPane>
 							</content>
 						</Tab>
-						<Tab fx:id="statementTab" onSelectionChanged="#loadStatement" text="Statement">
+						<!-- <Tab fx:id="statementTab" onSelectionChanged="#loadStatement" text="Statement">
 							<content>
 								<AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="180.0" prefWidth="200.0">
 									<children>
@@ -205,7 +208,7 @@
 									</children>
 								</AnchorPane>
 							</content>
-						</Tab>
+						</Tab> -->
 						<Tab fx:id="statementTabHtml" onSelectionChanged="#loadStatementHtml" text="Statement Tab">
 							<content>
 								<AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="180.0" prefWidth="200.0">
@@ -213,7 +216,7 @@
 										<WebView fx:id="reportData" layoutX="14.0" layoutY="118.0" prefHeight="279.0" prefWidth="776.0" />
 										<DatePicker fx:id="fromDate" layoutX="14.0" layoutY="43.0" />
 										<DatePicker fx:id="toDate" layoutX="228.0" layoutY="43.0" />
-										<Button layoutX="419.0" layoutY="43.0" mnemonicParsing="false" text="Generate" />
+										<Button layoutX="419.0" layoutY="43.0" mnemonicParsing="false" onAction="#updateStatement" text="Generate" />
 										<Button layoutX="506.0" layoutY="43.0" mnemonicParsing="false" onAction="#exportAndSave" text="Save as PDF" />
 									</children>
 								</AnchorPane>

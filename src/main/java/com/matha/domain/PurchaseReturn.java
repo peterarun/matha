@@ -19,7 +19,7 @@ import org.hibernate.annotations.Cascade;
 import org.hibernate.annotations.CascadeType;
 
 @Entity
-@Table(name = "SchoolReturn")
+@Table(name = "PurchaseReturn")
 public class PurchaseReturn {
 
 	@Id

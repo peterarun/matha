@@ -3,18 +3,17 @@
 <jasperReport xmlns="http://jasperreports.sourceforge.net/jasperreports" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://jasperreports.sourceforge.net/jasperreports http://jasperreports.sourceforge.net/xsd/jasperreport.xsd" name="Invoice" pageWidth="595" pageHeight="842" whenNoDataType="AllSectionsNoDetail" columnWidth="535" leftMargin="20" rightMargin="20" topMargin="20" bottomMargin="20" whenResourceMissingType="Empty" uuid="4eedbb89-b4f6-4469-9ab6-f642a1688cf7">
 	<property name="template.engine" value="tabular_template"/>
 	<property name="com.jaspersoft.studio.data.defaultdataadapter" value="One Empty Record"/>
-	<style name="Title" forecolor="#FFFFFF" hTextAlign="Center" vTextAlign="Middle" fontName="Tahoma" fontSize="50" isBold="true" pdfFontName="" pdfEncoding="">
-		<box leftPadding="2" rightPadding="2"/>
+	<style name="Title" forecolor="#FFFFFF" hTextAlign="Center" vTextAlign="Middle" fontName="Tahoma" fontSize="50" isBold="true" pdfFontName="Times-Bold">
 		<paragraph spacingBefore="2"/>
 	</style>
 	<style name="SubTitle" forecolor="#CCCCCC" fontName="Tahoma" fontSize="18" isBold="false" pdfFontName="Times-Roman">
 		<box leftPadding="2" rightPadding="2"/>
 	</style>
-	<style name="Row" mode="Transparent" hTextAlign="Left" vTextAlign="Middle" fontName="Tahoma" fontSize="10" pdfFontName="Courier">
+	<style name="Row" mode="Transparent" hTextAlign="Left" vTextAlign="Middle" fontName="Tahoma" fontSize="10" pdfFontName="Times-Roman">
 		<box leftPadding="2" rightPadding="2"/>
 		<conditionalStyle>
 			<conditionExpression><![CDATA[$V{REPORT_COUNT}%2 == 0]]></conditionExpression>
-			<style mode="Opaque" forecolor="#E3DADA" backcolor="#6697CC"/>
+			<style mode="Opaque" backcolor="#EEEFF0"/>
 		</conditionalStyle>
 	</style>
 	<style name="Table">
@@ -55,7 +54,6 @@
 	</style>
 	<subDataset name="reportDataSet" uuid="07c1b832-0d83-4a2b-a01c-0536b46ba0ba">
 		<property name="com.jaspersoft.studio.data.defaultdataadapter" value="reportDataAdapter"/>
-		<parameter name="openingBalance" class="java.lang.Double"/>
 		<queryString>
 			<![CDATA[]]>
 		</queryString>
@@ -81,7 +79,6 @@
 	<parameter name="accountDetails" class="java.lang.String"/>
 	<parameter name="totalDebit" class="java.lang.Double"/>
 	<parameter name="totalCredit" class="java.lang.Double"/>
-	<parameter name="openingBalance" class="java.lang.Double"/>
 	<queryString>
 		<![CDATA[]]>
 	</queryString>
@@ -99,28 +96,23 @@
 				<textFieldExpression><![CDATA["(From " + $P{fromDate} + " to " + $P{toDate} + " )"]]></textFieldExpression>
 			</textField>
 			<textField>
-				<reportElement x="160" y="2" width="260" height="30" uuid="5abb62ef-9181-4276-964a-d8c491c0804b"/>
-				<textElement textAlignment="Center">
-					<font size="20"/>
-				</textElement>
+				<reportElement x="240" y="12" width="100" height="22" uuid="c02abfb9-ab23-49fc-b1b0-2a98aee33eeb"/>
 				<textFieldExpression><![CDATA[$P{publisherName}]]></textFieldExpression>
 			</textField>
 		</band>
 	</title>
 	<summary>
-		<band height="140">
+		<band height="293" splitType="Stretch">
+			<property name="local_mesure_unitheight" value="pixel"/>
 			<componentElement>
-				<reportElement x="0" y="0" width="555" height="140" uuid="2b958d9e-0b19-4edd-ac35-50eebad72619">
+				<reportElement x="0" y="0" width="549" height="80" uuid="2b958d9e-0b19-4edd-ac35-50eebad72619">
 					<property name="com.jaspersoft.studio.layout" value="com.jaspersoft.studio.editor.layout.VerticalRowLayout"/>
 					<property name="com.jaspersoft.studio.table.style.table_header" value="Table_TH"/>
 					<property name="com.jaspersoft.studio.table.style.column_header" value="Table_CH"/>
 					<property name="com.jaspersoft.studio.table.style.detail" value="Table_TD"/>
 				</reportElement>
 				<jr:table xmlns:jr="http://jasperreports.sourceforge.net/jasperreports/components" xsi:schemaLocation="http://jasperreports.sourceforge.net/jasperreports/components http://jasperreports.sourceforge.net/xsd/components.xsd">
-					<datasetRun subDataset="reportDataSet" uuid="68020efe-41e4-4ee2-90c7-f434f1b98c01">
-						<datasetParameter name="openingBalance">
-							<datasetParameterExpression><![CDATA[$P{openingBalance}]]></datasetParameterExpression>
-						</datasetParameter>
+					<datasetRun subDataset="reportDataSet" uuid="15f969dc-53d0-4799-89aa-5515684e6c97">
 						<dataSourceExpression><![CDATA[new net.sf.jasperreports.engine.data.JRBeanCollectionDataSource($P{reportData})]]></dataSourceExpression>
 					</datasetRun>
 					<jr:column width="60" uuid="2a3a2c01-0584-42c3-bc68-61ab55e18f33">
@@ -135,10 +127,7 @@
 						<jr:columnFooter style="Table_CH" height="30" rowSpan="1"/>
 						<jr:detailCell style="Table_TD" height="20">
 							<textField>
-								<reportElement style="Row" x="0" y="0" width="60" height="20" uuid="ab7cf84d-8efc-4c91-ba5d-e07bcd92e1bf"/>
-								<textElement>
-									<font pdfFontName="Courier"/>
-								</textElement>
+								<reportElement x="0" y="0" width="60" height="20" uuid="ab7cf84d-8efc-4c91-ba5d-e07bcd92e1bf"/>
 								<textFieldExpression><![CDATA[$F{txnDate}]]></textFieldExpression>
 							</textField>
 						</jr:detailCell>
@@ -239,7 +228,7 @@
 						<jr:tableHeader style="Table_TH" height="25" rowSpan="1">
 							<textField>
 								<reportElement x="0" y="0" width="99" height="25" uuid="56eacea1-98ee-468a-8631-3de810a5d449"/>
-								<textFieldExpression><![CDATA[$P{openingBalance}]]></textFieldExpression>
+								<textFieldExpression><![CDATA["Text Field"]]></textFieldExpression>
 							</textField>
 						</jr:tableHeader>
 						<jr:tableFooter style="Table_TH" height="30" rowSpan="1"/>

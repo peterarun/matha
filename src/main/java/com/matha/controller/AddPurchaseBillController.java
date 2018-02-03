@@ -148,7 +148,7 @@ public class AddPurchaseBillController
 				calculateTotalQty();
 			}
 		});
-		this.publisherDetails.setText(this.publisher.getName());
+		this.publisherDetails.setText(this.publisher.getAddress());
 	}
 
 	private void prepareEditData(Purchase purchaseIn)

@@ -55,7 +55,8 @@ public class AddPurchasePayController
 	{
 		this.publisher = schoolIn;
 		this.purchasePayment = schoolPaymentIn;
-
+		this.publisherDetails.setText(this.publisher.getAddress());
+		
 		if (schoolPaymentIn != null)
 		{
 			payDate.setValue(schoolPaymentIn.getTxnDate());

@@ -14,6 +14,7 @@ public interface UtilConstants {
 	public static final String purchasePageFxmlFile = "/fxml/Purchases.fxml";
 	public static final String cashBookFxml = "/fxml/CashBook.fxml";
 	public static final String booksFxml = "/fxml/Books.fxml";
+	public static final String addPublisherFxml = "/fxml/addPublisher.fxml";
 	
 	public static final String createOrderFxmlFile = "/fxml/createOrder.fxml";
 	public static final String addTransactionFxmlFile = "/fxml/addTransaction.fxml";	

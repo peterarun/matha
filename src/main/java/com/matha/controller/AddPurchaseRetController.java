@@ -79,12 +79,14 @@ public class AddPurchaseRetController
 	private PurchaseReturn purchaseReturn;
 	private Map<String, Book> bookMap;
 	private Collector<OrderItem, ?, Double> summingDblCollector = Collectors.summingDouble(OrderItem::getTotal);
-	private Collector<Book, ?, Map<String, Book>> bookMapCollector = Collectors.toMap(o -> o.getName() + " - " + o.getPublisherName(), o -> o);	
+	private Collector<Book, ?, Map<String, Book>> bookMapCollector = Collectors.toMap(o -> o.getShortName() + ": " + o.getName() + " - " + o.getPublisherName(), o -> o);	
 	
 	void initData(Publisher publisherIn, PurchaseReturn purchaseReturnIn)
 	{
 		this.publisher = publisherIn;
 		this.purchaseReturn = purchaseReturnIn;
+		this.publisherDetails.setText(this.publisher.getAddress());
+		
 		this.loadReturnData(purchaseReturnIn);
 
 		List<Book> allOrders = schoolService.fetchBooksForPublisher(publisher);

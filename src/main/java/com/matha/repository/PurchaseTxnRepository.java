@@ -23,4 +23,6 @@ public interface PurchaseTxnRepository extends JpaRepository<PurchaseTransaction
 	PurchaseTransaction findByNextTxnIsNull();
 
 	PurchaseTransaction findByPrevTxnIsNull();
+	
+	List<PurchaseTransaction> findByTxnDateAfterOrderByTxnDateAscIdAsc(LocalDate txnDate);
 }

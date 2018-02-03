@@ -9,6 +9,7 @@ import javax.persistence.EntityManager;
 import javax.persistence.PersistenceContext;
 import javax.transaction.Transactional;
 
+import org.apache.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
@@ -56,6 +57,8 @@ import com.matha.repository.StateRepository;
 @Service
 public class SchoolService
 {
+
+	private static final Logger LOGGER = Logger.getLogger(SchoolService.class);
 
 	@PersistenceContext
 	private EntityManager entityManager;
@@ -117,6 +120,11 @@ public class SchoolService
 	public List<Publisher> fetchAllPublishers()
 	{
 		return publisherRepository.findAll();
+	}
+
+	public void savePublisher(Publisher publisher)
+	{
+		publisherRepository.save(publisher);
 	}
 
 	public List<BookCategory> fetchAllBookCategories()
@@ -240,53 +248,308 @@ public class SchoolService
 		schoolRepoitory.delete(school);
 	}
 
-	private PurchaseTransaction savePurchaseTransaction(PurchaseTransaction txn)
+	private PurchaseTransaction updateBalance(PurchaseTransaction txn)
 	{
-		if (txn.getPrevTxn() == null)
+		PurchaseTransaction prevTxn = txn.getPrevTxn();
+		if (prevTxn != null)
 		{
-			PurchaseTransaction prevTxn = purchaseTxnRepository.findByNextTxnIsNull();
-			
-			if(prevTxn != null)
+			txn.setBalance(prevTxn.getBalance() + txn.getNetForBalance());
+		}
+		else
+		{
+			txn.setBalance(txn.getNetForBalance());
+		}
+		txn = purchaseTxnRepository.save(txn);
+
+		PurchaseTransaction nextTxn = txn.getNextTxn();
+		PurchaseTransaction currTxn = txn;
+		while (nextTxn != null)
+		{
+			nextTxn.setBalance(currTxn.getBalance() + nextTxn.getNetForBalance());
+			purchaseTxnRepository.save(nextTxn);
+			currTxn = nextTxn;
+			nextTxn = currTxn.getNextTxn();
+		}
+
+		return txn;
+	}
+
+	private PurchaseTransaction saveNewPurchaseTxn(PurchaseTransaction txn)
+	{
+		PurchaseTransaction firstTxn = purchaseTxnRepository.findByPrevTxnIsNull();
+		PurchaseTransaction lastTxn = purchaseTxnRepository.findByNextTxnIsNull();
+		LocalDate txnDate = txn.getTxnDate();
+		if (lastTxn == null || txnDate.isAfter(lastTxn.getTxnDate()) || txnDate.isEqual(lastTxn.getTxnDate()))
+		{
+			txn = saveFreshTransaction(txn, firstTxn, lastTxn);
+			return txn;
+		}
+
+		PurchaseTransaction currTxn = lastTxn;
+		while (currTxn != null)
+		{
+			LocalDate currTxnDate = currTxn.getTxnDate();
+			if (txnDate.isAfter(currTxnDate) || txnDate.isEqual(currTxnDate))
 			{
-				txn.setPrevTxn(prevTxn);
-				txn.setBalance(prevTxn.getBalance() + txn.getNetForBalance());
-				// The following false update is done to avoid the Unique Key Violation
-				PurchaseTransaction nextTxn = prevTxn.getPrevTxn() == null ? prevTxn : prevTxn.getPrevTxn();   	
-				txn.setNextTxn(nextTxn);
-				txn = purchaseTxnRepository.save(txn);
-				// Following is to remove the false update above
-				txn.setNextTxn(null);
-				prevTxn.setNextTxn(txn);
-				prevTxn = purchaseTxnRepository.save(prevTxn);				
+				txn = saveNewTransactionInBetween(txn, currTxn, currTxn.getNextTxn(), firstTxn, lastTxn);
+				updateBalance(txn);
+				break;
 			}
-			else
+			else if (currTxn.getId().equals(firstTxn.getId()))
 			{
-				txn.setBalance(txn.getAmount());
-			}			
+				txn = saveAsFirstTxn(txn, currTxn, firstTxn, lastTxn);
+				updateBalance(txn);
+				break;
+			}
+			currTxn = currTxn.getPrevTxn();
+		}
+
+		return txn;
+	}
+
+	private PurchaseTransaction saveAsFirstTxn(PurchaseTransaction txn, PurchaseTransaction currTxn, PurchaseTransaction firstTxn, PurchaseTransaction lastTxn)
+	{
+		firstTxn.setPrevTxn(lastTxn);
+		firstTxn = purchaseTxnRepository.save(firstTxn);
+		purchaseTxnRepository.flush();
+
+		txn.setNextTxn(firstTxn);
+		txn.setBalance(txn.getNetForBalance());
+		txn = purchaseTxnRepository.save(txn);
+
+		firstTxn.setPrevTxn(txn);
+		firstTxn = purchaseTxnRepository.save(firstTxn);
+
+		return txn;
+	}
+
+	private PurchaseTransaction saveNewTransactionInBetween(PurchaseTransaction txn, PurchaseTransaction currTxn, PurchaseTransaction nextTxn, PurchaseTransaction firstTxn,
+			PurchaseTransaction lastTxn)
+	{
+		txn.setPrevTxn(lastTxn);
+		txn.setNextTxn(firstTxn);
+		txn.setBalance(txn.getNetForBalance());
+		txn = purchaseTxnRepository.save(txn);
+
+		currTxn.setNextTxn(txn);
+		currTxn = purchaseTxnRepository.save(currTxn);
+
+		nextTxn.setPrevTxn(txn);
+		nextTxn = purchaseTxnRepository.save(nextTxn);
+
+		txn.setPrevTxn(currTxn);
+		txn.setNextTxn(nextTxn);
+		txn = purchaseTxnRepository.save(txn);
+
+		return txn;
+	}
+
+	private PurchaseTransaction saveFreshTransaction(PurchaseTransaction txn, PurchaseTransaction firstTxn, PurchaseTransaction lastTxn)
+	{
+		if (lastTxn == null)
+		{
+			txn.setBalance(txn.getNetForBalance());
 			txn = purchaseTxnRepository.save(txn);
 		}
 		else
 		{
-			PurchaseTransaction prevTxn = txn.getPrevTxn();
-			txn.setBalance(prevTxn.getBalance() + txn.getNetForBalance());
-			PurchaseTransaction nextTxn = txn.getNextTxn();
-			PurchaseTransaction currTxn = txn; 
-			while(nextTxn != null)
-			{
-				nextTxn.setBalance(currTxn.getBalance() + nextTxn.getNetForBalance());
-				purchaseTxnRepository.save(nextTxn);
-				currTxn = nextTxn; 
-				nextTxn = currTxn.getNextTxn();
-			}
+			lastTxn.setNextTxn(firstTxn);
+			lastTxn = purchaseTxnRepository.save(lastTxn);
+			purchaseTxnRepository.flush();
+
+			txn.setBalance(lastTxn.getBalance() + txn.getNetForBalance());
+			txn.setPrevTxn(lastTxn);
+			txn = purchaseTxnRepository.save(txn);
+
+			lastTxn.setNextTxn(txn);
+			lastTxn = purchaseTxnRepository.save(lastTxn);
 		}
-		txn = purchaseTxnRepository.save(txn);
 		return txn;
+	}
+
+	private PurchaseTransaction updatePurchaseTxn(PurchaseTransaction txn)
+	{
+		PurchaseTransaction origTxn = purchaseTxnRepository.findOne(txn.getId());
+		if (origTxn.getTxnDate().equals(txn.getTxnDate()))
+		{
+			LOGGER.info("No Date Update: " + txn);
+			txn = purchaseTxnRepository.save(txn);
+			updateBalance(txn);
+			return txn;
+		}
+		else if (origTxn.getPrevTxn() == null && origTxn.getNextTxn() == null)
+		{
+			LOGGER.info("Update to the one and only txn: " + txn);
+			txn = purchaseTxnRepository.save(txn);
+			return txn;
+		}
+
+		PurchaseTransaction updateFromTxn = null;
+		PurchaseTransaction firstTxn = purchaseTxnRepository.findByPrevTxnIsNull();
+		PurchaseTransaction lastTxn = purchaseTxnRepository.findByNextTxnIsNull();
+
+		LocalDate txnDate = txn.getTxnDate();
+		PurchaseTransaction currTxn = lastTxn;
+		while (currTxn != null)
+		{
+			LocalDate currTxnDate = currTxn.getTxnDate();
+			if (txnDate.isAfter(currTxnDate) || txnDate.isEqual(currTxnDate))
+			{
+				updateFromTxn = origTxn.getNextTxn();
+				if (currTxn.getId().equals(lastTxn.getId()))
+				{
+					txn = moveAsLastTxn(txn, origTxn.getPrevTxn(), origTxn.getNextTxn(), firstTxn, lastTxn);
+					updateBalance(updateFromTxn);
+					break;
+				}
+
+				if (origTxn.getNextTxn().getTxnDate().isAfter(currTxnDate))
+				{
+					updateFromTxn = currTxn;
+				}
+				txn = moveInBetween(txn, origTxn.getPrevTxn(), origTxn.getNextTxn(), firstTxn, lastTxn, currTxn, currTxn.getNextTxn());
+				updateBalance(updateFromTxn);
+				break;
+			}
+			else if (currTxn.getId().equals(firstTxn.getId()))
+			{
+				txn = moveAsFirstTxn(txn, origTxn.getPrevTxn(), origTxn.getNextTxn(), firstTxn, lastTxn);
+				updateBalance(txn);
+				break;
+			}
+			currTxn = currTxn.getPrevTxn();
+		}
+		return txn;
+	}
+
+	private PurchaseTransaction moveAsLastTxn(PurchaseTransaction txn, PurchaseTransaction fromPrevTxn, PurchaseTransaction fromNextTxn, PurchaseTransaction firstTxn, PurchaseTransaction lastTxn)
+	{
+		LOGGER.info("Moving as last Txn: " + txn);
+
+		txn.setPrevTxn(lastTxn);
+		txn.setNextTxn(firstTxn);
+		txn = purchaseTxnRepository.save(txn);
+
+		fromPrevTxn.setNextTxn(fromNextTxn);
+		fromPrevTxn = purchaseTxnRepository.save(fromPrevTxn);
+
+		fromNextTxn.setPrevTxn(fromPrevTxn);
+		fromNextTxn = purchaseTxnRepository.save(fromNextTxn);
+
+		lastTxn.setNextTxn(txn);
+		lastTxn = purchaseTxnRepository.save(lastTxn);
+
+		purchaseTxnRepository.flush();
+
+		txn.setNextTxn(null);
+		txn = purchaseTxnRepository.save(txn);
+
+		return txn;
+	}
+
+	private PurchaseTransaction moveInBetween(PurchaseTransaction txn, PurchaseTransaction fromPrevTxn, PurchaseTransaction fromNextTxn, PurchaseTransaction firstTxn, PurchaseTransaction lastTxn,
+			PurchaseTransaction toPrevTxn, PurchaseTransaction toNextTxn)
+	{
+		LOGGER.info("Moving In Between: " + txn);
+
+		logId("firstTxn ", firstTxn);
+		logId("lastTxn ", lastTxn);
+		txn.setPrevTxn(lastTxn);
+		txn.setNextTxn(firstTxn);
+		txn = purchaseTxnRepository.save(txn);
+
+		logId("fromPrevTxn ", fromPrevTxn);
+		fromPrevTxn.setNextTxn(fromNextTxn);
+		fromPrevTxn = purchaseTxnRepository.save(fromPrevTxn);
+
+		logId("fromNextTxn ", fromNextTxn);
+		fromNextTxn.setPrevTxn(fromPrevTxn);
+		fromNextTxn = purchaseTxnRepository.save(fromNextTxn);
+
+		// purchaseTxnRepository.flush();
+
+		logId("toPrevTxn ", toPrevTxn);
+		toPrevTxn.setNextTxn(txn);
+		toPrevTxn = purchaseTxnRepository.save(toPrevTxn);
+
+		logId("toNextTxn ", toNextTxn);
+		toNextTxn.setPrevTxn(txn);
+		toNextTxn = purchaseTxnRepository.save(toNextTxn);
+
+		purchaseTxnRepository.flush();
+
+		txn.setPrevTxn(toPrevTxn);
+		txn.setNextTxn(toNextTxn);
+		txn = purchaseTxnRepository.save(txn);
+
+		return txn;
+	}
+
+	private PurchaseTransaction moveAsFirstTxn(PurchaseTransaction txn, PurchaseTransaction fromPrevTxn, PurchaseTransaction fromNextTxn, PurchaseTransaction firstTxn, PurchaseTransaction lastTxn)
+	{
+		LOGGER.info("Moving as First Txn: " + txn);
+
+		txn.setPrevTxn(lastTxn);
+		txn.setNextTxn(firstTxn);
+		txn = purchaseTxnRepository.save(txn);
+
+		fromPrevTxn.setNextTxn(fromNextTxn);
+		fromPrevTxn = purchaseTxnRepository.save(fromPrevTxn);
+
+		fromNextTxn.setPrevTxn(fromPrevTxn);
+		fromNextTxn = purchaseTxnRepository.save(fromNextTxn);
+
+		firstTxn.setPrevTxn(txn);
+		firstTxn = purchaseTxnRepository.save(firstTxn);
+
+		purchaseTxnRepository.flush();
+
+		txn.setPrevTxn(null);
+		txn = purchaseTxnRepository.save(txn);
+
+		return txn;
+	}
+
+	private void deletePurchaseTxn(PurchaseTransaction txn)
+	{
+		PurchaseTransaction prevTxn = txn.getPrevTxn();
+		PurchaseTransaction nextTxn = txn.getNextTxn();
+
+		purchaseTxnRepository.delete(txn);
+		if (prevTxn != null)
+		{
+			prevTxn.setNextTxn(nextTxn);
+			prevTxn = purchaseTxnRepository.save(prevTxn);
+		}
+
+		if (nextTxn != null)
+		{
+			nextTxn.setPrevTxn(prevTxn);
+			nextTxn = purchaseTxnRepository.save(nextTxn);
+		}
+		updateBalance(prevTxn);
+	}
+
+	private void logId(String msg, PurchaseTransaction firstTxn)
+	{
+		if (firstTxn != null)
+		{
+			LOGGER.info(msg + ": " + firstTxn.getId());
+		}
 	}
 
 	@Transactional
 	public void savePurchase(Purchase pur, List<OrderItem> orderItems, PurchaseTransaction txn)
 	{
-		txn = savePurchaseTransaction(txn);
+		txn.setPurchase(pur);
+		if (txn.getId() == null)
+		{
+			txn = saveNewPurchaseTxn(txn);
+		}
+		else
+		{
+			txn = updatePurchaseTxn(txn);
+		}
 
 		pur.setSalesTxn(txn);
 		pur = purchaseRepoitory.save(pur);
@@ -313,62 +576,93 @@ public class SchoolService
 	public void deletePurchase(Purchase pur)
 	{
 		PurchaseTransaction txn = pur.getSalesTxn();
+		Set<OrderItem> orderItems = pur.getOrderItems();
+		for (OrderItem orderItem : orderItems)
+		{
+			orderItem.setPurchase(null);
+		}
+		orderItemRepository.save(orderItems);
 		purchaseRepoitory.delete(pur);
-		purchaseTxnRepository.delete(txn);
+		deletePurchaseTxn(txn);
+
 	}
 
 	@Transactional
 	public void savePurchaseReturn(PurchaseReturn returnIn, PurchaseTransaction txn, Set<OrderItem> orderItems)
 	{
-		txn = savePurchaseTransaction(txn);		
+		txn.setPurchaseReturn(returnIn);
+		if (txn.getId() == null)
+		{
+			txn = saveNewPurchaseTxn(txn);
+		}
+		else
+		{
+			txn = updatePurchaseTxn(txn);
+		}
 
 		returnIn.setSalesTxn(txn);
 		returnIn = purchaseReturnRepository.save(returnIn);
 
 		txn.setPurchaseReturn(returnIn);
 		txn = purchaseTxnRepository.save(txn);
-		
+
 		PurchaseReturn returnFinal = returnIn;
 		orderItems.forEach(it -> it.setPurchReturn(returnFinal));
 		orderItemRepository.save(orderItems);
-		
+
 	}
-	
+
 	public List<PurchaseReturn> fetchPurchaseReturns(Publisher pub)
 	{
 		Sort dateSort = new Sort(new Sort.Order(Direction.DESC, "salesTxn.txnDate"));
 		return purchaseReturnRepository.findAllByPublisher(pub, dateSort);
-	}	
-	
+	}
+
+	@Transactional
 	public void deletePurchaseReturn(PurchaseReturn purchase)
 	{
-		// TODO Auto-generated method stub
-		
+		PurchaseTransaction txn = purchase.getSalesTxn();
+		purchaseReturnRepository.delete(purchase);
+
+		deletePurchaseTxn(txn);
+
 	}
-	
+
 	public List<PurchasePayment> fetchPurchasePayments(Publisher pub)
 	{
 		Sort dateSort = new Sort(new Sort.Order(Direction.DESC, "salesTxn.txnDate"));
 		return purchasePayRepository.findAllByPublisher(pub, dateSort);
-	}	
-	
+	}
+
 	@Transactional
 	public void savePurchasePay(PurchasePayment sPayment, PurchaseTransaction sTxn)
 	{
-		sTxn = savePurchaseTransaction(sTxn);
+		sTxn.setPayment(sPayment);
+		if (sTxn.getId() == null)
+		{
+			sTxn = saveNewPurchaseTxn(sTxn);
+		}
+		else
+		{
+			sTxn = updatePurchaseTxn(sTxn);
+		}
 
 		sPayment.setSalesTxn(sTxn);
 		sPayment = purchasePayRepository.save(sPayment);
 
 		sTxn.setPayment(sPayment);
+		// updateBalance(sTxn);
 		purchaseTxnRepository.save(sTxn);
 
 	}
-	
-	public void deletePurchasePayment(PurchasePayment purchase)
+
+	public void deletePurchasePayment(PurchasePayment pur)
 	{
-		// TODO Auto-generated method stub
-		
+
+		PurchaseTransaction txn = pur.getSalesTxn();
+		purchasePayRepository.delete(pur);
+		deletePurchaseTxn(txn);
+
 	}
 
 	public void saveCashBook(CashBook item)
@@ -391,7 +685,7 @@ public class SchoolService
 	{
 		return purchaseTxnRepository.findByFromToDate(pub, fromDateVal, toDateVal, sort);
 	}
-	
+
 	public void saveCashHead(String cashHeadStr)
 	{
 		CashHead cashHead = new CashHead();

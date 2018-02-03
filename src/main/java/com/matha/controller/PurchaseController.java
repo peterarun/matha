@@ -6,12 +6,12 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.nio.charset.Charset;
 import java.time.LocalDate;
-import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Optional;
 import java.util.Set;
+import java.util.stream.Collectors;
 
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -26,7 +26,6 @@ import com.matha.domain.Purchase;
 import com.matha.domain.PurchasePayment;
 import com.matha.domain.PurchaseReturn;
 import com.matha.domain.PurchaseTransaction;
-import com.matha.repository.PurchaseTxnRepository;
 import com.matha.service.SchoolService;
 import com.matha.util.Converters;
 import com.matha.util.LoadUtils;
@@ -53,6 +52,7 @@ import javafx.scene.control.Pagination;
 import javafx.scene.control.SelectionMode;
 import javafx.scene.control.Tab;
 import javafx.scene.control.TableView;
+import javafx.scene.control.TextArea;
 import javafx.scene.layout.BorderPane;
 import javafx.scene.web.WebView;
 import javafx.stage.FileChooser;
@@ -82,6 +82,9 @@ public class PurchaseController
 	private ChoiceBox<Publisher> publishers;
 
 	@FXML
+	private TextArea publisherDet;
+
+	@FXML
 	private Tab ordersTab;
 
 	@FXML
@@ -101,25 +104,25 @@ public class PurchaseController
 
 	@FXML
 	private TableView<PurchaseReturn> returnsData;
-	
+
 	@FXML
 	private Tab paymentTab;
 
 	@FXML
 	private TableView<PurchasePayment> paymentData;
-	
+
 	@FXML
 	private Tab statementTab;
 
 	@FXML
 	private Tab statementTabHtml;
-	
+
 	@FXML
 	private DatePicker fromDate;
 
 	@FXML
 	private DatePicker toDate;
-	
+
 	@FXML
 	private WebView reportData;
 
@@ -135,7 +138,7 @@ public class PurchaseController
 		publishers.setConverter(Converters.getPublisherConverter());
 		publishers.setItems(FXCollections.observableList(allPublishers));
 		publishers.getSelectionModel().selectFirst();
-		
+
 		LocalDate toDateVal = LocalDate.now();
 		LocalDate fromDateVal = toDateVal.minusMonths(6);
 		fromDate.setValue(fromDateVal);
@@ -156,11 +159,50 @@ public class PurchaseController
 	void changedState(ActionEvent event)
 	{
 		Publisher pub = publishers.getSelectionModel().getSelectedItem();
+		publisherDet.setText(pub.getAddress());
 		int idx = orderPaginator.getCurrentPageIndex();
 		List<Order> orderList = schoolService.fetchOrders(pub, idx, ROWS_PER_PAGE).getContent();
 		orderTable.setItems(FXCollections.observableList(orderList));
 	}
 
+	@FXML
+	void addPublisher(ActionEvent event)
+	{
+
+		try
+		{
+			FXMLLoader createOrderLoader = LoadUtils.loadFxml(this, UtilConstants.addPublisherFxml);
+			Parent addOrderRoot = createOrderLoader.load();
+			Scene addOrderScene = new Scene(addOrderRoot);
+			prepareAndShowStage(event, addOrderScene);
+
+		}
+		catch (Exception e)
+		{
+			e.printStackTrace();
+		}
+	}
+	
+	@FXML
+	void editPublisher(ActionEvent event)
+	{
+
+		try
+		{
+			FXMLLoader createOrderLoader = LoadUtils.loadFxml(this, UtilConstants.addPublisherFxml);
+			Parent addOrderRoot = createOrderLoader.load();
+			AddPublisherController ctrl = createOrderLoader.getController();
+			ctrl.initData(this.publishers.getSelectionModel().getSelectedItem());
+			Scene addOrderScene = new Scene(addOrderRoot);
+			prepareAndShowStage(event, addOrderScene);
+
+		}
+		catch (Exception e)
+		{
+			e.printStackTrace();
+		}
+	}
+	
 	@FXML
 	void editOrder(ActionEvent event)
 	{
@@ -363,7 +405,9 @@ public class PurchaseController
 	{
 		if (paymentTab.isSelected())
 		{
-
+			Publisher pub = publishers.getSelectionModel().getSelectedItem();
+			List<PurchasePayment> returnDataList = schoolService.fetchPurchasePayments(pub);
+			paymentData.setItems(FXCollections.observableList(returnDataList));
 		}
 	}
 
@@ -436,26 +480,14 @@ public class PurchaseController
 	@FXML
 	public void loadStatementHtml()
 	{
-		if (statementTabHtml.isSelected() && print == null)
-		{			
+		if (statementTabHtml.isSelected())
+		{
 			try
 			{
-
-				print = this.prepareJasperPrint();
-				
-				ByteArrayOutputStream outputStream = new ByteArrayOutputStream();
-				HtmlExporter exporter = new HtmlExporter();
-				exporter.setExporterOutput(new SimpleHtmlExporterOutput(outputStream));
-				exporter.setExporterInput(new SimpleExporterInput(print));
-				exporter.exportReport();
-
-				String content = StringUtils.toEncodedString(outputStream.toByteArray(), Charset.defaultCharset());				
-				reportData.getEngine().loadContent(content);
-
-			}
-			catch (JRException e)
-			{
-				e.printStackTrace();
+				if(print == null)
+				{
+					loadWebStmt();
+				}
 			}
 			catch (Exception e)
 			{
@@ -463,7 +495,34 @@ public class PurchaseController
 			}
 		}
 	}
-	
+
+	@FXML
+	public void updateStatement(ActionEvent ev)
+	{
+		loadWebStmt();
+	}
+
+	private void loadWebStmt()
+	{
+		try
+		{
+			print = prepareJasperPrint();
+			ByteArrayOutputStream outputStream = new ByteArrayOutputStream();
+			HtmlExporter exporter = new HtmlExporter();
+			exporter.setExporterOutput(new SimpleHtmlExporterOutput(outputStream));
+			exporter.setExporterInput(new SimpleExporterInput(print));
+			exporter.exportReport();
+
+			String content = StringUtils.toEncodedString(outputStream.toByteArray(), Charset.defaultCharset());
+			reportData.getEngine().loadContent(content);
+		}
+		catch (Exception e)
+		{
+			e.printStackTrace();
+		}
+
+	}
+
 	private JasperPrint prepareJasperPrint()
 	{
 		JasperPrint jasperPrint = null;
@@ -473,16 +532,33 @@ public class PurchaseController
 		{
 			LocalDate fromDateVal = fromDate.getValue();
 			LocalDate toDateVal = toDate.getValue();
-			if(toDateVal == null)
+			if (toDateVal == null)
 			{
 				toDateVal = LocalDate.now();
 			}
-			
-			Sort sort = new Sort(new Sort.Order(Direction.ASC, "txnDate"));			
+
+			Sort sort = new Sort(new Sort.Order(Direction.ASC, "txnDate"), new Sort.Order(Direction.ASC, "id"));
 			Publisher pub = publishers.getSelectionModel().getSelectedItem();
-			List<PurchaseTransaction> tableData = schoolService.fetchPurTransactions(pub, fromDateVal, toDateVal, sort);			
+			List<PurchaseTransaction> tableData = schoolService.fetchPurTransactions(pub, fromDateVal, toDateVal, sort);
+			Double openingBalance = 0.0;
+			if(tableData != null && !tableData.isEmpty())
+			{
+				if(tableData.get(0).getPrevTxn() != null)
+				{
+					openingBalance = tableData.get(0).getPrevTxn().getBalance();
+				}
+			} 
+			Double totalDebit = tableData.stream().collect(Collectors.summingDouble(o->  o.getMultiplier() == 1 ? o.getAmount() : 0.0)); 
+			Double totalCredit = tableData.stream().collect(Collectors.summingDouble(o->  o.getMultiplier() == -1 ? o.getAmount() : 0.0));
+			hm.put("openingBalance", openingBalance);			
 			hm.put("reportData", tableData);
-			hm.put("publisherDetails", pub.getAddress());
+			hm.put("publisherName", pub.getName());
+			hm.put("publisherDetails", pub.getStmtAddress());
+			hm.put("fromDate", fromDateVal);
+			hm.put("toDate", toDateVal);
+			hm.put("accountDetails", "Matha Distributors (Chennai)");
+			hm.put("totalDebit", totalDebit);
+			hm.put("totalCredit", totalCredit);
 			JasperReport compiledFile = JasperCompileManager.compileReport(jasperStream);
 
 			jasperPrint = JasperFillManager.fillReport(compiledFile, hm);
@@ -495,7 +571,7 @@ public class PurchaseController
 		{
 			e.printStackTrace();
 		}
-		
+
 		return jasperPrint;
 	}
 
@@ -564,7 +640,7 @@ public class PurchaseController
 			loadPurchases();
 		}
 	};
-	
+
 	private EventHandler<WindowEvent> purchaseRetEventHandler = new EventHandler<WindowEvent>() {
 		@Override
 		public void handle(final WindowEvent event)
@@ -572,12 +648,12 @@ public class PurchaseController
 			loadReturns();
 		}
 	};
-	
+
 	private EventHandler<WindowEvent> purchasePayEventHandler = new EventHandler<WindowEvent>() {
 		@Override
 		public void handle(final WindowEvent event)
 		{
 			loadPayments();
 		}
-	};	
+	};
 }

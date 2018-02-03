@@ -2,6 +2,8 @@ package com.matha.service;
 
 import static org.junit.Assert.fail;
 
+import java.time.LocalDate;
+import java.util.ArrayList;
 import java.util.List;
 
 import org.junit.Test;
@@ -11,7 +13,14 @@ import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.test.context.junit4.SpringRunner;
 
 import com.matha.domain.Order;
+import com.matha.domain.OrderItem;
+import com.matha.domain.Publisher;
+import com.matha.domain.Purchase;
+import com.matha.domain.PurchasePayment;
+import com.matha.domain.PurchaseTransaction;
 import com.matha.domain.School;
+import com.matha.repository.PurchasePayRepository;
+import com.matha.repository.PurchaseRepository;
 import com.matha.sales.SalesApplication;
 
 @RunWith(SpringRunner.class)
@@ -20,6 +29,12 @@ public class SchoolServiceTest {
 
 	@Autowired
 	private SchoolService schoolService;
+	
+	@Autowired
+	private PurchaseRepository purchaseRepository;
+
+	@Autowired
+	private PurchasePayRepository purchasePayRepository;
 
 	@Test
 	public void testFetchSchoolsLike() {
@@ -71,6 +86,88 @@ public class SchoolServiceTest {
 		School school = schoolService.fetchSchoolById("412");
 		List<Order> orderList = schoolService.fetchOrderForSchool(school);
 		System.out.println(orderList);
+	}
+	
+	@Test
+	public void testSavePurchasePay()
+	{
+		try
+		{
+
+			PurchasePayment sPayment = new PurchasePayment();
+			
+			PurchaseTransaction sTxn = sPayment.getSalesTxn();
+			if (sTxn == null)
+			{
+				sTxn = new PurchaseTransaction();
+				Publisher publisher = schoolService.fetchAllPublishers().get(0);
+				sTxn.setPublisher(publisher);
+			}
+
+			sPayment.setPaymentMode("Test");
+
+			double amountVal = 100.00;
+			sTxn.setAmount(amountVal);
+			sTxn.setNote("TetsNotes ");
+			sTxn.setTxnDate(LocalDate.of(2018, 1, 15));
+
+			schoolService.savePurchasePay(sPayment, sTxn);
+			
+		}
+		catch (Throwable e)
+		{
+			e.printStackTrace();			
+		}
+			
+	}
+
+	@Test
+	public void testUpdatePurchasePay()
+	{
+		try
+		{
+			PurchasePayment sPayment = purchasePayRepository.findOne(17);			
+			PurchaseTransaction sTxn = sPayment.getSalesTxn();
+
+			sPayment.setPaymentMode("TestUpd II");
+
+			double amountVal = 100.00;
+			sTxn.setAmount(amountVal);
+			sTxn.setNote("TetsNotes Upd II");
+			sTxn.setTxnDate(LocalDate.of(2018, 1, 21));
+
+			schoolService.savePurchasePay(sPayment, sTxn);
+			
+		}
+		catch (Throwable e)
+		{
+			e.printStackTrace();			
+		}
+			
+	}
+
+	@Test
+	public void testSavePurchaseBill()
+	{
+		try
+		{
+
+			Purchase pur = purchaseRepository.findOne("9765");
+			
+			PurchaseTransaction sTxn = pur.getSalesTxn();
+			sTxn.setAmount(2200.00);
+			sTxn.setTxnDate(LocalDate.of(2018, 1, 27));
+			
+			ArrayList<OrderItem> items = new ArrayList<>(pur.getOrderItems()); 
+			
+			schoolService.savePurchase(pur, items, sTxn);
+			
+		}
+		catch (Throwable e)
+		{
+			e.printStackTrace();			
+		}
+			
 	}
 
 }
