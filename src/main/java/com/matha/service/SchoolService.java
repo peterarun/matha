@@ -3,7 +3,9 @@ package com.matha.service;
 import java.time.LocalDate;
 import java.util.HashSet;
 import java.util.List;
+import java.util.Map;
 import java.util.Set;
+import java.util.TreeSet;
 
 import javax.persistence.EntityManager;
 import javax.persistence.PersistenceContext;
@@ -191,7 +193,7 @@ public class SchoolService
 	{
 		bookRepository.delete(selectedOrder);
 	}
-
+	
 	public void saveOrder(Order item)
 	{
 		orderRepository.save(item);
@@ -216,7 +218,7 @@ public class SchoolService
 	{
 		return orderItemRepository.fetchBooksForSchool(school);
 	}
-
+	
 	public List<Order> fetchOrders()
 	{
 		return orderRepository.findAll();
@@ -542,13 +544,17 @@ public class SchoolService
 	public void savePurchase(Purchase pur, List<OrderItem> orderItems, PurchaseTransaction txn)
 	{
 		txn.setPurchase(pur);
+		Set<OrderItem> orderItemsOrig = new HashSet<>();
+		boolean addFlag = false;
 		if (txn.getId() == null)
 		{
 			txn = saveNewPurchaseTxn(txn);
+			addFlag = true;
 		}
 		else
 		{
 			txn = updatePurchaseTxn(txn);
+			orderItemsOrig.addAll(pur.getOrderItems());
 		}
 
 		pur.setSalesTxn(txn);
@@ -557,13 +563,32 @@ public class SchoolService
 		txn.setPurchase(pur);
 		purchaseTxnRepository.save(txn);
 
+		Set<Book> orderedBooks = new HashSet<>();		
 		for (OrderItem orderItem : orderItems)
 		{
-			orderItem.setPurchase(pur);
+			if(!orderItemsOrig.contains(orderItem))
+			{
+				orderItem.getBook().addInventory(orderItem.getCount());
+				orderItem.setPurchase(pur);
+			}			
+			orderItem.getBook().setPrice(orderItem.getBookPrice());
+			orderedBooks.add(orderItem.getBook());
 		}
+		
+		orderItemsOrig.removeAll(orderItems);
+		for (OrderItem orderItem : orderItemsOrig)
+		{
+			orderItem.getBook().clearInventory(orderItem.getCount());
+			orderItem.setPurchase(null);
+								
+			orderedBooks.add(orderItem.getBook());
+		}
+
 		saveOrderItems(orderItems);
 		pur.setOrderItems(new HashSet<>(orderItems));
 		purchaseRepoitory.save(pur);
+		
+		bookRepository.save(orderedBooks);
 
 	}
 

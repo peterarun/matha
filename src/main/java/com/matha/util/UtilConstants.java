@@ -7,7 +7,10 @@ public interface UtilConstants {
 	public static final String[] discTypes = { "Rupees", "Percentage" };
 	public static final String RUPEE_SIGN = "₹";
 	public static final String PERCENT_SIGN = "%";
-	public static final String NEW_LINE = System.getProperty("line.separator");	 
+	public static final String NEW_LINE = System.getProperty("line.separator");
+	public static final String PDF = "PDF";
+	public static final String Excel = "Excel";	
+	public static final String Docx = "Word";
 	
 	public static final String landingPageFxmlFile = "/fxml/landing.fxml";
 	public static final String schoolsFxml = "/fxml/Schools.fxml";
@@ -23,8 +26,12 @@ public interface UtilConstants {
 	public static final String addPaymentFxmlFile = "/fxml/createPayment.fxml";
 	public static final String addReturnFxmlFile = "/fxml/createReturn.fxml";
 	public static final String createPurchaseFxmlFile = "/fxml/createPurchaseBill.fxml";
+	public static final String printPurchaseFxmlFile = "/fxml/printPurchase.fxml";
 	public static final String createPurchaseRetFxmlFile = "/fxml/createPurchaseReturn.fxml";
 	public static final String createPurchasePayFxmlFile = "/fxml/createPurchasePay.fxml";
+	
+	public static final String statementJrxml = "/jrxml/Statement.jrxml";
+	public static final String invoiceJrxml = "/jrxml/Invoice.jrxml";
 	
 	public static enum CRDR_ENUM{
 		

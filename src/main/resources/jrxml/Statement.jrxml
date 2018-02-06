@@ -1,0 +1,409 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!-- Created with Jaspersoft Studio version 6.5.1.final using JasperReports Library version 6.5.1  -->
+<jasperReport xmlns="http://jasperreports.sourceforge.net/jasperreports" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://jasperreports.sourceforge.net/jasperreports http://jasperreports.sourceforge.net/xsd/jasperreport.xsd" name="Invoice" pageWidth="595" pageHeight="842" whenNoDataType="AllSectionsNoDetail" columnWidth="535" leftMargin="20" rightMargin="20" topMargin="20" bottomMargin="20" whenResourceMissingType="Empty" uuid="4eedbb89-b4f6-4469-9ab6-f642a1688cf7">
+	<property name="template.engine" value="tabular_template"/>
+	<property name="com.jaspersoft.studio.data.defaultdataadapter" value="One Empty Record"/>
+	<style name="Title" forecolor="#FFFFFF" hTextAlign="Center" vTextAlign="Middle" fontName="Tahoma" fontSize="50" isBold="true" pdfFontName="" pdfEncoding="">
+		<box leftPadding="2" rightPadding="2"/>
+		<paragraph spacingBefore="2"/>
+	</style>
+	<style name="SubTitle" forecolor="#CCCCCC" fontName="Tahoma" fontSize="18" isBold="false" pdfFontName="Times-Roman">
+		<box leftPadding="2" rightPadding="2"/>
+	</style>
+	<style name="Row" mode="Transparent" hTextAlign="Left" vTextAlign="Middle" fontName="Tahoma" fontSize="10" pdfFontName="Helvetica" pdfEncoding="CP1252 (Western European ANSI aka WinAnsi)">
+		<box leftPadding="2" rightPadding="2"/>
+		<conditionalStyle>
+			<conditionExpression><![CDATA[$V{REPORT_COUNT}%2 == 0]]></conditionExpression>
+			<style mode="Opaque" forecolor="#E3DADA" backcolor="#6697CC"/>
+		</conditionalStyle>
+	</style>
+	<style name="Table">
+		<box>
+			<pen lineWidth="1.0" lineColor="#000000"/>
+			<topPen lineWidth="1.0" lineColor="#000000"/>
+			<leftPen lineWidth="1.0" lineColor="#000000"/>
+			<bottomPen lineWidth="1.0" lineColor="#000000"/>
+			<rightPen lineWidth="1.0" lineColor="#000000"/>
+		</box>
+	</style>
+	<style name="Table_TH" mode="Opaque" backcolor="#F0F8FF">
+		<box>
+			<pen lineWidth="0.5" lineColor="#000000"/>
+			<topPen lineWidth="0.5" lineColor="#000000"/>
+			<leftPen lineWidth="0.5" lineColor="#000000"/>
+			<bottomPen lineWidth="0.5" lineColor="#000000"/>
+			<rightPen lineWidth="0.5" lineColor="#000000"/>
+		</box>
+	</style>
+	<style name="Table_CH" mode="Opaque" backcolor="#BFE1FF">
+		<box>
+			<pen lineWidth="0.5" lineColor="#000000"/>
+			<topPen lineWidth="0.5" lineColor="#000000"/>
+			<leftPen lineWidth="0.5" lineColor="#000000"/>
+			<bottomPen lineWidth="0.5" lineColor="#000000"/>
+			<rightPen lineWidth="0.5" lineColor="#000000"/>
+		</box>
+	</style>
+	<style name="Table_TD" mode="Opaque" backcolor="#FFFFFF">
+		<box>
+			<pen lineWidth="0.5" lineColor="#000000"/>
+			<topPen lineWidth="0.5" lineColor="#000000"/>
+			<leftPen lineWidth="0.5" lineColor="#000000"/>
+			<bottomPen lineWidth="0.5" lineColor="#000000"/>
+			<rightPen lineWidth="0.5" lineColor="#000000"/>
+		</box>
+	</style>
+	<style name="Style_Matha" radius="2" hTextAlign="Left" vTextAlign="Middle" pattern="#0.00#;(#0.00#-)" isBlankWhenNull="true" fontName="Tahoma" fontSize="10" pdfFontName="Helvetica">
+		<box leftPadding="2" rightPadding="2"/>
+		<conditionalStyle>
+			<conditionExpression><![CDATA[$V{REPORT_COUNT}%2 == 0]]></conditionExpression>
+			<style forecolor="#000000" backcolor="#C9C5C8"/>
+		</conditionalStyle>
+	</style>
+	<style name="Numbers_Matha" style="Style_Matha" hTextAlign="Right" vTextAlign="Middle"/>
+	<subDataset name="reportDataSet" uuid="07c1b832-0d83-4a2b-a01c-0536b46ba0ba">
+		<property name="com.jaspersoft.studio.data.defaultdataadapter" value="reportDataAdapter"/>
+		<parameter name="totalDebit" class="java.lang.Double"/>
+		<parameter name="totalCredit" class="java.lang.Double"/>
+		<parameter name="openingBalance" class="java.lang.Double"/>
+		<queryString>
+			<![CDATA[]]>
+		</queryString>
+		<field name="amount" class="java.lang.Double">
+			<fieldDescription><![CDATA[amount]]></fieldDescription>
+		</field>
+		<field name="txnDate" class="java.time.LocalDate">
+			<fieldDescription><![CDATA[txnDate]]></fieldDescription>
+		</field>
+		<field name="type" class="java.lang.String"/>
+		<field name="purchase" class="com.matha.domain.Purchase"/>
+		<field name="payment" class="com.matha.domain.PurchasePayment"/>
+		<field name="purchaseReturn" class="com.matha.domain.PurchaseReturn"/>
+		<field name="balance" class="java.lang.Double"/>
+		<field name="multiplier" class="java.lang.Integer"/>
+		<field name="note" class="java.lang.String"/>
+	</subDataset>
+	<parameter name="reportData" class="java.util.List"/>
+	<parameter name="publisherDetails" class="java.lang.String"/>
+	<parameter name="publisherName" class="java.lang.String"/>
+	<parameter name="fromDate" class="java.time.LocalDate"/>
+	<parameter name="toDate" class="java.time.LocalDate"/>
+	<parameter name="accountDetails" class="java.lang.String"/>
+	<parameter name="totalDebit" class="java.lang.Double"/>
+	<parameter name="totalCredit" class="java.lang.Double"/>
+	<parameter name="openingBalance" class="java.lang.Double"/>
+	<queryString>
+		<![CDATA[]]>
+	</queryString>
+	<title>
+		<band height="120" splitType="Stretch">
+			<textField>
+				<reportElement x="0" y="40" width="555" height="15" uuid="584969e4-c0bc-4bba-958b-e354c7e4af67"/>
+				<box>
+					<leftPen lineWidth="1.0"/>
+					<rightPen lineWidth="1.0"/>
+				</box>
+				<textElement textAlignment="Center" verticalAlignment="Middle">
+					<font isBold="false"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$P{publisherDetails}]]></textFieldExpression>
+			</textField>
+			<textField>
+				<reportElement x="0" y="70" width="555" height="15" uuid="3101a4be-f097-486d-a52b-fbf9bf886796"/>
+				<box>
+					<leftPen lineWidth="1.0"/>
+					<rightPen lineWidth="1.0"/>
+				</box>
+				<textElement textAlignment="Center" verticalAlignment="Middle"/>
+				<textFieldExpression><![CDATA["(From " + $P{fromDate} + " to " + $P{toDate} + " )"]]></textFieldExpression>
+			</textField>
+			<textField>
+				<reportElement x="0" y="0" width="555" height="40" uuid="5abb62ef-9181-4276-964a-d8c491c0804b"/>
+				<box>
+					<topPen lineWidth="1.0"/>
+					<leftPen lineWidth="1.0"/>
+					<rightPen lineWidth="1.0"/>
+				</box>
+				<textElement textAlignment="Center" verticalAlignment="Middle">
+					<font size="24" isBold="true"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$P{publisherName}]]></textFieldExpression>
+			</textField>
+			<staticText>
+				<reportElement x="0" y="55" width="555" height="15" uuid="b7d808b9-5b70-45f6-86aa-9d59bd1a27a3"/>
+				<box>
+					<leftPen lineWidth="1.0"/>
+					<rightPen lineWidth="1.0"/>
+				</box>
+				<textElement textAlignment="Center" verticalAlignment="Middle">
+					<font isBold="true" pdfFontName="Helvetica-Bold"/>
+				</textElement>
+				<text><![CDATA[Account Ledger]]></text>
+			</staticText>
+			<textField>
+				<reportElement x="0" y="85" width="555" height="15" uuid="fd8adfd6-6578-48d0-bb2e-43018b17fe1e"/>
+				<box>
+					<leftPen lineWidth="1.0"/>
+					<bottomPen lineWidth="1.0"/>
+					<rightPen lineWidth="1.0"/>
+				</box>
+				<textElement textAlignment="Center" verticalAlignment="Middle">
+					<font pdfFontName="Helvetica-Bold"/>
+				</textElement>
+				<textFieldExpression><![CDATA["Account: " + $P{accountDetails}]]></textFieldExpression>
+			</textField>
+		</band>
+	</title>
+	<summary>
+		<band height="106">
+			<componentElement>
+				<reportElement style="Style_Matha" x="0" y="0" width="555" height="100" uuid="2b958d9e-0b19-4edd-ac35-50eebad72619">
+					<property name="com.jaspersoft.studio.layout" value="com.jaspersoft.studio.editor.layout.VerticalRowLayout"/>
+					<property name="com.jaspersoft.studio.table.style.table_header" value="Table_TH"/>
+					<property name="com.jaspersoft.studio.table.style.column_header" value="Table_CH"/>
+					<property name="com.jaspersoft.studio.table.style.detail" value="Table_TD"/>
+				</reportElement>
+				<jr:table xmlns:jr="http://jasperreports.sourceforge.net/jasperreports/components" xsi:schemaLocation="http://jasperreports.sourceforge.net/jasperreports/components http://jasperreports.sourceforge.net/xsd/components.xsd">
+					<datasetRun subDataset="reportDataSet" uuid="1e16cb0d-7d6d-48b2-a725-f387137653ff">
+						<datasetParameter name="openingBalance">
+							<datasetParameterExpression><![CDATA[$P{openingBalance}]]></datasetParameterExpression>
+						</datasetParameter>
+						<datasetParameter name="totalDebit">
+							<datasetParameterExpression><![CDATA[$P{totalDebit}]]></datasetParameterExpression>
+						</datasetParameter>
+						<datasetParameter name="totalCredit">
+							<datasetParameterExpression><![CDATA[$P{totalCredit}]]></datasetParameterExpression>
+						</datasetParameter>
+						<dataSourceExpression><![CDATA[new net.sf.jasperreports.engine.data.JRBeanCollectionDataSource($P{reportData})]]></dataSourceExpression>
+					</datasetRun>
+					<jr:column width="60" uuid="2a3a2c01-0584-42c3-bc68-61ab55e18f33">
+						<property name="com.jaspersoft.studio.components.table.model.column.name" value="Column1"/>
+						<jr:tableFooter style="Table_TH" height="30" rowSpan="1"/>
+						<jr:columnHeader style="Table_CH" height="25" rowSpan="1">
+							<box>
+								<topPen lineWidth="1.0"/>
+								<leftPen lineWidth="1.0"/>
+							</box>
+							<staticText>
+								<reportElement style="Style_Matha" x="0" y="0" width="60" height="25" uuid="94a158fd-3971-4a45-8dbe-34dcdd2c9032"/>
+								<textElement>
+									<font isBold="true" pdfFontName="Helvetica-Bold"/>
+								</textElement>
+								<text><![CDATA[Date]]></text>
+							</staticText>
+						</jr:columnHeader>
+						<jr:detailCell style="Table_TD" height="20">
+							<box>
+								<leftPen lineWidth="1.0"/>
+								<bottomPen lineWidth="1.0"/>
+							</box>
+							<textField>
+								<reportElement style="Style_Matha" x="0" y="0" width="60" height="20" uuid="1d4e79e4-4b1c-4095-b315-8e761bfed0af"/>
+								<textFieldExpression><![CDATA[$F{txnDate}]]></textFieldExpression>
+							</textField>
+						</jr:detailCell>
+					</jr:column>
+					<jr:column width="50" uuid="3a1925b0-446f-43f4-b733-f9b532190f50">
+						<property name="com.jaspersoft.studio.components.table.model.column.name" value="Column2"/>
+						<jr:tableFooter style="Table_TH" height="30" rowSpan="1"/>
+						<jr:columnHeader style="Table_CH" height="25" rowSpan="1">
+							<box>
+								<topPen lineWidth="1.0"/>
+							</box>
+							<staticText>
+								<reportElement style="Style_Matha" x="0" y="0" width="50" height="25" uuid="f531258b-15dd-4db4-a381-b4ac0de0f584"/>
+								<textElement>
+									<font isBold="true" pdfFontName="Helvetica-Bold"/>
+								</textElement>
+								<text><![CDATA[Type]]></text>
+							</staticText>
+						</jr:columnHeader>
+						<jr:detailCell style="Table_TD" height="20">
+							<box>
+								<bottomPen lineWidth="1.0"/>
+							</box>
+							<textField>
+								<reportElement style="Style_Matha" x="0" y="0" width="50" height="20" uuid="ff42150e-9564-4906-a68a-404e2704327b"/>
+								<textFieldExpression><![CDATA[$F{type}]]></textFieldExpression>
+							</textField>
+						</jr:detailCell>
+					</jr:column>
+					<jr:column width="60" uuid="f6a3d503-054d-4dbc-badb-ea018a4e9712">
+						<property name="com.jaspersoft.studio.components.table.model.column.name" value="Column3"/>
+						<jr:tableFooter style="Table_TH" height="30" rowSpan="1"/>
+						<jr:columnHeader style="Table_CH" height="25" rowSpan="1">
+							<box>
+								<topPen lineWidth="1.0"/>
+							</box>
+							<staticText>
+								<reportElement style="Style_Matha" x="0" y="0" width="60" height="25" uuid="b24311d4-37db-4dac-b9a3-45e794e1bc23"/>
+								<textElement>
+									<font isBold="true" pdfFontName="Helvetica-Bold"/>
+								</textElement>
+								<text><![CDATA[Voucher No.]]></text>
+							</staticText>
+						</jr:columnHeader>
+						<jr:detailCell style="Table_TD" height="20">
+							<box>
+								<bottomPen lineWidth="1.0"/>
+							</box>
+							<textField>
+								<reportElement style="Style_Matha" x="0" y="0" width="60" height="20" uuid="186dffe6-c779-4ffc-8c77-e3f75128c55b"/>
+								<textFieldExpression><![CDATA[$F{purchase} != null ? $F{purchase}.getId() : "None"]]></textFieldExpression>
+							</textField>
+						</jr:detailCell>
+					</jr:column>
+					<jr:column width="150" uuid="25b481ce-3f9d-4390-95d0-af06ff28ee9d">
+						<property name="com.jaspersoft.studio.components.table.model.column.name" value="Column4"/>
+						<jr:tableHeader style="Table_TH" height="25" rowSpan="1">
+							<staticText>
+								<reportElement style="Style_Matha" x="0" y="0" width="150" height="25" uuid="adfddc4a-f101-4ad3-a143-a4ed39f860ad"/>
+								<textElement>
+									<font isBold="true" pdfFontName="Helvetica-Bold" pdfEncoding=""/>
+								</textElement>
+								<text><![CDATA[Opening Balance]]></text>
+							</staticText>
+						</jr:tableHeader>
+						<jr:tableFooter style="Table_TH" height="30" rowSpan="1"/>
+						<jr:columnHeader style="Table_CH" height="25" rowSpan="1">
+							<box>
+								<topPen lineWidth="1.0"/>
+							</box>
+							<staticText>
+								<reportElement style="Style_Matha" x="0" y="0" width="150" height="25" uuid="3442e824-b513-4a98-a5e8-0da9d6ad7471"/>
+								<textElement>
+									<font isBold="true" pdfFontName="Helvetica-Bold"/>
+								</textElement>
+								<text><![CDATA[Particulars]]></text>
+							</staticText>
+						</jr:columnHeader>
+						<jr:detailCell style="Table_TD" height="20">
+							<box>
+								<bottomPen lineWidth="1.0"/>
+							</box>
+							<textField>
+								<reportElement style="Style_Matha" x="0" y="0" width="150" height="20" uuid="0916027e-0e4e-4612-9761-0a7dfc1ccd8a"/>
+								<textFieldExpression><![CDATA[$F{note}]]></textFieldExpression>
+							</textField>
+						</jr:detailCell>
+					</jr:column>
+					<jr:column width="70" uuid="75467557-3b94-4b9e-99e1-0f007a08eae0">
+						<property name="com.jaspersoft.studio.components.table.model.column.name" value="Column5"/>
+						<jr:tableHeader style="Table_TH" height="25" rowSpan="1"/>
+						<jr:tableFooter style="Table_TH" height="30" rowSpan="1">
+							<textField>
+								<reportElement style="Numbers_Matha" x="0" y="0" width="70" height="30" uuid="fff98a04-77cc-49df-95f4-8488968fec0f"/>
+								<box>
+									<topPen lineWidth="1.0"/>
+									<leftPen lineWidth="1.0"/>
+									<bottomPen lineWidth="1.0"/>
+								</box>
+								<textElement>
+									<font isBold="true" pdfFontName="Helvetica-Bold"/>
+								</textElement>
+								<textFieldExpression><![CDATA[$P{totalDebit}]]></textFieldExpression>
+							</textField>
+						</jr:tableFooter>
+						<jr:columnHeader style="Table_CH" height="25" rowSpan="1">
+							<box>
+								<topPen lineWidth="1.0"/>
+							</box>
+							<staticText>
+								<reportElement style="Style_Matha" x="0" y="0" width="70" height="25" uuid="6c688efb-8923-4f22-b404-231ad47ee33d"/>
+								<textElement>
+									<font isBold="true" pdfFontName="Helvetica-Bold"/>
+								</textElement>
+								<text><![CDATA[Debit(Rs)]]></text>
+							</staticText>
+						</jr:columnHeader>
+						<jr:detailCell style="Table_TD" height="20">
+							<box>
+								<bottomPen lineWidth="1.0"/>
+							</box>
+							<textField isBlankWhenNull="true">
+								<reportElement style="Numbers_Matha" x="0" y="0" width="70" height="20" uuid="b7ed4f70-032f-4779-af75-c676f7d5e593"/>
+								<textFieldExpression><![CDATA[$F{multiplier} == 1 ? String.format("%.2f", $F{amount}) : null]]></textFieldExpression>
+							</textField>
+						</jr:detailCell>
+					</jr:column>
+					<jr:column width="60" uuid="a66319ed-9a08-40ed-8cde-02f9a39c7da3">
+						<property name="com.jaspersoft.studio.components.table.model.column.name" value="Column6"/>
+						<jr:tableHeader style="Table_TH" height="25" rowSpan="1"/>
+						<jr:tableFooter style="Table_TH" height="30" rowSpan="1">
+							<textField>
+								<reportElement style="Numbers_Matha" x="0" y="0" width="60" height="30" uuid="e0e2db98-e288-4244-b7e8-63dc0c3b70ac"/>
+								<box>
+									<topPen lineWidth="1.0"/>
+									<leftPen lineWidth="1.0"/>
+									<bottomPen lineWidth="1.0"/>
+									<rightPen lineWidth="1.0"/>
+								</box>
+								<textElement>
+									<font isBold="true" pdfFontName="Helvetica-Bold"/>
+								</textElement>
+								<textFieldExpression><![CDATA[$P{totalCredit}]]></textFieldExpression>
+							</textField>
+						</jr:tableFooter>
+						<jr:columnHeader style="Table_CH" height="25" rowSpan="1">
+							<box>
+								<topPen lineWidth="1.0"/>
+							</box>
+							<staticText>
+								<reportElement style="Style_Matha" x="0" y="0" width="60" height="25" uuid="2e00311a-2889-47ee-9af1-b08ff053c650"/>
+								<textElement>
+									<font isBold="true" pdfFontName="Helvetica-Bold"/>
+								</textElement>
+								<text><![CDATA[Credit(Rs)]]></text>
+							</staticText>
+						</jr:columnHeader>
+						<jr:detailCell style="Table_TD" height="20">
+							<box>
+								<bottomPen lineWidth="1.0"/>
+							</box>
+							<textField isBlankWhenNull="true">
+								<reportElement style="Numbers_Matha" x="0" y="0" width="60" height="20" uuid="64131424-46ee-4a31-b18a-a39bbd4af245"/>
+								<textFieldExpression><![CDATA[$F{multiplier} == -1 ? String.format("%.2f", $F{amount}) : null]]></textFieldExpression>
+							</textField>
+						</jr:detailCell>
+					</jr:column>
+					<jr:column width="99" uuid="541c29fa-a9d0-4776-b55b-1678d63b4125">
+						<property name="com.jaspersoft.studio.components.table.model.column.name" value="Column7"/>
+						<jr:tableHeader style="Table_TH" height="25" rowSpan="1">
+							<textField>
+								<reportElement style="Numbers_Matha" x="0" y="0" width="99" height="25" uuid="56eacea1-98ee-468a-8631-3de810a5d449"/>
+								<textElement>
+									<font isBold="true" pdfFontName="Helvetica-Bold" pdfEncoding=""/>
+								</textElement>
+								<textFieldExpression><![CDATA[$P{openingBalance}]]></textFieldExpression>
+							</textField>
+						</jr:tableHeader>
+						<jr:tableFooter style="Table_TH" height="30" rowSpan="1"/>
+						<jr:columnHeader style="Table_CH" height="25" rowSpan="1">
+							<box>
+								<topPen lineWidth="1.0"/>
+								<rightPen lineWidth="1.0"/>
+							</box>
+							<staticText>
+								<reportElement style="Style_Matha" x="0" y="0" width="99" height="25" uuid="2bd5e86a-ff95-4aa8-a3e7-d1f4fdb59c87"/>
+								<textElement>
+									<font isBold="true" pdfFontName="Helvetica-Bold"/>
+								</textElement>
+								<text><![CDATA[Balance]]></text>
+							</staticText>
+						</jr:columnHeader>
+						<jr:detailCell style="Table_TD" height="20">
+							<box>
+								<bottomPen lineWidth="1.0"/>
+								<rightPen lineWidth="1.0"/>
+							</box>
+							<textField>
+								<reportElement style="Numbers_Matha" x="0" y="0" width="99" height="20" uuid="0443a939-6a65-46d6-9d27-fb84fc0c38f2"/>
+								<textFieldExpression><![CDATA[String.format("%.2f", Math.abs($F{balance})) + "" + ($F{balance} > 0 ? " DR" : " CR")]]></textFieldExpression>
+							</textField>
+						</jr:detailCell>
+					</jr:column>
+				</jr:table>
+			</componentElement>
+		</band>
+	</summary>
+</jasperReport>

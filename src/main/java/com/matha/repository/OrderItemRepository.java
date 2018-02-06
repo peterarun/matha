@@ -22,4 +22,6 @@ public interface OrderItemRepository extends JpaRepository<OrderItem, String> {
 	
 	@Query("select distinct oDet.book from OrderItem oDet, Order ord where ord = oDet.order and ord.school = ?1")
 	public List<Book> fetchBooksForSchool(School school);
+
+	public List<OrderItem> findAllByPurchaseIsNotNull();
 }

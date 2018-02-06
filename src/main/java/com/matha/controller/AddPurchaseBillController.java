@@ -40,6 +40,7 @@ import javafx.scene.control.RadioButton;
 import javafx.scene.control.TableColumn;
 import javafx.scene.control.TableColumn.CellEditEvent;
 import javafx.scene.control.TableView;
+import javafx.scene.control.TextArea;
 import javafx.scene.control.TextField;
 import javafx.scene.control.Toggle;
 import javafx.scene.control.ToggleGroup;
@@ -57,7 +58,7 @@ public class AddPurchaseBillController
 	private SchoolService schoolService;
 
 	@FXML
-	private TextField publisherDetails;
+	private TextArea publisherDetails;
 
 	@FXML
 	private Label message;
@@ -170,7 +171,7 @@ public class AddPurchaseBillController
 			{
 				Set<Order> orderSet = purchaseIn.getOrderItems().stream().map(OrderItem::getOrder)
 						.collect(Collectors.toSet());
-				List<String> orderIdList = orderSet.stream().map(Order::getId).collect(Collectors.toList());
+				List<String> orderIdList = orderSet.stream().map(Order::getSerialNo).collect(Collectors.toList());
 				this.orderList.setItems(FXCollections.observableList(orderIdList));
 
 				List<OrderItem> bookItems = new ArrayList<OrderItem>();

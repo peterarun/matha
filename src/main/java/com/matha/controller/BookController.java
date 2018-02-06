@@ -110,10 +110,11 @@ public class BookController {
 		    if(StringUtils.isNotBlank(qtyStr))
 		    {
 		    	Integer addedVal = Integer.parseInt(qtyStr);
-				selBook.setInventory(selBook.getInventory() + addedVal);
+				selBook.addInventory(addedVal);
 				srvc.saveBook(selBook);
 		    }
 		}
+		loadData(this.bookName.getText());
 
 	}
 

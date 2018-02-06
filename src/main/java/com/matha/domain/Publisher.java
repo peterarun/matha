@@ -45,6 +45,9 @@ public class Publisher
 	@Column(name = "GSTIN")
 	private String gstIn;
 
+	@Column(name = "logoFileName")
+	private String logoFileName;
+	
 	public String getId()
 	{
 		return id;
@@ -143,6 +146,16 @@ public class Publisher
 	public void setGstIn(String gstIn)
 	{
 		this.gstIn = gstIn;
+	}
+
+	public String getLogoFileName()
+	{
+		return logoFileName;
+	}
+
+	public void setLogoFileName(String logoFileName)
+	{
+		this.logoFileName = logoFileName;
 	}
 
 	@Override

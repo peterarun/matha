@@ -21,6 +21,7 @@ import org.springframework.stereotype.Component;
 
 import com.matha.domain.Book;
 import com.matha.domain.Order;
+import com.matha.domain.OrderItem;
 import com.matha.domain.Publisher;
 import com.matha.domain.Purchase;
 import com.matha.domain.PurchasePayment;
@@ -29,7 +30,6 @@ import com.matha.domain.PurchaseTransaction;
 import com.matha.service.SchoolService;
 import com.matha.util.Converters;
 import com.matha.util.LoadUtils;
-import com.matha.util.UtilConstants;
 import com.matha.util.Utils;
 
 import javafx.beans.binding.Bindings;
@@ -65,9 +65,13 @@ import net.sf.jasperreports.engine.JasperExportManager;
 import net.sf.jasperreports.engine.JasperFillManager;
 import net.sf.jasperreports.engine.JasperPrint;
 import net.sf.jasperreports.engine.JasperReport;
+import net.sf.jasperreports.engine.data.JRBeanCollectionDataSource;
 import net.sf.jasperreports.engine.export.HtmlExporter;
 import net.sf.jasperreports.export.SimpleExporterInput;
 import net.sf.jasperreports.export.SimpleHtmlExporterOutput;
+
+import static com.matha.util.UtilConstants.*;
+import static com.matha.util.Utils.*;
 
 @Component
 public class PurchaseController
@@ -171,7 +175,7 @@ public class PurchaseController
 
 		try
 		{
-			FXMLLoader createOrderLoader = LoadUtils.loadFxml(this, UtilConstants.addPublisherFxml);
+			FXMLLoader createOrderLoader = LoadUtils.loadFxml(this, addPublisherFxml);
 			Parent addOrderRoot = createOrderLoader.load();
 			Scene addOrderScene = new Scene(addOrderRoot);
 			prepareAndShowStage(event, addOrderScene);
@@ -189,7 +193,7 @@ public class PurchaseController
 
 		try
 		{
-			FXMLLoader createOrderLoader = LoadUtils.loadFxml(this, UtilConstants.addPublisherFxml);
+			FXMLLoader createOrderLoader = LoadUtils.loadFxml(this, addPublisherFxml);
 			Parent addOrderRoot = createOrderLoader.load();
 			AddPublisherController ctrl = createOrderLoader.getController();
 			ctrl.initData(this.publishers.getSelectionModel().getSelectedItem());
@@ -208,7 +212,7 @@ public class PurchaseController
 	{
 		try
 		{
-			FXMLLoader createOrderLoader = LoadUtils.loadFxml(this, UtilConstants.createOrderFxmlFile);
+			FXMLLoader createOrderLoader = LoadUtils.loadFxml(this, createOrderFxmlFile);
 			Parent addOrderRoot;
 
 			addOrderRoot = createOrderLoader.load();
@@ -245,7 +249,7 @@ public class PurchaseController
 			ObservableList<Order> selectedOrders = orderTable.getSelectionModel().getSelectedItems();
 			Set<Order> orderSet = new HashSet<>(selectedOrders);
 
-			FXMLLoader createOrderLoader = LoadUtils.loadFxml(this, UtilConstants.createPurchaseFxmlFile);
+			FXMLLoader createOrderLoader = LoadUtils.loadFxml(this, createPurchaseFxmlFile);
 			Parent addOrderRoot = createOrderLoader.load();
 			AddPurchaseBillController ctrl = createOrderLoader.getController();
 			ctrl.initData(orderSet, this.publishers.getSelectionModel().getSelectedItem(), null);
@@ -268,7 +272,7 @@ public class PurchaseController
 
 			Purchase purchase = this.purchaseData.getSelectionModel().getSelectedItem();
 
-			FXMLLoader createOrderLoader = LoadUtils.loadFxml(this, UtilConstants.createPurchaseFxmlFile);
+			FXMLLoader createOrderLoader = LoadUtils.loadFxml(this, createPurchaseFxmlFile);
 			Parent addOrderRoot = createOrderLoader.load();
 			AddPurchaseBillController ctrl = createOrderLoader.getController();
 			ctrl.initData(null, this.publishers.getSelectionModel().getSelectedItem(), purchase);
@@ -300,6 +304,79 @@ public class PurchaseController
 		}
 	}
 
+	
+	@FXML
+	public void printPurchaseBill(ActionEvent ev)
+	{
+		try
+		{
+			FXMLLoader createOrderLoader = LoadUtils.loadFxml(this, printPurchaseFxmlFile);
+			Parent addOrderRoot = createOrderLoader.load();
+			PrintPurchaseBillController ctrl = createOrderLoader.getController();
+			Purchase purchase = purchaseData.getSelectionModel().getSelectedItem();
+			JasperPrint jasperPrint = prepareJasperPrint(purchase.getSalesTxn().getPublisher(), purchase);
+			ctrl.initData(jasperPrint, purchase);
+			Scene addOrderScene = new Scene(addOrderRoot);
+			prepareAndShowStage(ev, addOrderScene);
+		}
+		catch (Exception e)
+		{
+			e.printStackTrace();
+		}		
+	}
+
+	private JasperPrint prepareJasperPrint(Publisher pub, Purchase purchase)
+	{
+		JasperPrint jasperPrint = null;
+		InputStream jasperStream = getClass().getResourceAsStream(invoiceJrxml);
+		HashMap<String, Object> hm = new HashMap<>();
+		try
+		{			
+			Set<OrderItem> tableData = purchase.getOrderItems();
+			PurchaseTransaction txn = purchase.getSalesTxn();
+			Set<String> orderIdSet = tableData.stream().map(OrderItem::getOrder).map(Order::getId).collect(Collectors.toSet());
+			String orderIds = String.join(",", orderIdSet);
+			Double subTotal = purchase.getSubTotal();
+			Double discAmt = purchase.getDiscAmt();
+			if(discAmt != null)
+			{
+				discAmt = purchase.getDiscType() ? subTotal * discAmt /100 : subTotal - discAmt;  
+			}
+			 			
+			hm.put("publisherName", pub.getName());
+			hm.put("publisherDetails", pub.getStmtAddress());
+			hm.put("partyName", "MATHA DISTRIBUTORS.");
+			hm.put("partyAddress", "No.88, 8th Street, A.K.Swamy Nagar, " + NEW_LINE + "Kilpauk, " + NEW_LINE + "Chennai - 600010");
+			hm.put("partyPhone", "Ph - 09444026149");
+			hm.put("documentsThrough", purchase.getDocsThrough());
+			hm.put("despatchedTo", purchase.getDespatchedTo());
+			hm.put("invoiceNo", purchase.getId());
+			hm.put("txnDate", txn.getTxnDate());
+			hm.put("orderNumbers", orderIds);
+			hm.put("despatchedPer", purchase.getDespatchPer());
+			hm.put("grNo", purchase.getGrNum());
+			hm.put("packageCnt", getStringVal(purchase.getPackages()));
+			hm.put("total", purchase.getSubTotal());
+			hm.put("discount", discAmt);
+			hm.put("grandTotal", purchase.getNetAmount());
+			hm.put("imageFileName",pub.getLogoFileName());
+			
+			JasperReport compiledFile = JasperCompileManager.compileReport(jasperStream);
+
+			jasperPrint = JasperFillManager.fillReport(compiledFile, hm, new JRBeanCollectionDataSource(tableData));
+		}
+		catch (JRException e)
+		{
+			e.printStackTrace();
+		}
+		catch (Exception e)
+		{
+			e.printStackTrace();
+		}
+
+		return jasperPrint;
+	}
+	
 	private void loadOrderTable(int idx)
 	{
 		Publisher pub = publishers.getSelectionModel().getSelectedItem();
@@ -348,7 +425,7 @@ public class PurchaseController
 	{
 		try
 		{
-			FXMLLoader createOrderLoader = LoadUtils.loadFxml(this, UtilConstants.createPurchaseRetFxmlFile);
+			FXMLLoader createOrderLoader = LoadUtils.loadFxml(this, createPurchaseRetFxmlFile);
 			Parent addOrderRoot = createOrderLoader.load();
 			AddPurchaseRetController ctrl = createOrderLoader.getController();
 			ctrl.initData(this.publishers.getSelectionModel().getSelectedItem(), null);
@@ -368,7 +445,7 @@ public class PurchaseController
 		{
 			PurchaseReturn purchase = this.returnsData.getSelectionModel().getSelectedItem();
 
-			FXMLLoader createOrderLoader = LoadUtils.loadFxml(this, UtilConstants.createPurchaseRetFxmlFile);
+			FXMLLoader createOrderLoader = LoadUtils.loadFxml(this, createPurchaseRetFxmlFile);
 			Parent addOrderRoot = createOrderLoader.load();
 			AddPurchaseRetController ctrl = createOrderLoader.getController();
 			ctrl.initData(this.publishers.getSelectionModel().getSelectedItem(), purchase);
@@ -416,7 +493,7 @@ public class PurchaseController
 	{
 		try
 		{
-			FXMLLoader createOrderLoader = LoadUtils.loadFxml(this, UtilConstants.createPurchasePayFxmlFile);
+			FXMLLoader createOrderLoader = LoadUtils.loadFxml(this, createPurchasePayFxmlFile);
 			Parent addOrderRoot = createOrderLoader.load();
 			AddPurchasePayController ctrl = createOrderLoader.getController();
 			ctrl.initData(this.publishers.getSelectionModel().getSelectedItem(), null);
@@ -436,7 +513,7 @@ public class PurchaseController
 		{
 			PurchasePayment purchase = this.paymentData.getSelectionModel().getSelectedItem();
 
-			FXMLLoader createOrderLoader = LoadUtils.loadFxml(this, UtilConstants.createPurchasePayFxmlFile);
+			FXMLLoader createOrderLoader = LoadUtils.loadFxml(this, createPurchasePayFxmlFile);
 			Parent addOrderRoot = createOrderLoader.load();
 			AddPurchasePayController ctrl = createOrderLoader.getController();
 			ctrl.initData(this.publishers.getSelectionModel().getSelectedItem(), purchase);
@@ -526,7 +603,7 @@ public class PurchaseController
 	private JasperPrint prepareJasperPrint()
 	{
 		JasperPrint jasperPrint = null;
-		InputStream jasperStream = getClass().getResourceAsStream("/jrxml/Invoice.jrxml");
+		InputStream jasperStream = getClass().getResourceAsStream(statementJrxml);
 		HashMap<String, Object> hm = new HashMap<>();
 		try
 		{
@@ -599,7 +676,7 @@ public class PurchaseController
 		try
 		{
 
-			FXMLLoader createOrderLoader = LoadUtils.loadFxml(this, UtilConstants.printOrderFxmlFile);
+			FXMLLoader createOrderLoader = LoadUtils.loadFxml(this, printOrderFxmlFile);
 			Parent addOrderRoot;
 
 			addOrderRoot = createOrderLoader.load();

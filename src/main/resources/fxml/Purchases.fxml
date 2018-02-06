@@ -107,9 +107,10 @@
 												</TableColumn>
 											</columns>
 										</TableView>
-										<Button layoutX="667.0" layoutY="99.0" mnemonicParsing="false" onAction="#editPurchase" prefHeight="25.0" prefWidth="60.0" text="Edit" />
-										<Button layoutX="667.0" layoutY="59.0" mnemonicParsing="false" onAction="#createPurchase" prefHeight="25.0" prefWidth="61.0" text="Add" />
-										<Button layoutX="668.0" layoutY="136.0" mnemonicParsing="false" onAction="#deletePurchase" prefHeight="25.0" prefWidth="58.0" text="Delete" />
+										<Button layoutX="667.0" layoutY="96.0" mnemonicParsing="false" onAction="#editPurchase" prefHeight="25.0" prefWidth="70.0" text="Edit" />
+										<Button layoutX="667.0" layoutY="58.0" mnemonicParsing="false" onAction="#createPurchase" prefHeight="25.0" prefWidth="70.0" text="Add" />
+										<Button layoutX="668.0" layoutY="135.0" mnemonicParsing="false" onAction="#deletePurchase" prefHeight="25.0" prefWidth="70.0" text="Delete" />
+                              <Button layoutX="668.0" layoutY="173.0" mnemonicParsing="false" onAction="#printPurchaseBill" prefHeight="25.0" prefWidth="70.0" text="Print" />
 									</children>
 								</AnchorPane>
 							</content>

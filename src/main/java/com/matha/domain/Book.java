@@ -12,7 +12,7 @@ import org.hibernate.annotations.GenericGenerator;
 
 @Entity
 @Table(name = "Book")
-public class Book
+public class Book implements Comparable<Book>
 {
 
 	// @Id
@@ -155,6 +155,34 @@ public class Book
 		builder.append(publisher);
 		builder.append("]");
 		return builder.toString();
+	}
+
+	@Override
+	public int compareTo(Book o)
+	{
+		if(o != null)
+		{
+			return o.getBookNum().compareTo(bookNum);
+		}
+		return -1;
+	}
+
+	public void addInventory(int count)
+	{
+		if(this.inventory == null)
+		{
+			this.inventory = 0;	
+		}
+		this.inventory += count;		
+	}
+
+	public void clearInventory(int count)
+	{
+		if(this.inventory == null)
+		{
+			this.inventory = 0;	
+		}
+		this.inventory -= count;		
 	}
 
 }
