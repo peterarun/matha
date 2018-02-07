@@ -3,9 +3,7 @@ package com.matha.service;
 import java.time.LocalDate;
 import java.util.HashSet;
 import java.util.List;
-import java.util.Map;
 import java.util.Set;
-import java.util.TreeSet;
 
 import javax.persistence.EntityManager;
 import javax.persistence.PersistenceContext;
@@ -149,9 +147,9 @@ public class SchoolService
 		return schoolRepoitory.findAll();
 	}
 
-	public School fetchSchoolById(String id)
+	public School fetchSchoolById(Integer id)
 	{
-		return schoolRepoitory.getOne(id);
+		return schoolRepoitory.findOne(id);
 	}
 
 	public School saveSchool(School school)
@@ -242,7 +240,23 @@ public class SchoolService
 	public void saveOrderItems(List<OrderItem> orderItem)
 	{
 		orderItemRepository.save(orderItem);
+	}
 
+	public void deleteOrderItems(List<OrderItem> orderItem)
+	{
+		orderItemRepository.delete(orderItem);
+	}
+	
+	@Transactional
+	public void updateOrderData(Order order, List<OrderItem> orderItem, List<OrderItem> removedItems)
+	{
+		for (OrderItem orderItemIn : orderItem)
+		{
+			orderItemIn.setOrder(order);
+		}
+		orderItemRepository.save(orderItem);
+		orderItemRepository.delete(removedItems);
+		orderRepository.save(order);
 	}
 
 	public void deleteSchool(School school)
@@ -276,7 +290,7 @@ public class SchoolService
 		return txn;
 	}
 
-	private PurchaseTransaction saveNewPurchaseTxn(PurchaseTransaction txn)
+	private PurchaseTransaction saveNewPurchaseTxnOld(PurchaseTransaction txn)
 	{
 		PurchaseTransaction firstTxn = purchaseTxnRepository.findByPrevTxnIsNull();
 		PurchaseTransaction lastTxn = purchaseTxnRepository.findByNextTxnIsNull();
@@ -305,6 +319,25 @@ public class SchoolService
 			}
 			currTxn = currTxn.getPrevTxn();
 		}
+
+		return txn;
+	}
+
+	private PurchaseTransaction saveNewPurchaseTxn(PurchaseTransaction txn)
+	{
+		PurchaseTransaction firstTxn = purchaseTxnRepository.findByPrevTxnIsNull();
+		PurchaseTransaction lastTxn = purchaseTxnRepository.findByNextTxnIsNull();
+
+		lastTxn.setNextTxn(firstTxn);
+		lastTxn = purchaseTxnRepository.save(lastTxn);
+		purchaseTxnRepository.flush();
+
+		txn.setBalance(lastTxn.getBalance() + txn.getNetForBalance());
+		txn.setPrevTxn(lastTxn);
+		txn = purchaseTxnRepository.save(txn);
+
+		lastTxn.setNextTxn(txn);
+		lastTxn = purchaseTxnRepository.save(lastTxn);
 
 		return txn;
 	}
@@ -369,7 +402,7 @@ public class SchoolService
 		return txn;
 	}
 
-	private PurchaseTransaction updatePurchaseTxn(PurchaseTransaction txn)
+	private PurchaseTransaction updatePurchaseTxnOld(PurchaseTransaction txn)
 	{
 		PurchaseTransaction origTxn = purchaseTxnRepository.findOne(txn.getId());
 		if (origTxn.getTxnDate().equals(txn.getTxnDate()))
@@ -424,6 +457,12 @@ public class SchoolService
 		return txn;
 	}
 
+	private PurchaseTransaction updatePurchaseTxn(PurchaseTransaction txn)
+	{		
+		updateBalance(txn);
+		return txn;
+	}
+	
 	private PurchaseTransaction moveAsLastTxn(PurchaseTransaction txn, PurchaseTransaction fromPrevTxn, PurchaseTransaction fromNextTxn, PurchaseTransaction firstTxn, PurchaseTransaction lastTxn)
 	{
 		LOGGER.info("Moving as last Txn: " + txn);
@@ -545,11 +584,9 @@ public class SchoolService
 	{
 		txn.setPurchase(pur);
 		Set<OrderItem> orderItemsOrig = new HashSet<>();
-		boolean addFlag = false;
 		if (txn.getId() == null)
 		{
 			txn = saveNewPurchaseTxn(txn);
-			addFlag = true;
 		}
 		else
 		{
@@ -724,10 +761,19 @@ public class SchoolService
 		return null;
 	}
 
-	public Page<Order> fetchOrders(Publisher pub, int page, int size)
+	public Page<Order> fetchOrders(Publisher pub, int page, int size, boolean billed)
 	{
 		PageRequest pageable = new PageRequest(page, size, Direction.DESC, "orderDate");
-		Page<Order> orderList = orderRepository.fetchOrdersForPublisher(pub, pageable);
+		Page<Order> orderList = null;
+		if(billed)
+		{
+			orderList = orderRepository.fetchOrdersForPublisher(pub, pageable);
+		}
+		else
+		{
+			orderList = orderRepository.fetchUnBilledOrdersForPub(pub, pageable);
+		}
+		
 		return orderList;
 	}
 

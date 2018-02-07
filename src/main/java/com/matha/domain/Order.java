@@ -42,9 +42,9 @@ public class Order implements Serializable, Comparable<Order>
 	@JoinColumn(name = "SaleId")
 	private Sales sale;
 
-	@OneToMany(fetch = FetchType.EAGER)
-	@JoinColumn(name = "SerialId")
-	@Cascade({ CascadeType.SAVE_UPDATE })
+//	@JoinColumn(name = "SerialId")
+	@Cascade({ CascadeType.SAVE_UPDATE, CascadeType.DELETE })
+	@OneToMany(fetch = FetchType.EAGER, mappedBy = "order")
 	private List<OrderItem> orderItem;
 
 	@Column(name = "TDate")

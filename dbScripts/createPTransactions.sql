@@ -10,6 +10,8 @@ GO
 
 CREATE TABLE [dbo].[PTransactions](
 	[SerialId] [int] PRIMARY KEY IDENTITY(1,1),
+	[AddTime] [datetime] NOT NULL,
+	[ModTime] [datetime] NOT NULL,
 	[TxnDate] [date] NOT NULL,
 	[Amount] [decimal](12,2) NOT NULL,
 	[PublisherId] [varchar](15) NULL,
@@ -19,8 +21,7 @@ CREATE TABLE [dbo].[PTransactions](
 	[ReturnId] [int] NULL,
 	[Balance] [decimal](12,2) NOT NULL,
 	[PrevTxnId] [int] UNIQUE,
-	[NextTxnId] [int] UNIQUE,
-	[Direction] [int] NOT NULL
+	[NextTxnId] [int] UNIQUE
 ) ON [PRIMARY]
 GO
 

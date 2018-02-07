@@ -65,12 +65,18 @@ public class AddOrderController {
 	private SchoolService srvc;
 	
 	private Order order;
+	private List<OrderItem> origOrders;
 
 	public void initData(School school, Map<String, Book> bookMap, Order selectedOrder) {
 		System.out.println("initData");
 		this.school = school;
 		this.bookMap = bookMap;
 		this.order = selectedOrder;
+		if(this.order != null)
+		{
+			this.origOrders = new ArrayList<>(this.order.getOrderItem());
+			System.out.println("this.origOrders .. " + this.origOrders.size());
+		}
 //		this.orderDate.setValue(LocalDate.now());
 
 		updateFormData(selectedOrder);
@@ -102,16 +108,18 @@ public class AddOrderController {
 	void saveData(ActionEvent e) {
 
 		Order item;
+		List<OrderItem> items = addedBooks.getItems();
 		if(this.order == null)
 		{
 			item = new Order();
 		}
 		else
 		{
-			item = this.order;
+			item = this.order;			
+			origOrders.removeAll(addedBooks.getItems());			
 		}
-		item.setOrderItem(addedBooks.getItems());
-		srvc.saveOrderItems(item.getOrderItem());
+				 
+		item.setOrderItem(items);
 		item.setSerialNo(orderNum.getText());
 		item.setSchool(school);
 		LocalDate dt = orderDate.getValue();
@@ -119,7 +127,7 @@ public class AddOrderController {
 		item.setDeliveryDate(despatchDate.getValue());
 		item.setDesLocation(desLocation.getText());
 		
-		srvc.saveOrder(item);
+		srvc.updateOrderData(order, items, origOrders);
 
 		((Stage) cancelBtn.getScene().getWindow()).close();
 	}

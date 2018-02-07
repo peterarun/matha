@@ -7,6 +7,9 @@ GO
 SET QUOTED_IDENTIFIER ON
 GO
 
+alter table SOrderDet add OrderDetId int null;
+GO
+
 alter table SOrderDet add BookPrice decimal(8,2) null;
 GO
 
@@ -26,3 +29,11 @@ GO
 ALTER TABLE [dbo].[SOrderDet] CHECK CONSTRAINT [FK_SOrderDet_Book]
 GO
 
+
+declare @i int  = 1
+
+update SOrderDet
+set OrderDetId  = @i , @i = @i + 1
+where OrderDetId is null;
+
+GO

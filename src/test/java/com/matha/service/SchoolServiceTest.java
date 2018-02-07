@@ -19,6 +19,7 @@ import com.matha.domain.Purchase;
 import com.matha.domain.PurchasePayment;
 import com.matha.domain.PurchaseTransaction;
 import com.matha.domain.School;
+import com.matha.repository.OrderItemRepository;
 import com.matha.repository.PurchasePayRepository;
 import com.matha.repository.PurchaseRepository;
 import com.matha.sales.SalesApplication;
@@ -36,6 +37,9 @@ public class SchoolServiceTest {
 	@Autowired
 	private PurchasePayRepository purchasePayRepository;
 
+	@Autowired
+	private OrderItemRepository orderItemRepository;
+	
 	@Test
 	public void testFetchSchoolsLike() {
 		fail("Not yet implemented");
@@ -83,9 +87,14 @@ public class SchoolServiceTest {
 
 	@Test
 	public void testFetchOrderForSchool() {
-		School school = schoolService.fetchSchoolById("412");
+		School school = schoolService.fetchSchoolById(419);
 		List<Order> orderList = schoolService.fetchOrderForSchool(school);
-		System.out.println(orderList);
+		for (Order order : orderList)
+		{
+			System.out.println(order);
+			System.out.println("OrderItems.................");
+			System.out.println(order.getOrderItem());
+		}		
 	}
 	
 	@Test

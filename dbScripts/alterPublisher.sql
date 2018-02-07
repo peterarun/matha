@@ -17,9 +17,12 @@ phone2 nvarchar(50),
 GSTIN varchar(30),
 Email nvarchar(120),
 PIN nvarchar(12),
-logoFileName nvarchar(120);
+logoName nvarchar(120);
 
+GO
 
 update [MathaNew].[dbo].[Publisher]
-set logoFileName = 'Mayur_logo.jpg'
+set logoName = 'Mayur_logo.jpg'
 where SerialId = 48;
+
+GO

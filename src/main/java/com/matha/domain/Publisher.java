@@ -45,7 +45,7 @@ public class Publisher
 	@Column(name = "GSTIN")
 	private String gstIn;
 
-	@Column(name = "logoFileName")
+	@Column(name = "logoName")
 	private String logoFileName;
 	
 	public String getId()

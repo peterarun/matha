@@ -45,6 +45,7 @@ import javafx.scene.Scene;
 import javafx.scene.control.Alert;
 import javafx.scene.control.Alert.AlertType;
 import javafx.scene.control.ButtonType;
+import javafx.scene.control.CheckBox;
 import javafx.scene.control.ChoiceBox;
 import javafx.scene.control.DatePicker;
 import javafx.scene.control.Label;
@@ -100,6 +101,9 @@ public class PurchaseController
 	@FXML
 	private Tab purchaseBillTab;
 
+    @FXML
+    private CheckBox billedToggle;
+    
 	@FXML
 	private TableView<Purchase> purchaseData;
 
@@ -165,7 +169,7 @@ public class PurchaseController
 		Publisher pub = publishers.getSelectionModel().getSelectedItem();
 		publisherDet.setText(pub.getAddress());
 		int idx = orderPaginator.getCurrentPageIndex();
-		List<Order> orderList = schoolService.fetchOrders(pub, idx, ROWS_PER_PAGE).getContent();
+		List<Order> orderList = schoolService.fetchOrders(pub, idx, ROWS_PER_PAGE, billedToggle.isSelected()).getContent();
 		orderTable.setItems(FXCollections.observableList(orderList));
 	}
 
@@ -380,7 +384,7 @@ public class PurchaseController
 	private void loadOrderTable(int idx)
 	{
 		Publisher pub = publishers.getSelectionModel().getSelectedItem();
-		List<Order> orderList = schoolService.fetchOrders(pub, idx, ROWS_PER_PAGE).getContent();
+		List<Order> orderList = schoolService.fetchOrders(pub, idx, ROWS_PER_PAGE, billedToggle.isSelected()).getContent();
 		orderTable.setItems(FXCollections.observableList(orderList));
 	}
 
@@ -398,6 +402,12 @@ public class PurchaseController
 		}
 	}
 
+
+    @FXML
+    void updateOrderData(ActionEvent event) {
+    	loadOrders();
+    }
+    
 	@FXML
 	public void loadPurchases()
 	{
@@ -408,7 +418,7 @@ public class PurchaseController
 			purchaseData.setItems(FXCollections.observableList(purchaseList));
 		}
 	}
-
+    
 	@FXML
 	public void loadReturns()
 	{

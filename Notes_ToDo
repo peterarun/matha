@@ -1,8 +1,9 @@
 SOrderSeq and SalesSeq creation scripts to be updated with current max value
 
 Book - Serial Number generation/update - TBD. BK<NUM> is the format. 
-BookPurchase - new table created from Purchase with mapping to Publisher instead of Supplier
 
 Open Issues:
-State not populating in Edit School
-Publisher and Category not populating in Edit Book
+District not populating in Edit School
+
+Shouldn't there be a functionality to prevent billed order items from getting modified?
+If an update happens to an OrderItem, shouldn't the corresponding invoices/returns/statement reflect the change?

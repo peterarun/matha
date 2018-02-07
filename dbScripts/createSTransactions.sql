@@ -8,13 +8,14 @@ GO
 SET QUOTED_IDENTIFIER ON
 GO
 
-CREATE TABLE [dbo].[PTransactions](
+CREATE TABLE [dbo].[STransactions](
 	[SerialId] [int] PRIMARY KEY IDENTITY(1,1),
 	[TxnDate] [date] NOT NULL,
 	[Amount] [decimal](12,2) NOT NULL,
-	[PublisherId] [varchar](15) NULL,
+	[SchoolId] [varchar](15) NULL,
+	[SalesId] [varchar](15) NULL,
 	[Note] [nvarchar](100) NULL,
-	[PurchaseId] [varchar](15) NULL,
+	[TxnId] [varchar](15) NULL,
 	[PaymentId] [int] NULL,
 	[ReturnId] [int] NULL
 ) ON [PRIMARY]

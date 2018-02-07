@@ -20,7 +20,10 @@ public interface OrderRepository extends JpaRepository<Order, String> {
 	
 	@Query("select distinct ord from Order ord, Publisher pub, Book book, OrderItem oDet where book.bookNum = oDet.book.bookNum and ord = oDet.order and pub = book.publisher and pub=?1")
 	public Page<Order> fetchOrdersForPublisher(Publisher pub, Pageable pageable);
-	
+
+	@Query("select distinct ord from Order ord, Publisher pub, Book book, OrderItem oDet where book.bookNum = oDet.book.bookNum and ord = oDet.order and pub = book.publisher and pub=?1 and oDet.purchase is null")
+	public Page<Order> fetchUnBilledOrdersForPub(Publisher pub, Pageable pageable);
+
 	@Query(value = "SELECT NEXT VALUE FOR SOrderSeq", nativeQuery = true)
 	public Long fetchNextSeqVal();
 

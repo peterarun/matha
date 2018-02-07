@@ -17,4 +17,10 @@ CREATE TABLE [dbo].[State](
 ) ON [PRIMARY]
 GO
 
+INSERT INTO [dbo].[State] ([name])
+     VALUES
+           ('Kerala'),
+           ('Tamil Nadu');
+GO
+
 

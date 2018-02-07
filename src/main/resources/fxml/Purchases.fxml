@@ -64,6 +64,7 @@
 												</TableColumn>
 											</columns>
 										</TableView>
+                              <CheckBox fx:id="billedToggle" layoutX="675.0" layoutY="39.0" mnemonicParsing="false" onAction="#updateOrderData" text="Show Billed" />
 
 									</children>
 								</AnchorPane>

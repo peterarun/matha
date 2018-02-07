@@ -1,19 +1,29 @@
 package com.matha.domain;
 
 import java.time.LocalDate;
+import java.util.Date;
 
 import javax.persistence.Column;
 import javax.persistence.Entity;
+import javax.persistence.EntityListeners;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
 import javax.persistence.OneToOne;
+import javax.persistence.PrePersist;
+import javax.persistence.PreUpdate;
 import javax.persistence.Table;
+import javax.persistence.Temporal;
+import javax.persistence.TemporalType;
+
+import org.springframework.data.jpa.domain.support.AuditingEntityListener;
+
 
 @Entity
 @Table(name = "PTransactions")
+@EntityListeners(AuditingEntityListener.class)
 public class PurchaseTransaction
 {
 
@@ -22,6 +32,16 @@ public class PurchaseTransaction
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
 	private Integer id;
 
+//	@CreatedDate
+	@Column(name = "AddTime", columnDefinition="DATETIME")
+	@Temporal(TemporalType.TIMESTAMP)	
+	private Date addTime;
+
+//    @LastModifiedDate
+    @Column(name = "ModTime", columnDefinition="DATETIME")
+    @Temporal(TemporalType.TIMESTAMP)
+    protected Date lastModifiedDate;
+    
 	@Column(name = "TxnDate")
 	private LocalDate txnDate;
 
@@ -78,13 +98,13 @@ public class PurchaseTransaction
 		{
 			multiplier = 1;
 		}
-		else if(payment != null || purchaseReturn != null)
+		else if (payment != null || purchaseReturn != null)
 		{
 			multiplier = -1;
 		}
 		return multiplier;
 	}
-	
+
 	public String getDirection()
 	{
 		String multiplier = null;
@@ -92,18 +112,18 @@ public class PurchaseTransaction
 		{
 			multiplier = "CR";
 		}
-		else if(payment != null || purchaseReturn != null)
+		else if (payment != null || purchaseReturn != null)
 		{
 			multiplier = "DR";
 		}
 		return multiplier;
 	}
-	
+
 	public Double getNetForBalance()
 	{
 		return this.amount * getMultiplier();
 	}
-	
+
 	public Integer getId()
 	{
 		return id;
@@ -112,6 +132,26 @@ public class PurchaseTransaction
 	public void setId(Integer id)
 	{
 		this.id = id;
+	}
+
+	public Date getAddTime()
+	{
+		return addTime;
+	}
+
+	public void setAddTime(Date addTime)
+	{
+		this.addTime = addTime;
+	}	
+	
+	public Date getLastModifiedDate()
+	{
+		return lastModifiedDate;
+	}
+
+	public void setLastModifiedDate(Date lastModifiedDate)
+	{
+		this.lastModifiedDate = lastModifiedDate;
 	}
 
 	public LocalDate getTxnDate()
@@ -214,4 +254,15 @@ public class PurchaseTransaction
 		this.nextTxn = nextTxn;
 	}
 
+    @PrePersist
+    public void onPrePersist() {
+    	Date dt = new Date();
+        setAddTime(dt);
+        setLastModifiedDate(dt);
+    }
+      
+    @PreUpdate
+    public void onPreUpdate() {
+        setLastModifiedDate(new Date());
+    }
 }

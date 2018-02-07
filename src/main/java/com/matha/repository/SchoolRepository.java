@@ -8,7 +8,7 @@ import org.springframework.stereotype.Repository;
 import com.matha.domain.School;
 
 @Repository
-public interface SchoolRepository extends JpaRepository<School, String>, SchoolRepositoryCust {
+public interface SchoolRepository extends JpaRepository<School, Integer>, SchoolRepositoryCust {
 
 	List<School> findByNameLike(String schoolNamePart);
 
