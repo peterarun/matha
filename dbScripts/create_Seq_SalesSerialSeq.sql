@@ -1,10 +1,10 @@
-USE [MathaNew]
+USE [Matha]
 
 GO
 
 CREATE SEQUENCE [dbo].[SalesSerialSeq] 
  AS [int]
- MINVALUE 729
+ MINVALUE 737
  NO CACHE 
 
 GO

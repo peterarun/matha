@@ -1,4 +1,4 @@
-USE [MathaNew]
+USE [Matha]
 GO
 
 SET ANSI_NULLS ON

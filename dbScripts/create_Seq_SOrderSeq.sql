@@ -1,10 +1,10 @@
-USE [MathaNew]
+USE [Matha]
 
 GO
 
 CREATE SEQUENCE [dbo].[SOrderSeq] 
  AS [int]
- MINVALUE 2784
+ MINVALUE 764
  NO CACHE 
 
 GO

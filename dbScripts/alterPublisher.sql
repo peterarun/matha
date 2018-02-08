@@ -1,4 +1,4 @@
-USE [MathaNew]
+USE [Matha]
 GO
 
 SET ANSI_NULLS ON
@@ -21,7 +21,7 @@ logoName nvarchar(120);
 
 GO
 
-update [MathaNew].[dbo].[Publisher]
+update [Matha].[dbo].[Publisher]
 set logoName = 'Mayur_logo.jpg'
 where SerialId = 48;
 
