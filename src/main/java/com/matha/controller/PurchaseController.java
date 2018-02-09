@@ -338,7 +338,7 @@ public class PurchaseController
 		{			
 			Set<OrderItem> tableData = purchase.getOrderItems();
 			PurchaseTransaction txn = purchase.getSalesTxn();
-			Set<String> orderIdSet = tableData.stream().map(OrderItem::getOrder).map(Order::getId).collect(Collectors.toSet());
+			Set<String> orderIdSet = tableData.stream().map(OrderItem::getOrder).map(Order::getSerialNo).collect(Collectors.toSet());
 			String orderIds = String.join(",", orderIdSet);
 			Double subTotal = purchase.getSubTotal();
 			Double discAmt = purchase.getDiscAmt();
