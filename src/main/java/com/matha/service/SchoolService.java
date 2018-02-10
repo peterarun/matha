@@ -344,6 +344,7 @@ public class SchoolService
 		else
 		{
 			txn.setBalance(txn.getNetForBalance());
+			txn = purchaseTxnRepository.save(txn);
 		}
 		return txn;
 	}
