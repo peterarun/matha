@@ -191,7 +191,7 @@ public class SchoolService
 	{
 		bookRepository.delete(selectedOrder);
 	}
-	
+
 	public void saveOrder(Order item)
 	{
 		orderRepository.save(item);
@@ -216,7 +216,7 @@ public class SchoolService
 	{
 		return orderItemRepository.fetchBooksForSchool(school);
 	}
-	
+
 	public List<Order> fetchOrders()
 	{
 		return orderRepository.findAll();
@@ -246,7 +246,7 @@ public class SchoolService
 	{
 		orderItemRepository.delete(orderItem);
 	}
-	
+
 	@Transactional
 	public void updateOrderData(Order order, List<OrderItem> orderItem, List<OrderItem> removedItems)
 	{
@@ -328,17 +328,23 @@ public class SchoolService
 		PurchaseTransaction firstTxn = purchaseTxnRepository.findByPrevTxnIsNull();
 		PurchaseTransaction lastTxn = purchaseTxnRepository.findByNextTxnIsNull();
 
-		lastTxn.setNextTxn(firstTxn);
-		lastTxn = purchaseTxnRepository.save(lastTxn);
-		purchaseTxnRepository.flush();
+		if (lastTxn != null)
+		{
+			lastTxn.setNextTxn(firstTxn);
+			lastTxn = purchaseTxnRepository.save(lastTxn);
+			purchaseTxnRepository.flush();
 
-		txn.setBalance(lastTxn.getBalance() + txn.getNetForBalance());
-		txn.setPrevTxn(lastTxn);
-		txn = purchaseTxnRepository.save(txn);
+			txn.setBalance(lastTxn.getBalance() + txn.getNetForBalance());
+			txn.setPrevTxn(lastTxn);
+			txn = purchaseTxnRepository.save(txn);
 
-		lastTxn.setNextTxn(txn);
-		lastTxn = purchaseTxnRepository.save(lastTxn);
-
+			lastTxn.setNextTxn(txn);
+			lastTxn = purchaseTxnRepository.save(lastTxn);
+		}
+		else
+		{
+			txn.setBalance(txn.getNetForBalance());
+		}
 		return txn;
 	}
 
@@ -458,11 +464,11 @@ public class SchoolService
 	}
 
 	private PurchaseTransaction updatePurchaseTxn(PurchaseTransaction txn)
-	{		
+	{
 		updateBalance(txn);
 		return txn;
 	}
-	
+
 	private PurchaseTransaction moveAsLastTxn(PurchaseTransaction txn, PurchaseTransaction fromPrevTxn, PurchaseTransaction fromNextTxn, PurchaseTransaction firstTxn, PurchaseTransaction lastTxn)
 	{
 		LOGGER.info("Moving as last Txn: " + txn);
@@ -600,31 +606,31 @@ public class SchoolService
 		txn.setPurchase(pur);
 		purchaseTxnRepository.save(txn);
 
-		Set<Book> orderedBooks = new HashSet<>();		
+		Set<Book> orderedBooks = new HashSet<>();
 		for (OrderItem orderItem : orderItems)
 		{
-			if(!orderItemsOrig.contains(orderItem))
+			if (!orderItemsOrig.contains(orderItem))
 			{
 				orderItem.getBook().addInventory(orderItem.getCount());
 				orderItem.setPurchase(pur);
-			}			
+			}
 			orderItem.getBook().setPrice(orderItem.getBookPrice());
 			orderedBooks.add(orderItem.getBook());
 		}
-		
+
 		orderItemsOrig.removeAll(orderItems);
 		for (OrderItem orderItem : orderItemsOrig)
 		{
 			orderItem.getBook().clearInventory(orderItem.getCount());
 			orderItem.setPurchase(null);
-								
+
 			orderedBooks.add(orderItem.getBook());
 		}
 
 		saveOrderItems(orderItems);
 		pur.setOrderItems(new HashSet<>(orderItems));
 		purchaseRepoitory.save(pur);
-		
+
 		bookRepository.save(orderedBooks);
 
 	}
@@ -765,7 +771,7 @@ public class SchoolService
 	{
 		PageRequest pageable = new PageRequest(page, size, Direction.DESC, "orderDate");
 		Page<Order> orderList = null;
-		if(billed)
+		if (billed)
 		{
 			orderList = orderRepository.fetchOrdersForPublisher(pub, pageable);
 		}
@@ -773,7 +779,7 @@ public class SchoolService
 		{
 			orderList = orderRepository.fetchUnBilledOrdersForPub(pub, pageable);
 		}
-		
+
 		return orderList;
 	}
 
