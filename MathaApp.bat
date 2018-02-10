@@ -1,0 +1,1 @@
+start java -jar sales-0.0.1-SNAPSHOT.jar > javalog.log
