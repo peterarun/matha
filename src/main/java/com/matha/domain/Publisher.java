@@ -2,10 +2,12 @@ package com.matha.domain;
 
 import javax.persistence.Column;
 import javax.persistence.Entity;
+import javax.persistence.GeneratedValue;
 import javax.persistence.Id;
 import javax.persistence.Table;
 
 import org.apache.commons.lang.StringUtils;
+import org.hibernate.annotations.GenericGenerator;
 
 import static com.matha.util.UtilConstants.*;
 
@@ -16,7 +18,9 @@ public class Publisher
 
 	@Id
 	@Column(name = "Serialid")
-	private String id;
+	@GenericGenerator(name="pubId" , strategy="increment")
+	@GeneratedValue(generator="pubId")	
+	private Integer id;
 
 	@Column(name = "Pname")
 	private String name;
@@ -48,12 +52,12 @@ public class Publisher
 	@Column(name = "logoName")
 	private String logoFileName;
 	
-	public String getId()
+	public Integer getId()
 	{
 		return id;
 	}
 
-	public void setId(String id)
+	public void setId(Integer id)
 	{
 		this.id = id;
 	}
