@@ -33,15 +33,25 @@ public class OrderItem implements Serializable, Comparable<OrderItem>
 	@JoinColumn(name = "PurchaseId")
 	private Purchase purchase;
 
+	@ManyToOne
+	@JoinColumn(name = "SalesId")
+	private Sales sale;
+	
 	@ManyToOne()
 	@JoinColumn(name = "BkNo")
 	private Book book;
 
 	@Column(name = "Qty")
-	private int count;
+	private Integer count;
+
+	@Column(name = "fullfilledCnt")
+	private Integer fullFilledCnt;
+
+	@Column(name = "soldCnt")
+	private Integer soldCnt;
 
 	@Column(name = "SlNo")
-	private int serialNum;
+	private Integer serialNum;
 
 	@Column(name = "BookPrice")
 	private Double bookPrice;
@@ -59,6 +69,16 @@ public class OrderItem implements Serializable, Comparable<OrderItem>
 		return getBookPrice() * count;
 	}
 
+	public double getTotalBought()
+	{
+		return getBookPrice() * fullFilledCnt;
+	}
+	
+	public double getTotalSold()
+	{
+		return getBookPrice() * soldCnt;
+	}
+	
 	public Double getBookPrice()
 	{
 		if (bookPrice == null)
@@ -137,6 +157,16 @@ public class OrderItem implements Serializable, Comparable<OrderItem>
 	{
 		this.purchase = purchase;
 	}
+	
+	public Sales getSale()
+	{
+		return sale;
+	}
+
+	public void setSale(Sales sale)
+	{
+		this.sale = sale;
+	}
 
 	public Book getBook()
 	{
@@ -148,22 +178,42 @@ public class OrderItem implements Serializable, Comparable<OrderItem>
 		this.book = book;
 	}
 
-	public int getCount()
+	public Integer getCount()
 	{
 		return count;
 	}
 
-	public void setCount(int count)
+	public void setCount(Integer count)
 	{
 		this.count = count;
 	}
+	
+	public Integer getFullFilledCnt()
+	{
+		return fullFilledCnt;
+	}
 
-	public int getSerialNum()
+	public void setFullFilledCnt(Integer fullFilledCnt)
+	{
+		this.fullFilledCnt = fullFilledCnt;
+	}
+
+	public Integer getSoldCnt()
+	{
+		return soldCnt;
+	}
+
+	public void setSoldCnt(Integer soldCnt)
+	{
+		this.soldCnt = soldCnt;
+	}
+
+	public Integer getSerialNum()
 	{
 		return serialNum;
 	}
 
-	public void setSerialNum(int serialNum)
+	public void setSerialNum(Integer serialNum)
 	{
 		this.serialNum = serialNum;
 	}

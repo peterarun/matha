@@ -13,9 +13,8 @@ CREATE TABLE [dbo].[STransactions](
 	[TxnDate] [date] NOT NULL,
 	[Amount] [decimal](12,2) NOT NULL,
 	[SchoolId] [varchar](15) NULL,
-	[SalesId] [varchar](15) NULL,
 	[Note] [nvarchar](100) NULL,
-	[TxnId] [varchar](15) NULL,
+	[SalesId] [varchar](15) NULL,
 	[PaymentId] [int] NULL,
 	[ReturnId] [int] NULL
 ) ON [PRIMARY]

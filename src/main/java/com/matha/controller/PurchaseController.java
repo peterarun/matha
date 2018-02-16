@@ -1,5 +1,17 @@
 package com.matha.controller;
 
+import static com.matha.util.UtilConstants.NEW_LINE;
+import static com.matha.util.UtilConstants.addPublisherFxml;
+import static com.matha.util.UtilConstants.createOrderFxmlFile;
+import static com.matha.util.UtilConstants.createPurchaseFxmlFile;
+import static com.matha.util.UtilConstants.createPurchasePayFxmlFile;
+import static com.matha.util.UtilConstants.createPurchaseRetFxmlFile;
+import static com.matha.util.UtilConstants.invoiceJrxml;
+import static com.matha.util.UtilConstants.printOrderFxmlFile;
+import static com.matha.util.UtilConstants.printPurchaseFxmlFile;
+import static com.matha.util.UtilConstants.statementJrxml;
+import static com.matha.util.Utils.getStringVal;
+
 import java.io.ByteArrayOutputStream;
 import java.io.File;
 import java.io.IOException;
@@ -52,6 +64,7 @@ import javafx.scene.control.Label;
 import javafx.scene.control.Pagination;
 import javafx.scene.control.SelectionMode;
 import javafx.scene.control.Tab;
+import javafx.scene.control.TabPane;
 import javafx.scene.control.TableView;
 import javafx.scene.control.TextArea;
 import javafx.scene.layout.BorderPane;
@@ -71,9 +84,6 @@ import net.sf.jasperreports.engine.export.HtmlExporter;
 import net.sf.jasperreports.export.SimpleExporterInput;
 import net.sf.jasperreports.export.SimpleHtmlExporterOutput;
 
-import static com.matha.util.UtilConstants.*;
-import static com.matha.util.Utils.*;
-
 @Component
 public class PurchaseController
 {
@@ -89,12 +99,15 @@ public class PurchaseController
 	@FXML
 	private TextArea publisherDet;
 
+    @FXML
+    private TabPane purTabs;
+    
 	@FXML
 	private Tab ordersTab;
 
 	@FXML
 	private TableView<Order> orderTable;
-
+	
 	@FXML
 	private Pagination orderPaginator;
 
@@ -158,8 +171,10 @@ public class PurchaseController
 	{
 		loadOrderTable(pageIndex);
 
-		orderTable.prefHeightProperty().bind(Bindings.size(orderTable.getItems()).multiply(orderTable.getFixedCellSize()).add(30));
-
+		if(orderTable.getItems() != null && !orderTable.getItems().isEmpty())
+		{
+			orderTable.prefHeightProperty().bind(Bindings.size(orderTable.getItems()).multiply(orderTable.getFixedCellSize()).add(30));
+		}
 		return new BorderPane(orderTable);
 	}
 
@@ -168,9 +183,11 @@ public class PurchaseController
 	{
 		Publisher pub = publishers.getSelectionModel().getSelectedItem();
 		publisherDet.setText(pub.getAddress());
-		int idx = orderPaginator.getCurrentPageIndex();
-		List<Order> orderList = schoolService.fetchOrders(pub, idx, ROWS_PER_PAGE, billedToggle.isSelected()).getContent();
-		orderTable.setItems(FXCollections.observableList(orderList));
+//		int idx = orderPaginator.getCurrentPageIndex();
+//		List<Order> orderList = schoolService.fetchOrders(pub, idx, ROWS_PER_PAGE, billedToggle.isSelected()).getContent();
+//		orderTable.setItems(FXCollections.observableList(orderList));
+		
+		purTabs.getSelectionModel().select(purTabs.getSelectionModel().getSelectedItem());
 	}
 
 	@FXML
@@ -259,7 +276,8 @@ public class PurchaseController
 			ctrl.initData(orderSet, this.publishers.getSelectionModel().getSelectedItem(), null);
 			Scene addOrderScene = new Scene(addOrderRoot);
 			prepareAndShowStage(event, addOrderScene, purchaseEventHandler);
-
+			
+			purTabs.getSelectionModel().select(purchaseBillTab);
 		}
 		catch (Exception e)
 		{
@@ -319,7 +337,7 @@ public class PurchaseController
 			PrintPurchaseBillController ctrl = createOrderLoader.getController();
 			Purchase purchase = purchaseData.getSelectionModel().getSelectedItem();
 			JasperPrint jasperPrint = prepareJasperPrint(purchase.getSalesTxn().getPublisher(), purchase);
-			ctrl.initData(jasperPrint, purchase);
+			ctrl.initData(jasperPrint);
 			Scene addOrderScene = new Scene(addOrderRoot);
 			prepareAndShowStage(ev, addOrderScene);
 		}

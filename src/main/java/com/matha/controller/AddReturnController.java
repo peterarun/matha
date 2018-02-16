@@ -1,9 +1,10 @@
 package com.matha.controller;
 
 import java.util.ArrayList;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
-import java.util.TreeSet;
+import java.util.Set;
 import java.util.logging.Logger;
 import java.util.stream.Collector;
 import java.util.stream.Collectors;
@@ -139,26 +140,35 @@ public class AddReturnController
 	void saveData(ActionEvent event)
 	{
 		SchoolReturn returnIn = this.schoolReturn;
+		SalesTransaction salesTxn = null;
 		if(returnIn == null)
 		{
 			returnIn = new SchoolReturn();
-			SalesTransaction salesTxn = new SalesTransaction();
-			salesTxn.setSchool(school);
-			returnIn.setSalesTxn(salesTxn);
+			salesTxn = new SalesTransaction();
+			salesTxn.setSchool(school);			
 		}
-		returnIn.setOrderItem(new TreeSet<>());	
-		returnIn.getOrderItem().addAll(this.addedBooks.getItems());
-//		.stream().collect(Collectors.toSet())
-		returnIn.getSalesTxn().setTxnDate(this.returnDate.getValue());
-		returnIn.getSalesTxn().setNote(this.notes.getText());
+		else
+		{
+			salesTxn = returnIn.getSalesTxn();
+		}
+		Set<OrderItem> orderItems = returnIn.getOrderItem();
+		if(orderItems == null)
+		{
+			orderItems = new HashSet<>();
+		}
+			
+		orderItems.addAll(this.addedBooks.getItems());
+		salesTxn.setTxnDate(this.returnDate.getValue());
+		salesTxn.setNote(this.notes.getText());
 	
 		String subTotalStr = this.subTotal.getText();				
 		if (StringUtils.isNotBlank(subTotalStr))
 		{
-			returnIn.getSalesTxn().setAmount(Double.parseDouble(subTotalStr));
+			salesTxn.setAmount(Double.parseDouble(subTotalStr));
 		}		
 		
-		schoolService.saveSchoolReturn(returnIn);
+		schoolService.saveSchoolReturn(returnIn, salesTxn, orderItems);
+		
 		((Stage) cancelBtn.getScene().getWindow()).close();
 	}
 

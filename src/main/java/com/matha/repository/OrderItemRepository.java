@@ -12,7 +12,7 @@ import com.matha.domain.Publisher;
 import com.matha.domain.School;
 
 @Repository
-public interface OrderItemRepository extends JpaRepository<OrderItem, String> {
+public interface OrderItemRepository extends JpaRepository<OrderItem, Integer> {
 
 	@Query("select oDet from Publisher pub, Book book, OrderItem oDet, Order ord where book.bookNum = oDet.book.bookNum and ord = oDet.order and pub = book.publisher and pub=?1")
 	public List<OrderItem> fetchOrdersForPublisher(Publisher pub);

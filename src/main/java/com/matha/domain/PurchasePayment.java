@@ -1,5 +1,7 @@
 package com.matha.domain;
 
+import static com.matha.util.UtilConstants.DATE_CONV;
+
 import java.time.LocalDate;
 
 import javax.persistence.Column;
@@ -30,6 +32,11 @@ public class PurchasePayment {
 	public LocalDate getTxnDate()
 	{
 		return salesTxn.getTxnDate();
+	}
+	
+	public String getTxnDateStr()
+	{		
+		return DATE_CONV.toString(getTxnDate());
 	}
 	
 	public Double getAmount()

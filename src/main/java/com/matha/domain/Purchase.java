@@ -1,5 +1,7 @@
 package com.matha.domain;
 
+import static com.matha.util.UtilConstants.DATE_CONV;
+
 import java.io.Serializable;
 import java.time.LocalDate;
 import java.util.Set;
@@ -66,12 +68,17 @@ public class Purchase implements Serializable
 		return this.getSalesTxn().getTxnDate();
 	}
 	
+	public String getTxnDateStr()
+	{		
+		return DATE_CONV.toString(getTxnDate());
+	}
+	
 	public Integer getUnitCount()
 	{
 		int unitCount = 0;
 		if(getOrderItems() != null)
 		{
-			unitCount = getOrderItems().stream().collect(Collectors.summingInt(OrderItem::getCount));
+			unitCount = getOrderItems().stream().collect(Collectors.summingInt(OrderItem::getFullFilledCnt));
 		}
 		
 		return unitCount;

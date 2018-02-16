@@ -52,6 +52,9 @@ public class Publisher
 	@Column(name = "logoName")
 	private String logoFileName;
 	
+	@Column(name = "Outstanding")
+	private Double outstanding;
+	
 	public Integer getId()
 	{
 		return id;
@@ -160,6 +163,16 @@ public class Publisher
 	public void setLogoFileName(String logoFileName)
 	{
 		this.logoFileName = logoFileName;
+	}
+	
+	public Double getOutstanding()
+	{
+		return outstanding;
+	}
+
+	public void setOutstanding(Double outstanding)
+	{
+		this.outstanding = outstanding;
 	}
 
 	@Override

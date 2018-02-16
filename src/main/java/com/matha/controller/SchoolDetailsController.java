@@ -1,20 +1,29 @@
 package com.matha.controller;
 
-import static com.matha.util.UtilConstants.*;
+import static com.matha.util.UtilConstants.NEW_LINE;
+import static com.matha.util.UtilConstants.addBillFxmlFile;
 import static com.matha.util.UtilConstants.addPaymentFxmlFile;
+import static com.matha.util.UtilConstants.addReturnFxmlFile;
 import static com.matha.util.UtilConstants.createOrderFxmlFile;
+import static com.matha.util.UtilConstants.printSaleFxmlFile;
+import static com.matha.util.UtilConstants.salesInvoiceJrxml;
+import static com.matha.util.Utils.getStringVal;
 
 import java.io.IOException;
+import java.io.InputStream;
 import java.time.LocalDate;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Optional;
+import java.util.Set;
+import java.util.stream.Collectors;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
 import com.matha.domain.Book;
 import com.matha.domain.Order;
+import com.matha.domain.OrderItem;
 import com.matha.domain.Sales;
 import com.matha.domain.SalesTransaction;
 import com.matha.domain.School;
@@ -39,11 +48,18 @@ import javafx.scene.control.DatePicker;
 import javafx.scene.control.Label;
 import javafx.scene.control.SelectionMode;
 import javafx.scene.control.Tab;
+import javafx.scene.control.TabPane;
 import javafx.scene.control.TableView;
 import javafx.scene.control.TextArea;
 import javafx.scene.control.TextField;
 import javafx.stage.Stage;
 import javafx.stage.WindowEvent;
+import net.sf.jasperreports.engine.JRException;
+import net.sf.jasperreports.engine.JasperCompileManager;
+import net.sf.jasperreports.engine.JasperFillManager;
+import net.sf.jasperreports.engine.JasperPrint;
+import net.sf.jasperreports.engine.JasperReport;
+import net.sf.jasperreports.engine.data.JRBeanCollectionDataSource;
 
 @Component
 public class SchoolDetailsController
@@ -56,9 +72,18 @@ public class SchoolDetailsController
 	@Autowired
 	SchoolService schoolService;
 
+    @FXML
+    private TabPane saleTabs;
+    
+	@FXML
+	private Tab ordersTab;
+	
 	@FXML
 	private TableView<Order> txnData;
 
+	@FXML
+	private Tab billsTab;
+	
 	@FXML
 	private TableView<Sales> billData;
 
@@ -85,7 +110,7 @@ public class SchoolDetailsController
 
 	@FXML
 	private TextField phone;
-	
+
 	@FXML
 	private TextField outBalance;
 
@@ -99,7 +124,7 @@ public class SchoolDetailsController
 	private DatePicker fromDate;
 
 	@FXML
-	private DatePicker toDate;
+	private DatePicker toDate;  
 
 	private HashMap<String, Book> bookMap;
 
@@ -107,17 +132,7 @@ public class SchoolDetailsController
 	protected void initialize() throws IOException
 	{
 
-		// if (addOrderRoot == null) {
-		// addOrderRoot = createOrderLoader.load();
-		// }
-		// AddOrderController ctrl = createOrderLoader.getController();
-		// ctrl.initData();
-		// addOrderScene = new Scene(addOrderRoot);
-		// SchoolService srvc = Main.getContext().getBean(SchoolService.class);
-		System.out.println(schoolService);
-
 		List<Book> schools = schoolService.fetchAllBooks();
-		// LOGGER.info(schools.toString());
 		bookMap = new HashMap<>();
 		for (Book bookIn : schools)
 		{
@@ -129,30 +144,45 @@ public class SchoolDetailsController
 
 	public void initData(School school)
 	{
-		this.school = school; 
-		Double balance = schoolService.fetchBalance(school);
-		if(balance != null)
+		this.school = school;		
+		this.schoolName.setText(school.getName());
+		this.address.setText(school.addressText());
+		this.txnData.setItems(FXCollections.observableList(schoolService.fetchOrderForSchool(school)));
+		this.loadBalance();
+	}
+
+	private void loadBalance()
+	{
+		Double balance = schoolService.fetchBalance(this.school);
+		if (balance != null)
 		{
-		outBalance.setText(balance.toString());
-		}
-		schoolName.setText(school.getName());
-		address.setText(school.addressText());
-		txnData.setItems(FXCollections.observableList(schoolService.fetchOrderForSchool(school)));
-		
-		List<Sales> billDataList = schoolService.fetchBills(school);
-		billData.setItems(FXCollections.observableList(billDataList));
+			this.outBalance.setText(balance.toString());
+		}		
 	}
 
 	@FXML
+	public void loadOrders()
+	{
+		if (this.ordersTab.isSelected())
+		{
+			this.txnData.setItems(FXCollections.observableList(schoolService.fetchOrderForSchool(school)));
+			this.loadBalance();
+		}
+		else
+		{
+			this.txnData.getSelectionModel().clearSelection();
+		}
+	}
+	
+	@FXML
 	void addOrder(ActionEvent e) throws IOException
 	{
-
 		FXMLLoader createOrderLoader = LoadUtils.loadFxml(this, createOrderFxmlFile);
 		addOrderRoot = createOrderLoader.load();
 		AddOrderController ctrl = createOrderLoader.getController();
 		ctrl.initData(this.school, this.bookMap, null);
 		addOrderScene = new Scene(addOrderRoot);
-		prepareAndShowStage(e, addOrderScene);
+		prepareAndShowStage(e, addOrderScene, orderEventHandler);
 	}
 
 	@FXML
@@ -165,13 +195,12 @@ public class SchoolDetailsController
 		ctrl.initData(this.school, this.bookMap, selectedOrder);
 		// ctrl.updateFormData(selectedOrder);
 		addOrderScene = new Scene(addOrderRoot);
-		prepareAndShowStage(e, addOrderScene);
+		prepareAndShowStage(e, addOrderScene, orderEventHandler);
 	}
 
 	@FXML
 	void deleteOrder(ActionEvent event)
 	{
-
 		Order selectedOrder = txnData.getSelectionModel().getSelectedItem();
 		Alert alert = new Alert(AlertType.CONFIRMATION);
 		alert.setTitle("Delete Order Confirmation");
@@ -187,9 +216,23 @@ public class SchoolDetailsController
 	}
 
 	@FXML
+	public void loadBills()
+	{
+		if (this.billsTab.isSelected())
+		{
+			List<Sales> billDataList = schoolService.fetchBills(this.school);
+			this.billData.setItems(FXCollections.observableList(billDataList));
+			this.loadBalance();
+		}
+		else
+		{
+			this.billData.getSelectionModel().clearSelection();
+		}
+	}
+	
+	@FXML
 	void createBill(ActionEvent event)
 	{
-
 		try
 		{
 			FXMLLoader createBillLoader = LoadUtils.loadFxml(this, addBillFxmlFile);
@@ -198,13 +241,13 @@ public class SchoolDetailsController
 			ObservableList<Order> selectedOrder = txnData.getSelectionModel().getSelectedItems();
 			ctrl.initData(selectedOrder, this.school, null);
 			Scene addBillScene = new Scene(addBillRoot);
-			prepareAndShowStage(event, addBillScene);
-
-		} catch (Exception e)
+			prepareAndShowStage(event, addBillScene, billEventHandler);
+			saleTabs.getSelectionModel().select(billsTab);
+		}
+		catch (Exception e)
 		{
 			e.printStackTrace();
 		}
-
 	}
 
 	@FXML
@@ -218,9 +261,10 @@ public class SchoolDetailsController
 			ObservableList<Order> selectedOrder = txnData.getSelectionModel().getSelectedItems();
 			ctrl.initData(selectedOrder, this.school, null);
 			Scene addBillScene = new Scene(addBillRoot);
-			prepareAndShowStage(event, addBillScene);
+			prepareAndShowStage(event, addBillScene, billEventHandler);
 
-		} catch (Exception e)
+		}
+		catch (Exception e)
 		{
 			e.printStackTrace();
 		}
@@ -236,12 +280,12 @@ public class SchoolDetailsController
 			FXMLLoader createBillLoader = LoadUtils.loadFxml(this, addBillFxmlFile);
 			Parent addBillRoot = createBillLoader.load();
 			AddBillController ctrl = createBillLoader.getController();
-			ObservableList<Order> selectedOrder = txnData.getSelectionModel().getSelectedItems();
-			ctrl.initData(selectedOrder, this.school, selectedSale);
+			ctrl.initData(null, this.school, selectedSale);
 			Scene addBillScene = new Scene(addBillRoot);
-			prepareAndShowStage(event, addBillScene);
+			prepareAndShowStage(event, addBillScene, billEventHandler);
 
-		} catch (Exception e)
+		}
+		catch (Exception e)
 		{
 			e.printStackTrace();
 		}
@@ -260,9 +304,81 @@ public class SchoolDetailsController
 		Optional<ButtonType> result = alert.showAndWait();
 		if (result.get() == ButtonType.OK)
 		{
-			schoolService.deleteOrder(selectedSale);
-			initData(this.school);
+			schoolService.deleteBill(selectedSale);
+			loadBills();
 		}
+	}
+
+	@FXML
+	public void printPurchaseBill(ActionEvent ev)
+	{
+		try
+		{
+			FXMLLoader createOrderLoader = LoadUtils.loadFxml(this, printSaleFxmlFile);
+			Parent addOrderRoot = createOrderLoader.load();
+			PrintSalesBillController ctrl = createOrderLoader.getController();
+			Sales purchase = billData.getSelectionModel().getSelectedItem();
+			JasperPrint jasperPrint = prepareJasperPrint(purchase.getSalesTxn().getSchool(), purchase);
+			ctrl.initData(jasperPrint);
+			Scene addOrderScene = new Scene(addOrderRoot);
+			prepareAndShowStage(ev, addOrderScene);
+		}
+		catch (Exception e)
+		{
+			e.printStackTrace();
+		}		
+	}
+	
+	private JasperPrint prepareJasperPrint(School sch, Sales sale)
+	{
+
+		JasperPrint jasperPrint = null;
+		InputStream jasperStream = getClass().getResourceAsStream(salesInvoiceJrxml);
+		HashMap<String, Object> hm = new HashMap<>();
+		try
+		{			
+			Set<OrderItem> tableData = sale.getOrderItems();
+			SalesTransaction txn = sale.getSalesTxn();
+			Set<String> orderIdSet = tableData.stream().map(OrderItem::getOrder).map(Order::getSerialNo).collect(Collectors.toSet());
+			String orderIds = String.join(",", orderIdSet);
+			Double subTotal = sale.getSubTotal();
+			Double discAmt = sale.getDiscAmt();
+			if(discAmt != null)
+			{
+				discAmt = sale.getDiscType() ? subTotal * discAmt /100 : subTotal - discAmt;  
+			}
+			 			
+			hm.put("partyName", sch.getName());
+			hm.put("partyAddress", sch.addressText());
+			hm.put("agencyName", "MATHA DISTRIBUTORS.");
+			hm.put("agencyDetails", "No.88, 8th Street, A.K.Swamy Nagar, " + NEW_LINE + "Kilpauk, " + NEW_LINE + "Chennai - 600010");
+			hm.put("partyPhone", sch.getPhone1() == null ? sch.getPhone2() : sch.getPhone1());
+			hm.put("documentsThrough", sale.getDocsThru());
+			hm.put("invoiceNo", getStringVal(sale.getInvoiceNo()));
+			hm.put("txnDate", txn.getTxnDate());
+			hm.put("orderNumbers", orderIds);
+			hm.put("despatchedPer", sale.getDespatch());
+			hm.put("grNo", sale.getGrNum());
+			hm.put("packageCnt", getStringVal(sale.getPackages()));
+			hm.put("total", sale.getSubTotal());
+			hm.put("discount", discAmt);
+			hm.put("grandTotal", sale.getNetAmount());
+			
+			JasperReport compiledFile = JasperCompileManager.compileReport(jasperStream);
+
+			jasperPrint = JasperFillManager.fillReport(compiledFile, hm, new JRBeanCollectionDataSource(tableData));
+		}
+		catch (JRException e)
+		{
+			e.printStackTrace();
+		}
+		catch (Exception e)
+		{
+			e.printStackTrace();
+		}
+
+		return jasperPrint;
+	
 	}
 
 	@FXML
@@ -272,6 +388,11 @@ public class SchoolDetailsController
 		{
 			List<SchoolReturn> creditNotes = schoolService.fetchReturnsForSchool(this.school);
 			creditNoteData.setItems(FXCollections.observableList(creditNotes));
+			this.loadBalance();
+		}
+		else
+		{
+			creditNoteData.getSelectionModel().clearSelection();
 		}
 	}
 
@@ -287,7 +408,8 @@ public class SchoolDetailsController
 			Scene addCreditNoteScene = new Scene(addReturnRoot);
 			prepareAndShowStage(event, addCreditNoteScene, returnEventHandler);
 
-		} catch (Exception e)
+		}
+		catch (Exception e)
 		{
 			e.printStackTrace();
 		}
@@ -306,7 +428,8 @@ public class SchoolDetailsController
 			Scene addCreditNoteScene = new Scene(addReturnRoot);
 			prepareAndShowStage(event, addCreditNoteScene, returnEventHandler);
 
-		} catch (Exception e)
+		}
+		catch (Exception e)
 		{
 			e.printStackTrace();
 		}
@@ -337,6 +460,11 @@ public class SchoolDetailsController
 			List<SchoolPayment> paymentList = schoolService.fetchPayments(school);
 			ObservableList<SchoolPayment> paymentItems = FXCollections.observableList(paymentList);
 			paymentData.setItems(paymentItems);
+			this.loadBalance();
+		}
+		else
+		{
+			paymentData.getSelectionModel().clearSelection();
 		}
 	}
 
@@ -352,7 +480,8 @@ public class SchoolDetailsController
 			Scene addBillScene = new Scene(addBillRoot);
 			prepareAndShowStage(event, addBillScene, paymentEventHandler);
 
-		} catch (Exception e)
+		}
+		catch (Exception e)
 		{
 			e.printStackTrace();
 		}
@@ -362,7 +491,6 @@ public class SchoolDetailsController
 	@FXML
 	void editPayment(ActionEvent event)
 	{
-
 		try
 		{
 			FXMLLoader createBillLoader = LoadUtils.loadFxml(this, addPaymentFxmlFile);
@@ -373,7 +501,8 @@ public class SchoolDetailsController
 			Scene addBillScene = new Scene(addBillRoot);
 			prepareAndShowStage(event, addBillScene, paymentEventHandler);
 
-		} catch (Exception e)
+		}
+		catch (Exception e)
 		{
 			e.printStackTrace();
 		}
@@ -430,7 +559,6 @@ public class SchoolDetailsController
 			@Override
 			public void handle(final WindowEvent event)
 			{
-				System.out.println("Calling close");
 				initData(school);
 			}
 		});
@@ -444,6 +572,22 @@ public class SchoolDetailsController
 		stage.show();
 	}
 
+	private EventHandler<WindowEvent> orderEventHandler = new EventHandler<WindowEvent>() {
+		@Override
+		public void handle(final WindowEvent event)
+		{
+			loadOrders();
+		}
+	};
+	
+	private EventHandler<WindowEvent> billEventHandler = new EventHandler<WindowEvent>() {
+		@Override
+		public void handle(final WindowEvent event)
+		{
+			loadBills();
+		}
+	};
+	
 	private EventHandler<WindowEvent> paymentEventHandler = new EventHandler<WindowEvent>() {
 		@Override
 		public void handle(final WindowEvent event)

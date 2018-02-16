@@ -38,7 +38,10 @@ public class School implements Serializable {
 	@Column(name = "Address3")
 	private String address3;
 
+	@Column(name = "Add4")
 	private String city;
+	
+	@Column(name = "Add5")
 	private String pin;
 
 	@OneToOne
@@ -54,6 +57,9 @@ public class School implements Serializable {
 
 	@Column(name = "PhNo2")
 	private String phone2;
+	
+	@Column(name = "OutStanding")
+	private Double outstanding;	
 
 	private String principal;
 	private String email;
@@ -145,6 +151,16 @@ public class School implements Serializable {
 	public void setPhone2(String phone2) {
 		this.phone2 = phone2;
 	}
+	
+	public Double getOutstanding()
+	{
+		return outstanding;
+	}
+
+	public void setOutstanding(Double outstanding)
+	{
+		this.outstanding = outstanding;
+	}
 
 	public String getPrincipal() {
 		return principal;
@@ -220,6 +236,14 @@ public class School implements Serializable {
 		if (district != null) {
 			builder.append(district.getId());
 		}
+		return builder.toString();
+	}
+
+	public String fetchDetails()
+	{
+		StringBuilder builder = new StringBuilder(name);
+		builder.append(NEW_LINE);
+		builder.append(addressText());
 		return builder.toString();
 	}
 

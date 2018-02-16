@@ -21,7 +21,7 @@ import javafx.stage.Stage;
 @SpringBootApplication
 @EnableJpaRepositories(basePackages = "com.matha.repository")
 @EntityScan("com.matha.domain")
-@ComponentScan(basePackages = { "com.matha.controller", "com.matha.service" })
+@ComponentScan(basePackages = { "com.matha.controller", "com.matha.service"})
 @EnableAutoConfiguration
 public class SalesApplication extends Application
 {

@@ -25,7 +25,7 @@ public class SchoolRepositoryImpl {
 
 		String qryStr = "from School s ";
 		List<String> qryStrArr = new ArrayList<>();
-		if (!StringUtils.isEmpty(name)) {
+		if (!StringUtils.isBlank(name)) {
 			qryStrArr.add("s.name like :school");
 		}
 		if (!StringUtils.isEmpty(pin)) {
@@ -44,7 +44,7 @@ public class SchoolRepositoryImpl {
 			}
 		}
 		Query crit = entityManger.createQuery(qryStr);
-		if (!StringUtils.isEmpty(name)) {
+		if (!StringUtils.isBlank(name)) {
 			crit.setParameter("school", name + "%");
 		}
 		if (!StringUtils.isEmpty(pin)) {

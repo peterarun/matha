@@ -18,13 +18,17 @@ import org.hibernate.annotations.Cascade;
 import org.hibernate.annotations.CascadeType;
 import org.hibernate.annotations.GenericGenerator;
 
+import com.matha.util.Converters;
+
+import javafx.util.StringConverter;
+
 @Entity
 @Table(name = "SOrder")
 public class Order implements Serializable, Comparable<Order>
 {
 
 	private static final long serialVersionUID = 2735264048303888145L;
-
+	
 	@Id
 	@GenericGenerator(name = "orderId", strategy = "com.matha.generator.OrderIdGenerator")
 	@GeneratedValue(generator = "orderId")
@@ -38,12 +42,10 @@ public class Order implements Serializable, Comparable<Order>
 	@JoinColumn(name = "CustId")
 	private School school;
 
-	@ManyToOne
-	@JoinColumn(name = "SaleId")
-	private Sales sale;
+//	@ManyToOne
+//	@JoinColumn(name = "SaleId")
+//	private Sales sale;
 
-//	@JoinColumn(name = "SerialId")
-	@Cascade({ CascadeType.SAVE_UPDATE, CascadeType.DELETE })
 	@OneToMany(fetch = FetchType.EAGER, mappedBy = "order")
 	private List<OrderItem> orderItem;
 
@@ -61,6 +63,12 @@ public class Order implements Serializable, Comparable<Order>
 		return orderItem == null ? 0 : orderItem.size();
 	}
 
+	public String getOrderDateStr()
+	{
+		StringConverter<LocalDate> conv = Converters.getLocalDateConverter();
+		return conv.toString(orderDate);
+	}
+	
 	public String getId()
 	{
 		return id;
@@ -96,15 +104,15 @@ public class Order implements Serializable, Comparable<Order>
 		this.school = school;
 	}
 
-	public Sales getSale()
-	{
-		return sale;
-	}
-
-	public void setSale(Sales sale)
-	{
-		this.sale = sale;
-	}
+//	public Sales getSale()
+//	{
+//		return sale;
+//	}
+//
+//	public void setSale(Sales sale)
+//	{
+//		this.sale = sale;
+//	}
 
 	public List<OrderItem> getOrderItem()
 	{
@@ -177,4 +185,34 @@ public class Order implements Serializable, Comparable<Order>
 		return -1;
 	}
 
+	@Override
+	public int hashCode()
+	{
+		final int prime = 31;
+		int result = 1;
+		result = prime * result + ((id == null) ? 0 : id.hashCode());
+		return result;
+	}
+
+	@Override
+	public boolean equals(Object obj)
+	{
+		if (this == obj)
+			return true;
+		if (obj == null)
+			return false;
+		if (getClass() != obj.getClass())
+			return false;
+		Order other = (Order) obj;
+		if (id == null)
+		{
+			if (other.id != null)
+				return false;
+		}
+		else if (!id.equals(other.id))
+			return false;
+		return true;
+	}
+
+	
 }

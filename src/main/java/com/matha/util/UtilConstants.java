@@ -1,6 +1,9 @@
 package com.matha.util;
 
+import java.time.LocalDate;
 import java.util.HashMap;
+
+import javafx.util.StringConverter;
 
 public interface UtilConstants {
 
@@ -11,9 +14,13 @@ public interface UtilConstants {
 	public static final String PDF = "PDF";
 	public static final String Excel = "Excel";	
 	public static final String Docx = "Word";
+	public static final String DATE_FORMAT = "dd/MM/yyyy";
+	
+	public static final StringConverter<LocalDate> DATE_CONV = Converters.getLocalDateConverter();
 	
 	public static final String landingPageFxmlFile = "/fxml/landing.fxml";
 	public static final String schoolsFxml = "/fxml/Schools.fxml";
+	public static final String addSchoolFxmlFile = "/fxml/addSchool.fxml";
 	public static final String purchasePageFxmlFile = "/fxml/Purchases.fxml";
 	public static final String cashBookFxml = "/fxml/CashBook.fxml";
 	public static final String booksFxml = "/fxml/Books.fxml";
@@ -27,11 +34,13 @@ public interface UtilConstants {
 	public static final String addReturnFxmlFile = "/fxml/createReturn.fxml";
 	public static final String createPurchaseFxmlFile = "/fxml/createPurchaseBill.fxml";
 	public static final String printPurchaseFxmlFile = "/fxml/printPurchase.fxml";
+	public static final String printSaleFxmlFile = "/fxml/printSales.fxml";
 	public static final String createPurchaseRetFxmlFile = "/fxml/createPurchaseReturn.fxml";
 	public static final String createPurchasePayFxmlFile = "/fxml/createPurchasePay.fxml";
 	
 	public static final String statementJrxml = "/jrxml/Statement.jrxml";
 	public static final String invoiceJrxml = "/jrxml/Invoice.jrxml";
+	public static final String salesInvoiceJrxml = "/jrxml/SalesInvoice.jrxml";
 	
 	public static enum CRDR_ENUM{
 		

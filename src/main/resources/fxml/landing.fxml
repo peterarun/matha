@@ -5,10 +5,7 @@
 <?import java.lang.*?>
 <?import javafx.scene.layout.*?>
 
-<VBox fx:controller="com.matha.controller.LandingController"
-	maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity"
-	minWidth="-Infinity" prefHeight="600.0" prefWidth="800.0"
-	xmlns="http://javafx.com/javafx/8" xmlns:fx="http://javafx.com/fxml/1">
+<VBox maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="680.0" prefWidth="1024.0" xmlns="http://javafx.com/javafx/8" xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.matha.controller.LandingController">
 	<children>
 		<MenuBar>
 			<menus>
@@ -29,8 +26,7 @@
 				</Menu>
 			</menus>
 		</MenuBar>
-		<TabPane prefHeight="555.0" prefWidth="800.0"
-			tabClosingPolicy="UNAVAILABLE" tabMaxWidth="200.0" tabMinWidth="100.0">
+		<TabPane prefHeight="646.0" prefWidth="1024.0" tabClosingPolicy="UNAVAILABLE" tabMaxWidth="200.0" tabMinWidth="100.0">
 			<tabs>
 				<Tab fx:id="salesTab" onSelectionChanged="#loadSalesPage" text="Sales">
 					<content>
@@ -38,8 +34,7 @@
 						</AnchorPane>
 					</content>
 				</Tab>
-				<Tab fx:id="purchaseTab" onSelectionChanged="#loadPurchasePage"
-					text="Purchases">
+				<Tab fx:id="purchaseTab" onSelectionChanged="#loadPurchasePage" text="Purchases">
 					<content>
 						<AnchorPane prefHeight="200.0" prefWidth="200.0">
 						</AnchorPane>
@@ -47,29 +42,22 @@
 				</Tab>
 				<Tab text="Accounts">
 					<content>
-						<AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="180.0"
-							prefWidth="200.0" />
+						<AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="180.0" prefWidth="200.0" />
 					</content>
 				</Tab>
-				<Tab fx:id="cashBookTab" onSelectionChanged="#loadCashBook"
-					text="CashBook">
+				<Tab fx:id="cashBookTab" onSelectionChanged="#loadCashBook" text="CashBook">
 					<content>
-						<AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="180.0"
-							prefWidth="200.0" />
+						<AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="180.0" prefWidth="200.0" />
 					</content>
 				</Tab>
-				<Tab fx:id="bookMgmtTab" onSelectionChanged="#loadBooksPage"
-					text="Book Management">
+				<Tab fx:id="bookMgmtTab" onSelectionChanged="#loadBooksPage" text="Book Management">
 					<content>
-						<AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="180.0"
-							prefWidth="200.0" />
+						<AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="180.0" prefWidth="200.0" />
 					</content>
 				</Tab>
 			</tabs>
 		</TabPane>
-		<Label alignment="CENTER_RIGHT" contentDisplay="RIGHT"
-			prefHeight="17.0" prefWidth="801.0" text="All Rights Reserved - Matha Agencies"
-			textAlignment="RIGHT" />
+		<Label alignment="CENTER" contentDisplay="CENTER" prefHeight="30.0" prefWidth="1024.0" text="All Rights Reserved - Matha Agencies" textAlignment="CENTER" />
 	</children>
 	<effect>
 		<DropShadow />

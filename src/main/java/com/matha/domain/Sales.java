@@ -26,15 +26,18 @@ public class Sales
 	@Column(name = "SerialId")
 	private String id;
 
-	// @GenericGenerator(name = "salesSerial", strategy =
-	// "com.matha.generator.SalesSerialGenerator")
-	// @GeneratedValue(generator = "salesSerial")
-	// @Column(name = "SerialNo", nullable = false, insertable = false, updatable =
-	// false, columnDefinition = "SELECT NEXT VALUE FOR SalesSerialSeq")
-	// @Generated(GenerationTime.INSERT)
+	@Column(name = "Despatch")
+	private String despatch;
+
+	@Column(name = "Documents")
+	private String docsThru;
+
+	@Column(name = "GRNo")
+	private String grNum;
+
 	@Column(name = "SerialNo")
 	private Integer invoiceNo;
-
+	
 	@Column(name = "Packages")
 	private Integer packages;
 
@@ -52,7 +55,7 @@ public class Sales
 	private SalesTransaction salesTxn;
 
 	@OneToMany(mappedBy = "sale", fetch = FetchType.EAGER)
-	private Set<Order> order;
+	private Set<OrderItem> orderItems;
 
 	public LocalDate getInvoiceDate()
 	{
@@ -64,16 +67,6 @@ public class Sales
 		return salesTxn.getAmount();
 	}
 
-	public Set<Order> getOrder()
-	{
-		return order;
-	}
-
-	public void setOrder(Set<Order> order)
-	{
-		this.order = order;
-	}
-
 	public SalesTransaction getSalesTxn()
 	{
 		return salesTxn;
@@ -82,6 +75,16 @@ public class Sales
 	public void setSalesTxn(SalesTransaction salesTxn)
 	{
 		this.salesTxn = salesTxn;
+	}
+	
+	public Set<OrderItem> getOrderItems()
+	{
+		return orderItems;
+	}
+
+	public void setOrderItems(Set<OrderItem> orderItems)
+	{
+		this.orderItems = orderItems;
 	}
 
 	public String getId()
@@ -102,6 +105,36 @@ public class Sales
 	public void setInvoiceNo(Integer invoiceNo)
 	{
 		this.invoiceNo = invoiceNo;
+	}
+
+	public String getDespatch()
+	{
+		return despatch;
+	}
+
+	public void setDespatch(String despatch)
+	{
+		this.despatch = despatch;
+	}
+
+	public String getDocsThru()
+	{
+		return docsThru;
+	}
+
+	public void setDocsThru(String docsThru)
+	{
+		this.docsThru = docsThru;
+	}
+
+	public String getGrNum()
+	{
+		return grNum;
+	}
+
+	public void setGrNum(String grNum)
+	{
+		this.grNum = grNum;
 	}
 
 	public Integer getPackages()

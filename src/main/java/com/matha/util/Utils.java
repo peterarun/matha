@@ -1,5 +1,8 @@
 package com.matha.util;
 
+import static com.matha.util.UtilConstants.PERCENT_SIGN;
+import static com.matha.util.UtilConstants.RUPEE_SIGN;
+
 import java.util.Optional;
 
 import org.apache.commons.lang.StringUtils;
@@ -16,8 +19,9 @@ import javafx.print.PrinterJob;
 import javafx.scene.Node;
 import javafx.scene.control.ChoiceDialog;
 import javafx.scene.control.Label;
-import javafx.scene.control.TextField;
+import javafx.scene.control.RadioButton;
 import javafx.scene.control.TableColumn.CellDataFeatures;
+import javafx.scene.control.TextField;
 import javafx.stage.Window;
 import javafx.util.Callback;
 
@@ -90,7 +94,7 @@ public class Utils
 
 		// Create a printer job for the default printer
 		PrinterJob job = PrinterJob.createPrinterJob(printer);
-		Paper paper = Paper.A3;
+		Paper paper = Paper.A4;
 		PageOrientation orient = PageOrientation.PORTRAIT;
 		PageLayout lout = printer.createPageLayout(paper, orient, 0, 0, 0, 0);
 
@@ -131,5 +135,50 @@ public class Utils
 			}
 		};
 		return priceColumnFactory;
+	}
+	
+	public static void calcNetAmountGen(String discAmtStr, TextField subTotal, RadioButton percentRad, RadioButton rupeeRad, TextField netAmt)
+	{
+		String netTotalStr = netAmt.getText();
+		Double netTotalDbl = StringUtils.isEmpty(netTotalStr) ? 0.0 : Double.parseDouble(netTotalStr);
+
+		String subTotalStr = subTotal.getText();
+		if (subTotalStr != null)
+		{
+			double subTotalDbl = Double.parseDouble(subTotalStr);
+			if (subTotalDbl > 0)
+			{
+				double discAmtDbl = StringUtils.isEmpty(discAmtStr) ? 0 : Double.parseDouble(discAmtStr);
+
+				if (discAmtDbl > 0)
+				{
+					if (rupeeRad.isSelected())
+					{
+						netTotalDbl = subTotalDbl - discAmtDbl;
+					}
+					else if (percentRad.isSelected())
+					{
+						netTotalDbl = subTotalDbl - subTotalDbl * discAmtDbl / 100;
+					}
+				}
+				else
+				{
+					netTotalDbl = subTotalDbl;
+				}
+			}
+		}
+		netAmt.setText(getStringVal(netTotalDbl));
+	}
+	
+	public static void loadDiscSymbol(RadioButton percentRad, RadioButton rupeeRad, Label discTypeInd)
+	{
+		if (percentRad.isSelected())
+		{
+			discTypeInd.setText(PERCENT_SIGN);
+		}
+		else if (rupeeRad.isSelected())
+		{
+			discTypeInd.setText(RUPEE_SIGN);
+		}
 	}
 }

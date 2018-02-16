@@ -1,6 +1,6 @@
 package com.matha.controller;
 
-import static com.matha.util.UtilConstants.NEW_LINE;
+import static com.matha.util.UtilConstants.*;
 
 import java.io.IOException;
 import java.util.ArrayList;
@@ -42,8 +42,6 @@ import javafx.stage.WindowEvent;
 
 @Controller
 public class SchoolController {
-
-	private final String addSchoolFxmlFile = "/fxml/addSchool.fxml";
 
 	private Parent root;
 

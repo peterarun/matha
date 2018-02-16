@@ -1,25 +1,35 @@
 package com.matha.util;
 
+import static com.matha.util.UtilConstants.DATE_FORMAT;
+
+import java.time.LocalDate;
+import java.time.format.DateTimeFormatter;
+
 import com.matha.domain.BookCategory;
 import com.matha.domain.District;
 import com.matha.domain.Publisher;
 import com.matha.domain.State;
 
 import javafx.util.StringConverter;
+import javafx.util.converter.LocalDateStringConverter;
 
-public class Converters {
+public class Converters
+{
 
-	public static StringConverter<State> getStateConverter() {
+	public static StringConverter<State> getStateConverter()
+	{
 		StringConverter<State> c = new StringConverter<State>() {
 
 			@Override
-			public String toString(State state) {
+			public String toString(State state)
+			{
 
 				return state.getId();
 			}
 
 			@Override
-			public State fromString(String string) {
+			public State fromString(String string)
+			{
 				// TODO Auto-generated method stub
 				return null;
 			}
@@ -27,17 +37,20 @@ public class Converters {
 		return c;
 	}
 
-	public static StringConverter<District> getDistrictConverter() {
+	public static StringConverter<District> getDistrictConverter()
+	{
 		StringConverter<District> c = new StringConverter<District>() {
 
 			@Override
-			public String toString(District state) {
+			public String toString(District state)
+			{
 
 				return state.getId();
 			}
 
 			@Override
-			public District fromString(String string) {
+			public District fromString(String string)
+			{
 				// TODO Auto-generated method stub
 				return null;
 			}
@@ -45,17 +58,20 @@ public class Converters {
 		return c;
 	}
 
-	public static StringConverter<BookCategory> getCategoryConverter() {
+	public static StringConverter<BookCategory> getCategoryConverter()
+	{
 		StringConverter<BookCategory> c = new StringConverter<BookCategory>() {
 
 			@Override
-			public String toString(BookCategory state) {
+			public String toString(BookCategory state)
+			{
 
 				return state.getName();
 			}
 
 			@Override
-			public BookCategory fromString(String string) {
+			public BookCategory fromString(String string)
+			{
 				// TODO Auto-generated method stub
 				return null;
 			}
@@ -63,21 +79,31 @@ public class Converters {
 		return c;
 	}
 
-	public static StringConverter<Publisher> getPublisherConverter() {
+	public static StringConverter<Publisher> getPublisherConverter()
+	{
 		StringConverter<Publisher> c = new StringConverter<Publisher>() {
 
 			@Override
-			public String toString(Publisher state) {
+			public String toString(Publisher state)
+			{
 
 				return state.getName();
 			}
 
 			@Override
-			public Publisher fromString(String string) {
+			public Publisher fromString(String string)
+			{
 				// TODO Auto-generated method stub
 				return null;
 			}
 		};
 		return c;
+	}
+
+	public static StringConverter<LocalDate> getLocalDateConverter()
+	{
+		DateTimeFormatter fmt = DateTimeFormatter.ofPattern(DATE_FORMAT);
+		StringConverter<LocalDate> dateConv = new LocalDateStringConverter(fmt, fmt);
+		return dateConv;
 	}
 }

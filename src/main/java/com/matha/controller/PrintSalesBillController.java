@@ -36,11 +36,11 @@ import net.sf.jasperreports.export.SimpleHtmlExporterOutput;
 import net.sf.jasperreports.export.SimpleOutputStreamExporterOutput;
 
 @Component
-public class PrintPurchaseBillController
+public class PrintSalesBillController
 {
 
     @FXML
-    private TextField publisherName;
+    private TextField schoolName;
 
     @FXML
     private ChoiceBox<String> saveType;
@@ -138,7 +138,7 @@ public class PrintPurchaseBillController
 			Scene parentScene = ((Node) ev.getSource()).getScene();
 			Window parentWindow = parentScene.getWindow();
 
-			Utils.print(invoiceData, parentWindow, new Label());
+			Utils.print(invoiceData.getClip(), parentWindow, new Label());
 		}
 		catch (Exception e)
 		{

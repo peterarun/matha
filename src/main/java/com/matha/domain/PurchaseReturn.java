@@ -1,5 +1,7 @@
 package com.matha.domain;
 
+import static com.matha.util.UtilConstants.DATE_CONV;
+
 import java.time.LocalDate;
 import java.util.Set;
 import java.util.stream.Collectors;
@@ -56,6 +58,11 @@ public class PurchaseReturn {
 		return salesTxn.getTxnDate();
 	}
 	
+	public String getTxnDateStr()
+	{		
+		return DATE_CONV.toString(getTxnDate());
+	}
+
 	public Double getNetAmount()
 	{
 		return salesTxn.getAmount();

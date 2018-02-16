@@ -1,10 +1,19 @@
 package com.matha.controller;
 
+import static com.matha.util.UtilConstants.DATE_CONV;
+import static com.matha.util.UtilConstants.RUPEE_SIGN;
+import static com.matha.util.Utils.calcNetAmountGen;
+import static com.matha.util.Utils.fetchPriceColumnFactory;
+import static com.matha.util.Utils.getIntegerVal;
+import static com.matha.util.Utils.getStringVal;
+import static com.matha.util.Utils.loadDiscSymbol;
+
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
-import java.util.TreeSet;
+import java.util.Set;
 import java.util.logging.Logger;
 import java.util.stream.Collector;
 import java.util.stream.Collectors;
@@ -21,7 +30,6 @@ import com.matha.domain.SalesTransaction;
 import com.matha.domain.School;
 import com.matha.service.SchoolService;
 
-import javafx.beans.property.ReadOnlyStringWrapper;
 import javafx.beans.value.ChangeListener;
 import javafx.beans.value.ObservableValue;
 import javafx.collections.FXCollections;
@@ -35,16 +43,15 @@ import javafx.scene.control.Label;
 import javafx.scene.control.ListView;
 import javafx.scene.control.RadioButton;
 import javafx.scene.control.TableColumn;
-import javafx.scene.control.TableColumn.CellDataFeatures;
 import javafx.scene.control.TableColumn.CellEditEvent;
 import javafx.scene.control.TableView;
+import javafx.scene.control.TextArea;
 import javafx.scene.control.TextField;
 import javafx.scene.control.Toggle;
 import javafx.scene.control.ToggleGroup;
 import javafx.scene.control.cell.TextFieldTableCell;
 import javafx.scene.input.KeyEvent;
 import javafx.stage.Stage;
-import javafx.util.Callback;
 
 @Component
 public class AddBillController
@@ -56,16 +63,31 @@ public class AddBillController
 	private SchoolService schoolService;
 
 	@FXML
+	private TextArea schoolDetails;
+
+	@FXML
+	private DatePicker billDate;
+
+	@FXML
+	private TextField subTotal;
+
+	@FXML
+	private ToggleGroup discType;
+
+	@FXML
 	private RadioButton rupeeRad;
 
 	@FXML
 	private RadioButton percentRad;
 
 	@FXML
-	private TextField netAmt;
+	private TextField discAmt;
 
 	@FXML
-	private ToggleGroup discType;
+	private Label discTypeInd;
+
+	@FXML
+	private TextField netAmt;
 
 	@FXML
 	private Button cancelBtn;
@@ -73,17 +95,23 @@ public class AddBillController
 	@FXML
 	private TextField orderNum;
 
-	@FXML
-	private TextField subTotal;
+    @FXML
+    private TextField despatchPer;
+    
+    @FXML
+    private TextField docsThru;
+    
+    @FXML
+    private TextField invoiceNum;
+    
+    @FXML
+    private TextField grNum;
 
+    @FXML
+    private TextField packageCnt;
+    
 	@FXML
-	private Label schoolName;
-
-	@FXML
-	private DatePicker billDate;
-
-	@FXML
-	private TextField discAmt;
+	private ListView<String> orderList;
 
 	@FXML
 	private TableView<OrderItem> addedBooks;
@@ -91,106 +119,121 @@ public class AddBillController
 	@FXML
 	private TableColumn<OrderItem, String> priceColumn;
 
-	@FXML
-	private ListView<String> orderList;
-
 	private School school;
 	private Sales selectedSale;
-	// private Order order;
+	private ObservableList<Order> orders;
 
 	private Map<String, Order> orderMap = new HashMap<>();
 	private Collector<Order, ?, Map<String, Order>> orderMapCollector = Collectors.toMap(o -> o.getSerialNo(), o -> o);
-	private Collector<OrderItem, ?, Double> summingDblCollector = Collectors.summingDouble(OrderItem::getTotal);
+	private Collector<OrderItem, ?, Double> summingDblCollector = Collectors.summingDouble(OrderItem::getTotalSold);
 
 	void initData(ObservableList<Order> ordersIn, School schoolIn, Sales sale)
 	{
+		this.school = schoolIn;
 		this.selectedSale = sale;
-		if (sale != null && (ordersIn == null || ordersIn.isEmpty()))
+		this.orders = ordersIn;
+		this.prepareEditData(sale);
+		this.loadAddDefaults();
+
+		List<Order> allOrders = schoolService.fetchOrderForSchool(schoolIn);
+		this.orderMap = allOrders.stream().collect(orderMapCollector);
+
+		List<String> items = new ArrayList<>(this.orderMap.keySet());
+		TextFields.bindAutoCompletion(this.orderNum, items);
+
+		if (this.orders != null)
 		{
-			ordersIn = FXCollections.observableList(new ArrayList<Order>(sale.getOrder()));
-			this.billDate.setValue(sale.getInvoiceDate());
-			if (sale.getDiscType() != null)
-			{
-				this.discAmt.setText(sale.getDiscAmt().toString());
-				if (sale.getDiscType())
-				{
-					this.rupeeRad.setSelected(true);
-				}
-				else
-				{
-					this.percentRad.setSelected(true);
-					this.rupeeRad.setSelected(false);
-				}
-
-			}
+			List<String> orderStrings = this.orders.stream().map(o -> o.getSerialNo()).collect(Collectors.toList());
+			this.orderList.setItems(FXCollections.observableList(orderStrings));
 		}
-		addedBooks.getSelectionModel().cellSelectionEnabledProperty().set(true);
-		priceColumn.setCellFactory(TextFieldTableCell.forTableColumn());
-		priceColumn.setCellValueFactory(new Callback<CellDataFeatures<OrderItem, String>, ObservableValue<String>>() {
-			public ObservableValue<String> call(CellDataFeatures<OrderItem, String> p)
-			{
-				// p.getValue() returns the Person instance for a particular TableView row
-				return new ReadOnlyStringWrapper(p.getValue().getBookPrice().toString());
-			}
-		});
 
-		priceColumn.setOnEditCommit(new EventHandler<CellEditEvent<OrderItem, String>>() {
+		// To avoid different objects of the same type getting loaded.
+		for (Order order : this.orders)
+		{
+			orderMap.put(order.getSerialNo(), order);
+		}
+		loadBooksAndSubTotal(this.orders);
+		loadDiscSymbol(percentRad, rupeeRad, discTypeInd);
+	}
+
+	private void loadAddDefaults()
+	{
+		this.billDate.setConverter(DATE_CONV);
+		this.schoolDetails.setText(this.school.fetchDetails());
+		this.addedBooks.getSelectionModel().cellSelectionEnabledProperty().set(true);
+		this.priceColumn.setCellFactory(TextFieldTableCell.forTableColumn());
+		this.priceColumn.setCellValueFactory(fetchPriceColumnFactory());
+		this.priceColumn.setOnEditCommit(new EventHandler<CellEditEvent<OrderItem, String>>() {
 			public void handle(CellEditEvent<OrderItem, String> t)
 			{
-
 				OrderItem oItem = ((OrderItem) t.getTableView().getItems().get(t.getTablePosition().getRow()));
 				oItem.setBookPrice(Double.parseDouble(t.getNewValue()));
 				t.getTableView().refresh();
 				loadSubTotal();
 				calcNetAmount(discAmt.getText());
+
+				t.getTableView().getSelectionModel().selectBelowCell();
+
+				int rowId = t.getTableView().getSelectionModel().getSelectedIndex();
+				if (rowId < t.getTableView().getItems().size())
+				{
+					t.getTableView().edit(rowId, t.getTablePosition().getTableColumn());
+				}
 			}
 		});
 
-		this.school = schoolIn;
-		List<Order> allOrders = schoolService.fetchOrderForSchool(schoolIn);
-		orderMap = allOrders.stream().collect(orderMapCollector);
-
-		List<String> items = new ArrayList<>(orderMap.keySet());
-		TextFields.bindAutoCompletion(orderNum, items);
-
-		List<String> orderStrings = ordersIn.stream().map(o -> o.getSerialNo()).collect(Collectors.toList());
-		orderList.setItems(FXCollections.observableList(orderStrings));
-
-		// To avoid different objects of the same type getting loaded.
-		for (Order order : ordersIn)
-		{
-			orderMap.put(order.getSerialNo(), order);
-		}
-		loadBooksAndSubTotal(ordersIn);
-		// calcNetAmount(discAmt.getText());
-
-		discType.selectedToggleProperty().addListener(new ChangeListener<Toggle>() {
+		this.discType.selectedToggleProperty().addListener(new ChangeListener<Toggle>() {
 			public void changed(ObservableValue<? extends Toggle> ov, Toggle old_toggle, Toggle new_toggle)
 			{
 				if (discType.getSelectedToggle() != null)
 				{
 					calcNetAmount(discAmt.getText());
+					loadDiscSymbol(percentRad, rupeeRad, discTypeInd);
 				}
-				
 			}
 		});
-
-		LOGGER.info("Test");
 	}
 
-	private void loadBooksAndSubTotal(List<Order> ordersIn)
-	{		
-		List<OrderItem> bookItems = new ArrayList<>();
-		for (Order orderIn : ordersIn)
+	private void prepareEditData(Sales sale)
+	{
+		if (sale != null)
 		{
-			List<OrderItem> orderItems = orderIn.getOrderItem();			
-			bookItems.addAll(orderItems.stream().collect(Collectors.toList()));
+			Set<Order> orderSet = sale.getOrderItems().stream().map(OrderItem::getOrder).collect(Collectors.toSet());
+			this.orders = FXCollections.observableList(new ArrayList<Order>(orderSet));
+			this.addedBooks.setItems(FXCollections.observableArrayList(sale.getOrderItems()));
+			this.billDate.setValue(sale.getInvoiceDate());
+			this.subTotal.setText(getStringVal(sale.getSubTotal()));
+			this.discAmt.setText(getStringVal(sale.getDiscAmt()));
+			this.netAmt.setText(getStringVal(sale.getSalesTxn().getAmount()));
+			this.despatchPer.setText(sale.getDespatch());
+			this.docsThru.setText(sale.getDocsThru());
+			this.grNum.setText(sale.getGrNum());
+			this.invoiceNum.setText(getStringVal(sale.getInvoiceNo()));
+			this.packageCnt.setText(getStringVal(sale.getPackages()));
+
+			if (!sale.getDiscType())
+			{
+				this.rupeeRad.setSelected(true);
+				this.discTypeInd.setText(RUPEE_SIGN);
+			}
 		}
+	}
 
-		ObservableList<OrderItem> bookList = FXCollections.observableArrayList();
-		bookList.addAll(bookItems);
-
-		addedBooks.setItems(bookList);
+	private void loadBooksAndSubTotal(List<Order> orders)
+	{
+		if (orders != null)
+		{
+			List<OrderItem> bookItems = orders.stream().map(Order::getOrderItem).flatMap(List::stream).collect(Collectors.toList());
+			if (addedBooks.getItems() == null)
+			{
+				addedBooks.setItems(FXCollections.observableList(new ArrayList<>()));
+			}
+			addedBooks.getItems().addAll(bookItems);
+			for (OrderItem orderItem : addedBooks.getItems())
+			{
+				orderItem.setSoldCnt(orderItem.getCount());
+			}
+		}
 		loadSubTotal();
 		calcNetAmount(discAmt.getText());
 	}
@@ -200,14 +243,14 @@ public class AddBillController
 		double subTotalVal = 0;
 
 		ObservableList<OrderItem> orderListIn = addedBooks.getItems();
-		subTotalVal -= orderListIn.stream().collect(summingDblCollector);
+		subTotalVal += orderListIn.stream().collect(summingDblCollector);
 		subTotal.setText(String.valueOf(subTotalVal));
 	}
 
 	@FXML
 	private void updateNetAmt(KeyEvent ke)
 	{
-		String discAmtStr = discAmt.getText();
+		String discAmtStr = StringUtils.defaultString(discAmt.getText());
 		discAmtStr += ke.getCharacter();
 		if (!StringUtils.isEmpty(discAmtStr))
 		{
@@ -218,109 +261,83 @@ public class AddBillController
 	@FXML
 	void addOrderNum(ActionEvent e)
 	{
-		orderList.getItems().add(orderNum.getText());
-		orderNum.clear();
-
-		List<Order> ordersIn = new ArrayList<Order>();
-		ObservableList<String> orderListIn = orderList.getItems();
-		for (String string : orderListIn)
+		Order addedOrder = orderMap.get(orderNum.getText());
+		if (addedOrder != null)
 		{
-			ordersIn.add(orderMap.get(string));
+			orderList.getItems().add(orderNum.getText());
+			orderNum.clear();
+
+			List<Order> ordersIn = new ArrayList<Order>();
+			ordersIn.add(addedOrder);
+			loadBooksAndSubTotal(ordersIn);
 		}
-		loadBooksAndSubTotal(ordersIn);
 	}
 
 	private void calcNetAmount(String discAmtStr)
 	{
-		String netTotalStr = netAmt.getText();
-		Double netTotalDbl = StringUtils.isEmpty(netTotalStr) ? 0.0 : Double.parseDouble(netTotalStr);
-
-		String subTotalStr = this.subTotal.getText();
-		if (subTotalStr != null)
-		{
-			double subTotalDbl = Double.parseDouble(subTotalStr);
-			if (subTotalDbl > 0)
-			{
-				double discAmtDbl = StringUtils.isEmpty(discAmtStr) ? 0 : Double.parseDouble(discAmtStr);
-
-				if (discAmtDbl > 0)
-				{
-					if (rupeeRad.isSelected())
-					{
-						netTotalDbl = subTotalDbl - discAmtDbl;
-					}
-					else if (percentRad.isSelected())
-					{
-						netTotalDbl = subTotalDbl - subTotalDbl * discAmtDbl / 100;
-					}
-				}
-				else
-				{
-					netTotalDbl = subTotalDbl;
-				}
-				netAmt.setText(String.valueOf(netTotalDbl));
-			}
-		}
+		calcNetAmountGen(discAmtStr, this.subTotal, this.percentRad, this.rupeeRad, this.netAmt);
 	}
 
 	@FXML
 	void saveData(ActionEvent event)
 	{
-
-		Sales sale = selectedSale;
+		SalesTransaction salesTxn = null;
+		Sales sale = this.selectedSale;
 		if (selectedSale == null)
 		{
 			sale = new Sales();
-			SalesTransaction salesTxn = new SalesTransaction();
+			salesTxn = new SalesTransaction();
 			salesTxn.setSchool(school);
-			sale.setSalesTxn(salesTxn);
 		}
+		else
+		{
+			salesTxn = sale.getSalesTxn();
+		}
+
 		if (!StringUtils.isEmpty(discAmt.getText()))
 		{
 			Double discAmtVal = Double.parseDouble(discAmt.getText());
 			sale.setDiscAmt(discAmtVal);
-			if (rupeeRad.isSelected())
-			{
-				sale.setDiscType(true);
-			}
-			else if (percentRad.isSelected())
-			{
-				sale.setDiscType(false);
-			}
 		}
 
-		TreeSet<Order> orders = new TreeSet<>();
-		ObservableList<String> selectedOrders = this.orderList.getItems();
-		for (String orderId : selectedOrders)
+		if (percentRad.isSelected())
 		{
-			if (this.orderMap.containsKey(orderId))
-			{
-				orders.add(this.orderMap.get(orderId));
-			}
+			sale.setDiscType(true);
 		}
-		sale.setOrder(orders);
+		else if (rupeeRad.isSelected())
+		{
+			sale.setDiscType(false);
+		}
 
+		Set<OrderItem> orderItems = new HashSet<>(this.addedBooks.getItems());
+		
 		if (!StringUtils.isEmpty(subTotal.getText()))
 		{
 			Double subTotalVal = Double.parseDouble(subTotal.getText());
 			sale.setSubTotal(subTotalVal);
 		}
 
-		SalesTransaction txn = sale.getSalesTxn();
 		if (StringUtils.isEmpty(netAmt.getText()))
 		{
-			txn.setAmount(0.0);
+			salesTxn.setAmount(0.0);
 		}
 		else
 		{
 			Double netAmtVal = Double.parseDouble(netAmt.getText());
-			txn.setAmount(netAmtVal);
+			salesTxn.setAmount(netAmtVal);
 		}
+		
+		sale.setDespatch(this.despatchPer.getText());
+		sale.setDocsThru(this.docsThru.getText());
+		sale.setGrNum(this.grNum.getText());
+		sale.setInvoiceNo(getIntegerVal(this.invoiceNum));
+		sale.setPackages(getIntegerVal(this.packageCnt));
+		
 		String note = "Sales Bill Note";
-		txn.setNote(note);		
-		txn.setTxnDate(billDate.getValue());
+		salesTxn.setNote(note);
+		salesTxn.setTxnDate(billDate.getValue());
 
-		schoolService.saveSales(sale);
+		schoolService.saveSales(sale, orderItems, salesTxn);
 
 		((Stage) cancelBtn.getScene().getWindow()).close();
 	}
@@ -338,15 +355,24 @@ public class AddBillController
 		if (orderNumSel != null)
 		{
 			orderList.getItems().remove(orderNumSel);
+			Order removedOrder = orderMap.get(orderNumSel);
+
+			addedBooks.getItems().removeAll(removedOrder.getOrderItem());
 		}
 
-		List<Order> ordersIn = new ArrayList<Order>();
-		ObservableList<String> orderListIn = orderList.getItems();
-		for (String string : orderListIn)
+		loadBooksAndSubTotal(null);
+	}
+
+	@FXML
+	void removeOrderItem(ActionEvent event)
+	{
+		ObservableList<OrderItem> orderNumSel = addedBooks.getSelectionModel().getSelectedItems();
+		if (orderNumSel != null)
 		{
-			ordersIn.add(orderMap.get(string));
+			addedBooks.getItems().removeAll(orderNumSel);
 		}
-		loadBooksAndSubTotal(ordersIn);
+
+		loadBooksAndSubTotal(null);
 	}
 
 }
