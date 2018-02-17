@@ -152,7 +152,7 @@ public class AddBillController
 		{
 			orderMap.put(order.getSerialNo(), order);
 		}
-		loadBooksAndSubTotal(this.orders);
+		loadBooksAndSubTotal(ordersIn);
 		loadDiscSymbol(percentRad, rupeeRad, discTypeInd);
 	}
 

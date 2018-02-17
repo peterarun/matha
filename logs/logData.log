@@ -56,3 +56,41 @@
 2018-02-17 10:39:23.355  INFO - Registering beans for JMX exposure on startup
 2018-02-17 10:39:23.391  INFO - Started application in 11.274 seconds (JVM running for 14.006)
 2018-02-17 10:42:28.317  INFO - Closing org.springframework.context.annotation.AnnotationConfigApplicationContext@d296b40: startup date [Sat Feb 17 10:39:13 IST 2018]; root of context hierarchy
+2018-02-17 21:28:38.297  INFO - Starting application on merinethomas-PC with PID 7940 (started by Norman in E:\Matha\MathaApp\matha)
+2018-02-17 21:28:38.344  INFO - No active profile set, falling back to default profiles: default
+2018-02-17 21:28:38.519  INFO - Refreshing org.springframework.context.annotation.AnnotationConfigApplicationContext@5f88a1ce: startup date [Sat Feb 17 21:28:38 IST 2018]; root of context hierarchy
+2018-02-17 21:28:41.054  INFO - JSR-330 'javax.inject.Inject' annotation found and supported for autowiring
+2018-02-17 21:28:44.058  INFO - Building JPA container EntityManagerFactory for persistence unit 'default'
+2018-02-17 21:28:44.135  INFO - HHH000204: Processing PersistenceUnitInfo [
+	name: default
+	...]
+2018-02-17 21:28:44.757  INFO - HHH000412: Hibernate Core {5.0.12.Final}
+2018-02-17 21:28:44.761  INFO - HHH000206: hibernate.properties not found
+2018-02-17 21:28:44.766  INFO - HHH000021: Bytecode provider name : javassist
+2018-02-17 21:28:44.931  INFO - HCANN000001: Hibernate Commons Annotations {5.0.1.Final}
+2018-02-17 21:28:45.413  INFO - HHH000400: Using dialect: org.hibernate.dialect.SQLServer2008Dialect
+2018-02-17 21:28:46.544  WARN - HHH000065: DEPRECATED : use [org.hibernate.id.UUIDGenerator] instead with custom [org.hibernate.id.UUIDGenerationStrategy] implementation
+2018-02-17 21:28:48.259  INFO - Initialized JPA EntityManagerFactory for persistence unit 'default'
+2018-02-17 21:28:49.658  INFO - HHH000397: Using ASTQueryTranslatorFactory
+2018-02-17 21:28:51.946  INFO - Registering beans for JMX exposure on startup
+2018-02-17 21:28:51.995  INFO - Started application in 15.489 seconds (JVM running for 23.72)
+2018-02-17 21:37:04.687  INFO - Closing org.springframework.context.annotation.AnnotationConfigApplicationContext@5f88a1ce: startup date [Sat Feb 17 21:28:38 IST 2018]; root of context hierarchy
+2018-02-17 21:37:14.962  INFO - Starting application on merinethomas-PC with PID 8024 (started by Norman in E:\Matha\MathaApp\matha)
+2018-02-17 21:37:14.968  INFO - No active profile set, falling back to default profiles: default
+2018-02-17 21:37:15.155  INFO - Refreshing org.springframework.context.annotation.AnnotationConfigApplicationContext@1b54dddb: startup date [Sat Feb 17 21:37:15 IST 2018]; root of context hierarchy
+2018-02-17 21:37:17.716  INFO - JSR-330 'javax.inject.Inject' annotation found and supported for autowiring
+2018-02-17 21:37:21.603  INFO - Building JPA container EntityManagerFactory for persistence unit 'default'
+2018-02-17 21:37:21.681  INFO - HHH000204: Processing PersistenceUnitInfo [
+	name: default
+	...]
+2018-02-17 21:37:22.277  INFO - HHH000412: Hibernate Core {5.0.12.Final}
+2018-02-17 21:37:22.284  INFO - HHH000206: hibernate.properties not found
+2018-02-17 21:37:22.291  INFO - HHH000021: Bytecode provider name : javassist
+2018-02-17 21:37:22.515  INFO - HCANN000001: Hibernate Commons Annotations {5.0.1.Final}
+2018-02-17 21:37:23.100  INFO - HHH000400: Using dialect: org.hibernate.dialect.SQLServer2008Dialect
+2018-02-17 21:37:24.690  WARN - HHH000065: DEPRECATED : use [org.hibernate.id.UUIDGenerator] instead with custom [org.hibernate.id.UUIDGenerationStrategy] implementation
+2018-02-17 21:37:26.821  INFO - Initialized JPA EntityManagerFactory for persistence unit 'default'
+2018-02-17 21:37:28.369  INFO - HHH000397: Using ASTQueryTranslatorFactory
+2018-02-17 21:37:32.252  INFO - Registering beans for JMX exposure on startup
+2018-02-17 21:37:32.302  INFO - Started application in 18.642 seconds (JVM running for 22.593)
+2018-02-17 21:42:40.652  INFO - Closing org.springframework.context.annotation.AnnotationConfigApplicationContext@1b54dddb: startup date [Sat Feb 17 21:37:15 IST 2018]; root of context hierarchy
