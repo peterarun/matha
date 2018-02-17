@@ -5,6 +5,15 @@ import static com.matha.util.UtilConstants.RUPEE_SIGN;
 
 import java.util.Optional;
 
+import javax.print.PrintException;
+import javax.print.attribute.HashPrintRequestAttributeSet;
+import javax.print.attribute.HashPrintServiceAttributeSet;
+import javax.print.attribute.PrintRequestAttributeSet;
+import javax.print.attribute.PrintServiceAttributeSet;
+import javax.print.attribute.standard.MediaSizeName;
+import javax.print.attribute.standard.OrientationRequested;
+import javax.print.attribute.standard.PrinterName;
+
 import org.apache.commons.lang.StringUtils;
 
 import com.matha.domain.OrderItem;
@@ -22,8 +31,14 @@ import javafx.scene.control.Label;
 import javafx.scene.control.RadioButton;
 import javafx.scene.control.TableColumn.CellDataFeatures;
 import javafx.scene.control.TextField;
+import javafx.scene.transform.Scale;
 import javafx.stage.Window;
 import javafx.util.Callback;
+import net.sf.jasperreports.engine.JRException;
+import net.sf.jasperreports.engine.JasperPrint;
+import net.sf.jasperreports.engine.export.JRPrintServiceExporter;
+import net.sf.jasperreports.export.SimpleExporterInput;
+import net.sf.jasperreports.export.SimplePrintServiceExporterConfiguration;
 
 public class Utils
 {
@@ -49,7 +64,7 @@ public class Utils
 		}
 		return dblVal;
 	}
-	
+
 	public static String getStringVal(Double txt)
 	{
 		String txtVal = null;
@@ -96,9 +111,13 @@ public class Utils
 		PrinterJob job = PrinterJob.createPrinterJob(printer);
 		Paper paper = Paper.A4;
 		PageOrientation orient = PageOrientation.PORTRAIT;
-		PageLayout lout = printer.createPageLayout(paper, orient, 0, 0, 0, 0);
 
-		if (job != null && job.showPrintDialog(parentWindow))
+		PageLayout lout = printer.createPageLayout(paper, orient, 0, 0, 0, 0);
+		double scaleX = 0.75;
+		// double scaleY = 0.5;
+		node.getTransforms().add(new Scale(scaleX, 1));
+
+		if (job != null && job.showPageSetupDialog(parentWindow))
 		{
 			// Show the printer job status
 			jobStatus.textProperty().bind(job.jobStatusProperty().asString());
@@ -125,6 +144,52 @@ public class Utils
 		}
 	}
 
+	public static void printJasper(JasperPrint jasperPrint) throws PrintException, JRException
+	{
+		Label jobStatus = new Label();
+
+		// Define the Job Status Message
+		jobStatus.textProperty().unbind();
+		jobStatus.setText("Printing...");
+
+		Printer printerJob = Printer.getDefaultPrinter();
+		ChoiceDialog<Printer> dialog = new ChoiceDialog<Printer>(Printer.getDefaultPrinter(), Printer.getAllPrinters());
+		dialog.setHeaderText("Choose the printer!");
+		dialog.setContentText("Choose a printer from available printers");
+		dialog.setTitle("Printer Choice");
+		Optional<Printer> opt = dialog.showAndWait();
+		if (opt.isPresent())
+		{
+			printerJob = opt.get();
+		}
+
+		// Set the printing settings
+		PrintRequestAttributeSet printRequestAttributeSet = new HashPrintRequestAttributeSet();
+		printRequestAttributeSet.add(MediaSizeName.ISO_A4);
+		if (jasperPrint.getOrientationValue() == net.sf.jasperreports.engine.type.OrientationEnum.LANDSCAPE)
+		{
+			printRequestAttributeSet.add(OrientationRequested.LANDSCAPE);
+		}
+		else
+		{
+			printRequestAttributeSet.add(OrientationRequested.PORTRAIT);
+		}
+		PrintServiceAttributeSet printServiceAttributeSet = new HashPrintServiceAttributeSet();
+		printServiceAttributeSet.add(new PrinterName(printerJob.getName(), null));
+
+		JRPrintServiceExporter exporter = new JRPrintServiceExporter();
+		SimplePrintServiceExporterConfiguration configuration = new SimplePrintServiceExporterConfiguration();
+		configuration.setPrintRequestAttributeSet(printRequestAttributeSet);
+		configuration.setPrintServiceAttributeSet(printServiceAttributeSet);
+//		configuration.setDisplayPageDialog(true);
+//		configuration.setDisplayPrintDialog(true);
+
+		exporter.setExporterInput(new SimpleExporterInput(jasperPrint));
+		exporter.setConfiguration(configuration);
+
+		exporter.exportReport();
+	}
+
 	public static Callback<CellDataFeatures<OrderItem, String>, ObservableValue<String>> fetchPriceColumnFactory()
 	{
 		Callback<CellDataFeatures<OrderItem, String>, ObservableValue<String>> priceColumnFactory = new Callback<CellDataFeatures<OrderItem, String>, ObservableValue<String>>() {
@@ -136,7 +201,7 @@ public class Utils
 		};
 		return priceColumnFactory;
 	}
-	
+
 	public static void calcNetAmountGen(String discAmtStr, TextField subTotal, RadioButton percentRad, RadioButton rupeeRad, TextField netAmt)
 	{
 		String netTotalStr = netAmt.getText();
@@ -169,7 +234,7 @@ public class Utils
 		}
 		netAmt.setText(getStringVal(netTotalDbl));
 	}
-	
+
 	public static void loadDiscSymbol(RadioButton percentRad, RadioButton rupeeRad, Label discTypeInd)
 	{
 		if (percentRad.isSelected())

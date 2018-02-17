@@ -1,17 +1,22 @@
 package com.matha.controller;
 
+import static com.matha.util.UtilConstants.Docx;
+import static com.matha.util.UtilConstants.Excel;
 import static com.matha.util.UtilConstants.NEW_LINE;
+import static com.matha.util.UtilConstants.PDF;
 import static com.matha.util.UtilConstants.addBillFxmlFile;
 import static com.matha.util.UtilConstants.addPaymentFxmlFile;
 import static com.matha.util.UtilConstants.addReturnFxmlFile;
 import static com.matha.util.UtilConstants.createOrderFxmlFile;
-import static com.matha.util.UtilConstants.printSaleFxmlFile;
 import static com.matha.util.UtilConstants.salesInvoiceJrxml;
 import static com.matha.util.Utils.getStringVal;
+import static com.matha.util.Utils.printJasper;
 
+import java.io.File;
 import java.io.IOException;
 import java.io.InputStream;
 import java.time.LocalDate;
+import java.util.Arrays;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Optional;
@@ -39,11 +44,13 @@ import javafx.event.Event;
 import javafx.event.EventHandler;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
+import javafx.scene.Node;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
 import javafx.scene.control.Alert;
 import javafx.scene.control.Alert.AlertType;
 import javafx.scene.control.ButtonType;
+import javafx.scene.control.ChoiceBox;
 import javafx.scene.control.DatePicker;
 import javafx.scene.control.Label;
 import javafx.scene.control.SelectionMode;
@@ -52,14 +59,20 @@ import javafx.scene.control.TabPane;
 import javafx.scene.control.TableView;
 import javafx.scene.control.TextArea;
 import javafx.scene.control.TextField;
+import javafx.stage.FileChooser;
 import javafx.stage.Stage;
 import javafx.stage.WindowEvent;
 import net.sf.jasperreports.engine.JRException;
 import net.sf.jasperreports.engine.JasperCompileManager;
+import net.sf.jasperreports.engine.JasperExportManager;
 import net.sf.jasperreports.engine.JasperFillManager;
 import net.sf.jasperreports.engine.JasperPrint;
 import net.sf.jasperreports.engine.JasperReport;
 import net.sf.jasperreports.engine.data.JRBeanCollectionDataSource;
+import net.sf.jasperreports.engine.export.ooxml.JRDocxExporter;
+import net.sf.jasperreports.engine.export.ooxml.JRXlsxExporter;
+import net.sf.jasperreports.export.SimpleExporterInput;
+import net.sf.jasperreports.export.SimpleOutputStreamExporterOutput;
 
 @Component
 public class SchoolDetailsController
@@ -86,6 +99,9 @@ public class SchoolDetailsController
 	
 	@FXML
 	private TableView<Sales> billData;
+	
+    @FXML
+    private ChoiceBox<String> saveType;
 
 	@FXML
 	private Tab paymentTab;
@@ -127,6 +143,7 @@ public class SchoolDetailsController
 	private DatePicker toDate;  
 
 	private HashMap<String, Book> bookMap;
+	private JasperPrint jasperPrint;
 
 	@FXML
 	protected void initialize() throws IOException
@@ -149,6 +166,10 @@ public class SchoolDetailsController
 		this.address.setText(school.addressText());
 		this.txnData.setItems(FXCollections.observableList(schoolService.fetchOrderForSchool(school)));
 		this.loadBalance();
+		
+		List<String> saveTypes = Arrays.asList(PDF,Excel,Docx);
+		this.saveType.setItems(FXCollections.observableList(saveTypes));
+		this.saveType.getSelectionModel().selectFirst();
 	}
 
 	private void loadBalance()
@@ -314,14 +335,9 @@ public class SchoolDetailsController
 	{
 		try
 		{
-			FXMLLoader createOrderLoader = LoadUtils.loadFxml(this, printSaleFxmlFile);
-			Parent addOrderRoot = createOrderLoader.load();
-			PrintSalesBillController ctrl = createOrderLoader.getController();
 			Sales purchase = billData.getSelectionModel().getSelectedItem();
-			JasperPrint jasperPrint = prepareJasperPrint(purchase.getSalesTxn().getSchool(), purchase);
-			ctrl.initData(jasperPrint);
-			Scene addOrderScene = new Scene(addOrderRoot);
-			prepareAndShowStage(ev, addOrderScene);
+			jasperPrint = prepareJasperPrint(purchase.getSalesTxn().getSchool(), purchase);
+			printJasper(jasperPrint);
 		}
 		catch (Exception e)
 		{
@@ -552,6 +568,57 @@ public class SchoolDetailsController
 		transactionData.setItems(FXCollections.observableList(txnItems));
 	}
 
+	@FXML
+	public void exportAndSave(ActionEvent ev)
+	{
+		try
+		{
+
+			String selection = saveType.getSelectionModel().getSelectedItem(); 
+			String filterStr = "*.*";
+			if(selection.equals(PDF))
+			{
+				filterStr = "*.pdf";
+			}
+			else if(selection.equals(Excel))
+			{
+				filterStr = "*.xls";
+			}
+			FileChooser fileChooser = new FileChooser();
+			fileChooser.setTitle("Save File");
+            fileChooser.getExtensionFilters().addAll(
+                    new FileChooser.ExtensionFilter(selection, filterStr)
+                );
+            
+			File file = fileChooser.showSaveDialog(((Node) ev.getSource()).getScene().getWindow());
+			if(selection.equals(PDF))
+			{
+				JasperExportManager.exportReportToPdfFile(jasperPrint, file.getAbsolutePath());
+			}
+			else if(selection.equals(Excel))
+			{
+		        JRXlsxExporter exporter = new JRXlsxExporter();
+		        exporter.setExporterInput(new SimpleExporterInput(jasperPrint));		        
+				exporter.setExporterOutput(new SimpleOutputStreamExporterOutput(file));
+
+		        exporter.exportReport();
+			}
+			else if(selection.equals(Docx))
+			{
+				JRDocxExporter exporter = new JRDocxExporter();
+		        exporter.setExporterInput(new SimpleExporterInput(jasperPrint));		        
+				exporter.setExporterOutput(new SimpleOutputStreamExporterOutput(file));
+
+		        exporter.exportReport();
+			}
+			
+		}
+		catch (Throwable e)
+		{
+			e.printStackTrace();
+		}
+	}
+	
 	private void prepareAndShowStage(ActionEvent e, Scene childScene)
 	{
 		Stage stage = LoadUtils.loadChildStage(e, childScene);

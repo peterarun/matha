@@ -1,5 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
+<?import javafx.scene.effect.*?>
 <?import javafx.scene.control.cell.*?>
 <?import javafx.scene.text.*?>
 <?import java.lang.*?>
@@ -25,7 +26,10 @@
 			<children>
 			
 				<Label layoutX="556.0" layoutY="23.0" text="Invoice No: " />
-				<TextField fx:id="invoiceNum" editable="false" layoutX="556.0" layoutY="40.0" prefHeight="25.0" prefWidth="129.0" />
+				<TextField fx:id="invoiceNum" editable="false" focusTraversable="false" layoutX="556.0" layoutY="40.0" prefHeight="25.0" prefWidth="129.0">
+               <effect>
+                  <Blend />
+               </effect></TextField>
 
 				<Label layoutX="557.0" layoutY="73.0" text="Date" />
 				<DatePicker fx:id="billDate" layoutX="557.0" layoutY="90.0" prefHeight="25.0" prefWidth="129.0" />

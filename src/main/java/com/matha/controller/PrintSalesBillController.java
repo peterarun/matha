@@ -1,5 +1,6 @@
 package com.matha.controller;
 
+import static com.matha.util.Utils.*;
 import static com.matha.util.UtilConstants.Docx;
 import static com.matha.util.UtilConstants.Excel;
 import static com.matha.util.UtilConstants.PDF;
@@ -13,15 +14,12 @@ import java.util.List;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.stereotype.Component;
 
-import com.matha.util.Utils;
-
 import javafx.collections.FXCollections;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.scene.Node;
 import javafx.scene.Scene;
 import javafx.scene.control.ChoiceBox;
-import javafx.scene.control.Label;
 import javafx.scene.control.TextField;
 import javafx.scene.web.WebView;
 import javafx.stage.FileChooser;
@@ -47,7 +45,7 @@ public class PrintSalesBillController
 
     @FXML
     private WebView invoiceData;
-
+    
 	private JasperPrint print;
 
 	public void initData(JasperPrint printIn)
@@ -71,6 +69,9 @@ public class PrintSalesBillController
 
 			String content = StringUtils.toEncodedString(outputStream.toByteArray(), Charset.defaultCharset());
 			invoiceData.getEngine().loadContent(content);
+//			
+//			invoiceData2 = new WebView();
+//			invoiceData2.getEngine().loadContent(content);
 		}
 		catch (Exception e)
 		{
@@ -138,7 +139,7 @@ public class PrintSalesBillController
 			Scene parentScene = ((Node) ev.getSource()).getScene();
 			Window parentWindow = parentScene.getWindow();
 
-			Utils.print(invoiceData.getClip(), parentWindow, new Label());
+			printJasper(print);
 		}
 		catch (Exception e)
 		{

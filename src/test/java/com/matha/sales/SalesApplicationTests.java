@@ -5,6 +5,9 @@ import java.time.LocalDate;
 import java.util.HashMap;
 import java.util.List;
 
+import javax.print.PrintService;
+import javax.print.PrintServiceLookup;
+
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -154,4 +157,11 @@ public class SalesApplicationTests
 		}
 	}
 
+	@Test
+    public void findPrintService() {
+        PrintService[] printServices = PrintServiceLookup.lookupPrintServices(null, null);
+        for (PrintService printService : printServices) {
+            System.out.println(printService.getName()); 
+        }
+    }
 }
