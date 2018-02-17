@@ -13,7 +13,8 @@ import javax.persistence.EntityManager;
 import javax.persistence.PersistenceContext;
 import javax.transaction.Transactional;
 
-import org.apache.log4j.Logger;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
@@ -62,7 +63,7 @@ import com.matha.repository.StateRepository;
 public class SchoolService
 {
 
-	private static final Logger LOGGER = Logger.getLogger(SchoolService.class);
+	private static final Logger LOGGER = LogManager.getLogger(SchoolService.class);
 
 	@PersistenceContext
 	private EntityManager entityManager;

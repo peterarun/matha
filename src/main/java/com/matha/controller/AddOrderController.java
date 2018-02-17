@@ -4,8 +4,9 @@ import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
-import java.util.logging.Logger;
 
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 import org.controlsfx.control.textfield.TextFields;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
@@ -27,13 +28,14 @@ import javafx.scene.control.TextField;
 import javafx.stage.Stage;
 
 @Component
-public class AddOrderController {
+public class AddOrderController
+{
 
-	private static final Logger LOGGER = Logger.getLogger("AddOrderController");
+	private static final Logger LOGGER = LogManager.getLogger("AddOrderController");
 
 	private Map<String, Book> bookMap;
 	private School school;
-	
+
 	@FXML
 	private TextField orderNum;
 
@@ -48,13 +50,13 @@ public class AddOrderController {
 
 	@FXML
 	private DatePicker orderDate;
-	
+
 	@FXML
 	private DatePicker despatchDate;
 
 	@FXML
 	private TextField desLocation;
-	
+
 	@FXML
 	private TableView<OrderItem> addedBooks;
 
@@ -63,33 +65,30 @@ public class AddOrderController {
 
 	@Autowired
 	private SchoolService srvc;
-	
+
 	private Order order;
 	private List<OrderItem> origOrders;
 
-	public void initData(School school, Map<String, Book> bookMap, Order selectedOrder) {
-		System.out.println("initData");
+	public void initData(School school, Map<String, Book> bookMap, Order selectedOrder)
+	{
+		LOGGER.debug("Initializing Add Order");
 		this.school = school;
 		this.bookMap = bookMap;
 		this.order = selectedOrder;
-		if(this.order != null)
+		if (this.order != null)
 		{
 			this.origOrders = new ArrayList<>(this.order.getOrderItem());
-			System.out.println("this.origOrders .. " + this.origOrders.size());
 		}
-//		this.orderDate.setValue(LocalDate.now());
-
 		updateFormData(selectedOrder);
-		
+
 		List<String> items = new ArrayList<>(bookMap.keySet());
 		TextFields.bindAutoCompletion(bookText, items);
 
 	}
 
 	@FXML
-	void addBookData(ActionEvent e) {
-		System.out.println(bookText.getText());
-		LOGGER.info(addedBooks.getItems().toString());
+	void addBookData(ActionEvent e)
+	{
 		OrderItem item = new OrderItem();
 		item.setBook(bookMap.get(bookText.getText()));
 		item.setCount(Integer.parseInt(bookCount.getText()));
@@ -99,26 +98,28 @@ public class AddOrderController {
 	}
 
 	@FXML
-	void removeEntry(ActionEvent e) {
+	void removeEntry(ActionEvent e)
+	{
 		int sels = addedBooks.getSelectionModel().getSelectedIndex();
 		addedBooks.getItems().remove(sels);
 	}
 
 	@FXML
-	void saveData(ActionEvent e) {
+	void saveData(ActionEvent e)
+	{
 
 		Order item;
 		List<OrderItem> items = addedBooks.getItems();
-		if(this.order == null)
+		if (this.order == null)
 		{
 			item = new Order();
 		}
 		else
 		{
-			item = this.order;			
-			origOrders.removeAll(addedBooks.getItems());			
+			item = this.order;
+			origOrders.removeAll(addedBooks.getItems());
 		}
-				 
+
 		item.setOrderItem(items);
 		item.setSerialNo(orderNum.getText());
 		item.setSchool(school);
@@ -126,19 +127,21 @@ public class AddOrderController {
 		item.setOrderDate(dt);
 		item.setDeliveryDate(despatchDate.getValue());
 		item.setDesLocation(desLocation.getText());
-		
+
 		srvc.updateOrderData(order, items, origOrders);
 
 		((Stage) cancelBtn.getScene().getWindow()).close();
 	}
 
 	@FXML
-	void cancelOperation(ActionEvent e) {
+	void cancelOperation(ActionEvent e)
+	{
 		((Stage) cancelBtn.getScene().getWindow()).close();
 	}
 
-	public void updateFormData(Order selectedOrder) {
-		if(selectedOrder == null)
+	public void updateFormData(Order selectedOrder)
+	{
+		if (selectedOrder == null)
 		{
 			return;
 		}

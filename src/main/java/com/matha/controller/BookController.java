@@ -33,7 +33,8 @@ import javafx.stage.Stage;
 import javafx.stage.WindowEvent;
 
 @Component
-public class BookController {
+public class BookController
+{
 
 	@Autowired
 	SchoolService srvc;
@@ -47,34 +48,42 @@ public class BookController {
 	private String addBookFxmlFile = "/fxml/addBook.fxml";;
 
 	@FXML
-	protected void initialize() {
+	protected void initialize()
+	{
 		List<Book> bookList = srvc.fetchAllBooks();
 		tableView.setItems(FXCollections.observableList(bookList));
 	}
 
-	private void loadData(String text) {
-		System.out.println(text);
+	private void loadData(String text)
+	{
+
 		List<Book> bookList = new ArrayList<>();
-		if (StringUtils.isEmpty(text)) {
+		if (StringUtils.isEmpty(text))
+		{
 			bookList = srvc.fetchAllBooks();
-		} else {
+		}
+		else
+		{
 			bookList = srvc.fetchBooksByName(text);
 		}
-		System.out.println(bookList.size());
+
 		tableView.setItems(FXCollections.observableList(bookList));
 	}
 
 	@FXML
-	void nameSearch(KeyEvent event) {
+	void nameSearch(KeyEvent event)
+	{
 
 		String bookNameAll = this.bookName.getText() + event.getCharacter();
 		loadData(bookNameAll);
 	}
 
 	@FXML
-	void addBook(ActionEvent event) {
+	void addBook(ActionEvent event)
+	{
 
-		try {
+		try
+		{
 			String bookNameAll = this.bookName.getText();
 			FXMLLoader fxmlLoader = LoadUtils.loadFxml(this, addBookFxmlFile);
 			Parent root = fxmlLoader.load();
@@ -83,19 +92,23 @@ public class BookController {
 			Stage stage = LoadUtils.loadChildStage(event, scene);
 			stage.setOnHiding(new EventHandler<WindowEvent>() {
 				@Override
-				public void handle(final WindowEvent event) {
+				public void handle(final WindowEvent event)
+				{
 					loadData(bookNameAll);
 				}
 			});
 			stage.show();
-		} catch (IOException e) {
+		}
+		catch (IOException e)
+		{
 			e.printStackTrace();
 		}
 
 	}
 
 	@FXML
-	void addInventory(ActionEvent event) {
+	void addInventory(ActionEvent event)
+	{
 
 		Book selBook = this.tableView.getSelectionModel().getSelectedItem();
 		TextInputDialog dialog = new TextInputDialog("0");
@@ -105,31 +118,33 @@ public class BookController {
 
 		// Traditional way to get the response value.
 		Optional<String> result = dialog.showAndWait();
-		if (result.isPresent()){
-		    String qtyStr = result.get();
-		    if(StringUtils.isNotBlank(qtyStr))
-		    {
-		    	Integer addedVal = Integer.parseInt(qtyStr);
+		if (result.isPresent())
+		{
+			String qtyStr = result.get();
+			if (StringUtils.isNotBlank(qtyStr))
+			{
+				Integer addedVal = Integer.parseInt(qtyStr);
 				selBook.addInventory(addedVal);
 				srvc.saveBook(selBook);
-		    }
+			}
 		}
 		loadData(this.bookName.getText());
 
 	}
 
 	@FXML
-	void deleteBook(ActionEvent event) {
+	void deleteBook(ActionEvent event)
+	{
 
 		Book selectedOrder = tableView.getSelectionModel().getSelectedItem();
 		Alert alert = new Alert(AlertType.CONFIRMATION);
 		alert.setTitle("Delete Order Confirmation");
-		alert.setHeaderText("Are you sure you want to delete the book: " + selectedOrder.getName() + NEW_LINE
-				+ selectedOrder.getPublisherName());
+		alert.setHeaderText("Are you sure you want to delete the book: " + selectedOrder.getName() + NEW_LINE + selectedOrder.getPublisherName());
 		alert.setContentText("Click Ok to Delete");
 
 		Optional<ButtonType> result = alert.showAndWait();
-		if (result.get() == ButtonType.OK) {
+		if (result.get() == ButtonType.OK)
+		{
 			srvc.deleteBook(selectedOrder);
 			String bookNameAll = this.bookName.getText();
 			loadData(bookNameAll);
@@ -137,27 +152,32 @@ public class BookController {
 	}
 
 	@FXML
-	void editBook(ActionEvent event) {
+	void editBook(ActionEvent event)
+	{
 
-		try {
+		try
+		{
 			String bookNameAll = this.bookName.getText();
 			FXMLLoader fxmlLoader = LoadUtils.loadFxml(this, addBookFxmlFile);
 			Parent root = fxmlLoader.load();
-			
+
 			AddBookController ctrl = fxmlLoader.getController();
 			ctrl.initEdit(this.tableView.getSelectionModel().getSelectedItem());
-			
+
 			Scene scene = new Scene(root);
 
 			Stage stage = LoadUtils.loadChildStage(event, scene);
 			stage.setOnHiding(new EventHandler<WindowEvent>() {
 				@Override
-				public void handle(final WindowEvent event) {
+				public void handle(final WindowEvent event)
+				{
 					loadData(bookNameAll);
 				}
 			});
 			stage.show();
-		} catch (IOException e) {
+		}
+		catch (IOException e)
+		{
 			e.printStackTrace();
 		}
 

@@ -19,13 +19,10 @@ import javafx.collections.FXCollections;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.scene.Node;
-import javafx.scene.Scene;
 import javafx.scene.control.ChoiceBox;
-import javafx.scene.control.Label;
 import javafx.scene.control.TextField;
 import javafx.scene.web.WebView;
 import javafx.stage.FileChooser;
-import javafx.stage.Window;
 import net.sf.jasperreports.engine.JasperExportManager;
 import net.sf.jasperreports.engine.JasperPrint;
 import net.sf.jasperreports.engine.export.HtmlExporter;
@@ -135,10 +132,7 @@ public class PrintPurchaseBillController
 	{
 		try
 		{
-			Scene parentScene = ((Node) ev.getSource()).getScene();
-			Window parentWindow = parentScene.getWindow();
-
-			Utils.print(invoiceData, parentWindow, new Label());
+			Utils.printJasper(print);
 		}
 		catch (Exception e)
 		{
