@@ -15,7 +15,8 @@ public interface SalesRepository extends JpaRepository<Sales, String> {
 	@Query(value = "SELECT NEXT VALUE FOR SalesSeq", nativeQuery = true)
 	public Long fetchNextSeqVal();
 	
-	@Query(value = "SELECT NEXT VALUE FOR SalesSerialSeq", nativeQuery = true)
+//	@Query(value = "SELECT NEXT VALUE FOR SalesSerialSeq", nativeQuery = true)
+	@Query(value = "select max(invoiceNo) + 1 from Sales")
 	public Integer fetchNextSerialSeqVal();
 
 	@Query("select sales from Sales sales where sales.salesTxn.school = ?1")

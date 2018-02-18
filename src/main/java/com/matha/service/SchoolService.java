@@ -22,6 +22,8 @@ import org.springframework.data.domain.Sort;
 import org.springframework.data.domain.Sort.Direction;
 import org.springframework.stereotype.Service;
 
+import com.matha.domain.Account;
+import com.matha.domain.Address;
 import com.matha.domain.Book;
 import com.matha.domain.BookCategory;
 import com.matha.domain.CashBook;
@@ -40,6 +42,8 @@ import com.matha.domain.School;
 import com.matha.domain.SchoolPayment;
 import com.matha.domain.SchoolReturn;
 import com.matha.domain.State;
+import com.matha.repository.AccountsRepository;
+import com.matha.repository.AddressesRepository;
 import com.matha.repository.BookRepository;
 import com.matha.repository.CashBookRepository;
 import com.matha.repository.CashHeadRepository;
@@ -121,6 +125,12 @@ public class SchoolService
 
 	@Autowired
 	private PurchaseReturnRepository purchaseReturnRepository;
+
+	@Autowired
+	private AddressesRepository addressRepository;
+
+	@Autowired
+	private AccountsRepository accountRepository;
 
 	public List<Publisher> fetchAllPublishers()
 	{
@@ -271,7 +281,7 @@ public class SchoolService
 
 	private PurchaseTransaction updateBalance(PurchaseTransaction txn)
 	{
-		if(txn == null)
+		if (txn == null)
 		{
 			LOGGER.info("Null PTxn passed in for updating balance");
 			return txn;
@@ -300,38 +310,40 @@ public class SchoolService
 		return txn;
 	}
 
-//	private PurchaseTransaction saveNewPurchaseTxnOld(PurchaseTransaction txn)
-//	{
-//		PurchaseTransaction firstTxn = purchaseTxnRepository.findByPrevTxnIsNull();
-//		PurchaseTransaction lastTxn = purchaseTxnRepository.findByNextTxnIsNull();
-//		LocalDate txnDate = txn.getTxnDate();
-//		if (lastTxn == null || txnDate.isAfter(lastTxn.getTxnDate()) || txnDate.isEqual(lastTxn.getTxnDate()))
-//		{
-//			txn = saveFreshTransaction(txn, firstTxn, lastTxn);
-//			return txn;
-//		}
-//
-//		PurchaseTransaction currTxn = lastTxn;
-//		while (currTxn != null)
-//		{
-//			LocalDate currTxnDate = currTxn.getTxnDate();
-//			if (txnDate.isAfter(currTxnDate) || txnDate.isEqual(currTxnDate))
-//			{
-//				txn = saveNewTransactionInBetween(txn, currTxn, currTxn.getNextTxn(), firstTxn, lastTxn);
-//				updateBalance(txn);
-//				break;
-//			}
-//			else if (currTxn.getId().equals(firstTxn.getId()))
-//			{
-//				txn = saveAsFirstTxn(txn, currTxn, firstTxn, lastTxn);
-//				updateBalance(txn);
-//				break;
-//			}
-//			currTxn = currTxn.getPrevTxn();
-//		}
-//
-//		return txn;
-//	}
+	// private PurchaseTransaction saveNewPurchaseTxnOld(PurchaseTransaction txn)
+	// {
+	// PurchaseTransaction firstTxn = purchaseTxnRepository.findByPrevTxnIsNull();
+	// PurchaseTransaction lastTxn = purchaseTxnRepository.findByNextTxnIsNull();
+	// LocalDate txnDate = txn.getTxnDate();
+	// if (lastTxn == null || txnDate.isAfter(lastTxn.getTxnDate()) ||
+	// txnDate.isEqual(lastTxn.getTxnDate()))
+	// {
+	// txn = saveFreshTransaction(txn, firstTxn, lastTxn);
+	// return txn;
+	// }
+	//
+	// PurchaseTransaction currTxn = lastTxn;
+	// while (currTxn != null)
+	// {
+	// LocalDate currTxnDate = currTxn.getTxnDate();
+	// if (txnDate.isAfter(currTxnDate) || txnDate.isEqual(currTxnDate))
+	// {
+	// txn = saveNewTransactionInBetween(txn, currTxn, currTxn.getNextTxn(),
+	// firstTxn, lastTxn);
+	// updateBalance(txn);
+	// break;
+	// }
+	// else if (currTxn.getId().equals(firstTxn.getId()))
+	// {
+	// txn = saveAsFirstTxn(txn, currTxn, firstTxn, lastTxn);
+	// updateBalance(txn);
+	// break;
+	// }
+	// currTxn = currTxn.getPrevTxn();
+	// }
+	//
+	// return txn;
+	// }
 
 	private PurchaseTransaction saveNewPurchaseTxn(PurchaseTransaction txn)
 	{
@@ -419,60 +431,63 @@ public class SchoolService
 		return txn;
 	}
 
-//	private PurchaseTransaction updatePurchaseTxnOld(PurchaseTransaction txn)
-//	{
-//		PurchaseTransaction origTxn = purchaseTxnRepository.findOne(txn.getId());
-//		if (origTxn.getTxnDate().equals(txn.getTxnDate()))
-//		{
-//			LOGGER.info("No Date Update: " + txn);
-//			txn = purchaseTxnRepository.save(txn);
-//			updateBalance(txn);
-//			return txn;
-//		}
-//		else if (origTxn.getPrevTxn() == null && origTxn.getNextTxn() == null)
-//		{
-//			LOGGER.info("Update to the one and only txn: " + txn);
-//			txn = purchaseTxnRepository.save(txn);
-//			return txn;
-//		}
-//
-//		PurchaseTransaction updateFromTxn = null;
-//		PurchaseTransaction firstTxn = purchaseTxnRepository.findByPrevTxnIsNull();
-//		PurchaseTransaction lastTxn = purchaseTxnRepository.findByNextTxnIsNull();
-//
-//		LocalDate txnDate = txn.getTxnDate();
-//		PurchaseTransaction currTxn = lastTxn;
-//		while (currTxn != null)
-//		{
-//			LocalDate currTxnDate = currTxn.getTxnDate();
-//			if (txnDate.isAfter(currTxnDate) || txnDate.isEqual(currTxnDate))
-//			{
-//				updateFromTxn = origTxn.getNextTxn();
-//				if (currTxn.getId().equals(lastTxn.getId()))
-//				{
-//					txn = moveAsLastTxn(txn, origTxn.getPrevTxn(), origTxn.getNextTxn(), firstTxn, lastTxn);
-//					updateBalance(updateFromTxn);
-//					break;
-//				}
-//
-//				if (origTxn.getNextTxn().getTxnDate().isAfter(currTxnDate))
-//				{
-//					updateFromTxn = currTxn;
-//				}
-//				txn = moveInBetween(txn, origTxn.getPrevTxn(), origTxn.getNextTxn(), firstTxn, lastTxn, currTxn, currTxn.getNextTxn());
-//				updateBalance(updateFromTxn);
-//				break;
-//			}
-//			else if (currTxn.getId().equals(firstTxn.getId()))
-//			{
-//				txn = moveAsFirstTxn(txn, origTxn.getPrevTxn(), origTxn.getNextTxn(), firstTxn, lastTxn);
-//				updateBalance(txn);
-//				break;
-//			}
-//			currTxn = currTxn.getPrevTxn();
-//		}
-//		return txn;
-//	}
+	// private PurchaseTransaction updatePurchaseTxnOld(PurchaseTransaction txn)
+	// {
+	// PurchaseTransaction origTxn = purchaseTxnRepository.findOne(txn.getId());
+	// if (origTxn.getTxnDate().equals(txn.getTxnDate()))
+	// {
+	// LOGGER.info("No Date Update: " + txn);
+	// txn = purchaseTxnRepository.save(txn);
+	// updateBalance(txn);
+	// return txn;
+	// }
+	// else if (origTxn.getPrevTxn() == null && origTxn.getNextTxn() == null)
+	// {
+	// LOGGER.info("Update to the one and only txn: " + txn);
+	// txn = purchaseTxnRepository.save(txn);
+	// return txn;
+	// }
+	//
+	// PurchaseTransaction updateFromTxn = null;
+	// PurchaseTransaction firstTxn = purchaseTxnRepository.findByPrevTxnIsNull();
+	// PurchaseTransaction lastTxn = purchaseTxnRepository.findByNextTxnIsNull();
+	//
+	// LocalDate txnDate = txn.getTxnDate();
+	// PurchaseTransaction currTxn = lastTxn;
+	// while (currTxn != null)
+	// {
+	// LocalDate currTxnDate = currTxn.getTxnDate();
+	// if (txnDate.isAfter(currTxnDate) || txnDate.isEqual(currTxnDate))
+	// {
+	// updateFromTxn = origTxn.getNextTxn();
+	// if (currTxn.getId().equals(lastTxn.getId()))
+	// {
+	// txn = moveAsLastTxn(txn, origTxn.getPrevTxn(), origTxn.getNextTxn(),
+	// firstTxn, lastTxn);
+	// updateBalance(updateFromTxn);
+	// break;
+	// }
+	//
+	// if (origTxn.getNextTxn().getTxnDate().isAfter(currTxnDate))
+	// {
+	// updateFromTxn = currTxn;
+	// }
+	// txn = moveInBetween(txn, origTxn.getPrevTxn(), origTxn.getNextTxn(),
+	// firstTxn, lastTxn, currTxn, currTxn.getNextTxn());
+	// updateBalance(updateFromTxn);
+	// break;
+	// }
+	// else if (currTxn.getId().equals(firstTxn.getId()))
+	// {
+	// txn = moveAsFirstTxn(txn, origTxn.getPrevTxn(), origTxn.getNextTxn(),
+	// firstTxn, lastTxn);
+	// updateBalance(txn);
+	// break;
+	// }
+	// currTxn = currTxn.getPrevTxn();
+	// }
+	// return txn;
+	// }
 
 	private PurchaseTransaction updatePurchaseTxn(PurchaseTransaction txn)
 	{
@@ -573,7 +588,7 @@ public class SchoolService
 		PurchaseTransaction prevTxn = txn.getPrevTxn();
 		PurchaseTransaction nextTxn = txn.getNextTxn();
 		PurchaseTransaction updateFromTxn = null;
-		
+
 		purchaseTxnRepository.delete(txn);
 		purchaseTxnRepository.flush();
 		if (prevTxn != null)
@@ -611,13 +626,13 @@ public class SchoolService
 		if (txn.getId() == null)
 		{
 			txn = saveNewPurchaseTxn(txn);
-			
+
 			pur.setSalesTxn(txn);
 			pur = purchaseRepoitory.save(pur);
 
 			txn.setPurchase(pur);
 			purchaseTxnRepository.save(txn);
-			
+
 			for (OrderItem orderIn : orderItems)
 			{
 				orderIn.setPurchase(pur);
@@ -625,22 +640,22 @@ public class SchoolService
 			orderItemRepository.save(orderItems);
 			Set<String> bookSet = orderItems.stream().map(OrderItem::getBook).map(Book::getBookNum).collect(Collectors.toSet());
 			updateBookInventory(true, orderItemsOrig, bookSet, new ArrayList<>(orderItems), new ArrayList<>(), new ArrayList<>());
-			
+
 		}
 		else
 		{
 			txn = updatePurchaseTxn(txn);
-			
+
 			pur.setSalesTxn(txn);
 			pur = purchaseRepoitory.save(pur);
 
 			txn.setPurchase(pur);
 			purchaseTxnRepository.save(txn);
-			
-			List<Integer> orderIds = pur.getOrderItems().stream().map(OrderItem::getId).collect(Collectors.toList());			
+
+			List<Integer> orderIds = pur.getOrderItems().stream().map(OrderItem::getId).collect(Collectors.toList());
 			orderItemsOrig.addAll(orderItemRepository.findAll(orderIds));
 
-			saveOrderItemUpdates(orderItemsOrig, orderItems, pur);	
+			saveOrderItemUpdates(orderItemsOrig, orderItems, pur);
 		}
 	}
 
@@ -653,7 +668,7 @@ public class SchoolService
 
 		if (ordersOrig != null && !ordersOrig.isEmpty())
 		{
-			removedOrders.addAll(ordersOrig);			
+			removedOrders.addAll(ordersOrig);
 			if (ordersIn != null && !ordersIn.isEmpty())
 			{
 				affectedOrders.addAll(ordersIn);
@@ -682,16 +697,16 @@ public class SchoolService
 			orderIn.setPurchase(pur);
 		}
 		orderItemRepository.save(addedOrders);
-				
+
 		for (OrderItem orderIn : removedOrders)
 		{
-			orderIn.setPurchase(null);			
+			orderIn.setPurchase(null);
 		}
 		orderItemRepository.save(removedOrders);
 		orderItemRepository.save(affectedOrders);
 		updateBookInventory(true, ordersOrig, bookNums, addedOrders, removedOrders, affectedOrders);
 	}
-	
+
 	public List<Purchase> fetchPurchasesForPublisher(Publisher pub)
 	{
 		return purchaseRepoitory.findAllByPublisher(pub);
@@ -854,7 +869,7 @@ public class SchoolService
 
 	private SalesTransaction updateBalance(SalesTransaction txn)
 	{
-		if(txn == null)
+		if (txn == null)
 		{
 			LOGGER.info("Null STxn passed in for updating balance");
 			return txn;
@@ -909,7 +924,7 @@ public class SchoolService
 			txn.setBalance(txn.getNetForBalance());
 			txn.setSale(null);
 			txn.setSalesReturn(null);
-			txn.setPayment(null);			
+			txn.setPayment(null);
 			txn = salesTxnRepository.save(txn);
 		}
 		return txn;
@@ -931,9 +946,9 @@ public class SchoolService
 		salesTxnRepository.flush();
 		if (prevTxn != null)
 		{
-			updateFromTxn = prevTxn; 
+			updateFromTxn = prevTxn;
 			prevTxn.setNextTxn(nextTxn);
-			prevTxn = salesTxnRepository.save(prevTxn);			
+			prevTxn = salesTxnRepository.save(prevTxn);
 		}
 		else
 		{
@@ -948,27 +963,29 @@ public class SchoolService
 		updateBalance(updateFromTxn);
 	}
 
+	public Integer fetchNextSalesInvoiceNum()
+	{
+		return salesRepository.fetchNextSerialSeqVal();
+	}
+	
 	@Transactional
 	public void saveSales(Sales pur, Set<OrderItem> ordersIn, SalesTransaction txn)
 	{
-		Integer nextSalesId = salesRepository.fetchNextSerialSeqVal();
-		
 		// correct
 		txn.setSale(pur);
-		List<OrderItem>  ordersOrig = new ArrayList<>();
+		List<OrderItem> ordersOrig = new ArrayList<>();
 		if (txn.getId() == null)
 		{
 			txn = saveNewSalesTxn(txn);
-			
-			pur.setSalesTxn(txn);			
-			pur.setInvoiceNo(nextSalesId);
+
+			pur.setSalesTxn(txn);
 			pur = salesRepository.save(pur);
 
 			txn.setSale(pur);
 			salesTxnRepository.save(txn);
-			
+
 			for (OrderItem orderIn : ordersIn)
-			{			
+			{
 				orderIn.setSale(pur);
 			}
 			orderItemRepository.save(ordersIn);
@@ -978,22 +995,20 @@ public class SchoolService
 		else
 		{
 			txn = updateSalesTxn(txn);
-			
+
 			pur.setSalesTxn(txn);
-			pur.setInvoiceNo(nextSalesId);
 			pur = salesRepository.save(pur);
 
 			txn.setSale(pur);
 			salesTxnRepository.save(txn);
-			
+
 			List<Integer> orderItemIds = ordersIn.stream().map(OrderItem::getId).collect(Collectors.toList());
 			ordersOrig = orderItemRepository.findAll(orderItemIds);
 			saveOrderItemUpdates(ordersOrig, ordersIn, pur);
 		}
-		
+
 	}
 
-	
 	private void saveOrderItemUpdates(List<OrderItem> ordersOrig, Set<OrderItem> ordersIn, Sales pur)
 	{
 		List<OrderItem> removedOrders = new ArrayList<>();
@@ -1003,7 +1018,7 @@ public class SchoolService
 
 		if (ordersOrig != null && !ordersOrig.isEmpty())
 		{
-			removedOrders.addAll(ordersOrig);			
+			removedOrders.addAll(ordersOrig);
 			if (ordersIn != null && !ordersIn.isEmpty())
 			{
 				affectedOrders.addAll(ordersIn);
@@ -1032,10 +1047,10 @@ public class SchoolService
 			orderIn.setSale(pur);
 		}
 		orderItemRepository.save(addedOrders);
-				
+
 		for (OrderItem orderIn : removedOrders)
 		{
-			orderIn.setSale(null);			
+			orderIn.setSale(null);
 		}
 		orderItemRepository.save(removedOrders);
 		orderItemRepository.save(affectedOrders);
@@ -1043,17 +1058,17 @@ public class SchoolService
 	}
 
 	private void updateBookInventory(boolean add, List<OrderItem> ordersOrig, Set<String> bookNums, List<OrderItem> addedOrders, List<OrderItem> removedOrders, List<OrderItem> affectedOrders)
-	{	
+	{
 		int addFactor = add ? 1 : -1;
-		
+
 		Map<String, Integer> bookCounts = new HashMap<>();
 		for (OrderItem orderItem : addedOrders)
 		{
-			if(bookCounts.containsKey(orderItem.getBook().getBookNum()))
+			if (bookCounts.containsKey(orderItem.getBook().getBookNum()))
 			{
 				int bookCnt = bookCounts.get(orderItem.getBook().getBookNum());
 				int chgCnt = add ? orderItem.getFullFilledCnt() : orderItem.getSoldCnt();
-				bookCounts.put(orderItem.getBook().getBookNum(), bookCnt + chgCnt);	
+				bookCounts.put(orderItem.getBook().getBookNum(), bookCnt + chgCnt);
 			}
 			else
 			{
@@ -1064,11 +1079,11 @@ public class SchoolService
 
 		for (OrderItem orderItem : removedOrders)
 		{
-			if(bookCounts.containsKey(orderItem.getBook().getBookNum()))
+			if (bookCounts.containsKey(orderItem.getBook().getBookNum()))
 			{
 				int bookCnt = bookCounts.get(orderItem.getBook().getBookNum());
 				int chgCnt = add ? orderItem.getFullFilledCnt() : orderItem.getSoldCnt();
-				bookCounts.put(orderItem.getBook().getBookNum(), bookCnt - chgCnt);	
+				bookCounts.put(orderItem.getBook().getBookNum(), bookCnt - chgCnt);
 			}
 			else
 			{
@@ -1076,16 +1091,16 @@ public class SchoolService
 				bookCounts.put(orderItem.getBook().getBookNum(), -chgCnt);
 			}
 		}
-		
+
 		for (OrderItem orderItem : affectedOrders)
 		{
 			int origItemIdx = ordersOrig.indexOf(orderItem);
-			if(origItemIdx > -1)
+			if (origItemIdx > -1)
 			{
-				OrderItem origItem =  ordersOrig.get(origItemIdx);
-				
+				OrderItem origItem = ordersOrig.get(origItemIdx);
+
 				int diff = 0;
-				if(add)
+				if (add)
 				{
 					diff = origItem.getFullFilledCnt() - orderItem.getFullFilledCnt();
 				}
@@ -1093,10 +1108,10 @@ public class SchoolService
 				{
 					diff = origItem.getSoldCnt() - orderItem.getSoldCnt();
 				}
-				if(bookCounts.containsKey(orderItem.getBook().getBookNum()))
+				if (bookCounts.containsKey(orderItem.getBook().getBookNum()))
 				{
 					int bookCnt = bookCounts.get(orderItem.getBook().getBookNum());
-					bookCounts.put(orderItem.getBook().getBookNum(), bookCnt + diff);	
+					bookCounts.put(orderItem.getBook().getBookNum(), bookCnt + diff);
 				}
 				else
 				{
@@ -1104,16 +1119,16 @@ public class SchoolService
 				}
 			}
 		}
-		
+
 		List<Book> origBooks = bookRepository.findAll(bookNums);
 		for (Book book : origBooks)
 		{
-			if(bookCounts.containsKey(book.getBookNum()))
+			if (bookCounts.containsKey(book.getBookNum()))
 			{
 				int diff = bookCounts.get(book.getBookNum());
 				book.addInventory(addFactor * diff);
 			}
-		}		
+		}
 		bookRepository.save(origBooks);
 	}
 
@@ -1129,7 +1144,7 @@ public class SchoolService
 		for (OrderItem order : orders)
 		{
 			order.setSale(null);
-		}		
+		}
 		orderItemRepository.save(orders);
 		deleteSalesTxn(selectedSale.getSalesTxn());
 		selectedSale.setSalesTxn(null);
@@ -1141,7 +1156,7 @@ public class SchoolService
 	{
 		SalesTransaction txn = sPayment.getSalesTxn();
 		txn.setPayment(sPayment);
-		
+
 		if (txn.getId() == null)
 		{
 			txn = saveNewSalesTxn(txn);
@@ -1149,7 +1164,7 @@ public class SchoolService
 		else
 		{
 			txn = updateSalesTxn(txn);
-		}		
+		}
 
 		sPayment.setSalesTxn(txn);
 		schoolPayRepository.save(sPayment);
@@ -1180,7 +1195,7 @@ public class SchoolService
 	public void saveSchoolReturn(SchoolReturn returnIn, SalesTransaction txn, Set<OrderItem> orderItemsIn)
 	{
 		txn.setSalesReturn(returnIn);
-		
+
 		if (txn.getId() == null)
 		{
 			txn = saveNewSalesTxn(txn);
@@ -1188,7 +1203,7 @@ public class SchoolService
 		else
 		{
 			txn = updateSalesTxn(txn);
-		}		
+		}
 
 		returnIn.setSalesTxn(txn);
 		returnIn = schoolReturnRepository.save(returnIn);
@@ -1205,7 +1220,7 @@ public class SchoolService
 	public Double fetchBalance(School school)
 	{
 		SalesTransaction sTrans = salesTxnRepository.findBySchoolAndNextTxnIsNull(school);
-		if(sTrans == null)
+		if (sTrans == null)
 		{
 			return 0.0;
 		}
@@ -1228,6 +1243,16 @@ public class SchoolService
 	public List<Book> fetchBooksForPublisher(Publisher publisher)
 	{
 		return bookRepository.findAllByPublisher(publisher);
+	}
+
+	public Address fetchAddress(String name)
+	{
+		return addressRepository.findOne(name);
+	}
+
+	public Account fetchAccount(String name)
+	{
+		return accountRepository.findOne(name);
 	}
 
 }

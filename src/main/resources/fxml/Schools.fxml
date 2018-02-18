@@ -28,7 +28,7 @@
 				<ChoiceBox fx:id="district" layoutX="291.0" layoutY="110.0" onAction="#changedDistrict" prefWidth="150.0" />
 				<Button layoutX="676.0" layoutY="52.0" mnemonicParsing="false" onAction="#addSchool" prefHeight="83.0" prefWidth="85.0" text="Add School" />
 				<Button layoutX="563.0" layoutY="81.0" mnemonicParsing="false" onAction="#openSchool" prefHeight="25.0" prefWidth="90.0" text="Open" />
-				<Button layoutX="563.0" layoutY="110.0" mnemonicParsing="false" onAction="#deleteSchool" style="-fx-background-color: lightcoral;" text="Delete School" />
+				<Button layoutX="563.0" layoutY="110.0" mnemonicParsing="false" onAction="#deleteSchool" text="Delete School" />
 				<Label layoutX="244.0" layoutY="85.0" text="State" />
 				<ChoiceBox fx:id="states" layoutX="291.0" layoutY="81.0" onAction="#changedState" prefWidth="150.0" />
 				<Button layoutX="563.0" layoutY="52.0" mnemonicParsing="false" onAction="#editSchool" prefHeight="25.0" prefWidth="90.0" text="Edit School" />

@@ -10,6 +10,10 @@ public interface UtilConstants {
 	public static final String[] discTypes = { "Rupees", "Percentage" };
 	public static final String RUPEE_SIGN = "₹";
 	public static final String PERCENT_SIGN = "%";
+	public static final String COMMA_SIGN = ",";
+	public static final String HYPHEN_SPC_SIGN = " - ";
+	public static final String SPACE_SIGN = " ";
+	public static final String SEMI_COLON_SIGN = ";";
 	public static final String NEW_LINE = System.getProperty("line.separator");
 	public static final String PDF = "PDF";
 	public static final String Excel = "Excel";	

@@ -1,22 +1,22 @@
 package com.matha.controller;
 
-import static com.matha.util.UtilConstants.Docx;
-import static com.matha.util.UtilConstants.Excel;
+import static com.matha.util.UtilConstants.COMMA_SIGN;
+import static com.matha.util.UtilConstants.HYPHEN_SPC_SIGN;
 import static com.matha.util.UtilConstants.NEW_LINE;
-import static com.matha.util.UtilConstants.PDF;
+import static com.matha.util.UtilConstants.SEMI_COLON_SIGN;
+import static com.matha.util.UtilConstants.SPACE_SIGN;
 import static com.matha.util.UtilConstants.addBillFxmlFile;
 import static com.matha.util.UtilConstants.addPaymentFxmlFile;
 import static com.matha.util.UtilConstants.addReturnFxmlFile;
 import static com.matha.util.UtilConstants.createOrderFxmlFile;
+import static com.matha.util.UtilConstants.printSaleFxmlFile;
 import static com.matha.util.UtilConstants.salesInvoiceJrxml;
+import static com.matha.util.Utils.convertDouble;
 import static com.matha.util.Utils.getStringVal;
-import static com.matha.util.Utils.printJasper;
 
-import java.io.File;
 import java.io.IOException;
 import java.io.InputStream;
 import java.time.LocalDate;
-import java.util.Arrays;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Optional;
@@ -26,6 +26,8 @@ import java.util.stream.Collectors;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
+import com.matha.domain.Account;
+import com.matha.domain.Address;
 import com.matha.domain.Book;
 import com.matha.domain.Order;
 import com.matha.domain.OrderItem;
@@ -37,6 +39,7 @@ import com.matha.domain.SchoolReturn;
 import com.matha.service.SchoolService;
 import com.matha.util.LoadUtils;
 
+import javafx.beans.binding.Bindings;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.event.ActionEvent;
@@ -44,35 +47,28 @@ import javafx.event.Event;
 import javafx.event.EventHandler;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
-import javafx.scene.Node;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
 import javafx.scene.control.Alert;
 import javafx.scene.control.Alert.AlertType;
 import javafx.scene.control.ButtonType;
-import javafx.scene.control.ChoiceBox;
 import javafx.scene.control.DatePicker;
 import javafx.scene.control.Label;
 import javafx.scene.control.SelectionMode;
 import javafx.scene.control.Tab;
 import javafx.scene.control.TabPane;
+import javafx.scene.control.TableColumn;
 import javafx.scene.control.TableView;
 import javafx.scene.control.TextArea;
 import javafx.scene.control.TextField;
-import javafx.stage.FileChooser;
 import javafx.stage.Stage;
 import javafx.stage.WindowEvent;
 import net.sf.jasperreports.engine.JRException;
 import net.sf.jasperreports.engine.JasperCompileManager;
-import net.sf.jasperreports.engine.JasperExportManager;
 import net.sf.jasperreports.engine.JasperFillManager;
 import net.sf.jasperreports.engine.JasperPrint;
 import net.sf.jasperreports.engine.JasperReport;
 import net.sf.jasperreports.engine.data.JRBeanCollectionDataSource;
-import net.sf.jasperreports.engine.export.ooxml.JRDocxExporter;
-import net.sf.jasperreports.engine.export.ooxml.JRXlsxExporter;
-import net.sf.jasperreports.export.SimpleExporterInput;
-import net.sf.jasperreports.export.SimpleOutputStreamExporterOutput;
 
 @Component
 public class SchoolDetailsController
@@ -100,8 +96,8 @@ public class SchoolDetailsController
 	@FXML
 	private TableView<Sales> billData;
 	
-    @FXML
-    private ChoiceBox<String> saveType;
+	@FXML
+	private TableColumn<Sales, String> amountColumn;
 
 	@FXML
 	private Tab paymentTab;
@@ -143,7 +139,7 @@ public class SchoolDetailsController
 	private DatePicker toDate;  
 
 	private HashMap<String, Book> bookMap;
-	private JasperPrint jasperPrint;
+//	private JasperPrint jasperPrint;
 
 	@FXML
 	protected void initialize() throws IOException
@@ -157,6 +153,9 @@ public class SchoolDetailsController
 		}
 
 		txnData.getSelectionModel().setSelectionMode(SelectionMode.MULTIPLE);
+		this.amountColumn.setCellValueFactory(cellData -> 
+			Bindings.format("%.2f", cellData.getValue().getNetAmount())
+	);
 	}
 
 	public void initData(School school)
@@ -167,9 +166,9 @@ public class SchoolDetailsController
 		this.txnData.setItems(FXCollections.observableList(schoolService.fetchOrderForSchool(school)));
 		this.loadBalance();
 		
-		List<String> saveTypes = Arrays.asList(PDF,Excel,Docx);
-		this.saveType.setItems(FXCollections.observableList(saveTypes));
-		this.saveType.getSelectionModel().selectFirst();
+//		List<String> saveTypes = Arrays.asList(PDF,Excel,Docx);
+//		this.saveType.setItems(FXCollections.observableList(saveTypes));
+//		this.saveType.getSelectionModel().selectFirst();
 	}
 
 	private void loadBalance()
@@ -335,14 +334,19 @@ public class SchoolDetailsController
 	{
 		try
 		{
+			FXMLLoader createOrderLoader = LoadUtils.loadFxml(this, printSaleFxmlFile);
+			Parent addOrderRoot = createOrderLoader.load();
+			PrintSalesBillController ctrl = createOrderLoader.getController();
 			Sales purchase = billData.getSelectionModel().getSelectedItem();
-			jasperPrint = prepareJasperPrint(purchase.getSalesTxn().getSchool(), purchase);
-			printJasper(jasperPrint);
+			JasperPrint jasperPrint = prepareJasperPrint(purchase.getSalesTxn().getSchool(), purchase);
+			ctrl.initData(jasperPrint);
+			Scene addOrderScene = new Scene(addOrderRoot);
+			prepareAndShowStage(ev, addOrderScene);
 		}
 		catch (Exception e)
 		{
 			e.printStackTrace();
-		}		
+		}	
 	}
 	
 	private JasperPrint prepareJasperPrint(School sch, Sales sale)
@@ -353,6 +357,36 @@ public class SchoolDetailsController
 		HashMap<String, Object> hm = new HashMap<>();
 		try
 		{			
+			Address salesAddr = schoolService.fetchAddress("Sales");
+			StringBuilder strBuild = new StringBuilder();
+			strBuild.append(salesAddr.getAddress1());
+			strBuild.append(NEW_LINE); 
+			strBuild.append(salesAddr.getAddress2());
+			strBuild.append(COMMA_SIGN); 
+			strBuild.append(salesAddr.getAddress3());
+			strBuild.append(HYPHEN_SPC_SIGN);
+			strBuild.append(salesAddr.getPin());
+			strBuild.append(NEW_LINE);
+			strBuild.append("Ph: ");
+			strBuild.append(salesAddr.getPhone1());
+			strBuild.append(SPACE_SIGN);
+			strBuild.append("Mob: ");
+			strBuild.append(salesAddr.getPhone2());
+			
+			Account acct = schoolService.fetchAccount("Matha Agencies");
+			StringBuilder strBuildAcct = new StringBuilder(acct.getName());
+			strBuildAcct.append(COMMA_SIGN);
+			strBuildAcct.append(" State Bank of India");
+			strBuildAcct.append(COMMA_SIGN);
+			strBuildAcct.append(" A/C No: ");			
+			strBuildAcct.append(acct.getAccountNum());
+			strBuildAcct.append(SEMI_COLON_SIGN);
+			strBuildAcct.append(" IFSC");
+			strBuildAcct.append(HYPHEN_SPC_SIGN);
+			strBuildAcct.append(acct.getIfsc());
+			strBuildAcct.append(COMMA_SIGN);
+			strBuildAcct.append(" Vazhakulam Branch");
+			
 			Set<OrderItem> tableData = sale.getOrderItems();
 			SalesTransaction txn = sale.getSalesTxn();
 			Set<String> orderIdSet = tableData.stream().map(OrderItem::getOrder).map(Order::getSerialNo).collect(Collectors.toSet());
@@ -361,17 +395,17 @@ public class SchoolDetailsController
 			Double discAmt = sale.getDiscAmt();
 			if(discAmt != null)
 			{
-				discAmt = sale.getDiscType() ? subTotal * discAmt /100 : subTotal - discAmt;  
+				discAmt = sale.getDiscType() ? subTotal * discAmt /100 : discAmt;  
 			}
 			 			
 			hm.put("partyName", sch.getName());
 			hm.put("partyAddress", sch.addressText());
 			hm.put("agencyName", "MATHA DISTRIBUTORS.");
-			hm.put("agencyDetails", "No.88, 8th Street, A.K.Swamy Nagar, " + NEW_LINE + "Kilpauk, " + NEW_LINE + "Chennai - 600010");
+			hm.put("agencyDetails", strBuild.toString());
 			hm.put("partyPhone", sch.getPhone1() == null ? sch.getPhone2() : sch.getPhone1());
 			hm.put("documentsThrough", sale.getDocsThru());
 			hm.put("invoiceNo", getStringVal(sale.getInvoiceNo()));
-			hm.put("txnDate", txn.getTxnDate());
+			hm.put("txnDate", txn.getTxnDateStr());
 			hm.put("orderNumbers", orderIds);
 			hm.put("despatchedPer", sale.getDespatch());
 			hm.put("grNo", sale.getGrNum());
@@ -379,6 +413,9 @@ public class SchoolDetailsController
 			hm.put("total", sale.getSubTotal());
 			hm.put("discount", discAmt);
 			hm.put("grandTotal", sale.getNetAmount());
+			hm.put("accountDet", strBuildAcct.toString());
+			hm.put("grandTotalInWords", convertDouble(sale.getNetAmount()));
+			hm.put("otherCharges", sale.getOtherAmount());
 			
 			JasperReport compiledFile = JasperCompileManager.compileReport(jasperStream);
 
@@ -568,56 +605,56 @@ public class SchoolDetailsController
 		transactionData.setItems(FXCollections.observableList(txnItems));
 	}
 
-	@FXML
-	public void exportAndSave(ActionEvent ev)
-	{
-		try
-		{
-
-			String selection = saveType.getSelectionModel().getSelectedItem(); 
-			String filterStr = "*.*";
-			if(selection.equals(PDF))
-			{
-				filterStr = "*.pdf";
-			}
-			else if(selection.equals(Excel))
-			{
-				filterStr = "*.xls";
-			}
-			FileChooser fileChooser = new FileChooser();
-			fileChooser.setTitle("Save File");
-            fileChooser.getExtensionFilters().addAll(
-                    new FileChooser.ExtensionFilter(selection, filterStr)
-                );
-            
-			File file = fileChooser.showSaveDialog(((Node) ev.getSource()).getScene().getWindow());
-			if(selection.equals(PDF))
-			{
-				JasperExportManager.exportReportToPdfFile(jasperPrint, file.getAbsolutePath());
-			}
-			else if(selection.equals(Excel))
-			{
-		        JRXlsxExporter exporter = new JRXlsxExporter();
-		        exporter.setExporterInput(new SimpleExporterInput(jasperPrint));		        
-				exporter.setExporterOutput(new SimpleOutputStreamExporterOutput(file));
-
-		        exporter.exportReport();
-			}
-			else if(selection.equals(Docx))
-			{
-				JRDocxExporter exporter = new JRDocxExporter();
-		        exporter.setExporterInput(new SimpleExporterInput(jasperPrint));		        
-				exporter.setExporterOutput(new SimpleOutputStreamExporterOutput(file));
-
-		        exporter.exportReport();
-			}
-			
-		}
-		catch (Throwable e)
-		{
-			e.printStackTrace();
-		}
-	}
+//	@FXML
+//	public void exportAndSave(ActionEvent ev)
+//	{
+//		try
+//		{
+//
+//			String selection = saveType.getSelectionModel().getSelectedItem(); 
+//			String filterStr = "*.*";
+//			if(selection.equals(PDF))
+//			{
+//				filterStr = "*.pdf";
+//			}
+//			else if(selection.equals(Excel))
+//			{
+//				filterStr = "*.xls";
+//			}
+//			FileChooser fileChooser = new FileChooser();
+//			fileChooser.setTitle("Save File");
+//            fileChooser.getExtensionFilters().addAll(
+//                    new FileChooser.ExtensionFilter(selection, filterStr)
+//                );
+//            
+//			File file = fileChooser.showSaveDialog(((Node) ev.getSource()).getScene().getWindow());
+//			if(selection.equals(PDF))
+//			{
+//				JasperExportManager.exportReportToPdfFile(jasperPrint, file.getAbsolutePath());
+//			}
+//			else if(selection.equals(Excel))
+//			{
+//		        JRXlsxExporter exporter = new JRXlsxExporter();
+//		        exporter.setExporterInput(new SimpleExporterInput(jasperPrint));		        
+//				exporter.setExporterOutput(new SimpleOutputStreamExporterOutput(file));
+//
+//		        exporter.exportReport();
+//			}
+//			else if(selection.equals(Docx))
+//			{
+//				JRDocxExporter exporter = new JRDocxExporter();
+//		        exporter.setExporterInput(new SimpleExporterInput(jasperPrint));		        
+//				exporter.setExporterOutput(new SimpleOutputStreamExporterOutput(file));
+//
+//		        exporter.exportReport();
+//			}
+//			
+//		}
+//		catch (Throwable e)
+//		{
+//			e.printStackTrace();
+//		}
+//	}
 	
 	private void prepareAndShowStage(ActionEvent e, Scene childScene)
 	{

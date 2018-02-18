@@ -1,5 +1,7 @@
 package com.matha.domain;
 
+import static com.matha.util.UtilConstants.DATE_CONV;
+
 import java.time.LocalDate;
 import java.util.Set;
 
@@ -50,6 +52,9 @@ public class Sales
 	@Column(name = "SubTotal")
 	private Double subTotal;
 
+	@Column(name = "Others")
+	private Double otherAmount;
+
 	@OneToOne
 	@JoinColumn(name = "TxnId")
 	private SalesTransaction salesTxn;
@@ -60,6 +65,11 @@ public class Sales
 	public LocalDate getInvoiceDate()
 	{
 		return salesTxn.getTxnDate();
+	}
+
+	public String getInvoiceDateStr()
+	{		
+		return DATE_CONV.toString(getInvoiceDate());
 	}
 
 	public Double getNetAmount()
@@ -175,6 +185,16 @@ public class Sales
 	public void setSubTotal(Double subTotal)
 	{
 		this.subTotal = subTotal;
+	}
+
+	public Double getOtherAmount()
+	{
+		return otherAmount;
+	}
+
+	public void setOtherAmount(Double otherAmount)
+	{
+		this.otherAmount = otherAmount;
 	}
 
 }

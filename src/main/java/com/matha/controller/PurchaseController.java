@@ -1,6 +1,9 @@
 package com.matha.controller;
 
+import static com.matha.util.UtilConstants.COMMA_SIGN;
+import static com.matha.util.UtilConstants.HYPHEN_SPC_SIGN;
 import static com.matha.util.UtilConstants.NEW_LINE;
+import static com.matha.util.UtilConstants.SPACE_SIGN;
 import static com.matha.util.UtilConstants.addPublisherFxml;
 import static com.matha.util.UtilConstants.createOrderFxmlFile;
 import static com.matha.util.UtilConstants.createPurchaseFxmlFile;
@@ -31,6 +34,7 @@ import org.springframework.data.domain.Sort;
 import org.springframework.data.domain.Sort.Direction;
 import org.springframework.stereotype.Component;
 
+import com.matha.domain.Address;
 import com.matha.domain.Book;
 import com.matha.domain.Order;
 import com.matha.domain.OrderItem;
@@ -354,6 +358,16 @@ public class PurchaseController
 		HashMap<String, Object> hm = new HashMap<>();
 		try
 		{			
+			Address salesAddr = schoolService.fetchAddress("Purchase");
+			StringBuilder strBuild = new StringBuilder();
+			strBuild.append(salesAddr.getAddress1());
+			strBuild.append(NEW_LINE); 
+			strBuild.append(salesAddr.getAddress2());
+			strBuild.append(COMMA_SIGN); 
+			strBuild.append(salesAddr.getAddress3());
+			strBuild.append(HYPHEN_SPC_SIGN);
+			strBuild.append(salesAddr.getPin());
+			
 			Set<OrderItem> tableData = purchase.getOrderItems();
 			PurchaseTransaction txn = purchase.getSalesTxn();
 			Set<String> orderIdSet = tableData.stream().map(OrderItem::getOrder).map(Order::getSerialNo).collect(Collectors.toSet());
@@ -368,8 +382,8 @@ public class PurchaseController
 			hm.put("publisherName", pub.getName());
 			hm.put("publisherDetails", pub.getStmtAddress());
 			hm.put("partyName", "MATHA DISTRIBUTORS.");
-			hm.put("partyAddress", "No.88, 8th Street, A.K.Swamy Nagar, " + NEW_LINE + "Kilpauk, " + NEW_LINE + "Chennai - 600010");
-			hm.put("partyPhone", "Ph - 09444026149");
+			hm.put("partyAddress", strBuild.toString());
+			hm.put("partyPhone", "Ph - " + salesAddr.getPhone1());
 			hm.put("documentsThrough", purchase.getDocsThrough());
 			hm.put("despatchedTo", purchase.getDespatchedTo());
 			hm.put("invoiceNo", purchase.getId());

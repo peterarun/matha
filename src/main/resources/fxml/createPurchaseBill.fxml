@@ -63,11 +63,7 @@
 								<PropertyValueFactory property="bookPrice" />
 							</cellValueFactory>
 						</TableColumn>
-						<TableColumn prefWidth="107.0" text="Total">
-							<cellValueFactory>
-								<PropertyValueFactory property="total" />
-							</cellValueFactory>
-						</TableColumn>
+						<TableColumn fx:id="totalColumn" prefWidth="107.0" text="Total" />
 					</columns>
 				</TableView>
 				

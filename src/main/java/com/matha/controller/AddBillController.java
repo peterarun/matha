@@ -2,25 +2,29 @@ package com.matha.controller;
 
 import static com.matha.util.UtilConstants.DATE_CONV;
 import static com.matha.util.UtilConstants.RUPEE_SIGN;
-import static com.matha.util.Utils.calcNetAmountGen;
+import static com.matha.util.Utils.*;
 import static com.matha.util.Utils.fetchPriceColumnFactory;
 import static com.matha.util.Utils.getIntegerVal;
 import static com.matha.util.Utils.getStringVal;
 import static com.matha.util.Utils.loadDiscSymbol;
 
+import java.time.LocalDate;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
-import java.util.logging.Logger;
 import java.util.stream.Collector;
 import java.util.stream.Collectors;
 
 import org.apache.commons.lang.StringUtils;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 import org.controlsfx.control.textfield.TextFields;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
 
 import com.matha.domain.Order;
@@ -30,6 +34,7 @@ import com.matha.domain.SalesTransaction;
 import com.matha.domain.School;
 import com.matha.service.SchoolService;
 
+import javafx.beans.binding.Bindings;
 import javafx.beans.value.ChangeListener;
 import javafx.beans.value.ObservableValue;
 import javafx.collections.FXCollections;
@@ -57,7 +62,7 @@ import javafx.stage.Stage;
 public class AddBillController
 {
 
-	private static final Logger LOGGER = Logger.getLogger("AddBillController");
+	private static final Logger LOGGER = LogManager.getLogger("AddBillController");
 
 	@Autowired
 	private SchoolService schoolService;
@@ -87,6 +92,9 @@ public class AddBillController
 	private Label discTypeInd;
 
 	@FXML
+	private TextField otherCharges;
+	
+	@FXML
 	private TextField netAmt;
 
 	@FXML
@@ -95,21 +103,21 @@ public class AddBillController
 	@FXML
 	private TextField orderNum;
 
-    @FXML
-    private TextField despatchPer;
-    
-    @FXML
-    private TextField docsThru;
-    
-    @FXML
-    private TextField invoiceNum;
-    
-    @FXML
-    private TextField grNum;
+	@FXML
+	private TextField despatchPer;
 
-    @FXML
-    private TextField packageCnt;
-    
+	@FXML
+	private TextField docsThru;
+
+	@FXML
+	private TextField invoiceNum;
+
+	@FXML
+	private TextField grNum;
+
+	@FXML
+	private TextField packageCnt;
+
 	@FXML
 	private ListView<String> orderList;
 
@@ -119,6 +127,9 @@ public class AddBillController
 	@FXML
 	private TableColumn<OrderItem, String> priceColumn;
 
+	@FXML
+	private TableColumn<OrderItem, String> totalColumn;
+
 	private School school;
 	private Sales selectedSale;
 	private ObservableList<Order> orders;
@@ -126,6 +137,9 @@ public class AddBillController
 	private Map<String, Order> orderMap = new HashMap<>();
 	private Collector<Order, ?, Map<String, Order>> orderMapCollector = Collectors.toMap(o -> o.getSerialNo(), o -> o);
 	private Collector<OrderItem, ?, Double> summingDblCollector = Collectors.summingDouble(OrderItem::getTotalSold);
+
+	@Value("${listOfDespatchers}")
+	private String[] despatcherArray;
 
 	void initData(ObservableList<Order> ordersIn, School schoolIn, Sales sale)
 	{
@@ -140,13 +154,16 @@ public class AddBillController
 
 		List<String> items = new ArrayList<>(this.orderMap.keySet());
 		TextFields.bindAutoCompletion(this.orderNum, items);
+		
+		LOGGER.debug("despatcherArray: " + despatcherArray);
+		TextFields.bindAutoCompletion(this.despatchPer, Arrays.asList(despatcherArray));
 
 		if (this.orders != null)
 		{
 			List<String> orderStrings = this.orders.stream().map(o -> o.getSerialNo()).collect(Collectors.toList());
 			this.orderList.setItems(FXCollections.observableList(orderStrings));
 		}
-
+		
 		// To avoid different objects of the same type getting loaded.
 		for (Order order : this.orders)
 		{
@@ -159,6 +176,10 @@ public class AddBillController
 	private void loadAddDefaults()
 	{
 		this.billDate.setConverter(DATE_CONV);
+		if(this.billDate.getValue() == null)
+		{
+			this.billDate.setValue(LocalDate.now());
+		}
 		this.schoolDetails.setText(this.school.fetchDetails());
 		this.addedBooks.getSelectionModel().cellSelectionEnabledProperty().set(true);
 		this.priceColumn.setCellFactory(TextFieldTableCell.forTableColumn());
@@ -170,7 +191,7 @@ public class AddBillController
 				oItem.setBookPrice(Double.parseDouble(t.getNewValue()));
 				t.getTableView().refresh();
 				loadSubTotal();
-				calcNetAmount(discAmt.getText());
+				calcNetAmount(discAmt.getText(), otherCharges.getText());
 
 				t.getTableView().getSelectionModel().selectBelowCell();
 
@@ -187,11 +208,22 @@ public class AddBillController
 			{
 				if (discType.getSelectedToggle() != null)
 				{
-					calcNetAmount(discAmt.getText());
+					calcNetAmount(discAmt.getText(), otherCharges.getText());
 					loadDiscSymbol(percentRad, rupeeRad, discTypeInd);
 				}
 			}
 		});
+
+		this.totalColumn.setCellValueFactory(cellData -> 
+			Bindings.format("%.2f", cellData.getValue().getTotal())
+		);
+		
+		if(StringUtils.isBlank(this.invoiceNum.getText()))
+		{
+			Integer newInvNum = schoolService.fetchNextSalesInvoiceNum();
+			LOGGER.info("newInvNum " + newInvNum);
+			this.invoiceNum.setText(getStringVal(newInvNum));
+		}
 	}
 
 	private void prepareEditData(Sales sale)
@@ -210,6 +242,7 @@ public class AddBillController
 			this.grNum.setText(sale.getGrNum());
 			this.invoiceNum.setText(getStringVal(sale.getInvoiceNo()));
 			this.packageCnt.setText(getStringVal(sale.getPackages()));
+			this.otherCharges.setText(getStringVal(sale.getOtherAmount()));
 
 			if (!sale.getDiscType())
 			{
@@ -235,7 +268,7 @@ public class AddBillController
 			}
 		}
 		loadSubTotal();
-		calcNetAmount(discAmt.getText());
+		calcNetAmount(discAmt.getText(), otherCharges.getText());
 	}
 
 	private void loadSubTotal()
@@ -244,7 +277,7 @@ public class AddBillController
 
 		ObservableList<OrderItem> orderListIn = addedBooks.getItems();
 		subTotalVal += orderListIn.stream().collect(summingDblCollector);
-		subTotal.setText(String.valueOf(subTotalVal));
+		subTotal.setText(getStringVal(subTotalVal));
 	}
 
 	@FXML
@@ -254,10 +287,22 @@ public class AddBillController
 		discAmtStr += ke.getCharacter();
 		if (!StringUtils.isEmpty(discAmtStr))
 		{
-			calcNetAmount(discAmtStr);
+			calcNetAmount(discAmtStr, otherCharges.getText());
 		}
 	}
 
+	@FXML
+	private void updateNetAmtOther(KeyEvent ke)
+	{
+		String otherAmtStr = StringUtils.defaultString(otherCharges.getText());
+		otherAmtStr += ke.getCharacter();
+		String discAmtStr = StringUtils.defaultString(discAmt.getText());
+		if (!StringUtils.isEmpty(otherAmtStr))
+		{
+			calcNetAmount(discAmtStr, otherAmtStr);
+		}
+	}
+	
 	@FXML
 	void addOrderNum(ActionEvent e)
 	{
@@ -273,9 +318,9 @@ public class AddBillController
 		}
 	}
 
-	private void calcNetAmount(String discAmtStr)
+	private void calcNetAmount(String discAmtStr, String otherAmtStr)
 	{
-		calcNetAmountGen(discAmtStr, this.subTotal, this.percentRad, this.rupeeRad, this.netAmt);
+		calcNetAmountGen(discAmtStr, this.subTotal, this.percentRad, this.rupeeRad, otherAmtStr, this.netAmt);
 	}
 
 	@FXML
@@ -310,7 +355,7 @@ public class AddBillController
 		}
 
 		Set<OrderItem> orderItems = new HashSet<>(this.addedBooks.getItems());
-		
+
 		if (!StringUtils.isEmpty(subTotal.getText()))
 		{
 			Double subTotalVal = Double.parseDouble(subTotal.getText());
@@ -326,13 +371,14 @@ public class AddBillController
 			Double netAmtVal = Double.parseDouble(netAmt.getText());
 			salesTxn.setAmount(netAmtVal);
 		}
-		
+
 		sale.setDespatch(this.despatchPer.getText());
 		sale.setDocsThru(this.docsThru.getText());
 		sale.setGrNum(this.grNum.getText());
 		sale.setInvoiceNo(getIntegerVal(this.invoiceNum));
 		sale.setPackages(getIntegerVal(this.packageCnt));
-		
+		sale.setOtherAmount(getDoubleVal(this.otherCharges));
+
 		String note = "Sales Bill Note";
 		salesTxn.setNote(note);
 		salesTxn.setTxnDate(billDate.getValue());

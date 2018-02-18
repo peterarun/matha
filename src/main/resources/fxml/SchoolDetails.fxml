@@ -41,7 +41,7 @@
 														</TableColumn>
 														<TableColumn minWidth="0.0" prefWidth="83.0" text="Date">
 															<cellValueFactory>
-																<PropertyValueFactory property="orderDate" />
+																<PropertyValueFactory property="orderDateStr" />
 															</cellValueFactory>
 														</TableColumn>
 														<TableColumn prefWidth="235.0" text="Book Count">
@@ -54,7 +54,7 @@
 												<Button layoutX="649.0" layoutY="70.0" mnemonicParsing="false" onAction="#editOrder" prefHeight="25.0" prefWidth="120.0" text="Edit" />
                                     <Button layoutX="649.0" layoutY="156.0" mnemonicParsing="false" onAction="#createBill" prefHeight="52.0" prefWidth="120.0" text="Create Bill" textAlignment="CENTER" wrapText="true" />
                                     <Button layoutX="649.0" layoutY="26.0" mnemonicParsing="false" onAction="#addOrder" prefHeight="26.0" prefWidth="120.0" text="Add" />
-                                    <Button focusTraversable="false" layoutX="649.0" layoutY="112.0" mnemonicParsing="false" onAction="#deleteOrder" prefHeight="25.0" prefWidth="120.0" style="-fx-background-color: firebrick;" text="Delete" />
+                                    <Button focusTraversable="false" layoutX="649.0" layoutY="112.0" mnemonicParsing="false" onAction="#deleteOrder" prefHeight="25.0" prefWidth="120.0" text="Delete" />
 											</children>
 										</AnchorPane>
 									</content>
@@ -72,7 +72,7 @@
 														</TableColumn>
 														<TableColumn prefWidth="132.0" text="Date">
 															<cellValueFactory>
-																<PropertyValueFactory property="invoiceDate" />
+																<PropertyValueFactory property="invoiceDateStr" />
 															</cellValueFactory>														
 														</TableColumn>
 														<TableColumn prefWidth="145.0" text="GR No.">
@@ -80,7 +80,7 @@
 																<PropertyValueFactory property="grNum" />
 															</cellValueFactory>														
 														</TableColumn>
-                                          				<TableColumn prefWidth="121.0" text="Amount">
+                                          				<TableColumn fx:id="amountColumn" prefWidth="121.0" text="Amount">
 															<cellValueFactory>
 																<PropertyValueFactory property="netAmount" />
 															</cellValueFactory>
@@ -89,11 +89,8 @@
 												</TableView>
 												<Button layoutX="656.0" layoutY="25.0" mnemonicParsing="false" onAction="#addBill" prefHeight="26.0" prefWidth="120.0" text="Add" />
 												<Button layoutX="656.0" layoutY="66.0" mnemonicParsing="false" onAction="#editBill" prefHeight="25.0" prefWidth="120.0" text="Edit" />
-												<Button focusTraversable="false" layoutX="656.0" layoutY="105.0" mnemonicParsing="false" onAction="#deleteBill" prefHeight="25.0" prefWidth="120.0" style="-fx-background-color: firebrick;" text="Delete" />
+												<Button focusTraversable="false" layoutX="656.0" layoutY="105.0" mnemonicParsing="false" onAction="#deleteBill" prefHeight="25.0" prefWidth="120.0" text="Delete" />
                                     			<Button layoutX="656.0" layoutY="144.0" mnemonicParsing="false" onAction="#printPurchaseBill" prefHeight="25.0" prefWidth="120.0" text="Print" />
-                                    <Button layoutX="735.0" layoutY="210.0" mnemonicParsing="false" onAction="#exportAndSave" text="Save" />
-                                    <ChoiceBox fx:id="saveType" layoutX="656.0" layoutY="209.0" prefHeight="25.0" prefWidth="69.0" />
-                                    <Label layoutX="670.0" layoutY="187.0" text="Save As" />
 											</children>
 										</AnchorPane>
 									</content>

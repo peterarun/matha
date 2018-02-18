@@ -54,6 +54,16 @@ public class Utils
 		return dblVal;
 	}
 
+	public static Double getDoubleVal(String txt)
+	{
+		Double dblVal = null;		
+		if (StringUtils.isNotBlank(txt))
+		{
+			dblVal = Double.parseDouble(txt);
+		}
+		return dblVal;
+	}
+	
 	public static Integer getIntegerVal(TextField txt)
 	{
 		Integer dblVal = null;
@@ -181,8 +191,8 @@ public class Utils
 		SimplePrintServiceExporterConfiguration configuration = new SimplePrintServiceExporterConfiguration();
 		configuration.setPrintRequestAttributeSet(printRequestAttributeSet);
 		configuration.setPrintServiceAttributeSet(printServiceAttributeSet);
-//		configuration.setDisplayPageDialog(true);
-//		configuration.setDisplayPrintDialog(true);
+		// configuration.setDisplayPageDialog(true);
+		// configuration.setDisplayPrintDialog(true);
 
 		exporter.setExporterInput(new SimpleExporterInput(jasperPrint));
 		exporter.setConfiguration(configuration);
@@ -196,16 +206,17 @@ public class Utils
 			public ObservableValue<String> call(CellDataFeatures<OrderItem, String> p)
 			{
 				// p.getValue() returns the Person instance for a particular TableView row
-				return new ReadOnlyStringWrapper(p.getValue().getBookPrice().toString());
+				return new ReadOnlyStringWrapper(getStringVal(p.getValue().getBookPrice()));
 			}
 		};
 		return priceColumnFactory;
 	}
 
-	public static void calcNetAmountGen(String discAmtStr, TextField subTotal, RadioButton percentRad, RadioButton rupeeRad, TextField netAmt)
+	public static void calcNetAmountGen(String discAmtStr, TextField subTotal, RadioButton percentRad, RadioButton rupeeRad, String otherChargesField, TextField netAmt)
 	{
 		String netTotalStr = netAmt.getText();
 		Double netTotalDbl = StringUtils.isEmpty(netTotalStr) ? 0.0 : Double.parseDouble(netTotalStr);
+		Double otherCharges = getDoubleVal(otherChargesField);
 
 		String subTotalStr = subTotal.getText();
 		if (subTotalStr != null)
@@ -232,6 +243,10 @@ public class Utils
 				}
 			}
 		}
+		if(otherCharges != null)
+		{
+			netTotalDbl += otherCharges;
+		}
 		netAmt.setText(getStringVal(netTotalDbl));
 	}
 
@@ -245,5 +260,62 @@ public class Utils
 		{
 			discTypeInd.setText(RUPEE_SIGN);
 		}
+	}
+
+	public static String convertDouble(double dbl)
+	{
+		int mainPart = (int) dbl;
+		int decPart = (int) ((dbl - mainPart) * 100);
+		return convert(mainPart) + " rupees and " + convert(decPart) + " paisa only";
+	}
+	
+	public static String convert(int n)
+	{
+		final String[] units = { "", "One", "Two", "Three", "Four", "Five", "Six", "Seven", "Eight", "Nine", "Ten", "Eleven", "Twelve", "Thirteen", "Fourteen", "Fifteen", "Sixteen", "Seventeen",
+				"Eighteen", "Nineteen" };
+
+		final String[] tens = { "", // 0
+				"", // 1
+				"Twenty", // 2
+				"Thirty", // 3
+				"Forty", // 4
+				"Fifty", // 5
+				"Sixty", // 6
+				"Seventy", // 7
+				"Eighty", // 8
+				"Ninety" // 9
+		};
+
+		if (n < 0)
+		{
+			return "Minus " + convert(-n);
+		}
+
+		if (n < 20)
+		{
+			return units[n];
+		}
+
+		if (n < 100)
+		{
+			return tens[n / 10] + ((n % 10 != 0) ? " " : "") + units[n % 10];
+		}
+
+		if (n < 1000)
+		{
+			return units[n / 100] + " Hundred" + ((n % 100 != 0) ? " And " : "") + convert(n % 100);
+		}
+
+		if (n < 100000)
+		{
+			return convert(n / 1000) + " Thousand" + ((n % 10000 != 0) ? " " : "") + convert(n % 1000);
+		}
+
+		if (n < 10000000)
+		{
+			return convert(n / 100000) + " Lakh" + ((n % 100000 != 0) ? " " : "") + convert(n % 100000);
+		}
+
+		return convert(n / 10000000) + " Crore" + ((n % 10000000 != 0) ? " " : "") + convert(n % 10000000);
 	}
 }

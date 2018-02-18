@@ -20,9 +20,6 @@
         
     </Appenders>
     <Loggers>
-        <Logger name="com.matha" level="debug" additivity="false">
-            <AppenderRef ref="FileAppender" />
-        </Logger>
 
         <Root level="info">
             <AppenderRef ref="ConsoleAppender" />

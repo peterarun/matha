@@ -1,9 +1,9 @@
 package com.matha.controller;
 
-import static com.matha.util.Utils.*;
 import static com.matha.util.UtilConstants.Docx;
 import static com.matha.util.UtilConstants.Excel;
 import static com.matha.util.UtilConstants.PDF;
+import static com.matha.util.Utils.printJasper;
 
 import java.io.ByteArrayOutputStream;
 import java.io.File;
@@ -18,12 +18,10 @@ import javafx.collections.FXCollections;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.scene.Node;
-import javafx.scene.Scene;
 import javafx.scene.control.ChoiceBox;
 import javafx.scene.control.TextField;
 import javafx.scene.web.WebView;
 import javafx.stage.FileChooser;
-import javafx.stage.Window;
 import net.sf.jasperreports.engine.JasperExportManager;
 import net.sf.jasperreports.engine.JasperPrint;
 import net.sf.jasperreports.engine.export.HtmlExporter;
@@ -136,9 +134,6 @@ public class PrintSalesBillController
 	{
 		try
 		{
-			Scene parentScene = ((Node) ev.getSource()).getScene();
-			Window parentWindow = parentScene.getWindow();
-
 			printJasper(print);
 		}
 		catch (Exception e)
