@@ -208,6 +208,16 @@ public class Publisher
 		return builder.toString();
 	}
 
+	public String getInvAddress()
+	{
+		StringBuilder builder = new StringBuilder();		
+		builder.append(StringUtils.isBlank(address1) ? "" : address1);
+		builder.append(NEW_LINE);
+		builder.append(StringUtils.isBlank(address2) ? "" : address2);
+		builder.append(StringUtils.isBlank(address3) ? "" : ", " + address3);
+		return builder.toString();
+	}
+
 	public String getAddress()
 	{
 		StringBuilder builder = new StringBuilder();

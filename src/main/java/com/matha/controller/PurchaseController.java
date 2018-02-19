@@ -186,8 +186,9 @@ public class PurchaseController
 	{
 		Publisher pub = publishers.getSelectionModel().getSelectedItem();
 		publisherDet.setText(pub.getAddress());
-
+		
 		orderPaginator.setPageFactory((Integer pageIndex) -> createPage(pageIndex));
+		purTabs.getSelectionModel().select(ordersTab);
 	}
 
 	@FXML
@@ -376,7 +377,7 @@ public class PurchaseController
 			}
 			 			
 			hm.put("publisherName", pub.getName());
-			hm.put("publisherDetails", pub.getStmtAddress());
+			hm.put("publisherDetails", pub.getInvAddress());
 			hm.put("partyName", "MATHA DISTRIBUTORS.");
 			hm.put("partyAddress", strBuild.toString());
 			hm.put("partyPhone", "Ph - " + salesAddr.getPhone1());

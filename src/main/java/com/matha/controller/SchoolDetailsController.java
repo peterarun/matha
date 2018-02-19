@@ -3,7 +3,6 @@ package com.matha.controller;
 import static com.matha.util.UtilConstants.COMMA_SIGN;
 import static com.matha.util.UtilConstants.HYPHEN_SPC_SIGN;
 import static com.matha.util.UtilConstants.NEW_LINE;
-import static com.matha.util.UtilConstants.SEMI_COLON_SIGN;
 import static com.matha.util.UtilConstants.SPACE_SIGN;
 import static com.matha.util.UtilConstants.addBillFxmlFile;
 import static com.matha.util.UtilConstants.addPaymentFxmlFile;
@@ -382,14 +381,14 @@ public class SchoolDetailsController
 			strBuildAcct.append(COMMA_SIGN);
 			strBuildAcct.append(" State Bank of India");
 			strBuildAcct.append(COMMA_SIGN);
+			strBuildAcct.append(" Vazhakulam Branch");
+			strBuildAcct.append(COMMA_SIGN);
 			strBuildAcct.append(" A/C No: ");			
 			strBuildAcct.append(acct.getAccountNum());
-			strBuildAcct.append(SEMI_COLON_SIGN);
+			strBuildAcct.append(COMMA_SIGN);
 			strBuildAcct.append(" IFSC");
 			strBuildAcct.append(HYPHEN_SPC_SIGN);
 			strBuildAcct.append(acct.getIfsc());
-			strBuildAcct.append(COMMA_SIGN);
-			strBuildAcct.append(" Vazhakulam Branch");
 			
 			Set<OrderItem> tableData = sale.getOrderItems();
 			SalesTransaction txn = sale.getSalesTxn();
