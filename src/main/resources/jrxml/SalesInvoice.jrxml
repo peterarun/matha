@@ -55,16 +55,16 @@
 		<band height="273" splitType="Stretch">
 			<property name="com.jaspersoft.studio.layout"/>
 			<textField>
-				<reportElement x="0" y="40" width="555" height="52" uuid="584969e4-c0bc-4bba-958b-e354c7e4af67"/>
-				<textElement textAlignment="Center" verticalAlignment="Middle">
+				<reportElement x="0" y="30" width="555" height="62" uuid="584969e4-c0bc-4bba-958b-e354c7e4af67"/>
+				<textElement textAlignment="Center" verticalAlignment="Top">
 					<font size="12" isBold="false"/>
 				</textElement>
 				<textFieldExpression><![CDATA[$P{agencyDetails}]]></textFieldExpression>
 			</textField>
 			<textField>
-				<reportElement x="0" y="0" width="555" height="40" uuid="5abb62ef-9181-4276-964a-d8c491c0804b"/>
-				<textElement textAlignment="Center" verticalAlignment="Middle">
-					<font size="24" isBold="true"/>
+				<reportElement x="0" y="0" width="555" height="30" uuid="5abb62ef-9181-4276-964a-d8c491c0804b"/>
+				<textElement textAlignment="Center" verticalAlignment="Bottom">
+					<font size="22" isBold="true"/>
 				</textElement>
 				<textFieldExpression><![CDATA[$P{agencyName}]]></textFieldExpression>
 			</textField>
@@ -78,7 +78,7 @@
 			<textField>
 				<reportElement x="50" y="152" width="230" height="48" uuid="fdb3f3a8-553e-4637-bced-038540fc9145"/>
 				<box leftPadding="2"/>
-				<textElement verticalAlignment="Middle"/>
+				<textElement verticalAlignment="Top"/>
 				<textFieldExpression><![CDATA[$P{partyAddress}]]></textFieldExpression>
 			</textField>
 			<textField>
@@ -112,16 +112,16 @@
 				<text><![CDATA[Dated                        ]]></text>
 			</staticText>
 			<staticText>
-				<reportElement x="0" y="215" width="100" height="15" uuid="f2872a5f-9cb8-42e3-bcd1-a616d3c6b3ba"/>
+				<reportElement x="0" y="215" width="60" height="15" uuid="f2872a5f-9cb8-42e3-bcd1-a616d3c6b3ba"/>
 				<box leftPadding="2"/>
 				<textElement verticalAlignment="Middle"/>
-				<text><![CDATA[Order No                   ]]></text>
+				<text><![CDATA[Order No :]]></text>
 			</staticText>
 			<staticText>
-				<reportElement x="0" y="230" width="100" height="15" uuid="3b628a76-a365-4c1a-be00-694a99c110bd"/>
+				<reportElement x="0" y="230" width="90" height="15" uuid="3b628a76-a365-4c1a-be00-694a99c110bd"/>
 				<box leftPadding="2"/>
 				<textElement verticalAlignment="Middle"/>
-				<text><![CDATA[Despatched Per       ]]></text>
+				<text><![CDATA[Despatched Per :]]></text>
 			</staticText>
 			<staticText>
 				<reportElement x="280" y="230" width="100" height="15" uuid="d2210265-18f7-4698-9e5a-7a5f86d7ffb1"/>
@@ -166,12 +166,12 @@
 				<textFieldExpression><![CDATA[$P{txnDate}]]></textFieldExpression>
 			</textField>
 			<textField>
-				<reportElement x="100" y="215" width="180" height="15" uuid="f64ffee2-4213-42fe-ad39-a9a5416bb5e4"/>
+				<reportElement x="60" y="215" width="220" height="15" uuid="f64ffee2-4213-42fe-ad39-a9a5416bb5e4"/>
 				<textElement verticalAlignment="Middle"/>
 				<textFieldExpression><![CDATA[$P{orderNumbers}]]></textFieldExpression>
 			</textField>
 			<textField isBlankWhenNull="true">
-				<reportElement x="100" y="230" width="180" height="15" uuid="197e2a10-c5b5-4b2e-b697-bc7385f071c5"/>
+				<reportElement x="90" y="230" width="190" height="15" uuid="197e2a10-c5b5-4b2e-b697-bc7385f071c5"/>
 				<textElement verticalAlignment="Middle"/>
 				<textFieldExpression><![CDATA[$P{despatchedPer}]]></textFieldExpression>
 			</textField>
@@ -195,7 +195,7 @@
 				<reportElement x="0" y="137" width="50" height="14" uuid="adc51e32-7d59-4f7c-88db-f31b4d0ee5fe"/>
 				<box leftPadding="2"/>
 				<textElement verticalAlignment="Middle">
-					<font isBold="true"/>
+					<font isBold="false"/>
 				</textElement>
 				<text><![CDATA[To      :]]></text>
 			</staticText>
@@ -203,7 +203,7 @@
 				<reportElement x="50" y="137" width="230" height="15" uuid="3c3e9bbf-ce99-461f-a4ab-a6374ea02391"/>
 				<box leftPadding="2"/>
 				<textElement verticalAlignment="Middle"/>
-				<text><![CDATA[The Principal]]></text>
+				<text><![CDATA[THE PRINCIPAL]]></text>
 			</staticText>
 		</band>
 	</title>

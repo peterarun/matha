@@ -360,9 +360,10 @@ public class SchoolDetailsController
 			Address salesAddr = schoolService.fetchAddress("Sales");
 			StringBuilder strBuild = new StringBuilder();
 			strBuild.append(salesAddr.getAddress1());
-			strBuild.append(COMMA_SIGN); 
+			strBuild.append(NEW_LINE); 
 			strBuild.append(salesAddr.getAddress2());
-			strBuild.append(COMMA_SIGN); 
+			strBuild.append(COMMA_SIGN);
+			strBuild.append(SPACE_SIGN);
 			strBuild.append(salesAddr.getAddress3());
 			strBuild.append(HYPHEN_SPC_SIGN);
 			strBuild.append(salesAddr.getPin());
@@ -372,7 +373,7 @@ public class SchoolDetailsController
 			strBuild.append(SPACE_SIGN);
 			strBuild.append("Mob: ");
 			strBuild.append(salesAddr.getPhone2());
-			strBuild.append(SPACE_SIGN);
+			strBuild.append(NEW_LINE);
 			strBuild.append("Email: ");
 			strBuild.append(salesAddr.getEmail());
 			

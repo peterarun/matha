@@ -22,7 +22,7 @@ INSERT INTO [dbo].[Addresses](
 	'VAZHAKULAM P.O',
 	'MUVATTUPUZHA',
 	'0485 2260225',
-	'8281461689,9495157528',
+	'8281461689, 9495157528',
 	'mathaabooks@gmail.com',
 	'686 670');
 GO
