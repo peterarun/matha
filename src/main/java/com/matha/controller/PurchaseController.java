@@ -3,7 +3,6 @@ package com.matha.controller;
 import static com.matha.util.UtilConstants.COMMA_SIGN;
 import static com.matha.util.UtilConstants.HYPHEN_SPC_SIGN;
 import static com.matha.util.UtilConstants.NEW_LINE;
-import static com.matha.util.UtilConstants.SPACE_SIGN;
 import static com.matha.util.UtilConstants.addPublisherFxml;
 import static com.matha.util.UtilConstants.createOrderFxmlFile;
 import static com.matha.util.UtilConstants.createPurchaseFxmlFile;
@@ -187,11 +186,8 @@ public class PurchaseController
 	{
 		Publisher pub = publishers.getSelectionModel().getSelectedItem();
 		publisherDet.setText(pub.getAddress());
-//		int idx = orderPaginator.getCurrentPageIndex();
-//		List<Order> orderList = schoolService.fetchOrders(pub, idx, ROWS_PER_PAGE, billedToggle.isSelected()).getContent();
-//		orderTable.setItems(FXCollections.observableList(orderList));
-		
-		purTabs.getSelectionModel().select(purTabs.getSelectionModel().getSelectedItem());
+
+		orderPaginator.setPageFactory((Integer pageIndex) -> createPage(pageIndex));
 	}
 
 	@FXML

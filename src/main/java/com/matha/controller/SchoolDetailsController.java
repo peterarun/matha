@@ -360,7 +360,7 @@ public class SchoolDetailsController
 			Address salesAddr = schoolService.fetchAddress("Sales");
 			StringBuilder strBuild = new StringBuilder();
 			strBuild.append(salesAddr.getAddress1());
-			strBuild.append(NEW_LINE); 
+			strBuild.append(COMMA_SIGN); 
 			strBuild.append(salesAddr.getAddress2());
 			strBuild.append(COMMA_SIGN); 
 			strBuild.append(salesAddr.getAddress3());
@@ -372,6 +372,9 @@ public class SchoolDetailsController
 			strBuild.append(SPACE_SIGN);
 			strBuild.append("Mob: ");
 			strBuild.append(salesAddr.getPhone2());
+			strBuild.append(SPACE_SIGN);
+			strBuild.append("Email: ");
+			strBuild.append(salesAddr.getEmail());
 			
 			Account acct = schoolService.fetchAccount("Matha Agencies");
 			StringBuilder strBuildAcct = new StringBuilder(acct.getName());
@@ -400,7 +403,7 @@ public class SchoolDetailsController
 			 			
 			hm.put("partyName", sch.getName());
 			hm.put("partyAddress", sch.addressText());
-			hm.put("agencyName", "MATHA DISTRIBUTORS.");
+			hm.put("agencyName", "MATHA AGENCIES");
 			hm.put("agencyDetails", strBuild.toString());
 			hm.put("partyPhone", sch.getPhone1() == null ? sch.getPhone2() : sch.getPhone1());
 			hm.put("documentsThrough", sale.getDocsThru());

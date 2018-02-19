@@ -1002,7 +1002,7 @@ public class SchoolService
 			txn.setSale(pur);
 			salesTxnRepository.save(txn);
 
-			List<Integer> orderItemIds = ordersIn.stream().map(OrderItem::getId).collect(Collectors.toList());
+			List<Integer> orderItemIds = pur.getOrderItems().stream().map(OrderItem::getId).collect(Collectors.toList());
 			ordersOrig = orderItemRepository.findAll(orderItemIds);
 			saveOrderItemUpdates(ordersOrig, ordersIn, pur);
 		}

@@ -29,7 +29,6 @@ import com.matha.domain.Publisher;
 import com.matha.domain.Purchase;
 import com.matha.domain.PurchaseTransaction;
 import com.matha.service.SchoolService;
-import com.matha.util.Utils;
 
 import javafx.beans.binding.Bindings;
 import javafx.beans.value.ChangeListener;
@@ -171,7 +170,7 @@ public class AddPurchaseBillController
 		});
 		this.publisherDetails.setText(this.publisher.getAddress());
 		this.totalColumn.setCellValueFactory(cellData -> 
-			Bindings.format("%.2f", Utils.getStringVal(cellData.getValue().getTotal())));
+			Bindings.format("%.2f", cellData.getValue().getTotal()));
 
 	}
 

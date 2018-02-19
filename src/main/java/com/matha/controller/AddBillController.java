@@ -169,7 +169,7 @@ public class AddBillController
 		{
 			orderMap.put(order.getSerialNo(), order);
 		}
-		loadBooksAndSubTotal(ordersIn);
+		loadNewBooksAndSubTotal(ordersIn);
 		loadDiscSymbol(percentRad, rupeeRad, discTypeInd);
 	}
 
@@ -252,11 +252,15 @@ public class AddBillController
 		}
 	}
 
-	private void loadBooksAndSubTotal(List<Order> orders)
+	private void loadNewBooksAndSubTotal(List<Order> orders)
 	{
 		if (orders != null)
 		{
-			List<OrderItem> bookItems = orders.stream().map(Order::getOrderItem).flatMap(List::stream).collect(Collectors.toList());
+			List<OrderItem> bookItems = orders.stream()
+					.map(Order::getOrderItem)
+					.flatMap(List::stream)
+					.filter(oi -> oi.getSale() == null)
+					.collect(Collectors.toList());
 			if (addedBooks.getItems() == null)
 			{
 				addedBooks.setItems(FXCollections.observableList(new ArrayList<>()));
@@ -314,7 +318,7 @@ public class AddBillController
 
 			List<Order> ordersIn = new ArrayList<Order>();
 			ordersIn.add(addedOrder);
-			loadBooksAndSubTotal(ordersIn);
+			loadNewBooksAndSubTotal(ordersIn);
 		}
 	}
 
@@ -406,7 +410,7 @@ public class AddBillController
 			addedBooks.getItems().removeAll(removedOrder.getOrderItem());
 		}
 
-		loadBooksAndSubTotal(null);
+		loadNewBooksAndSubTotal(null);
 	}
 
 	@FXML
@@ -418,7 +422,7 @@ public class AddBillController
 			addedBooks.getItems().removeAll(orderNumSel);
 		}
 
-		loadBooksAndSubTotal(null);
+		loadNewBooksAndSubTotal(null);
 	}
 
 }

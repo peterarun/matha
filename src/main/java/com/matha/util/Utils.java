@@ -266,7 +266,7 @@ public class Utils
 	{
 		int mainPart = (int) dbl;
 		int decPart = (int) ((dbl - mainPart) * 100);
-		return convert(mainPart) + " rupees and " + convert(decPart) + " paisa only";
+		return convert(mainPart) + " rupees and " + convert(decPart) + " paise only";
 	}
 	
 	public static String convert(int n)

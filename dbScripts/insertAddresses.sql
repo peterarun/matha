@@ -17,13 +17,13 @@ INSERT INTO [dbo].[Addresses](
 	[Email],
 	[PIN])
 	VALUES
-	('Sales',
-	'(MAYUR PUBLICATIONS)',
+	('Sales',	
 	'PAREECKAL BUILDINGS',
-	'VAZHAKULAM P.O, MUVATTUPUZHA',
+	'VAZHAKULAM P.O',
+	'MUVATTUPUZHA',
 	'0485 2260225',
 	'8281461689,9495157528',
-	NULL,
+	'mathaabooks@gmail.com',
 	'686 670');
 GO
 
