@@ -268,7 +268,7 @@ public class AddPurchaseBillController
 	{
 		if (addedBooks.getItems() == null)
 		{
-			addedBooks.setItems(FXCollections.observableArrayList(new ArrayList<>()));
+			addedBooks.setItems(FXCollections.observableList(new ArrayList<>()));
 		}
 		ObservableList<OrderItem> itemsIn = addedBooks.getItems(); 
 		itemsIn.addAll(bookItems);
@@ -328,11 +328,11 @@ public class AddPurchaseBillController
 		orderNum.clear();
 
 		HashSet<Order> ordersIn = new HashSet<Order>();
-		ObservableList<String> orderListIn = orderList.getItems();
-		for (String string : orderListIn)
-		{
-			ordersIn.add(orderMap.get(string));
-		}
+//		ObservableList<String> orderListIn = orderList.getItems();
+//		for (String string : orderListIn)
+//		{
+			ordersIn.add(orderMap.get(orderText));
+//		}
 		loadBooksAndSubTotal(ordersIn);
 		resetItems();
 	}
