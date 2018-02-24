@@ -392,9 +392,9 @@ public class PurchaseController
 			String orderIds = String.join(",", orderIdSet);
 			Double subTotal = purchase.getSubTotal();
 			Double discAmt = purchase.getDiscAmt();
-			if(discAmt != null)
+			if(discAmt != null && purchase.getNetAmount() != null && subTotal != null)
 			{
-				discAmt = purchase.getDiscType() ? subTotal * discAmt /100 : subTotal - discAmt;  
+				discAmt = purchase.getDiscType() ? purchase.getNetAmount() - subTotal : discAmt;  
 			}
 			 			
 			hm.put("publisherName", pub.getName());
