@@ -65,6 +65,8 @@
 											</columns>
 										</TableView>
                               <CheckBox fx:id="billedToggle" layoutX="896.0" layoutY="39.0" mnemonicParsing="false" onAction="#updateOrderData" text="Show Billed" />
+                              <TextField fx:id="orderTyped" layoutX="896.0" layoutY="191.0" prefHeight="25.0" prefWidth="89.0" promptText="Order No." />
+                              <Button layoutX="896.0" layoutY="227.0" mnemonicParsing="false" onAction="#searchOrder" prefHeight="25.0" prefWidth="89.0" text="Search" />
 
 									</children>
 								</AnchorPane>

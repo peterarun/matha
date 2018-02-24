@@ -158,6 +158,8 @@ public class Order implements Serializable, Comparable<Order>
 		StringBuilder builder = new StringBuilder();
 		builder.append("Order [id=");
 		builder.append(id);
+		builder.append(", serial=");
+		builder.append(serialNo);
 		builder.append(", school=");
 		builder.append(school);
 		// builder.append(", orderItem=");

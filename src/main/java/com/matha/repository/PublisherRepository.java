@@ -6,6 +6,6 @@ import org.springframework.stereotype.Repository;
 import com.matha.domain.Publisher;
 
 @Repository
-public interface PublisherRepository extends JpaRepository<Publisher, String> {
+public interface PublisherRepository extends JpaRepository<Publisher, Integer> {
 
 }

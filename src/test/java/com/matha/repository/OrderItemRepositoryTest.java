@@ -36,7 +36,7 @@ public class OrderItemRepositoryTest {
 	
 	@Test
 	public void testFetchOrdersForPublisher() {
-		Publisher pub = publisherRepo.findOne("48");
+		Publisher pub = publisherRepo.findOne(48);
 		List<OrderItem> data = orderItemRepository.fetchOrdersForPublisher(pub);
 		
 		System.out.println(data);

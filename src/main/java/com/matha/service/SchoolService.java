@@ -63,6 +63,8 @@ import com.matha.repository.SchoolRepository;
 import com.matha.repository.SchoolReturnRepository;
 import com.matha.repository.StateRepository;
 
+import javafx.scene.control.Tab;
+
 @Service
 public class SchoolService
 {
@@ -854,6 +856,28 @@ public class SchoolService
 
 		return orderList;
 	}
+
+	public Page<Order> fetchOrderSearch(Publisher pub, int page, int size, boolean billed, String searchText)
+	{
+		PageRequest pageable = new PageRequest(page, size, Direction.DESC, "orderDate");
+		Page<Order> orderList = null;
+		if (billed)
+		{
+			orderList = orderRepository.fetchOrdersForPublisherAndSearchStr(pub, searchText, pageable);
+		}
+		else
+		{
+			orderList = orderRepository.fetchUnBilledOrdersForPubAndSearchStr(pub, searchText, pageable);
+		}
+
+		for(Order o: orderList.getContent())
+		{
+			LOGGER.info(o);
+		}
+
+		return orderList;
+	}
+
 
 	public List<Order> fetchAllOrders(Publisher pub)
 	{

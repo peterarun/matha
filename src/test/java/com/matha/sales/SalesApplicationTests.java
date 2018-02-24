@@ -65,7 +65,7 @@ public class SalesApplicationTests
 			LocalDate fromDateVal = toDateVal.minusMonths(6);
 
 			Sort sort = new Sort(new Sort.Order(Direction.ASC, "txnDate"), new Sort.Order(Direction.ASC, "id"));
-			Publisher pub = pubRepo.findOne("45");
+			Publisher pub = pubRepo.findOne(45);
 			List<PurchaseTransaction> tableData = schoolService.fetchPurTransactions(pub, fromDateVal, toDateVal, sort);
 			System.out.println(tableData);
 			Double openingBalance = 0.0;
@@ -117,7 +117,7 @@ public class SalesApplicationTests
 			LocalDate fromDateVal = toDateVal.minusMonths(6);
 
 			Sort sort = new Sort(new Sort.Order(Direction.ASC, "txnDate"), new Sort.Order(Direction.ASC, "id"));
-			Publisher pub = pubRepo.findOne("45");
+			Publisher pub = pubRepo.findOne(45);
 			List<OrderItem> tableData = orderItemRepo.findAllByPurchaseIsNotNull();
 			System.out.println(tableData);
 			

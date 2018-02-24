@@ -70,6 +70,7 @@ import javafx.scene.control.Tab;
 import javafx.scene.control.TabPane;
 import javafx.scene.control.TableView;
 import javafx.scene.control.TextArea;
+import javafx.scene.control.TextField;
 import javafx.scene.layout.BorderPane;
 import javafx.scene.web.WebView;
 import javafx.stage.FileChooser;
@@ -114,6 +115,9 @@ public class PurchaseController
 	@FXML
 	private Pagination orderPaginator;
 
+	@FXML
+	private TextField orderTyped;
+	
 	@FXML
 	private Tab purchaseBillTab;
 
@@ -176,11 +180,22 @@ public class PurchaseController
 
 		if(orderTable.getItems() != null && !orderTable.getItems().isEmpty())
 		{
-			orderTable.prefHeightProperty().bind(Bindings.size(orderTable.getItems()).multiply(orderTable.getFixedCellSize()).add(30));
+			orderTable.prefHeightProperty().set(ROWS_PER_PAGE * orderTable.getFixedCellSize() + 30);
 		}
 		return new BorderPane(orderTable);
 	}
 
+	private Node createPageSearch(int pageIndex)
+	{
+		loadOrderSearchTable(pageIndex);
+
+		if(orderTable.getItems() != null && !orderTable.getItems().isEmpty())
+		{
+			orderTable.prefHeightProperty().set(ROWS_PER_PAGE * orderTable.getFixedCellSize() + 30);
+		}
+		return new BorderPane(orderTable);
+	}
+	
 	@FXML
 	void changedState(ActionEvent event)
 	{
@@ -262,6 +277,12 @@ public class PurchaseController
 		}
 	}
 
+	@FXML
+	void searchOrder(ActionEvent event)
+	{
+		orderPaginator.setPageFactory((Integer pageIndex) -> createPageSearch(pageIndex));
+	}
+	
 	@FXML
 	void createPurchase(ActionEvent event)
 	{
@@ -414,6 +435,13 @@ public class PurchaseController
 	{
 		Publisher pub = publishers.getSelectionModel().getSelectedItem();
 		List<Order> orderList = schoolService.fetchOrders(pub, idx, ROWS_PER_PAGE, billedToggle.isSelected()).getContent();
+		orderTable.setItems(FXCollections.observableList(orderList));
+	}
+
+	private void loadOrderSearchTable(int idx)
+	{
+		Publisher pub = publishers.getSelectionModel().getSelectedItem();
+		List<Order> orderList = schoolService.fetchOrderSearch(pub, idx, ROWS_PER_PAGE, billedToggle.isSelected(), orderTyped.getText()).getContent();
 		orderTable.setItems(FXCollections.observableList(orderList));
 	}
 

@@ -31,12 +31,25 @@ public class OrderRepositoryTest {
 	@Test
 	public void testPaginatedResult() {
 		PageRequest pageable = new PageRequest(1, 5, Sort.Direction.DESC, "orderDate");
-		Publisher pub = publisherRepository.findOne("48");
+		Publisher pub = publisherRepository.findOne(48);
 		Page<Order> orderList = orderService.fetchOrdersForPublisher(pub, pageable);
 		for(Order o: orderList)
 		{
 			System.out.println(o);
 		}
 	}
+	
+	@Test
+	public void testSearchResult() {
+		PageRequest pageable = new PageRequest(0, 5, Sort.Direction.DESC, "orderDate");
+		Publisher pub = publisherRepository.findOne(48);
+//		Order ord = orderService.findOne("2");
+		Page<Order> orderList = orderService.fetchUnBilledOrdersForPubAndSearchStr(pub, "226", pageable);
+		for(Order o: orderList.getContent())
+		{
+			System.out.println(o);
+		}
+	}
+	
 
 }

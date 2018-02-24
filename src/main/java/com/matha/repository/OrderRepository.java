@@ -3,6 +3,7 @@ package com.matha.repository;
 import java.util.List;
 
 import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
@@ -32,5 +33,11 @@ public interface OrderRepository extends JpaRepository<Order, String> {
 	
 	@Query("select distinct ord from Order ord, Publisher pub, Book book, OrderItem oDet where book.bookNum = oDet.book.bookNum and ord = oDet.order and pub = book.publisher and pub=?1 and oDet.purchase is null")
 	public List<Order> fetchUnBilledOrdersForPub(Publisher pub);
+
+	@Query("select distinct ord from Order ord, Publisher pub, Book book, OrderItem oDet where book.bookNum = oDet.book.bookNum and ord = oDet.order and pub = book.publisher and pub=?1 and ord.serialNo like ?2%")
+	public Page<Order> fetchOrdersForPublisherAndSearchStr(Publisher pub, String searchText, Pageable pageable);
+
+	@Query("select distinct ord from Order ord, Publisher pub, Book book, OrderItem oDet where book.bookNum = oDet.book.bookNum and ord = oDet.order and pub = book.publisher and pub=?1 and ord.serialNo like ?2% and oDet.purchase is null")
+	public Page<Order> fetchUnBilledOrdersForPubAndSearchStr(Publisher pub, String searchText, Pageable pageable);
 
 }
