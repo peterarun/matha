@@ -8,11 +8,11 @@
 <?import javafx.scene.layout.AnchorPane?>
 <?import javafx.scene.control.cell.PropertyValueFactory?>
 
-<SplitPane dividerPositions="0.16834170854271358" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" orientation="VERTICAL" prefHeight="490.0" prefWidth="400.0" xmlns="http://javafx.com/javafx/8" xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.matha.controller.AddOrderController">
+<SplitPane dividerPositions="0.16834170854271358" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" orientation="VERTICAL" prefHeight="551.0" prefWidth="400.0" xmlns="http://javafx.com/javafx/8" xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.matha.controller.AddOrderController">
   <items>
     <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="60.0" prefWidth="398.0">
          <children>
-            <Label layoutX="30.0" layoutY="21.0" text="Add/Edit Order">
+            <Label focusTraversable="false" layoutX="30.0" layoutY="21.0" text="Add/Edit Order">
                <font>
                   <Font name="Tahoma" size="24.0" />
                </font>
@@ -21,33 +21,39 @@
          </children></AnchorPane>
     <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="100.0" prefWidth="160.0">
          <children>
-            <Label layoutX="28.0" layoutY="23.0" text="Order No." />
+            <Label layoutX="24.0" layoutY="23.0" text="Order No." />
+            <TextField fx:id="orderNum" layoutX="24.0" layoutY="40.0" prefHeight="25.0" prefWidth="220.0" />
+            
             <Label layoutX="260.0" layoutY="23.0" text="Date" />
-            <Button layoutX="25.0" layoutY="178.0" mnemonicParsing="false" onAction="#removeEntry" prefHeight="25.0" prefWidth="59.0" text="Remove" />
-            <TextField fx:id="orderNum" layoutX="28.0" layoutY="40.0" prefHeight="25.0" prefWidth="216.0" />
             <DatePicker fx:id="orderDate" layoutX="258.0" layoutY="40.0" prefHeight="25.0" prefWidth="115.0" />
-            <TextField fx:id="bookText" layoutX="28.0" layoutY="77.0" prefHeight="25.0" prefWidth="268.0" promptText="Book Name" />            
-            <TextField fx:id="bookCount" layoutX="314.0" layoutY="77.0" onAction="#addBookData" prefHeight="25.0" prefWidth="59.0" promptText="Quantity" />
-            <DatePicker fx:id="despatchDate" layoutX="103.0" layoutY="178.0" prefHeight="25.0" prefWidth="115.0" />
-            <TextField fx:id="desLocation" layoutX="107.0" layoutY="117.0" prefHeight="25.0" prefWidth="268.0" />
-            <Button layoutX="324.0" layoutY="178.0" mnemonicParsing="false" onAction="#saveData" prefHeight="25.0" prefWidth="52.0" text="Save" />
-            <Button fx:id="cancelBtn" layoutX="242.0" layoutY="178.0" mnemonicParsing="false" onAction="#cancelOperation" text="Cancel" />
-            <TableView fx:id="addedBooks" layoutX="26.0" layoutY="212.0" prefHeight="162.0" prefWidth="350.0">
+
+            <Label layoutX="258.0" layoutY="74.0" text="To Be Despatched On" />
+            <DatePicker fx:id="despatchDate" layoutX="258.0" layoutY="91.0" prefHeight="25.0" prefWidth="115.0" />
+
+            <Label layoutX="25.0" layoutY="74.0" text="To Be Sent to" />            
+            <TextField fx:id="desLocation" layoutX="24.0" layoutY="91.0" prefHeight="25.0" prefWidth="220.0" />
+
+            <TableView fx:id="addedBooks" editable="true" layoutX="24.0" layoutY="130.0" prefHeight="228.0" prefWidth="350.0">
               <columns>
-                <TableColumn prefWidth="286.0" text="Book Name">
+                <TableColumn prefWidth="269.0" text="Book Name">
                   <cellValueFactory>
                       <PropertyValueFactory property="bookName" />
                   </cellValueFactory>                
                 </TableColumn>
-                <TableColumn prefWidth="59.0" text="Quantity">
+                <TableColumn fx:id="qtyCol" text="Quantity">
                   <cellValueFactory>
                       <PropertyValueFactory property="count" />
                   </cellValueFactory>                
                 </TableColumn>
               </columns>
             </TableView>
-            <Label layoutX="103.0" layoutY="157.0" text="To Be Despatched On" />
-            <Label layoutX="28.0" layoutY="121.0" text="To Be Sent to" />            
+            <TextField fx:id="bookText" layoutX="24.0" layoutY="362.0" prefHeight="25.0" prefWidth="287.0" promptText="Book Name" />            
+            <TextField fx:id="bookCount" layoutX="321.0" layoutY="362.0" onAction="#addBookData" prefHeight="25.0" prefWidth="52.0" promptText="Quantity" />
+            <Button focusTraversable="false" layoutX="25.0" layoutY="397.0" mnemonicParsing="false" onAction="#removeEntry" prefHeight="25.0" prefWidth="88.0" text="Remove Item" />
+
+            <Button fx:id="cancelBtn" layoutX="259.0" layoutY="397.0" mnemonicParsing="false" onAction="#cancelOperation" text="Cancel" />
+            <Button layoutX="323.0" layoutY="397.0" mnemonicParsing="false" onAction="#saveData" prefHeight="25.0" prefWidth="52.0" text="Save" />
+            
          </children></AnchorPane>
   </items>
 </SplitPane>

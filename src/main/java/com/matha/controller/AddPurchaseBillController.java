@@ -164,6 +164,10 @@ public class AddPurchaseBillController
 				int rowId = t.getTableView().getSelectionModel().getSelectedIndex();
 				if (rowId < t.getTableView().getItems().size())
 				{
+					if(rowId > 0)
+					{
+						t.getTableView().scrollTo(rowId - 1);
+					}
 					t.getTableView().edit(rowId, t.getTablePosition().getTableColumn());
 				}
 			}

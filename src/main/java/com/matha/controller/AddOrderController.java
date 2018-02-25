@@ -1,5 +1,7 @@
 package com.matha.controller;
 
+import static com.matha.util.Converters.getIntegerConverter;
+
 import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.List;
@@ -19,12 +21,16 @@ import com.matha.service.SchoolService;
 
 import javafx.collections.FXCollections;
 import javafx.event.ActionEvent;
+import javafx.event.EventHandler;
 import javafx.fxml.FXML;
 import javafx.scene.control.Button;
 import javafx.scene.control.DatePicker;
 import javafx.scene.control.Label;
+import javafx.scene.control.TableColumn;
+import javafx.scene.control.TableColumn.CellEditEvent;
 import javafx.scene.control.TableView;
 import javafx.scene.control.TextField;
+import javafx.scene.control.cell.TextFieldTableCell;
 import javafx.stage.Stage;
 
 @Component
@@ -59,6 +65,9 @@ public class AddOrderController
 
 	@FXML
 	private TableView<OrderItem> addedBooks;
+	
+	@FXML
+	private TableColumn<OrderItem, Integer> qtyCol;
 
 	@FXML
 	private Button cancelBtn;
@@ -84,6 +93,27 @@ public class AddOrderController
 		List<String> items = new ArrayList<>(bookMap.keySet());
 		TextFields.bindAutoCompletion(bookText, items);
 
+		this.addedBooks.getSelectionModel().cellSelectionEnabledProperty().set(true);
+		this.qtyCol.setCellFactory(TextFieldTableCell.forTableColumn(getIntegerConverter()));
+		this.qtyCol.setOnEditCommit(new EventHandler<CellEditEvent<OrderItem, Integer>>() {
+			public void handle(CellEditEvent<OrderItem, Integer> t)
+			{
+				OrderItem oItem = ((OrderItem) t.getTableView().getItems().get(t.getTablePosition().getRow()));
+				oItem.setCount(t.getNewValue());
+				
+				t.getTableView().getSelectionModel().selectBelowCell();
+				
+				int rowId = t.getTableView().getSelectionModel().getSelectedIndex();				
+				if (rowId < t.getTableView().getItems().size())
+				{
+					if(rowId > 0)
+					{
+						t.getTableView().scrollTo(rowId - 1);
+					}
+					t.getTableView().edit(rowId, t.getTablePosition().getTableColumn());
+				}				
+			}
+		});
 	}
 
 	@FXML

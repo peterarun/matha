@@ -106,4 +106,25 @@ public class Converters
 		StringConverter<LocalDate> dateConv = new LocalDateStringConverter(fmt, fmt);
 		return dateConv;
 	}
+	
+	public static StringConverter<Integer> getIntegerConverter()
+	{
+		StringConverter<Integer> c = new StringConverter<Integer>() {
+
+			@Override
+			public String toString(Integer state)
+			{
+
+				return state == null ? null : state.toString();
+			}
+
+			@Override
+			public Integer fromString(String str)
+			{			
+				return Integer.parseInt(str);
+			}
+		};
+		return c;
+	}
+	
 }

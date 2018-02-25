@@ -212,6 +212,18 @@ public class Utils
 		return priceColumnFactory;
 	}
 
+	public static Callback<CellDataFeatures<OrderItem, String>, ObservableValue<String>> fetchQuantityFactory()
+	{
+		Callback<CellDataFeatures<OrderItem, String>, ObservableValue<String>> qtyColumnFactory = new Callback<CellDataFeatures<OrderItem, String>, ObservableValue<String>>() {
+			public ObservableValue<String> call(CellDataFeatures<OrderItem, String> p)
+			{
+				// p.getValue() returns the Person instance for a particular TableView row
+				return new ReadOnlyStringWrapper(getStringVal(p.getValue().getCount()));
+			}
+		};
+		return qtyColumnFactory;
+	}
+
 	public static void calcNetAmountGen(String discAmtStr, TextField subTotal, RadioButton percentRad, RadioButton rupeeRad, String otherChargesField, TextField netAmt)
 	{
 		String netTotalStr = netAmt.getText();
