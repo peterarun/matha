@@ -395,16 +395,6 @@
 				</textElement>
 				<textFieldExpression><![CDATA[$F{count}]]></textFieldExpression>
 			</textField>
-			<frame>
-				<reportElement x="0" y="-15" width="520" height="25" isPrintInFirstWholeBand="true" uuid="a48ed8ba-ff3b-4bf2-bade-f04098ff0aba"/>
-				<box>
-					<pen lineWidth="1.0" lineColor="#000000"/>
-					<topPen lineWidth="1.0"/>
-					<leftPen lineWidth="1.0"/>
-					<bottomPen lineWidth="1.0"/>
-					<rightPen lineWidth="1.0"/>
-				</box>
-			</frame>
 		</band>
 	</detail>
 	<pageFooter>
