@@ -146,8 +146,8 @@ public class ViewBillController
 				this.discTypeInd.setText(RUPEE_SIGN);
 			}
 			
-			double discAmt = calculateDisc(sale.getSubTotal(), sale.getDiscAmt(), !sale.getDiscType(), sale.getDiscType());
-			calculatedDisc.setText(getStringVal(discAmt));
+//			double discAmt = calculateDisc(sale.getSubTotal(), sale.getDiscAmt(), !sale.getDiscType(), sale.getDiscType());
+			calculatedDisc.setText(getStringVal(sale.getCalcDisc()));
 
 		}
 	}

@@ -47,7 +47,6 @@ import javafx.scene.control.Alert.AlertType;
 import javafx.scene.control.ButtonType;
 import javafx.scene.control.DatePicker;
 import javafx.scene.control.Label;
-import javafx.scene.control.Labeled;
 import javafx.scene.control.SelectionMode;
 import javafx.scene.control.Tab;
 import javafx.scene.control.TabPane;
@@ -153,19 +152,13 @@ public class SchoolDetailsController
 		    @Override
 		    public void updateItem(Sales item, boolean empty)
 		    {
-		    	System.out.println("empty.." + empty + " " + item);
 		        super.updateItem(item, empty);
-
+		        setStyle("");
 		        if (item != null && !empty && item.getSalesTxn() != null && item.getSalesTxn().getTxnFlag() != null) 
 		        {	
-		        	System.out.println(item.getSalesTxn() + " " + item.getSalesTxn().getTxnFlag());
 		            if (item.getSalesTxn().getTxnFlag().equals(DELETED_STR)) 
 		            {
 		            	setStyle("-fx-background-color: pink");
-//		                for(int i=0; i<getChildren().size();i++)
-//		                {
-//		                    ((Labeled) getChildren().get(i)).setStyle("-fx-background-color: pink");
-//		                }                        
 		            }
 		        }
 		    }

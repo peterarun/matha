@@ -80,6 +80,10 @@ public class Sales
 
 	public double getCalcDisc()
 	{
+		if(subTotal == null || discAmt == null)
+		{
+			return 0.0;
+		}
 		if (discType)
 		{
 			return subTotal * discAmt / 100;
