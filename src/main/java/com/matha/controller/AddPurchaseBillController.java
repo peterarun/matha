@@ -51,7 +51,6 @@ import javafx.scene.control.TextField;
 import javafx.scene.control.Toggle;
 import javafx.scene.control.ToggleGroup;
 import javafx.scene.control.cell.TextFieldTableCell;
-import javafx.scene.input.KeyEvent;
 import javafx.stage.Stage;
 
 @Component
@@ -175,7 +174,10 @@ public class AddPurchaseBillController
 		this.publisherDetails.setText(this.publisher.getAddress());
 		this.totalColumn.setCellValueFactory(cellData -> 
 			Bindings.format("%.2f", cellData.getValue().getTotal()));
-
+		
+		this.discAmt.textProperty().addListener((observable, oldValue, newValue) -> {		    
+		    updateNetAmt();
+		});
 	}
 
 	private void prepareEditData(Purchase purchaseIn)
@@ -195,7 +197,7 @@ public class AddPurchaseBillController
 
 			if (purchaseIn.getOrderItems() != null && !purchaseIn.getOrderItems().isEmpty())
 			{
-				orderSet = purchaseIn.getOrderItems().stream().map(OrderItem::getOrder).collect(Collectors.toSet());
+				orderSet = purchaseIn.getOrderItems().stream().map(OrderItem::getOrder).filter(o -> o != null).collect(Collectors.toSet());
 				List<String> orderIdList = orderSet.stream().map(Order::getSerialNo).collect(Collectors.toList());
 				this.orderList.setItems(FXCollections.observableList(orderIdList));
 
@@ -278,7 +280,10 @@ public class AddPurchaseBillController
 		itemsIn.addAll(bookItems);
 		for (OrderItem orderItem : itemsIn)
 		{
-			orderItem.setFullFilledCnt(orderItem.getCount());
+			if(orderItem.getFullFilledCnt() == null)
+			{
+				orderItem.setFullFilledCnt(orderItem.getCount());
+			}
 		}
 	}
 	
@@ -314,10 +319,9 @@ public class AddPurchaseBillController
 	}
 
 	@FXML
-	private void updateNetAmt(KeyEvent ke)
+	private void updateNetAmt()
 	{
-		String discAmtStr = StringUtils.defaultString(discAmt.getText());
-		discAmtStr += ke.getCharacter();
+		String discAmtStr = StringUtils.defaultString(discAmt.getText());		
 		if (!StringUtils.isEmpty(discAmtStr))
 		{
 			calcNetAmount(discAmtStr);

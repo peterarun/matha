@@ -1,5 +1,7 @@
 package com.matha.sales;
 
+import static com.matha.util.Utils.calcFinYear;
+
 import java.io.InputStream;
 import java.time.LocalDate;
 import java.util.HashMap;
@@ -164,4 +166,11 @@ public class SalesApplicationTests
             System.out.println(printService.getName()); 
         }
     }
+	
+	@Test
+	public void testFy()
+	{
+		Integer newInvNum = schoolService.fetchNextSalesInvoiceNum(calcFinYear(LocalDate.now()));
+		System.out.println(newInvNum);
+	}
 }

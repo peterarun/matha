@@ -3,6 +3,7 @@ package com.matha.util;
 import static com.matha.util.UtilConstants.DATE_FORMAT;
 
 import java.time.LocalDate;
+import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 
 import com.matha.domain.BookCategory;
@@ -12,6 +13,7 @@ import com.matha.domain.State;
 
 import javafx.util.StringConverter;
 import javafx.util.converter.LocalDateStringConverter;
+import javafx.util.converter.LocalDateTimeStringConverter;
 
 public class Converters
 {
@@ -104,6 +106,13 @@ public class Converters
 	{
 		DateTimeFormatter fmt = DateTimeFormatter.ofPattern(DATE_FORMAT);
 		StringConverter<LocalDate> dateConv = new LocalDateStringConverter(fmt, fmt);
+		return dateConv;
+	}
+	
+	public static StringConverter<LocalDateTime> getLocalDateTimeConverter()
+	{
+		DateTimeFormatter fmt = DateTimeFormatter.ofPattern(DATE_FORMAT);
+		StringConverter<LocalDateTime> dateConv = new LocalDateTimeStringConverter(fmt, fmt);
 		return dateConv;
 	}
 	

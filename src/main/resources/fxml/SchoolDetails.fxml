@@ -85,12 +85,18 @@
 																<PropertyValueFactory property="netAmount" />
 															</cellValueFactory>
                                           				</TableColumn>
+			                                          <TableColumn prefWidth="125.0" text="Discount" >
+															<cellValueFactory>
+																<PropertyValueFactory property="calcDisc" />
+															</cellValueFactory>			                                          
+			                                          </TableColumn>
 													</columns>
 												</TableView>
 												<Button layoutX="656.0" layoutY="25.0" mnemonicParsing="false" onAction="#addBill" prefHeight="26.0" prefWidth="120.0" text="Add" />
 												<Button layoutX="656.0" layoutY="66.0" mnemonicParsing="false" onAction="#editBill" prefHeight="25.0" prefWidth="120.0" text="Edit" />
 												<Button focusTraversable="false" layoutX="656.0" layoutY="105.0" mnemonicParsing="false" onAction="#deleteBill" prefHeight="25.0" prefWidth="120.0" text="Delete" />
                                     			<Button layoutX="656.0" layoutY="144.0" mnemonicParsing="false" onAction="#printPurchaseBill" prefHeight="25.0" prefWidth="120.0" text="Print" />
+                                    <Button layoutX="656.0" layoutY="183.0" mnemonicParsing="false" onAction="#viewBill" prefHeight="25.0" prefWidth="120.0" text="View" />
 											</children>
 										</AnchorPane>
 									</content>

@@ -76,7 +76,7 @@
 					</toggleGroup>
 				</RadioButton>
 				<RadioButton fx:id="percentRad" layoutX="356.0" layoutY="443.0" mnemonicParsing="false" prefHeight="17.0" prefWidth="66.0" selected="true" text="Percent" toggleGroup="$discType" />				
-				<TextField fx:id="discAmt" alignment="CENTER_RIGHT" layoutX="432.0" layoutY="439.0" onKeyTyped="#updateNetAmt" prefHeight="25.0" prefWidth="136.0" />
+				<TextField fx:id="discAmt" alignment="CENTER_RIGHT" layoutX="432.0" layoutY="439.0" prefHeight="25.0" prefWidth="136.0" />
 				<Label fx:id="discTypeInd" layoutX="570.0" layoutY="443.0" text="\%" />					
 				<Label layoutX="215.0" layoutY="478.0" text="Grand Total" />
 				<TextField fx:id="netAmt" alignment="CENTER_RIGHT" layoutX="432.0" layoutY="474.0" prefHeight="25.0" prefWidth="149.0" />

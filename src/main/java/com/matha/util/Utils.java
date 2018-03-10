@@ -1,9 +1,20 @@
 package com.matha.util;
 
+import static com.matha.util.UtilConstants.COMMA_SIGN;
+import static com.matha.util.UtilConstants.HYPHEN_SPC_SIGN;
+import static com.matha.util.UtilConstants.NEW_LINE;
 import static com.matha.util.UtilConstants.PERCENT_SIGN;
 import static com.matha.util.UtilConstants.RUPEE_SIGN;
+import static com.matha.util.UtilConstants.SPACE_SIGN;
 
+import java.io.ByteArrayOutputStream;
+import java.io.InputStream;
+import java.nio.charset.Charset;
+import java.time.LocalDate;
+import java.util.HashMap;
 import java.util.Optional;
+import java.util.Set;
+import java.util.stream.Collectors;
 
 import javax.print.PrintException;
 import javax.print.attribute.HashPrintRequestAttributeSet;
@@ -14,30 +25,49 @@ import javax.print.attribute.standard.MediaSizeName;
 import javax.print.attribute.standard.OrientationRequested;
 import javax.print.attribute.standard.PrinterName;
 
-import org.apache.commons.lang.StringUtils;
+import org.apache.commons.lang3.StringUtils;
 
+import com.matha.controller.PrintOrderController;
+import com.matha.controller.PrintSalesBillController;
+import com.matha.domain.Account;
+import com.matha.domain.Address;
+import com.matha.domain.Order;
 import com.matha.domain.OrderItem;
+import com.matha.domain.Sales;
+import com.matha.domain.SalesTransaction;
+import com.matha.domain.School;
+import com.matha.service.SchoolService;
 
 import javafx.beans.property.ReadOnlyStringWrapper;
 import javafx.beans.value.ObservableValue;
+import javafx.fxml.FXMLLoader;
 import javafx.print.PageLayout;
 import javafx.print.PageOrientation;
 import javafx.print.Paper;
 import javafx.print.Printer;
 import javafx.print.PrinterJob;
 import javafx.scene.Node;
+import javafx.scene.Parent;
+import javafx.scene.Scene;
 import javafx.scene.control.ChoiceDialog;
 import javafx.scene.control.Label;
 import javafx.scene.control.RadioButton;
 import javafx.scene.control.TableColumn.CellDataFeatures;
 import javafx.scene.control.TextField;
 import javafx.scene.transform.Scale;
+import javafx.scene.web.WebView;
 import javafx.stage.Window;
 import javafx.util.Callback;
 import net.sf.jasperreports.engine.JRException;
+import net.sf.jasperreports.engine.JasperCompileManager;
+import net.sf.jasperreports.engine.JasperFillManager;
 import net.sf.jasperreports.engine.JasperPrint;
+import net.sf.jasperreports.engine.JasperReport;
+import net.sf.jasperreports.engine.data.JRBeanCollectionDataSource;
+import net.sf.jasperreports.engine.export.HtmlExporter;
 import net.sf.jasperreports.engine.export.JRPrintServiceExporter;
 import net.sf.jasperreports.export.SimpleExporterInput;
+import net.sf.jasperreports.export.SimpleHtmlExporterOutput;
 import net.sf.jasperreports.export.SimplePrintServiceExporterConfiguration;
 
 public class Utils
@@ -154,6 +184,112 @@ public class Utils
 		}
 	}
 
+	public static Scene preparePrintScene(Sales purchase, FXMLLoader createOrderLoader, InputStream jasperStream, SchoolService schoolService)
+	{
+		Scene addOrderScene = null;
+		try
+		{			
+			Parent addOrderRoot = createOrderLoader.load();
+			PrintSalesBillController ctrl = createOrderLoader.getController();						
+			JasperPrint jasperPrint = prepareSaleBillPrint(schoolService, purchase.getSalesTxn().getSchool(), purchase, jasperStream);
+			ctrl.initData(jasperPrint);
+			addOrderScene = new Scene(addOrderRoot);			
+		}
+		catch (Exception e)
+		{
+			e.printStackTrace();
+		}
+		return addOrderScene;
+	}
+	
+	public static JasperPrint prepareSaleBillPrint(SchoolService schoolService, School sch, Sales sale, InputStream jasperStream)
+	{
+
+		JasperPrint jasperPrint = null;		
+		HashMap<String, Object> hm = new HashMap<>();
+		try
+		{			
+			Address salesAddr = schoolService.fetchAddress("Sales");
+			StringBuilder strBuild = new StringBuilder();
+			strBuild.append(salesAddr.getAddress1());
+			strBuild.append(NEW_LINE); 
+			strBuild.append(salesAddr.getAddress2());
+			strBuild.append(COMMA_SIGN);
+			strBuild.append(SPACE_SIGN);
+			strBuild.append(salesAddr.getAddress3());
+			strBuild.append(HYPHEN_SPC_SIGN);
+			strBuild.append(salesAddr.getPin());
+			strBuild.append(NEW_LINE);
+			strBuild.append("Ph: ");
+			strBuild.append(salesAddr.getPhone1());
+			strBuild.append(SPACE_SIGN);
+			strBuild.append("Mob: ");
+			strBuild.append(salesAddr.getPhone2());
+			strBuild.append(NEW_LINE);
+			strBuild.append("Email: ");
+			strBuild.append(salesAddr.getEmail());
+			
+			Account acct = schoolService.fetchAccount("Matha Agencies");
+			StringBuilder strBuildAcct = new StringBuilder(acct.getName());
+			strBuildAcct.append(COMMA_SIGN);
+			strBuildAcct.append(" State Bank of India");
+			strBuildAcct.append(COMMA_SIGN);
+			strBuildAcct.append(" Vazhakulam Branch");
+			strBuildAcct.append(COMMA_SIGN);
+			strBuildAcct.append(" A/C No: ");			
+			strBuildAcct.append(acct.getAccountNum());
+			strBuildAcct.append(COMMA_SIGN);
+			strBuildAcct.append(" IFSC");
+			strBuildAcct.append(HYPHEN_SPC_SIGN);
+			strBuildAcct.append(acct.getIfsc());
+			
+			Set<OrderItem> tableData = sale.getOrderItems();
+			SalesTransaction txn = sale.getSalesTxn();
+			Set<String> orderIdSet = tableData.stream().map(OrderItem::getOrder).filter(o-> o != null).map(Order::getSerialNo).collect(Collectors.toSet());
+			String orderIds = String.join(",", orderIdSet);
+			Double subTotal = sale.getSubTotal();
+			Double discAmt = sale.getDiscAmt();
+			if(discAmt != null)
+			{
+				discAmt = sale.getDiscType() ? subTotal * discAmt /100 : discAmt;  
+			}
+			 			
+			hm.put("partyName", sch.getName());
+			hm.put("partyAddress", sch.addressText());
+			hm.put("agencyName", "MATHA AGENCIES");
+			hm.put("agencyDetails", strBuild.toString());
+			hm.put("partyPhone", sch.getPhone1() == null ? sch.getPhone2() : sch.getPhone1());
+			hm.put("documentsThrough", sale.getDocsThru());
+			hm.put("invoiceNo", getStringVal(sale.getInvoiceNo()));
+			hm.put("txnDate", txn.getTxnDateStr());
+			hm.put("orderNumbers", orderIds);
+			hm.put("despatchedPer", sale.getDespatch());
+			hm.put("grNo", sale.getGrNum());
+			hm.put("packageCnt", sale.getPackages());
+			hm.put("total", sale.getSubTotal());
+			hm.put("discount", discAmt);
+			hm.put("grandTotal", sale.getNetAmount());
+			hm.put("accountDet", strBuildAcct.toString());
+			hm.put("grandTotalInWords", convertDouble(sale.getNetAmount()));
+			hm.put("otherCharges", sale.getOtherAmount());
+			
+			JasperReport compiledFile = JasperCompileManager.compileReport(jasperStream);
+
+			jasperPrint = JasperFillManager.fillReport(compiledFile, hm, new JRBeanCollectionDataSource(tableData));
+		}
+		catch (JRException e)
+		{
+			e.printStackTrace();
+		}
+		catch (Exception e)
+		{
+			e.printStackTrace();
+		}
+
+		return jasperPrint;
+	
+	}
+	
 	public static void printJasper(JasperPrint jasperPrint) throws PrintException, JRException
 	{
 		Label jobStatus = new Label();
@@ -171,6 +307,10 @@ public class Utils
 		if (opt.isPresent())
 		{
 			printerJob = opt.get();
+		}
+		else
+		{
+			return;
 		}
 
 		// Set the printing settings
@@ -200,6 +340,44 @@ public class Utils
 		exporter.exportReport();
 	}
 
+	public void loadWebInvoice(JasperPrint printIn, WebView invoiceData)
+	{
+		try
+		{
+			ByteArrayOutputStream outputStream = new ByteArrayOutputStream();
+			HtmlExporter exporter = new HtmlExporter();
+			exporter.setExporterOutput(new SimpleHtmlExporterOutput(outputStream));
+			exporter.setExporterInput(new SimpleExporterInput(printIn));
+			exporter.exportReport();
+
+			String content = StringUtils.toEncodedString(outputStream.toByteArray(), Charset.defaultCharset());
+			invoiceData.getEngine().loadContent(content);
+		}
+		catch (Exception e)
+		{
+			e.printStackTrace();
+		}
+
+	}
+
+	public static Scene prepareOrderPrintScene(Order order, FXMLLoader createOrderLoader, InputStream jasperStream, SchoolService schoolService)
+	{
+		Scene addOrderScene = null;
+		try
+		{			
+			Parent addOrderRoot = createOrderLoader.load();
+			PrintOrderController ctrl = createOrderLoader.getController();						
+			JasperPrint jasperPrint = ctrl.prepareJasperPrint(order);
+			ctrl.initData(jasperPrint);
+			addOrderScene = new Scene(addOrderRoot);			
+		}
+		catch (Exception e)
+		{
+			e.printStackTrace();
+		}
+		return addOrderScene;
+	}
+	
 	public static Callback<CellDataFeatures<OrderItem, String>, ObservableValue<String>> fetchPriceColumnFactory()
 	{
 		Callback<CellDataFeatures<OrderItem, String>, ObservableValue<String>> priceColumnFactory = new Callback<CellDataFeatures<OrderItem, String>, ObservableValue<String>>() {
@@ -224,11 +402,35 @@ public class Utils
 		return qtyColumnFactory;
 	}
 
-	public static void calcNetAmountGen(String discAmtStr, TextField subTotal, RadioButton percentRad, RadioButton rupeeRad, String otherChargesField, TextField netAmt)
+	public static Callback<CellDataFeatures<OrderItem, String>, ObservableValue<String>> fetchPurCntFactory()
+	{
+		Callback<CellDataFeatures<OrderItem, String>, ObservableValue<String>> qtyColumnFactory = new Callback<CellDataFeatures<OrderItem, String>, ObservableValue<String>>() {
+			public ObservableValue<String> call(CellDataFeatures<OrderItem, String> p)
+			{
+				// p.getValue() returns the Person instance for a particular TableView row
+				return new ReadOnlyStringWrapper(getStringVal(p.getValue().getFullFilledCnt()));
+			}
+		};
+		return qtyColumnFactory;
+	}
+
+	public static Callback<CellDataFeatures<OrderItem, String>, ObservableValue<String>> fetchSaleCntFactory()
+	{
+		Callback<CellDataFeatures<OrderItem, String>, ObservableValue<String>> qtyColumnFactory = new Callback<CellDataFeatures<OrderItem, String>, ObservableValue<String>>() {
+			public ObservableValue<String> call(CellDataFeatures<OrderItem, String> p)
+			{
+				// p.getValue() returns the Person instance for a particular TableView row
+				return new ReadOnlyStringWrapper(getStringVal(p.getValue().getSoldCnt()));
+			}
+		};
+		return qtyColumnFactory;
+	}
+	
+	public static void calcNetAmountGen(String discAmtStr, TextField subTotal, RadioButton percentRad, RadioButton rupeeRad, String otherChargesField, TextField netAmt, TextField calcDisc)
 	{
 		String netTotalStr = netAmt.getText();
-		Double netTotalDbl = StringUtils.isEmpty(netTotalStr) ? 0.0 : Double.parseDouble(netTotalStr);
-		Double otherCharges = getDoubleVal(otherChargesField);
+		Double netTotalDbl = StringUtils.isBlank(netTotalStr) ? 0.0 : Double.parseDouble(netTotalStr);
+		Double otherCharges = StringUtils.isBlank(otherChargesField) ? 0.0 : getDoubleVal(otherChargesField);
 
 		String subTotalStr = subTotal.getText();
 		if (subTotalStr != null)
@@ -236,18 +438,12 @@ public class Utils
 			double subTotalDbl = Double.parseDouble(subTotalStr);
 			if (subTotalDbl > 0)
 			{
-				double discAmtDbl = StringUtils.isEmpty(discAmtStr) ? 0 : Double.parseDouble(discAmtStr);
-
+				double discAmtDbl = StringUtils.isBlank(discAmtStr) ? 0 : Double.parseDouble(discAmtStr);
 				if (discAmtDbl > 0)
 				{
-					if (rupeeRad.isSelected())
-					{
-						netTotalDbl = subTotalDbl - discAmtDbl;
-					}
-					else if (percentRad.isSelected())
-					{
-						netTotalDbl = subTotalDbl - subTotalDbl * discAmtDbl / 100;
-					}
+					double discAmt = calculateDisc(subTotalDbl, discAmtDbl, rupeeRad.isSelected(), percentRad.isSelected());
+					calcDisc.setText(getStringVal(discAmt));
+					netTotalDbl = subTotalDbl - discAmt; 
 				}
 				else
 				{
@@ -262,6 +458,15 @@ public class Utils
 		netAmt.setText(getStringVal(netTotalDbl));
 	}
 
+	public static double calculateDisc(double subTotalDbl, double discAmtDbl, boolean rupeeRad, boolean percentRad)
+	{
+		if (percentRad)
+		{
+			return subTotalDbl * discAmtDbl / 100;
+		}
+		return discAmtDbl;
+	}
+	
 	public static void loadDiscSymbol(RadioButton percentRad, RadioButton rupeeRad, Label discTypeInd)
 	{
 		if (percentRad.isSelected())
@@ -329,5 +534,10 @@ public class Utils
 		}
 
 		return convert(n / 10000000) + " Crore" + ((n % 10000000 != 0) ? " " : "") + convert(n % 10000000);
+	}
+	
+	public static Integer calcFinYear(LocalDate dt)
+	{
+		return dt.minusMonths(3).getYear() - 2007;
 	}
 }

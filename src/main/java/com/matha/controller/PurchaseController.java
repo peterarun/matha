@@ -23,6 +23,7 @@ import java.time.LocalDate;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
+import java.util.Map;
 import java.util.Optional;
 import java.util.Set;
 import java.util.stream.Collectors;
@@ -45,7 +46,6 @@ import com.matha.domain.PurchaseTransaction;
 import com.matha.service.SchoolService;
 import com.matha.util.Converters;
 import com.matha.util.LoadUtils;
-import com.matha.util.Utils;
 
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
@@ -61,8 +61,8 @@ import javafx.scene.control.Alert.AlertType;
 import javafx.scene.control.ButtonType;
 import javafx.scene.control.CheckBox;
 import javafx.scene.control.ChoiceBox;
+import javafx.scene.control.ChoiceDialog;
 import javafx.scene.control.DatePicker;
-import javafx.scene.control.Label;
 import javafx.scene.control.Pagination;
 import javafx.scene.control.SelectionMode;
 import javafx.scene.control.Tab;
@@ -74,7 +74,6 @@ import javafx.scene.layout.BorderPane;
 import javafx.scene.web.WebView;
 import javafx.stage.FileChooser;
 import javafx.stage.Stage;
-import javafx.stage.Window;
 import javafx.stage.WindowEvent;
 import net.sf.jasperreports.engine.JRException;
 import net.sf.jasperreports.engine.JasperCompileManager;
@@ -154,22 +153,37 @@ public class PurchaseController
 	private WebView reportData;
 
 	private JasperPrint print;
+	private Map<String, Publisher> pubMap;
 
 	@FXML
 	protected void initialize()
 	{
 		orderTable.getSelectionModel().setSelectionMode(SelectionMode.MULTIPLE);
-		orderPaginator.setPageFactory(this::createPage);
 
 		List<Publisher> allPublishers = schoolService.fetchAllPublishers();
 		publishers.setConverter(Converters.getPublisherConverter());
 		publishers.setItems(FXCollections.observableList(allPublishers));
-		publishers.getSelectionModel().selectFirst();
+//		publishers.getSelectionModel().selectFirst();
+		
+		pubMap = allPublishers.stream().collect(Collectors.toMap(Publisher::getName, pub -> pub ));
 
+		Optional<String> pubSel = selectPublisher();
+		if(pubSel.isPresent())
+		{
+			publishers.getSelectionModel().select(pubMap.get(pubSel.get()));
+		}
+		else
+		{
+			return;
+		}
+		
+		
 		LocalDate toDateVal = LocalDate.now();
 		LocalDate fromDateVal = toDateVal.minusMonths(6);
 		fromDate.setValue(fromDateVal);
 		toDate.setValue(toDateVal);
+
+		orderPaginator.setPageFactory(this::createPage);
 
 	}
 
@@ -433,12 +447,16 @@ public class PurchaseController
 	private void loadOrderTable(int idx)
 	{
 		Publisher pub = publishers.getSelectionModel().getSelectedItem();
+		if(pub == null)
+		{
+			return;
+		}
 		List<Order> orderList = schoolService.fetchOrders(pub, idx, ROWS_PER_PAGE, billedToggle.isSelected()).getContent();
 		orderTable.setItems(FXCollections.observableList(orderList));
 	}
 
 	private void loadOrderSearchTable(int idx)
-	{
+	{		
 		Publisher pub = publishers.getSelectionModel().getSelectedItem();
 		List<Order> orderList = schoolService.fetchOrderSearch(pub, idx, ROWS_PER_PAGE, billedToggle.isSelected(), orderTyped.getText()).getContent();
 		orderTable.setItems(FXCollections.observableList(orderList));
@@ -741,28 +759,33 @@ public class PurchaseController
 	{
 		try
 		{
-
 			FXMLLoader createOrderLoader = LoadUtils.loadFxml(this, printOrderFxmlFile);
-			Parent addOrderRoot;
-
-			addOrderRoot = createOrderLoader.load();
+			Parent addOrderRoot = createOrderLoader.load();
 			PrintOrderController ctrl = createOrderLoader.getController();
-
-			Order orderItem = orderTable.getSelectionModel().getSelectedItem();
-			Publisher pub = publishers.getSelectionModel().getSelectedItem();
-			ctrl.initData(orderItem, pub);
-
-			Scene parentScene = ((Node) ev.getSource()).getScene();
-			Window parentWindow = parentScene.getWindow();
-
-			Utils.print(addOrderRoot, parentWindow, new Label());
+			Order purchase = orderTable.getSelectionModel().getSelectedItem();
+			JasperPrint jasperPrint = ctrl.prepareJasperPrint(purchase);
+			ctrl.initData(jasperPrint);
+			Scene addOrderScene = new Scene(addOrderRoot);
+			prepareAndShowStage(ev, addOrderScene);
 		}
 		catch (Exception e)
 		{
 			e.printStackTrace();
-		}
+		}		
 	}
 
+	public Optional<String> selectPublisher()
+	{
+		ChoiceDialog<String> dialog = new ChoiceDialog<>(null, pubMap.keySet());
+		
+		dialog.setTitle("Publisher Selection");
+		dialog.setHeaderText("Publisher Selection");
+		dialog.setContentText("Please select a publisher:");
+		
+		Optional<String> result = dialog.showAndWait();		
+		return result;
+	}
+	
 	private void prepareAndShowStage(ActionEvent e, Scene childScene)
 	{
 		Stage stage = LoadUtils.loadChildStage(e, childScene);

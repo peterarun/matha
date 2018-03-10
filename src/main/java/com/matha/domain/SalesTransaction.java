@@ -79,6 +79,10 @@ public class SalesTransaction
 	@JoinColumn(name = "NextTxnId")
 	private SalesTransaction nextTxn;
 
+	// If null, active. Else deleted
+	@Column(name = "TxnId")
+	private String txnFlag;
+
 	public String getType()
 	{
 		String type = "";
@@ -245,8 +249,18 @@ public class SalesTransaction
 	{
 		this.nextTxn = nextTxn;
 	}
+	
+    public String getTxnFlag()
+	{
+		return txnFlag;
+	}
 
-    @PrePersist
+	public void setTxnFlag(String txnFlag)
+	{
+		this.txnFlag = txnFlag;
+	}
+
+	@PrePersist
     public void onPrePersist() {
     	Date dt = new Date();
         setAddTime(dt);

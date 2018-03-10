@@ -41,7 +41,7 @@ public class Sales
 	private Integer invoiceNo;
 	
 	@Column(name = "Packages")
-	private Integer packages;
+	private String packages;
 
 	@Column(name = "DAmt")
 	private Double discAmt;
@@ -54,7 +54,13 @@ public class Sales
 
 	@Column(name = "Others")
 	private Double otherAmount;
+	
+	@Column(name = "Fy")
+	private Integer financialYear;	
 
+	@Column(name = "NetAmt")
+	private Double deletedAmt;	
+	
 	@OneToOne
 	@JoinColumn(name = "TxnId")
 	private SalesTransaction salesTxn;
@@ -72,6 +78,15 @@ public class Sales
 		return DATE_CONV.toString(getInvoiceDate());
 	}
 
+	public double getCalcDisc()
+	{
+		if (discType)
+		{
+			return subTotal * discAmt / 100;
+		}
+		return discAmt;
+	}
+	
 	public Double getNetAmount()
 	{
 		return salesTxn.getAmount();
@@ -147,12 +162,12 @@ public class Sales
 		this.grNum = grNum;
 	}
 
-	public Integer getPackages()
+	public String getPackages()
 	{
 		return packages;
 	}
 
-	public void setPackages(Integer packages)
+	public void setPackages(String packages)
 	{
 		this.packages = packages;
 	}
@@ -195,6 +210,26 @@ public class Sales
 	public void setOtherAmount(Double otherAmount)
 	{
 		this.otherAmount = otherAmount;
+	}
+
+	public Integer getFinancialYear()
+	{
+		return financialYear;
+	}
+
+	public void setFinancialYear(Integer financialYear)
+	{
+		this.financialYear = financialYear;
+	}
+
+	public Double getDeletedAmt()
+	{
+		return deletedAmt;
+	}
+
+	public void setDeletedAmt(Double deletedAmt)
+	{
+		this.deletedAmt = deletedAmt;
 	}
 
 }

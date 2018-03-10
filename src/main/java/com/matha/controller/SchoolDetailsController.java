@@ -1,17 +1,16 @@
 package com.matha.controller;
 
-import static com.matha.util.UtilConstants.COMMA_SIGN;
-import static com.matha.util.UtilConstants.HYPHEN_SPC_SIGN;
-import static com.matha.util.UtilConstants.NEW_LINE;
-import static com.matha.util.UtilConstants.SPACE_SIGN;
+import static com.matha.util.UtilConstants.DELETED_STR;
 import static com.matha.util.UtilConstants.addBillFxmlFile;
 import static com.matha.util.UtilConstants.addPaymentFxmlFile;
 import static com.matha.util.UtilConstants.addReturnFxmlFile;
+import static com.matha.util.UtilConstants.buttonTypeCancel;
+import static com.matha.util.UtilConstants.buttonTypeOne;
 import static com.matha.util.UtilConstants.createOrderFxmlFile;
 import static com.matha.util.UtilConstants.printSaleFxmlFile;
 import static com.matha.util.UtilConstants.salesInvoiceJrxml;
-import static com.matha.util.Utils.convertDouble;
-import static com.matha.util.Utils.getStringVal;
+import static com.matha.util.UtilConstants.viewBillFxmlFile;
+import static com.matha.util.Utils.preparePrintScene;
 
 import java.io.IOException;
 import java.io.InputStream;
@@ -19,17 +18,12 @@ import java.time.LocalDate;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Optional;
-import java.util.Set;
-import java.util.stream.Collectors;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
-import com.matha.domain.Account;
-import com.matha.domain.Address;
 import com.matha.domain.Book;
 import com.matha.domain.Order;
-import com.matha.domain.OrderItem;
 import com.matha.domain.Sales;
 import com.matha.domain.SalesTransaction;
 import com.matha.domain.School;
@@ -53,21 +47,17 @@ import javafx.scene.control.Alert.AlertType;
 import javafx.scene.control.ButtonType;
 import javafx.scene.control.DatePicker;
 import javafx.scene.control.Label;
+import javafx.scene.control.Labeled;
 import javafx.scene.control.SelectionMode;
 import javafx.scene.control.Tab;
 import javafx.scene.control.TabPane;
 import javafx.scene.control.TableColumn;
+import javafx.scene.control.TableRow;
 import javafx.scene.control.TableView;
 import javafx.scene.control.TextArea;
 import javafx.scene.control.TextField;
 import javafx.stage.Stage;
 import javafx.stage.WindowEvent;
-import net.sf.jasperreports.engine.JRException;
-import net.sf.jasperreports.engine.JasperCompileManager;
-import net.sf.jasperreports.engine.JasperFillManager;
-import net.sf.jasperreports.engine.JasperPrint;
-import net.sf.jasperreports.engine.JasperReport;
-import net.sf.jasperreports.engine.data.JRBeanCollectionDataSource;
 
 @Component
 public class SchoolDetailsController
@@ -154,7 +144,34 @@ public class SchoolDetailsController
 		txnData.getSelectionModel().setSelectionMode(SelectionMode.MULTIPLE);
 		this.amountColumn.setCellValueFactory(cellData -> 
 			Bindings.format("%.2f", cellData.getValue().getNetAmount())
-	);
+		);
+				
+		this.billData.setRowFactory(row -> {
+			
+			TableRow<Sales> rowIn = new TableRow<Sales>()
+		{
+		    @Override
+		    public void updateItem(Sales item, boolean empty)
+		    {
+		    	System.out.println("empty.." + empty + " " + item);
+		        super.updateItem(item, empty);
+
+		        if (item != null && !empty && item.getSalesTxn() != null && item.getSalesTxn().getTxnFlag() != null) 
+		        {	
+		        	System.out.println(item.getSalesTxn() + " " + item.getSalesTxn().getTxnFlag());
+		            if (item.getSalesTxn().getTxnFlag().equals(DELETED_STR)) 
+		            {
+		            	setStyle("-fx-background-color: pink");
+//		                for(int i=0; i<getChildren().size();i++)
+//		                {
+//		                    ((Labeled) getChildren().get(i)).setStyle("-fx-background-color: pink");
+//		                }                        
+		            }
+		        }
+		    }
+		};
+		return rowIn;
+		});
 	}
 
 	public void initData(School school)
@@ -258,10 +275,11 @@ public class SchoolDetailsController
 			Parent addBillRoot = createBillLoader.load();
 			AddBillController ctrl = createBillLoader.getController();
 			ObservableList<Order> selectedOrder = txnData.getSelectionModel().getSelectedItems();
-			ctrl.initData(selectedOrder, this.school, null);
+			ctrl.initData(selectedOrder, this.school, null, this.bookMap);
 			Scene addBillScene = new Scene(addBillRoot);
 			prepareAndShowStage(event, addBillScene, billEventHandler);
 			saleTabs.getSelectionModel().select(billsTab);
+			showPrintDialog(ctrl.getSelectedSale(), event);
 		}
 		catch (Exception e)
 		{
@@ -278,10 +296,11 @@ public class SchoolDetailsController
 			Parent addBillRoot = createBillLoader.load();
 			AddBillController ctrl = createBillLoader.getController();
 			ObservableList<Order> selectedOrder = txnData.getSelectionModel().getSelectedItems();
-			ctrl.initData(selectedOrder, this.school, null);
+			ctrl.initData(selectedOrder, this.school, null, this.bookMap);
 			Scene addBillScene = new Scene(addBillRoot);
 			prepareAndShowStage(event, addBillScene, billEventHandler);
-
+			showPrintDialog(ctrl.getSelectedSale(), event);
+						
 		}
 		catch (Exception e)
 		{
@@ -292,14 +311,49 @@ public class SchoolDetailsController
 	@FXML
 	void editBill(ActionEvent event)
 	{
+		try
+		{
+			Sales selectedSale = billData.getSelectionModel().getSelectedItem();
+			if(selectedSale.getSalesTxn().getTxnFlag() != null)
+			{
+				showAlert(selectedSale);
+				return;
+			}
+			FXMLLoader createBillLoader = LoadUtils.loadFxml(this, addBillFxmlFile);
+			Parent addBillRoot = createBillLoader.load();
+			AddBillController ctrl = createBillLoader.getController();
+			ctrl.initData(null, this.school, selectedSale, this.bookMap);
+			Scene addBillScene = new Scene(addBillRoot);
+			prepareAndShowStage(event, addBillScene, billEventHandler);
+			showPrintDialog(ctrl.getSelectedSale(), event);
+		}
+		catch (Exception e)
+		{
+			e.printStackTrace();
+		}
+
+	}
+
+	private void showAlert(Sales selectedSale)
+	{
+		Alert alert = new Alert(AlertType.ERROR);
+		alert.setTitle("Edit Bill Error");
+		alert.setHeaderText("Unable to edit a deleted bill: " + selectedSale.getInvoiceNo());
+		alert.setContentText("Cannot Edit; Please use View option");
+		alert.showAndWait();		
+	}
+
+	@FXML
+	void viewBill(ActionEvent event)
+	{
 
 		try
 		{
 			Sales selectedSale = billData.getSelectionModel().getSelectedItem();
-			FXMLLoader createBillLoader = LoadUtils.loadFxml(this, addBillFxmlFile);
+			FXMLLoader createBillLoader = LoadUtils.loadFxml(this, viewBillFxmlFile);
 			Parent addBillRoot = createBillLoader.load();
-			AddBillController ctrl = createBillLoader.getController();
-			ctrl.initData(null, this.school, selectedSale);
+			ViewBillController ctrl = createBillLoader.getController();
+			ctrl.initData(this.school, selectedSale);
 			Scene addBillScene = new Scene(addBillRoot);
 			prepareAndShowStage(event, addBillScene, billEventHandler);
 
@@ -310,7 +364,7 @@ public class SchoolDetailsController
 		}
 
 	}
-
+	
 	@FXML
 	void deleteBill(ActionEvent event)
 	{
@@ -333,110 +387,15 @@ public class SchoolDetailsController
 	{
 		try
 		{
-			FXMLLoader createOrderLoader = LoadUtils.loadFxml(this, printSaleFxmlFile);
-			Parent addOrderRoot = createOrderLoader.load();
-			PrintSalesBillController ctrl = createOrderLoader.getController();
 			Sales purchase = billData.getSelectionModel().getSelectedItem();
-			JasperPrint jasperPrint = prepareJasperPrint(purchase.getSalesTxn().getSchool(), purchase);
-			ctrl.initData(jasperPrint);
-			Scene addOrderScene = new Scene(addOrderRoot);
-			prepareAndShowStage(ev, addOrderScene);
+			printBill(purchase, ev);
 		}
 		catch (Exception e)
 		{
 			e.printStackTrace();
 		}	
 	}
-	
-	private JasperPrint prepareJasperPrint(School sch, Sales sale)
-	{
-
-		JasperPrint jasperPrint = null;
-		InputStream jasperStream = getClass().getResourceAsStream(salesInvoiceJrxml);
-		HashMap<String, Object> hm = new HashMap<>();
-		try
-		{			
-			Address salesAddr = schoolService.fetchAddress("Sales");
-			StringBuilder strBuild = new StringBuilder();
-			strBuild.append(salesAddr.getAddress1());
-			strBuild.append(NEW_LINE); 
-			strBuild.append(salesAddr.getAddress2());
-			strBuild.append(COMMA_SIGN);
-			strBuild.append(SPACE_SIGN);
-			strBuild.append(salesAddr.getAddress3());
-			strBuild.append(HYPHEN_SPC_SIGN);
-			strBuild.append(salesAddr.getPin());
-			strBuild.append(NEW_LINE);
-			strBuild.append("Ph: ");
-			strBuild.append(salesAddr.getPhone1());
-			strBuild.append(SPACE_SIGN);
-			strBuild.append("Mob: ");
-			strBuild.append(salesAddr.getPhone2());
-			strBuild.append(NEW_LINE);
-			strBuild.append("Email: ");
-			strBuild.append(salesAddr.getEmail());
-			
-			Account acct = schoolService.fetchAccount("Matha Agencies");
-			StringBuilder strBuildAcct = new StringBuilder(acct.getName());
-			strBuildAcct.append(COMMA_SIGN);
-			strBuildAcct.append(" State Bank of India");
-			strBuildAcct.append(COMMA_SIGN);
-			strBuildAcct.append(" Vazhakulam Branch");
-			strBuildAcct.append(COMMA_SIGN);
-			strBuildAcct.append(" A/C No: ");			
-			strBuildAcct.append(acct.getAccountNum());
-			strBuildAcct.append(COMMA_SIGN);
-			strBuildAcct.append(" IFSC");
-			strBuildAcct.append(HYPHEN_SPC_SIGN);
-			strBuildAcct.append(acct.getIfsc());
-			
-			Set<OrderItem> tableData = sale.getOrderItems();
-			SalesTransaction txn = sale.getSalesTxn();
-			Set<String> orderIdSet = tableData.stream().map(OrderItem::getOrder).map(Order::getSerialNo).collect(Collectors.toSet());
-			String orderIds = String.join(",", orderIdSet);
-			Double subTotal = sale.getSubTotal();
-			Double discAmt = sale.getDiscAmt();
-			if(discAmt != null)
-			{
-				discAmt = sale.getDiscType() ? subTotal * discAmt /100 : discAmt;  
-			}
-			 			
-			hm.put("partyName", sch.getName());
-			hm.put("partyAddress", sch.addressText());
-			hm.put("agencyName", "MATHA AGENCIES");
-			hm.put("agencyDetails", strBuild.toString());
-			hm.put("partyPhone", sch.getPhone1() == null ? sch.getPhone2() : sch.getPhone1());
-			hm.put("documentsThrough", sale.getDocsThru());
-			hm.put("invoiceNo", getStringVal(sale.getInvoiceNo()));
-			hm.put("txnDate", txn.getTxnDateStr());
-			hm.put("orderNumbers", orderIds);
-			hm.put("despatchedPer", sale.getDespatch());
-			hm.put("grNo", sale.getGrNum());
-			hm.put("packageCnt", getStringVal(sale.getPackages()));
-			hm.put("total", sale.getSubTotal());
-			hm.put("discount", discAmt);
-			hm.put("grandTotal", sale.getNetAmount());
-			hm.put("accountDet", strBuildAcct.toString());
-			hm.put("grandTotalInWords", convertDouble(sale.getNetAmount()));
-			hm.put("otherCharges", sale.getOtherAmount());
-			
-			JasperReport compiledFile = JasperCompileManager.compileReport(jasperStream);
-
-			jasperPrint = JasperFillManager.fillReport(compiledFile, hm, new JRBeanCollectionDataSource(tableData));
-		}
-		catch (JRException e)
-		{
-			e.printStackTrace();
-		}
-		catch (Exception e)
-		{
-			e.printStackTrace();
-		}
-
-		return jasperPrint;
-	
-	}
-
+		
 	@FXML
 	void loadCreditNotes(Event e)
 	{
@@ -659,6 +618,15 @@ public class SchoolDetailsController
 //		}
 //	}
 	
+
+	private void printBill(Sales purchase, ActionEvent ev)
+	{
+		FXMLLoader createOrderLoader = LoadUtils.loadFxml(this, printSaleFxmlFile);			
+		InputStream jasperStream = getClass().getResourceAsStream(salesInvoiceJrxml);
+		Scene addOrderScene = preparePrintScene(purchase, createOrderLoader, jasperStream, schoolService);
+		prepareAndShowStage(ev, addOrderScene);
+	}
+	
 	private void prepareAndShowStage(ActionEvent e, Scene childScene)
 	{
 		Stage stage = LoadUtils.loadChildStage(e, childScene);
@@ -676,7 +644,7 @@ public class SchoolDetailsController
 	{
 		Stage stage = LoadUtils.loadChildStage(e, childScene);
 		stage.setOnHiding(eventHandler);
-		stage.show();
+		stage.showAndWait();
 	}
 
 	private EventHandler<WindowEvent> orderEventHandler = new EventHandler<WindowEvent>() {
@@ -710,4 +678,24 @@ public class SchoolDetailsController
 			loadCreditNotes(event);
 		}
 	};
+	
+	private void showPrintDialog(Sales sales, ActionEvent event)
+	{		
+		if(sales == null)
+		{
+			return;
+		}
+
+		Alert alert = new Alert(AlertType.CONFIRMATION);
+		alert.setTitle("Print Bill Confirmation");
+		alert.setHeaderText("Do you want to print the bill?");
+		alert.setContentText("Click Yes to Print");
+		alert.getButtonTypes().setAll(buttonTypeOne, buttonTypeCancel);
+
+		Optional<ButtonType> result = alert.showAndWait();
+		if (result.get() == buttonTypeOne)
+		{
+			printBill(sales, event);
+		}		
+	}	
 }

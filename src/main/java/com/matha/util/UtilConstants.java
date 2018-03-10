@@ -1,8 +1,11 @@
 package com.matha.util;
 
 import java.time.LocalDate;
+import java.time.LocalDateTime;
 import java.util.HashMap;
 
+import javafx.scene.control.ButtonType;
+import javafx.scene.control.ButtonBar.ButtonData;
 import javafx.util.StringConverter;
 
 public interface UtilConstants {
@@ -19,8 +22,11 @@ public interface UtilConstants {
 	public static final String Excel = "Excel";	
 	public static final String Docx = "Word";
 	public static final String DATE_FORMAT = "dd/MM/yyyy";
+	public static final String SALES_NOTE = "Sales Bill Note";
+	public static final String DELETED_STR = "DELETED";
 	
 	public static final StringConverter<LocalDate> DATE_CONV = Converters.getLocalDateConverter();
+	public static final StringConverter<LocalDateTime> DATE_TIME_CONV = Converters.getLocalDateTimeConverter();
 	
 	public static final String landingPageFxmlFile = "/fxml/landing.fxml";
 	public static final String schoolsFxml = "/fxml/Schools.fxml";
@@ -32,8 +38,9 @@ public interface UtilConstants {
 	
 	public static final String createOrderFxmlFile = "/fxml/createOrder.fxml";
 	public static final String addTransactionFxmlFile = "/fxml/addTransaction.fxml";	
-	public static final String printOrderFxmlFile = "/fxml/orderPrint.fxml";
+	public static final String printOrderFxmlFile = "/fxml/printOrder.fxml";
 	public static final String addBillFxmlFile = "/fxml/createBill.fxml";
+	public static final String viewBillFxmlFile = "/fxml/viewBill.fxml";
 	public static final String addPaymentFxmlFile = "/fxml/createPayment.fxml";
 	public static final String addReturnFxmlFile = "/fxml/createReturn.fxml";
 	public static final String createPurchaseFxmlFile = "/fxml/createPurchaseBill.fxml";
@@ -45,7 +52,11 @@ public interface UtilConstants {
 	public static final String statementJrxml = "/jrxml/Statement.jrxml";
 	public static final String invoiceJrxml = "/jrxml/Invoice.jrxml";
 	public static final String salesInvoiceJrxml = "/jrxml/SalesInvoice.jrxml";
+	public static final String orderJrxml = "/jrxml/Order.jrxml";
 	
+	public static final ButtonType buttonTypeOne = new ButtonType("Yes", ButtonData.YES);
+	public static final ButtonType buttonTypeCancel = new ButtonType("Cancel", ButtonData.CANCEL_CLOSE);
+
 	public static enum CRDR_ENUM{
 		
 		CREDIT(1, "CR");

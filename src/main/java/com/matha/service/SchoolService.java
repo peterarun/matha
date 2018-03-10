@@ -1,5 +1,7 @@
 package com.matha.service;
 
+import static com.matha.util.UtilConstants.DELETED_STR;
+
 import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -62,8 +64,6 @@ import com.matha.repository.SchoolPayRepository;
 import com.matha.repository.SchoolRepository;
 import com.matha.repository.SchoolReturnRepository;
 import com.matha.repository.StateRepository;
-
-import javafx.scene.control.Tab;
 
 @Service
 public class SchoolService
@@ -987,13 +987,22 @@ public class SchoolService
 		updateBalance(updateFromTxn);
 	}
 
-	public Integer fetchNextSalesInvoiceNum()
+	private void deleteSalesTxnSoft(SalesTransaction txn)
 	{
-		return salesRepository.fetchNextSerialSeqVal();
+		txn.setAmount(0.0);
+		txn.setTxnFlag(DELETED_STR);
+		salesTxnRepository.save(txn);
+
+		updateBalance(txn);
+	}
+	
+	public Integer fetchNextSalesInvoiceNum(Integer fy)
+	{
+		return salesRepository.fetchNextSerialSeqVal(fy);
 	}
 	
 	@Transactional
-	public void saveSales(Sales pur, Set<OrderItem> ordersIn, SalesTransaction txn)
+	public Sales saveSales(Sales pur, Set<OrderItem> ordersIn, SalesTransaction txn)
 	{
 		// correct
 		txn.setSale(pur);
@@ -1030,7 +1039,7 @@ public class SchoolService
 			ordersOrig = orderItemRepository.findAll(orderItemIds);
 			saveOrderItemUpdates(ordersOrig, ordersIn, pur);
 		}
-
+		return pur;
 	}
 
 	private void saveOrderItemUpdates(List<OrderItem> ordersOrig, Set<OrderItem> ordersIn, Sales pur)
@@ -1170,9 +1179,10 @@ public class SchoolService
 			order.setSale(null);
 		}
 		orderItemRepository.save(orders);
-		deleteSalesTxn(selectedSale.getSalesTxn());
-		selectedSale.setSalesTxn(null);
-		salesRepository.delete(selectedSale);
+		double netAmt = selectedSale.getSalesTxn().getAmount();
+		deleteSalesTxnSoft(selectedSale.getSalesTxn());
+		selectedSale.setDeletedAmt(netAmt);
+//		salesRepository.delete(selectedSale);
 	}
 
 	@Transactional

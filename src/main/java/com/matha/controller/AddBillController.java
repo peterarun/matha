@@ -2,8 +2,12 @@ package com.matha.controller;
 
 import static com.matha.util.UtilConstants.DATE_CONV;
 import static com.matha.util.UtilConstants.RUPEE_SIGN;
-import static com.matha.util.Utils.*;
+import static com.matha.util.UtilConstants.SALES_NOTE;
+import static com.matha.util.Utils.calcFinYear;
+import static com.matha.util.Utils.calcNetAmountGen;
 import static com.matha.util.Utils.fetchPriceColumnFactory;
+import static com.matha.util.Utils.fetchSaleCntFactory;
+import static com.matha.util.Utils.getDoubleVal;
 import static com.matha.util.Utils.getIntegerVal;
 import static com.matha.util.Utils.getStringVal;
 import static com.matha.util.Utils.loadDiscSymbol;
@@ -27,6 +31,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
 
+import com.matha.domain.Book;
 import com.matha.domain.Order;
 import com.matha.domain.OrderItem;
 import com.matha.domain.Sales;
@@ -55,7 +60,6 @@ import javafx.scene.control.TextField;
 import javafx.scene.control.Toggle;
 import javafx.scene.control.ToggleGroup;
 import javafx.scene.control.cell.TextFieldTableCell;
-import javafx.scene.input.KeyEvent;
 import javafx.stage.Stage;
 
 @Component
@@ -87,10 +91,13 @@ public class AddBillController
 
 	@FXML
 	private TextField discAmt;
-
+	
 	@FXML
 	private Label discTypeInd;
 
+	@FXML
+	private TextField calculatedDisc;
+	
 	@FXML
 	private TextField otherCharges;
 	
@@ -129,10 +136,20 @@ public class AddBillController
 
 	@FXML
 	private TableColumn<OrderItem, String> totalColumn;
+	
+	@FXML
+	private TableColumn<OrderItem, String> qtyColumn;
+
+	@FXML
+	private TextField bookText;
+
+	@FXML
+	private TextField bookCnt;
 
 	private School school;
 	private Sales selectedSale;
 	private ObservableList<Order> orders;
+	private HashMap<String, Book> bookMap;
 
 	private Map<String, Order> orderMap = new HashMap<>();
 	private Collector<Order, ?, Map<String, Order>> orderMapCollector = Collectors.toMap(o -> o.getSerialNo(), o -> o);
@@ -141,11 +158,12 @@ public class AddBillController
 	@Value("${listOfDespatchers}")
 	private String[] despatcherArray;
 
-	void initData(ObservableList<Order> ordersIn, School schoolIn, Sales sale)
+	void initData(ObservableList<Order> ordersIn, School schoolIn, Sales sale, HashMap<String, Book> bookMapIn)
 	{
 		this.school = schoolIn;
 		this.selectedSale = sale;
 		this.orders = ordersIn;
+		this.bookMap = bookMapIn;
 		this.prepareEditData(sale);
 		this.loadAddDefaults();
 
@@ -184,29 +202,12 @@ public class AddBillController
 		this.addedBooks.getSelectionModel().cellSelectionEnabledProperty().set(true);
 		this.priceColumn.setCellFactory(TextFieldTableCell.forTableColumn());
 		this.priceColumn.setCellValueFactory(fetchPriceColumnFactory());
-		this.priceColumn.setOnEditCommit(new EventHandler<CellEditEvent<OrderItem, String>>() {
-			public void handle(CellEditEvent<OrderItem, String> t)
-			{
-				OrderItem oItem = ((OrderItem) t.getTableView().getItems().get(t.getTablePosition().getRow()));
-				oItem.setBookPrice(Double.parseDouble(t.getNewValue()));
-				t.getTableView().refresh();
-				loadSubTotal();
-				calcNetAmount(discAmt.getText(), otherCharges.getText());
-
-				t.getTableView().getSelectionModel().selectBelowCell();
-
-				int rowId = t.getTableView().getSelectionModel().getSelectedIndex();
-				if (rowId < t.getTableView().getItems().size())
-				{
-					if(rowId > 0)
-					{
-						t.getTableView().scrollTo(rowId - 1);
-					}
-					t.getTableView().edit(rowId, t.getTablePosition().getTableColumn());
-				}
-			}
-		});
-
+		this.priceColumn.setOnEditCommit(fetchPriceEventHandler());
+		
+		this.qtyColumn.setCellFactory(TextFieldTableCell.forTableColumn());		
+		this.qtyColumn.setCellValueFactory(fetchSaleCntFactory());		
+		this.qtyColumn.setOnEditCommit(fetchQtyEventHandler());
+		
 		this.discType.selectedToggleProperty().addListener(new ChangeListener<Toggle>() {
 			public void changed(ObservableValue<? extends Toggle> ov, Toggle old_toggle, Toggle new_toggle)
 			{
@@ -219,22 +220,33 @@ public class AddBillController
 		});
 
 		this.totalColumn.setCellValueFactory(cellData -> 
-			Bindings.format("%.2f", cellData.getValue().getTotal())
+			Bindings.format("%.2f", cellData.getValue().getTotalSold())
 		);
 		
 		if(StringUtils.isBlank(this.invoiceNum.getText()))
 		{
-			Integer newInvNum = schoolService.fetchNextSalesInvoiceNum();
+			Integer newInvNum = schoolService.fetchNextSalesInvoiceNum(calcFinYear(LocalDate.now()));
 			LOGGER.info("newInvNum " + newInvNum);
 			this.invoiceNum.setText(getStringVal(newInvNum));
 		}
+		
+		List<String> items = new ArrayList<>(bookMap.keySet());
+		TextFields.bindAutoCompletion(bookText, items);
+		
+		this.discAmt.textProperty().addListener((observable, oldValue, newValue) -> {		    
+		    updateNetAmtAfter();
+		});
+
+		this.otherCharges.textProperty().addListener((observable, oldValue, newValue) -> {		    
+		    updateNetAmtAfter();
+		});
 	}
 
 	private void prepareEditData(Sales sale)
 	{
 		if (sale != null)
 		{
-			Set<Order> orderSet = sale.getOrderItems().stream().map(OrderItem::getOrder).collect(Collectors.toSet());
+			Set<Order> orderSet = sale.getOrderItems().stream().map(OrderItem::getOrder).filter(o -> o != null).collect(Collectors.toSet());
 			this.orders = FXCollections.observableList(new ArrayList<Order>(orderSet));
 			this.addedBooks.setItems(FXCollections.observableArrayList(sale.getOrderItems()));
 			this.billDate.setValue(sale.getInvoiceDate());
@@ -245,7 +257,7 @@ public class AddBillController
 			this.docsThru.setText(sale.getDocsThru());
 			this.grNum.setText(sale.getGrNum());
 			this.invoiceNum.setText(getStringVal(sale.getInvoiceNo()));
-			this.packageCnt.setText(getStringVal(sale.getPackages()));
+			this.packageCnt.setText(sale.getPackages());
 			this.otherCharges.setText(getStringVal(sale.getOtherAmount()));
 
 			if (!sale.getDiscType())
@@ -272,7 +284,10 @@ public class AddBillController
 			addedBooks.getItems().addAll(bookItems);
 			for (OrderItem orderItem : addedBooks.getItems())
 			{
-				orderItem.setSoldCnt(orderItem.getCount());
+				if(orderItem.getSoldCnt() == null)
+				{
+					orderItem.setSoldCnt(orderItem.getCount());
+				}
 			}
 		}
 		loadSubTotal();
@@ -289,27 +304,28 @@ public class AddBillController
 	}
 
 	@FXML
-	private void updateNetAmt(KeyEvent ke)
+	private void updateNetAmtAfter()
 	{
-		String discAmtStr = StringUtils.defaultString(discAmt.getText());
-		discAmtStr += ke.getCharacter();
-		if (!StringUtils.isEmpty(discAmtStr))
-		{
-			calcNetAmount(discAmtStr, otherCharges.getText());
-		}
+		String discAmtStr = StringUtils.defaultString(discAmt.getText());		
+		calcNetAmount(discAmtStr, otherCharges.getText());
 	}
-
-	@FXML
-	private void updateNetAmtOther(KeyEvent ke)
-	{
-		String otherAmtStr = StringUtils.defaultString(otherCharges.getText());
-		otherAmtStr += ke.getCharacter();
-		String discAmtStr = StringUtils.defaultString(discAmt.getText());
-		if (!StringUtils.isEmpty(otherAmtStr))
-		{
-			calcNetAmount(discAmtStr, otherAmtStr);
-		}
-	}
+	
+//	@FXML
+//	private void updateNetAmt(KeyEvent ke)
+//	{
+//		String discAmtStr = StringUtils.defaultString(discAmt.getText());
+//		discAmtStr += ke.getCharacter();
+//		calcNetAmount(discAmtStr, otherCharges.getText());
+//	}
+//
+//	@FXML
+//	private void updateNetAmtOther(KeyEvent ke)
+//	{
+//		String otherAmtStr = StringUtils.defaultString(otherCharges.getText());
+//		otherAmtStr += ke.getCharacter();
+//		String discAmtStr = StringUtils.defaultString(discAmt.getText());
+//		calcNetAmount(discAmtStr, otherAmtStr);
+//	}
 	
 	@FXML
 	void addOrderNum(ActionEvent e)
@@ -328,7 +344,7 @@ public class AddBillController
 
 	private void calcNetAmount(String discAmtStr, String otherAmtStr)
 	{
-		calcNetAmountGen(discAmtStr, this.subTotal, this.percentRad, this.rupeeRad, otherAmtStr, this.netAmt);
+		calcNetAmountGen(discAmtStr, this.subTotal, this.percentRad, this.rupeeRad, otherAmtStr, this.netAmt, this.calculatedDisc);
 	}
 
 	@FXML
@@ -339,6 +355,7 @@ public class AddBillController
 		if (selectedSale == null)
 		{
 			sale = new Sales();
+			sale.setFinancialYear(calcFinYear(LocalDate.now()));
 			salesTxn = new SalesTransaction();
 			salesTxn.setSchool(school);
 		}
@@ -379,19 +396,20 @@ public class AddBillController
 			Double netAmtVal = Double.parseDouble(netAmt.getText());
 			salesTxn.setAmount(netAmtVal);
 		}
+		
+		salesTxn.setNote(SALES_NOTE);
+		salesTxn.setTxnDate(billDate.getValue());
 
 		sale.setDespatch(this.despatchPer.getText());
 		sale.setDocsThru(this.docsThru.getText());
 		sale.setGrNum(this.grNum.getText());
 		sale.setInvoiceNo(getIntegerVal(this.invoiceNum));
-		sale.setPackages(getIntegerVal(this.packageCnt));
+		sale.setPackages(this.packageCnt.getText());
 		sale.setOtherAmount(getDoubleVal(this.otherCharges));
-
-		String note = "Sales Bill Note";
-		salesTxn.setNote(note);
-		salesTxn.setTxnDate(billDate.getValue());
-
-		schoolService.saveSales(sale, orderItems, salesTxn);
+		sale.setFinancialYear(calcFinYear(salesTxn.getTxnDate()));
+		
+		Sales saleOut = schoolService.saveSales(sale, orderItems, salesTxn);
+		this.selectedSale = saleOut;
 
 		((Stage) cancelBtn.getScene().getWindow()).close();
 	}
@@ -399,6 +417,7 @@ public class AddBillController
 	@FXML
 	void cancelOperation(ActionEvent event)
 	{
+		this.selectedSale = null;
 		((Stage) cancelBtn.getScene().getWindow()).close();
 	}
 
@@ -427,6 +446,72 @@ public class AddBillController
 		}
 
 		loadNewBooksAndSubTotal(null);
+	}
+
+	@FXML
+	void addBookData(ActionEvent e)
+	{
+		OrderItem item = new OrderItem();
+		item.setBook(bookMap.get(bookText.getText()));
+		item.setSoldCnt(Integer.parseInt(bookCnt.getText()));
+		addedBooks.getItems().add(item);
+		bookText.clear();
+		bookCnt.clear();
+	}
+	
+	public Sales getSelectedSale()
+	{
+		return selectedSale;
+	}
+
+	public EventHandler<CellEditEvent<OrderItem, String>> fetchPriceEventHandler()
+	{
+		return new EventHandler<CellEditEvent<OrderItem, String>>() {
+			public void handle(CellEditEvent<OrderItem, String> t)
+			{
+				OrderItem oItem = ((OrderItem) t.getTableView().getItems().get(t.getTablePosition().getRow()));
+				oItem.setBookPrice(Double.parseDouble(t.getNewValue()));
+				t.getTableView().refresh();
+				loadSubTotal();
+				calcNetAmount(discAmt.getText(), otherCharges.getText());
+				t.getTableView().getSelectionModel().selectBelowCell();
+
+				int rowId = t.getTableView().getSelectionModel().getSelectedIndex();
+				if (rowId < t.getTableView().getItems().size())
+				{
+					if(rowId > 0)
+					{
+						t.getTableView().scrollTo(rowId - 1);
+					}
+					t.getTableView().edit(rowId, t.getTablePosition().getTableColumn());
+				}
+			}
+		};
+	}
+
+	public EventHandler<CellEditEvent<OrderItem, String>> fetchQtyEventHandler()
+	{
+		return new EventHandler<CellEditEvent<OrderItem, String>>() {
+			public void handle(CellEditEvent<OrderItem, String> t)
+			{
+				OrderItem oItem = ((OrderItem) t.getTableView().getItems().get(t.getTablePosition().getRow()));
+				oItem.setSoldCnt(Integer.parseInt(t.getNewValue()));	
+				t.getTableView().refresh();
+				loadSubTotal();
+				calcNetAmount(discAmt.getText(), otherCharges.getText());
+				t.getTableView().getSelectionModel().selectBelowCell();
+
+				int rowId = t.getTableView().getSelectionModel().getSelectedIndex();
+				if (rowId < t.getTableView().getItems().size())
+				{
+					if(rowId > 0)
+					{
+						t.getTableView().scrollTo(rowId - 1);
+					}
+					t.getTableView().edit(rowId, t.getTablePosition().getTableColumn());
+				}
+			}
+		};
 	}
 
 }
