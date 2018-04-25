@@ -247,4 +247,29 @@ public class School implements Serializable {
 		return builder.toString();
 	}
 
+	public String getStmtAddress()
+	{
+		StringBuilder builder = new StringBuilder();		
+		if (address2 != null) {
+			builder.append(address2);
+			builder.append(NEW_LINE);
+		}
+		if (city != null) {
+			builder.append(city);
+			builder.append(NEW_LINE);
+		}
+		if (pin != null) {
+			builder.append(pin);
+			builder.append(NEW_LINE);
+		}
+		if (state != null) {
+			builder.append(state.getId());
+			builder.append(NEW_LINE);
+		}
+		if (district != null) {
+			builder.append(district.getId());
+		}
+		return builder.toString();
+	}
+
 }

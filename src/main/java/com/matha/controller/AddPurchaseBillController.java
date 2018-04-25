@@ -1,12 +1,14 @@
 package com.matha.controller;
 
 import static com.matha.util.UtilConstants.DATE_CONV;
+import static com.matha.util.UtilConstants.NEW_LINE;
 import static com.matha.util.UtilConstants.PERCENT_SIGN;
 import static com.matha.util.UtilConstants.RUPEE_SIGN;
 import static com.matha.util.Utils.fetchPriceColumnFactory;
 import static com.matha.util.Utils.getDoubleVal;
 import static com.matha.util.Utils.getIntegerVal;
 import static com.matha.util.Utils.getStringVal;
+import static com.matha.util.Utils.showErrorAlert;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -123,6 +125,9 @@ public class AddPurchaseBillController
 	private TextField discAmt;
 
 	@FXML
+	private TextField discCalc;
+	
+	@FXML
 	private Label discTypeInd;
 
 	@FXML
@@ -193,6 +198,7 @@ public class AddPurchaseBillController
 			this.packageCount.setText(getStringVal(purchaseIn.getPackages()));
 			this.subTotal.setText(getStringVal(purchaseIn.getSubTotal()));
 			this.discAmt.setText(getStringVal(purchaseIn.getDiscAmt()));
+			this.discCalc.setText(getStringVal(purchaseIn.getCalculatedDisc()));
 			this.netAmt.setText(getStringVal(purchaseIn.getSalesTxn().getAmount()));
 
 			if (purchaseIn.getOrderItems() != null && !purchaseIn.getOrderItems().isEmpty())
@@ -351,23 +357,25 @@ public class AddPurchaseBillController
 		Double netTotalDbl = StringUtils.isEmpty(netTotalStr) ? 0.0 : Double.parseDouble(netTotalStr);
 
 		String subTotalStr = this.subTotal.getText();
+		double discVal = 0;
 		if (subTotalStr != null)
 		{
 			double subTotalDbl = Double.parseDouble(subTotalStr);
 			if (subTotalDbl > 0)
 			{
-				double discAmtDbl = StringUtils.isEmpty(discAmtStr) ? 0 : Double.parseDouble(discAmtStr);
-
+				double discAmtDbl = StringUtils.isEmpty(discAmtStr) ? 0 : Double.parseDouble(discAmtStr);				 
 				if (discAmtDbl > 0)
-				{
+				{					
 					if (rupeeRad.isSelected())
 					{
-						netTotalDbl = subTotalDbl - discAmtDbl;
+						discVal = discAmtDbl;
+						netTotalDbl = subTotalDbl - discVal;
 					}
 					else if (percentRad.isSelected())
 					{
-						netTotalDbl = subTotalDbl - subTotalDbl * discAmtDbl / 100;
-					}
+						discVal = subTotalDbl * discAmtDbl / 100;
+						netTotalDbl = subTotalDbl - discVal;
+					}					
 				}
 				else
 				{
@@ -375,7 +383,8 @@ public class AddPurchaseBillController
 				}
 			}
 		}
-		netAmt.setText(getStringVal(netTotalDbl));
+		this.netAmt.setText(getStringVal(netTotalDbl));	
+		this.discCalc.setText(getStringVal(discVal));
 	}
 
 	private void calculateTotalQty()
@@ -424,22 +433,22 @@ public class AddPurchaseBillController
 	private boolean validateData()
 	{
 		boolean valid = true;
-		StringBuilder errorMsg = new StringBuilder("Error: ");
+		StringBuilder errorMsg = new StringBuilder();
 		if (StringUtils.isBlank(this.invoiceNum.getText()))
 		{
 			errorMsg.append("Please provide an Invoice number");
-			loadMessage(errorMsg.toString());
+			errorMsg.append(NEW_LINE);
 			valid = false;
 		}
-		else if (this.invoiceDate.getValue() == null)
+		if (this.invoiceDate.getValue() == null)
 		{
 			errorMsg.append("Please provide a date");
-			loadMessage(errorMsg.toString());
 			valid = false;
 		}
+		showErrorAlert("Error in Saving Order", "Please correct the following errors", errorMsg.toString());
 		return valid;
 	}
-
+	
 	private void preparePurchase(Purchase sale)
 	{
 		sale.setDiscAmt(getDoubleVal(this.discAmt));

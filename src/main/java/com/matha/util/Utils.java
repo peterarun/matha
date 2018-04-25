@@ -12,6 +12,8 @@ import java.io.InputStream;
 import java.nio.charset.Charset;
 import java.time.LocalDate;
 import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 import java.util.Optional;
 import java.util.Set;
 import java.util.stream.Collectors;
@@ -26,6 +28,8 @@ import javax.print.attribute.standard.OrientationRequested;
 import javax.print.attribute.standard.PrinterName;
 
 import org.apache.commons.lang3.StringUtils;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 
 import com.matha.controller.PrintOrderController;
 import com.matha.controller.PrintSalesBillController;
@@ -49,11 +53,13 @@ import javafx.print.PrinterJob;
 import javafx.scene.Node;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
+import javafx.scene.control.Alert;
 import javafx.scene.control.ChoiceDialog;
 import javafx.scene.control.Label;
 import javafx.scene.control.RadioButton;
 import javafx.scene.control.TableColumn.CellDataFeatures;
 import javafx.scene.control.TextField;
+import javafx.scene.control.Alert.AlertType;
 import javafx.scene.transform.Scale;
 import javafx.scene.web.WebView;
 import javafx.stage.Window;
@@ -73,6 +79,8 @@ import net.sf.jasperreports.export.SimplePrintServiceExporterConfiguration;
 public class Utils
 {
 
+	private static final Logger LOGGER = LogManager.getLogger(Utils.class);
+	
 	public static Double getDoubleVal(TextField txt)
 	{
 		Double dblVal = null;
@@ -200,6 +208,31 @@ public class Utils
 			e.printStackTrace();
 		}
 		return addOrderScene;
+	}
+	
+	public static Map<String, Object> prepareSalesStmtParmMap(HashMap<String, Object> hmIn, List<SalesTransaction> tableData)
+	{		
+		HashMap<String, Object> hm = new HashMap<>();
+		Double openingBalance = 0.0;
+		Double closingBalance = 0.0;
+		
+		if(tableData != null && !tableData.isEmpty())
+		{
+			if(tableData.get(0).getPrevTxn() != null)
+			{
+				openingBalance = tableData.get(0).getPrevTxn().getBalance();
+			}			
+			closingBalance = tableData.get(tableData.size() - 1).getBalance();
+		} 
+		Double totalDebit = tableData.stream().collect(Collectors.summingDouble(o->  o.getMultiplier() == 1 ? o.getAmount() : 0.0)); 
+		Double totalCredit = tableData.stream().collect(Collectors.summingDouble(o->  o.getMultiplier() == -1 ? o.getAmount() : 0.0));
+		hm.putAll(hmIn);
+		hm.put("openingBalance", openingBalance);						
+		hm.put("totalDebit", totalDebit);
+		hm.put("totalCredit", totalCredit);
+		hm.put("closingBalance", closingBalance);
+		
+		return hm;
 	}
 	
 	public static JasperPrint prepareSaleBillPrint(SchoolService schoolService, School sch, Sales sale, InputStream jasperStream)
@@ -479,15 +512,32 @@ public class Utils
 		}
 	}
 
+	public static void showErrorAlert(String title, String header, String content)
+	{
+		Alert alert = new Alert(AlertType.ERROR);
+		alert.setTitle(title);
+		alert.setHeaderText(header);
+		alert.setContentText(content);
+		alert.showAndWait();
+	}
+	
 	public static String convertDouble(double dbl)
 	{
 		int mainPart = (int) dbl;
-		int decPart = (int) ((dbl - mainPart) * 100);
-		return convert(mainPart) + " rupees and " + convert(decPart) + " paise only";
+		int decPart = (int) (dbl*100 - mainPart*100);
+		if(decPart == 0)
+		{
+			return convert(mainPart) + " rupees and Zero paise only";
+		}
+		else
+		{
+			return convert(mainPart) + " rupees and " + convert(decPart) + " paise only";
+		}
 	}
 	
 	public static String convert(int n)
 	{
+		LOGGER.debug("Converting " + n);
 		final String[] units = { "", "One", "Two", "Three", "Four", "Five", "Six", "Seven", "Eight", "Nine", "Ten", "Eleven", "Twelve", "Thirteen", "Fourteen", "Fifteen", "Sixteen", "Seventeen",
 				"Eighteen", "Nineteen" };
 

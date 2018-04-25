@@ -95,6 +95,8 @@ public class PrintOrderController
 			hm.put("partyAddress", school.addressText());
 			hm.put("partyPhone", "Ph - " + school.getPhone1());
 			hm.put("txnDate", DATE_CONV.toString(orderIn.getOrderDate()));
+			hm.put("deliveryDate", DATE_CONV.toString(orderIn.getDeliveryDate()));
+			hm.put("desLocation", orderIn.getDesLocation());
 			hm.put("orderNumber", orderIn.getSerialNo());
 			
 			JasperReport compiledFile = JasperCompileManager.compileReport(jasperStream);

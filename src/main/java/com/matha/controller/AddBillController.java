@@ -1,6 +1,7 @@
 package com.matha.controller;
 
 import static com.matha.util.UtilConstants.DATE_CONV;
+import static com.matha.util.UtilConstants.NEW_LINE;
 import static com.matha.util.UtilConstants.RUPEE_SIGN;
 import static com.matha.util.UtilConstants.SALES_NOTE;
 import static com.matha.util.Utils.calcFinYear;
@@ -11,6 +12,7 @@ import static com.matha.util.Utils.getDoubleVal;
 import static com.matha.util.Utils.getIntegerVal;
 import static com.matha.util.Utils.getStringVal;
 import static com.matha.util.Utils.loadDiscSymbol;
+import static com.matha.util.Utils.showErrorAlert;
 
 import java.time.LocalDate;
 import java.util.ArrayList;
@@ -347,9 +349,32 @@ public class AddBillController
 		calcNetAmountGen(discAmtStr, this.subTotal, this.percentRad, this.rupeeRad, otherAmtStr, this.netAmt, this.calculatedDisc);
 	}
 
+	private boolean validateData()
+	{
+		boolean valid = true;
+		StringBuilder errorMsg = new StringBuilder();
+		if(this.invoiceNum.getText() == null)
+		{
+			errorMsg.append("Please provide an Invoice Number");
+			errorMsg.append(NEW_LINE);
+			valid = false;
+		}
+		if (this.billDate.getValue() == null)
+		{
+			errorMsg.append("Please provide a Bill Date");
+			valid = false;
+		}
+		showErrorAlert("Error in Saving Order", "Please correct the following errors", errorMsg.toString());
+		return valid;
+	}
+
 	@FXML
 	void saveData(ActionEvent event)
 	{
+		if(!validateData())
+		{
+			return;
+		}
 		SalesTransaction salesTxn = null;
 		Sales sale = this.selectedSale;
 		if (selectedSale == null)

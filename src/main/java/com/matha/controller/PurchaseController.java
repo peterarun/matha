@@ -12,6 +12,7 @@ import static com.matha.util.UtilConstants.invoiceJrxml;
 import static com.matha.util.UtilConstants.printOrderFxmlFile;
 import static com.matha.util.UtilConstants.printPurchaseFxmlFile;
 import static com.matha.util.UtilConstants.statementJrxml;
+import static com.matha.util.Utils.convertDouble;
 import static com.matha.util.Utils.getStringVal;
 
 import java.io.ByteArrayOutputStream;
@@ -426,6 +427,7 @@ public class PurchaseController
 			hm.put("total", purchase.getSubTotal());
 			hm.put("discount", discAmt);
 			hm.put("grandTotal", purchase.getNetAmount());
+			hm.put("grandTotalInWords", convertDouble(purchase.getNetAmount()));
 			hm.put("imageFileName",pub.getLogoFileName());
 			
 			JasperReport compiledFile = JasperCompileManager.compileReport(jasperStream);

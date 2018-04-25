@@ -1,15 +1,18 @@
 package com.matha.controller;
 
+import static com.matha.util.Utils.showErrorAlert;
+
 import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
-import java.util.logging.Logger;
 import java.util.stream.Collector;
 import java.util.stream.Collectors;
 
 import org.apache.commons.lang.StringUtils;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 import org.controlsfx.control.textfield.TextFields;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
@@ -36,7 +39,7 @@ import javafx.stage.Stage;
 public class AddReturnController
 {
 
-	private static final Logger LOGGER = Logger.getLogger("AddReturnController");
+	private static final Logger LOGGER = LogManager.getLogger("AddReturnController");
 
 	@Autowired
 	private SchoolService schoolService;
@@ -79,6 +82,7 @@ public class AddReturnController
 		this.school = schoolIn;
 		this.schoolReturn = returnIn;
 		this.loadReturnData(returnIn);
+		this.schoolName.setText(schoolIn.getName());
 
 		List<Book> allOrders = schoolService.fetchBooksForSchool(schoolIn);
 		bookMap = allOrders.stream().collect(bookMapCollector);
@@ -125,6 +129,7 @@ public class AddReturnController
 		itemIn.setCount(Integer.parseInt(this.quantity.getText()));
 		itemIn.setBookPrice(Double.parseDouble(this.price.getText()));
 		this.addedBooks.getItems().add(itemIn);
+		LOGGER.debug("Added" + itemIn);
 		loadSubTotal();
 		clearBookFields();
 	}
@@ -136,9 +141,26 @@ public class AddReturnController
 		this.price.clear();
 	}
 
+	private boolean validateData()
+	{
+		boolean valid = true;
+		StringBuilder errorMsg = new StringBuilder();
+		if (this.returnDate.getValue() == null)
+		{
+			errorMsg.append("Please provide a date");
+			valid = false;
+		}
+		showErrorAlert("Error in Saving Order", "Please correct the following errors", errorMsg.toString());
+		return valid;
+	}
+	
 	@FXML
 	void saveData(ActionEvent event)
 	{
+		if(!validateData())
+		{
+			return;
+		}
 		SchoolReturn returnIn = this.schoolReturn;
 		SalesTransaction salesTxn = null;
 		if(returnIn == null)

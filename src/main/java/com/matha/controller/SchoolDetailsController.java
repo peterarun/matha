@@ -7,10 +7,11 @@ import static com.matha.util.UtilConstants.addReturnFxmlFile;
 import static com.matha.util.UtilConstants.buttonTypeCancel;
 import static com.matha.util.UtilConstants.buttonTypeOne;
 import static com.matha.util.UtilConstants.createOrderFxmlFile;
+import static com.matha.util.UtilConstants.printOrderFxmlFile;
 import static com.matha.util.UtilConstants.printSaleFxmlFile;
 import static com.matha.util.UtilConstants.salesInvoiceJrxml;
-import static com.matha.util.UtilConstants.viewBillFxmlFile;
-import static com.matha.util.Utils.preparePrintScene;
+import static com.matha.util.UtilConstants.*;
+import static com.matha.util.Utils.*;
 
 import java.io.IOException;
 import java.io.InputStream;
@@ -57,6 +58,7 @@ import javafx.scene.control.TextArea;
 import javafx.scene.control.TextField;
 import javafx.stage.Stage;
 import javafx.stage.WindowEvent;
+import net.sf.jasperreports.engine.JasperPrint;
 
 @Component
 public class SchoolDetailsController
@@ -69,21 +71,21 @@ public class SchoolDetailsController
 	@Autowired
 	SchoolService schoolService;
 
-    @FXML
-    private TabPane saleTabs;
-    
+	@FXML
+	private TabPane saleTabs;
+
 	@FXML
 	private Tab ordersTab;
-	
+
 	@FXML
 	private TableView<Order> txnData;
 
 	@FXML
 	private Tab billsTab;
-	
+
 	@FXML
 	private TableView<Sales> billData;
-	
+
 	@FXML
 	private TableColumn<Sales, String> amountColumn;
 
@@ -124,10 +126,10 @@ public class SchoolDetailsController
 	private DatePicker fromDate;
 
 	@FXML
-	private DatePicker toDate;  
+	private DatePicker toDate;
 
 	private HashMap<String, Book> bookMap;
-//	private JasperPrint jasperPrint;
+	// private JasperPrint jasperPrint;
 
 	@FXML
 	protected void initialize() throws IOException
@@ -141,43 +143,40 @@ public class SchoolDetailsController
 		}
 
 		txnData.getSelectionModel().setSelectionMode(SelectionMode.MULTIPLE);
-		this.amountColumn.setCellValueFactory(cellData -> 
-			Bindings.format("%.2f", cellData.getValue().getNetAmount())
-		);
-				
+		this.amountColumn.setCellValueFactory(cellData -> Bindings.format("%.2f", cellData.getValue().getNetAmount()));
+
 		this.billData.setRowFactory(row -> {
-			
-			TableRow<Sales> rowIn = new TableRow<Sales>()
-		{
-		    @Override
-		    public void updateItem(Sales item, boolean empty)
-		    {
-		        super.updateItem(item, empty);
-		        setStyle("");
-		        if (item != null && !empty && item.getSalesTxn() != null && item.getSalesTxn().getTxnFlag() != null) 
-		        {	
-		            if (item.getSalesTxn().getTxnFlag().equals(DELETED_STR)) 
-		            {
-		            	setStyle("-fx-background-color: pink");
-		            }
-		        }
-		    }
-		};
-		return rowIn;
+
+			TableRow<Sales> rowIn = new TableRow<Sales>() {
+				@Override
+				public void updateItem(Sales item, boolean empty)
+				{
+					super.updateItem(item, empty);
+					setStyle("");
+					if (item != null && !empty && item.getSalesTxn() != null && item.getSalesTxn().getTxnFlag() != null)
+					{
+						if (item.getSalesTxn().getTxnFlag().equals(DELETED_STR))
+						{
+							setStyle("-fx-background-color: pink");
+						}
+					}
+				}
+			};
+			return rowIn;
 		});
 	}
 
 	public void initData(School school)
 	{
-		this.school = school;		
+		this.school = school;
 		this.schoolName.setText(school.getName());
 		this.address.setText(school.addressText());
 		this.txnData.setItems(FXCollections.observableList(schoolService.fetchOrderForSchool(school)));
 		this.loadBalance();
-		
-//		List<String> saveTypes = Arrays.asList(PDF,Excel,Docx);
-//		this.saveType.setItems(FXCollections.observableList(saveTypes));
-//		this.saveType.getSelectionModel().selectFirst();
+
+		// List<String> saveTypes = Arrays.asList(PDF,Excel,Docx);
+		// this.saveType.setItems(FXCollections.observableList(saveTypes));
+		// this.saveType.getSelectionModel().selectFirst();
 	}
 
 	private void loadBalance()
@@ -186,7 +185,7 @@ public class SchoolDetailsController
 		if (balance != null)
 		{
 			this.outBalance.setText(balance.toString());
-		}		
+		}
 	}
 
 	@FXML
@@ -202,7 +201,7 @@ public class SchoolDetailsController
 			this.txnData.getSelectionModel().clearSelection();
 		}
 	}
-	
+
 	@FXML
 	void addOrder(ActionEvent e) throws IOException
 	{
@@ -245,6 +244,26 @@ public class SchoolDetailsController
 	}
 
 	@FXML
+	public void printOrder(ActionEvent ev)
+	{
+		try
+		{
+			FXMLLoader createOrderLoader = LoadUtils.loadFxml(this, printOrderFxmlFile);
+			Parent addOrderRoot = createOrderLoader.load();
+			PrintOrderController ctrl = createOrderLoader.getController();
+			Order purchase = txnData.getSelectionModel().getSelectedItem();
+			JasperPrint jasperPrint = ctrl.prepareJasperPrint(purchase);
+			ctrl.initData(jasperPrint);
+			Scene addOrderScene = new Scene(addOrderRoot);
+			prepareAndShowStage(ev, addOrderScene);
+		}
+		catch (Exception e)
+		{
+			e.printStackTrace();
+		}
+	}
+
+	@FXML
 	public void loadBills()
 	{
 		if (this.billsTab.isSelected())
@@ -258,7 +277,7 @@ public class SchoolDetailsController
 			this.billData.getSelectionModel().clearSelection();
 		}
 	}
-	
+
 	@FXML
 	void createBill(ActionEvent event)
 	{
@@ -293,7 +312,7 @@ public class SchoolDetailsController
 			Scene addBillScene = new Scene(addBillRoot);
 			prepareAndShowStage(event, addBillScene, billEventHandler);
 			showPrintDialog(ctrl.getSelectedSale(), event);
-						
+
 		}
 		catch (Exception e)
 		{
@@ -307,7 +326,7 @@ public class SchoolDetailsController
 		try
 		{
 			Sales selectedSale = billData.getSelectionModel().getSelectedItem();
-			if(selectedSale.getSalesTxn().getTxnFlag() != null)
+			if (selectedSale.getSalesTxn().getTxnFlag() != null)
 			{
 				showAlert(selectedSale);
 				return;
@@ -333,7 +352,7 @@ public class SchoolDetailsController
 		alert.setTitle("Edit Bill Error");
 		alert.setHeaderText("Unable to edit a deleted bill: " + selectedSale.getInvoiceNo());
 		alert.setContentText("Cannot Edit; Please use View option");
-		alert.showAndWait();		
+		alert.showAndWait();
 	}
 
 	@FXML
@@ -357,7 +376,7 @@ public class SchoolDetailsController
 		}
 
 	}
-	
+
 	@FXML
 	void deleteBill(ActionEvent event)
 	{
@@ -386,9 +405,9 @@ public class SchoolDetailsController
 		catch (Exception e)
 		{
 			e.printStackTrace();
-		}	
+		}
 	}
-		
+
 	@FXML
 	void loadCreditNotes(Event e)
 	{
@@ -553,73 +572,89 @@ public class SchoolDetailsController
 	@FXML
 	void generateStmt(ActionEvent event)
 	{
-		LocalDate toDateVal = toDate.getValue();
-		LocalDate fromDateVal = fromDate.getValue();
+		try
+		{
+			LocalDate toDateVal = toDate.getValue();
+			LocalDate fromDateVal = fromDate.getValue();
 
-		List<SalesTransaction> txnItems = schoolService.fetchTransactions(school, fromDateVal, toDateVal);
-		transactionData.setItems(FXCollections.observableList(txnItems));
+			List<SalesTransaction> txnItems = schoolService.fetchTransactions(school, fromDateVal, toDateVal);
+			transactionData.setItems(FXCollections.observableList(txnItems));
+
+			FXMLLoader createOrderLoader = LoadUtils.loadFxml(this, salesStmtFxmlFile);
+			Parent addOrderRoot = createOrderLoader.load();
+			PrintSalesStmtController ctrl = createOrderLoader.getController();
+			JasperPrint jasperPrint = ctrl.prepareJasperPrint(this.school, txnItems, fromDateVal, toDateVal);
+			ctrl.initData(this.school, jasperPrint, fromDateVal, toDateVal);
+			Scene addOrderScene = new Scene(addOrderRoot);
+			prepareAndShowStage(event, addOrderScene);
+		}
+		catch (Exception e)
+		{
+			e.printStackTrace();
+		}
 	}
 
-//	@FXML
-//	public void exportAndSave(ActionEvent ev)
-//	{
-//		try
-//		{
-//
-//			String selection = saveType.getSelectionModel().getSelectedItem(); 
-//			String filterStr = "*.*";
-//			if(selection.equals(PDF))
-//			{
-//				filterStr = "*.pdf";
-//			}
-//			else if(selection.equals(Excel))
-//			{
-//				filterStr = "*.xls";
-//			}
-//			FileChooser fileChooser = new FileChooser();
-//			fileChooser.setTitle("Save File");
-//            fileChooser.getExtensionFilters().addAll(
-//                    new FileChooser.ExtensionFilter(selection, filterStr)
-//                );
-//            
-//			File file = fileChooser.showSaveDialog(((Node) ev.getSource()).getScene().getWindow());
-//			if(selection.equals(PDF))
-//			{
-//				JasperExportManager.exportReportToPdfFile(jasperPrint, file.getAbsolutePath());
-//			}
-//			else if(selection.equals(Excel))
-//			{
-//		        JRXlsxExporter exporter = new JRXlsxExporter();
-//		        exporter.setExporterInput(new SimpleExporterInput(jasperPrint));		        
-//				exporter.setExporterOutput(new SimpleOutputStreamExporterOutput(file));
-//
-//		        exporter.exportReport();
-//			}
-//			else if(selection.equals(Docx))
-//			{
-//				JRDocxExporter exporter = new JRDocxExporter();
-//		        exporter.setExporterInput(new SimpleExporterInput(jasperPrint));		        
-//				exporter.setExporterOutput(new SimpleOutputStreamExporterOutput(file));
-//
-//		        exporter.exportReport();
-//			}
-//			
-//		}
-//		catch (Throwable e)
-//		{
-//			e.printStackTrace();
-//		}
-//	}
-	
+	// @FXML
+	// public void exportAndSave(ActionEvent ev)
+	// {
+	// try
+	// {
+	//
+	// String selection = saveType.getSelectionModel().getSelectedItem();
+	// String filterStr = "*.*";
+	// if(selection.equals(PDF))
+	// {
+	// filterStr = "*.pdf";
+	// }
+	// else if(selection.equals(Excel))
+	// {
+	// filterStr = "*.xls";
+	// }
+	// FileChooser fileChooser = new FileChooser();
+	// fileChooser.setTitle("Save File");
+	// fileChooser.getExtensionFilters().addAll(
+	// new FileChooser.ExtensionFilter(selection, filterStr)
+	// );
+	//
+	// File file = fileChooser.showSaveDialog(((Node)
+	// ev.getSource()).getScene().getWindow());
+	// if(selection.equals(PDF))
+	// {
+	// JasperExportManager.exportReportToPdfFile(jasperPrint,
+	// file.getAbsolutePath());
+	// }
+	// else if(selection.equals(Excel))
+	// {
+	// JRXlsxExporter exporter = new JRXlsxExporter();
+	// exporter.setExporterInput(new SimpleExporterInput(jasperPrint));
+	// exporter.setExporterOutput(new SimpleOutputStreamExporterOutput(file));
+	//
+	// exporter.exportReport();
+	// }
+	// else if(selection.equals(Docx))
+	// {
+	// JRDocxExporter exporter = new JRDocxExporter();
+	// exporter.setExporterInput(new SimpleExporterInput(jasperPrint));
+	// exporter.setExporterOutput(new SimpleOutputStreamExporterOutput(file));
+	//
+	// exporter.exportReport();
+	// }
+	//
+	// }
+	// catch (Throwable e)
+	// {
+	// e.printStackTrace();
+	// }
+	// }
 
 	private void printBill(Sales purchase, ActionEvent ev)
 	{
-		FXMLLoader createOrderLoader = LoadUtils.loadFxml(this, printSaleFxmlFile);			
+		FXMLLoader createOrderLoader = LoadUtils.loadFxml(this, printSaleFxmlFile);
 		InputStream jasperStream = getClass().getResourceAsStream(salesInvoiceJrxml);
 		Scene addOrderScene = preparePrintScene(purchase, createOrderLoader, jasperStream, schoolService);
 		prepareAndShowStage(ev, addOrderScene);
 	}
-	
+
 	private void prepareAndShowStage(ActionEvent e, Scene childScene)
 	{
 		Stage stage = LoadUtils.loadChildStage(e, childScene);
@@ -647,7 +682,7 @@ public class SchoolDetailsController
 			loadOrders();
 		}
 	};
-	
+
 	private EventHandler<WindowEvent> billEventHandler = new EventHandler<WindowEvent>() {
 		@Override
 		public void handle(final WindowEvent event)
@@ -655,7 +690,7 @@ public class SchoolDetailsController
 			loadBills();
 		}
 	};
-	
+
 	private EventHandler<WindowEvent> paymentEventHandler = new EventHandler<WindowEvent>() {
 		@Override
 		public void handle(final WindowEvent event)
@@ -671,10 +706,10 @@ public class SchoolDetailsController
 			loadCreditNotes(event);
 		}
 	};
-	
+
 	private void showPrintDialog(Sales sales, ActionEvent event)
-	{		
-		if(sales == null)
+	{
+		if (sales == null)
 		{
 			return;
 		}
@@ -689,6 +724,6 @@ public class SchoolDetailsController
 		if (result.get() == buttonTypeOne)
 		{
 			printBill(sales, event);
-		}		
-	}	
+		}
+	}
 }

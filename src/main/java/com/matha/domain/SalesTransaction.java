@@ -1,5 +1,9 @@
 package com.matha.domain;
 
+import static com.matha.util.UtilConstants.DATE_CONV;
+import static com.matha.util.UtilConstants.EMPTY_STR;
+import static com.matha.util.Utils.getStringVal;
+
 import java.time.LocalDate;
 import java.util.Date;
 
@@ -19,8 +23,6 @@ import javax.persistence.Temporal;
 import javax.persistence.TemporalType;
 
 import org.springframework.data.jpa.domain.support.AuditingEntityListener;
-
-import static com.matha.util.UtilConstants.*;
 
 @Entity
 @Table(name = "STransactions")
@@ -87,7 +89,7 @@ public class SalesTransaction
 	{
 		String type = "";
 		if (sale != null)
-			type = "Book Bill";
+			type = "Sale";
 		else if (payment != null)
 			type = "Payment";
 		else if (salesReturn != null)
@@ -113,6 +115,23 @@ public class SalesTransaction
 	public Double getNetForBalance()
 	{
 		return this.amount * getMultiplier();
+	}
+	
+	public String getInvoiceNum()
+	{
+		if(this.sale != null)
+		{
+			return getStringVal(this.sale.getInvoiceNo());
+		}
+		else
+		{
+			return EMPTY_STR;
+		}
+	}
+	
+	public String getParticulars()
+	{
+		return this.getNote();
 	}
 
 	public Integer getId()

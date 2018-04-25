@@ -20,5 +20,7 @@ public interface SalesRepository extends JpaRepository<Sales, String> {
 	public Integer fetchNextSerialSeqVal(Integer fy);
 
 	@Query("select sales from Sales sales where sales.salesTxn.school = ?1")
+	public List<Sales> findAllByTxnSchool(School school);
+	
 	public List<Sales> findAllBySchool(School school);
 }

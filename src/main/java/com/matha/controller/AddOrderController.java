@@ -1,12 +1,15 @@
 package com.matha.controller;
 
 import static com.matha.util.Converters.getIntegerConverter;
+import static com.matha.util.Utils.showErrorAlert;
+import static com.matha.util.UtilConstants.*;
 
 import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 
+import org.apache.commons.lang.StringUtils;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.controlsfx.control.textfield.TextFields;
@@ -138,6 +141,10 @@ public class AddOrderController
 	void saveData(ActionEvent e)
 	{
 
+		if(!validateData())
+		{
+			return;
+		}
 		Order item;
 		List<OrderItem> items = addedBooks.getItems();
 		if (this.order == null)
@@ -177,7 +184,27 @@ public class AddOrderController
 		}
 		this.orderNum.setText(selectedOrder.getSerialNo());
 		this.orderDate.setValue(selectedOrder.getOrderDate());
+		this.desLocation.setText(selectedOrder.getDesLocation());
+		this.despatchDate.setValue(selectedOrder.getDeliveryDate());
 		this.addedBooks.setItems(FXCollections.observableList(selectedOrder.getOrderItem()));
 	}
 
+	private boolean validateData()
+	{
+		boolean valid = true;
+		StringBuilder errorMsg = new StringBuilder();
+		if (StringUtils.isBlank(this.orderNum.getText()))
+		{
+			errorMsg.append("Please provide an Order Number");
+			errorMsg.append(NEW_LINE);
+			valid = false;
+		}
+		if (this.orderDate.getValue() == null)
+		{
+			errorMsg.append("Please provide an Order Date");
+			valid = false;
+		}
+		showErrorAlert("Error in Saving Order", "Please correct the following errors", errorMsg.toString());
+		return valid;
+	}
 }

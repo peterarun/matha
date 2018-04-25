@@ -56,6 +56,9 @@ public class Order implements Serializable, Comparable<Order>
 	@Column(name = "desLocation")
 	private String desLocation;
 
+	@Column(name = "Fy")
+	private Integer financialYear;	
+	
 	public Integer getOrderCount()
 	{
 		return orderItem == null ? 0 : orderItem.size();
@@ -152,6 +155,16 @@ public class Order implements Serializable, Comparable<Order>
 		this.desLocation = desLocation;
 	}
 
+	public Integer getFinancialYear()
+	{
+		return financialYear;
+	}
+
+	public void setFinancialYear(Integer financialYear)
+	{
+		this.financialYear = financialYear;
+	}
+
 	@Override
 	public String toString()
 	{
@@ -168,6 +181,10 @@ public class Order implements Serializable, Comparable<Order>
 		builder.append(orderDate);
 		builder.append(", deliveryDate=");
 		builder.append(deliveryDate);
+		builder.append(", desLocation=");
+		builder.append(desLocation);
+		builder.append(", financialYear=");
+		builder.append(financialYear);		
 		builder.append("]");
 		return builder.toString();
 	}

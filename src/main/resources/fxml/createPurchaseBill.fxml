@@ -67,8 +67,8 @@
 					</columns>
 				</TableView>
 				
-				<Label layoutX="26.0" layoutY="443.0" text="Sub Total" />
-				<TextField fx:id="subTotal" alignment="CENTER_RIGHT" layoutX="87.0" layoutY="439.0" prefHeight="25.0" prefWidth="136.0" />
+				<Label layoutX="613.0" layoutY="325.0" text="Sub Total" />
+				<TextField fx:id="subTotal" alignment="CENTER_RIGHT" layoutX="613.0" layoutY="342.0" prefHeight="25.0" prefWidth="149.0" />
 				<Label layoutX="231.0" layoutY="443.0" text="Discount" />
 				<RadioButton fx:id="rupeeRad" layoutX="284.0" layoutY="443.0" mnemonicParsing="false" prefHeight="17.0" prefWidth="66.0" text="Rupees">
 					<toggleGroup>
@@ -78,19 +78,21 @@
 				<RadioButton fx:id="percentRad" layoutX="356.0" layoutY="443.0" mnemonicParsing="false" prefHeight="17.0" prefWidth="66.0" selected="true" text="Percent" toggleGroup="$discType" />				
 				<TextField fx:id="discAmt" alignment="CENTER_RIGHT" layoutX="432.0" layoutY="439.0" prefHeight="25.0" prefWidth="136.0" />
 				<Label fx:id="discTypeInd" layoutX="570.0" layoutY="443.0" text="\%" />					
-				<Label layoutX="215.0" layoutY="478.0" text="Grand Total" />
-				<TextField fx:id="netAmt" alignment="CENTER_RIGHT" layoutX="432.0" layoutY="474.0" prefHeight="25.0" prefWidth="149.0" />
+				<Label layoutX="614.0" layoutY="376.0" text="Grand Total" />
+				<TextField fx:id="netAmt" alignment="CENTER_RIGHT" layoutX="613.0" layoutY="393.0" prefHeight="25.0" prefWidth="149.0" />
 				
-				<TextField fx:id="totalCount" alignment="CENTER_RIGHT" layoutX="282.0" layoutY="474.0" prefHeight="25.0" prefWidth="109.0" />
-				<Label layoutX="397.0" layoutY="478.0" text="Pcs." />
-				<Button layoutX="613.0" layoutY="474.0" mnemonicParsing="false" onAction="#saveData" prefHeight="25.0" prefWidth="149.0" text="Save" />
-				<Button fx:id="cancelBtn" layoutX="613.0" layoutY="439.0" mnemonicParsing="false" onAction="#cancelOperation" prefHeight="25.0" prefWidth="149.0" text="Cancel" />
+				<TextField fx:id="totalCount" alignment="CENTER_RIGHT" layoutX="26.0" layoutY="474.0" prefHeight="25.0" prefWidth="126.0" />
+				<Label layoutX="156.0" layoutY="478.0" text="Pcs." />
+				<Button layoutX="613.0" layoutY="459.0" mnemonicParsing="false" onAction="#saveData" prefHeight="40.0" prefWidth="149.0" text="Save" />
+				<Button fx:id="cancelBtn" layoutX="613.0" layoutY="426.0" mnemonicParsing="false" onAction="#cancelOperation" prefHeight="25.0" prefWidth="149.0" text="Cancel" />
 					
 				<Label layoutX="613.0" layoutY="116.0" text="Selected Orders" />
-				<TextField fx:id="orderNum" layoutX="613.0" layoutY="369.0" onAction="#addOrderNum" prefHeight="25.0" prefWidth="149.0" promptText="Search Order" />
-				<ListView fx:id="orderList" layoutX="613.0" layoutY="139.0" prefHeight="228.0" prefWidth="149.0" />
-				<Button layoutX="613.0" layoutY="403.0" mnemonicParsing="false" onAction="#removeOperation" prefHeight="25.0" prefWidth="149.0" text="Remove" />
-            <Button layoutX="27.0" layoutY="474.0" mnemonicParsing="false" onAction="#removeOrderItem" prefHeight="25.0" prefWidth="149.0" text="Remove Item" />
+				<TextField fx:id="orderNum" layoutX="613.0" layoutY="262.0" onAction="#addOrderNum" prefHeight="25.0" prefWidth="149.0" promptText="Search Order" />
+				<ListView fx:id="orderList" layoutX="613.0" layoutY="139.0" prefHeight="123.0" prefWidth="149.0" />
+				<Button layoutX="613.0" layoutY="287.0" mnemonicParsing="false" onAction="#removeOperation" prefHeight="25.0" prefWidth="149.0" text="Remove Order" />
+            <Button layoutX="27.0" layoutY="439.0" mnemonicParsing="false" onAction="#removeOrderItem" prefHeight="25.0" prefWidth="149.0" text="Remove Item" />
+            <Label layoutX="375.0" layoutY="478.0" text="Amount" />
+            <TextField fx:id="discCalc" alignment="CENTER_RIGHT" editable="false" focusTraversable="false" layoutX="432.0" layoutY="474.0" prefHeight="25.0" prefWidth="136.0" />
 			</children>
 		</AnchorPane>
 	</items>

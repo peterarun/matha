@@ -15,6 +15,7 @@ public interface UtilConstants {
 	public static final String PERCENT_SIGN = "%";
 	public static final String COMMA_SIGN = ",";
 	public static final String HYPHEN_SPC_SIGN = " - ";
+	public static final String EMPTY_STR = "";
 	public static final String SPACE_SIGN = " ";
 	public static final String SEMI_COLON_SIGN = ";";
 	public static final String NEW_LINE = System.getProperty("line.separator");
@@ -49,7 +50,10 @@ public interface UtilConstants {
 	public static final String createPurchaseRetFxmlFile = "/fxml/createPurchaseReturn.fxml";
 	public static final String createPurchasePayFxmlFile = "/fxml/createPurchasePay.fxml";
 	
+	public static final String salesStmtFxmlFile = "/fxml/printSalesStmt.fxml";
+	
 	public static final String statementJrxml = "/jrxml/Statement.jrxml";
+	public static final String salesStmtJrxml = "/jrxml/SalesStmt.jrxml";
 	public static final String invoiceJrxml = "/jrxml/Invoice.jrxml";
 	public static final String salesInvoiceJrxml = "/jrxml/SalesInvoice.jrxml";
 	public static final String orderJrxml = "/jrxml/Order.jrxml";

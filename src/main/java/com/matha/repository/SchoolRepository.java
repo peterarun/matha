@@ -11,5 +11,7 @@ import com.matha.domain.School;
 public interface SchoolRepository extends JpaRepository<School, Integer>, SchoolRepositoryCust {
 
 	List<School> findByNameLike(String schoolNamePart);
+	
+	List<School> findTop10ByNameLike(String schoolNamePart);
 
 }

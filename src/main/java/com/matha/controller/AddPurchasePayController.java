@@ -1,7 +1,9 @@
 package com.matha.controller;
 
+import static com.matha.util.UtilConstants.NEW_LINE;
 import static com.matha.util.Utils.getDoubleVal;
 import static com.matha.util.Utils.getStringVal;
+import static com.matha.util.Utils.showErrorAlert;
 
 import org.apache.commons.lang.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -51,6 +53,26 @@ public class AddPurchasePayController
 	private Publisher publisher;
 	private PurchasePayment purchasePayment;
 
+
+	private boolean validateData()
+	{
+		boolean valid = true;
+		StringBuilder errorMsg = new StringBuilder();
+		if(this.amount.getText() == null)
+		{
+			errorMsg.append("Please provide an Amount");
+			errorMsg.append(NEW_LINE);
+			valid = false;
+		}
+		if (this.payDate.getValue() == null)
+		{
+			errorMsg.append("Please provide a Payment Date");
+			valid = false;
+		}
+		showErrorAlert("Error in Saving Order", "Please correct the following errors", errorMsg.toString());
+		return valid;
+	}
+
 	public void initData(Publisher schoolIn, PurchasePayment schoolPaymentIn)
 	{
 		this.publisher = schoolIn;
@@ -69,18 +91,6 @@ public class AddPurchasePayController
 		}
 	}
 
-	private void validate()
-	{
-		if (StringUtils.isBlank(amount.getText()))
-		{
-			loadMessage("Please provide an amount to save");
-		}
-		else if (payDate.getValue() == null)
-		{
-			loadMessage("Please provide a date");
-		}
-	}
-
 	private void loadMessage(String msg)
 	{
 		message.setText(msg);
@@ -92,7 +102,10 @@ public class AddPurchasePayController
 	{
 		try
 		{
-			this.validate();
+			if(!validateData())
+			{
+				return;
+			}
 
 			PurchasePayment sPayment = this.purchasePayment;			
 			if (sPayment == null)

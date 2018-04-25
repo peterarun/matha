@@ -1,5 +1,7 @@
 package com.matha.repository;
 
+import java.util.List;
+
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -11,6 +13,7 @@ import org.springframework.test.context.junit4.SpringRunner;
 
 import com.matha.domain.Order;
 import com.matha.domain.Publisher;
+import com.matha.domain.School;
 import com.matha.sales.SalesApplication;
 
 @SpringBootTest(classes = SalesApplication.class)
@@ -51,5 +54,16 @@ public class OrderRepositoryTest {
 		}
 	}
 	
-
+	@Test
+	public void testOrderData() {
+		PageRequest pageable = new PageRequest(0, 5, Sort.Direction.DESC, "orderDate");
+		Publisher pub = publisherRepository.findOne(48);
+		School school = null;
+		//		Order ord = orderService.findOne("2");
+		List<Order> orderList = orderService.findAllBySchoolOrderByOrderDateDesc(school);
+		for(Order o: orderList)
+		{
+			System.out.println(o);
+		}
+	}
 }

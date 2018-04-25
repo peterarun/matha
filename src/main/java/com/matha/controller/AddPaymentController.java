@@ -1,5 +1,8 @@
 package com.matha.controller;
 
+import static com.matha.util.UtilConstants.NEW_LINE;
+import static com.matha.util.Utils.showErrorAlert;
+
 import org.apache.commons.lang.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
@@ -45,9 +48,32 @@ public class AddPaymentController
 	private School school;
 	private SchoolPayment schoolPayment;
 
+	private boolean validateData()
+	{
+		boolean valid = true;
+		StringBuilder errorMsg = new StringBuilder();
+		if(this.amount.getText() == null)
+		{
+			errorMsg.append("Please provide an Amount");
+			errorMsg.append(NEW_LINE);
+			valid = false;
+		}
+		if (this.payDate.getValue() == null)
+		{
+			errorMsg.append("Please provide a Payment Date");
+			valid = false;
+		}
+		showErrorAlert("Error in Saving Order", "Please correct the following errors", errorMsg.toString());
+		return valid;
+	}
+	
 	@FXML
 	void saveData(ActionEvent event)
 	{
+		if(!validateData())
+		{
+			return;
+		}
 		SchoolPayment sPayment = schoolPayment;
 		if (schoolPayment == null)
 		{

@@ -243,6 +243,19 @@ public class OrderItem implements Serializable, Comparable<OrderItem>
 		return builder.toString();
 	}
 
+	public String toStringMig()
+	{
+		StringBuilder builder = new StringBuilder();
+		builder.append("OrderItem [id=");
+		builder.append(id);
+		builder.append(", orderId=");
+		builder.append(order.getId());
+		builder.append(", bookNum=");
+		builder.append(book.getBookNum());
+		builder.append("]");
+		return builder.toString();
+	}
+
 	@Override
 	public int compareTo(OrderItem o)
 	{

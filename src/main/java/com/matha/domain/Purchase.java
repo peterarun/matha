@@ -84,6 +84,19 @@ public class Purchase implements Serializable
 		return unitCount;
 	}
 	
+	public Double getCalculatedDisc()
+	{
+		Double discCalc = discAmt;
+		if(discAmt != null)
+		{			
+			if(discType && subTotal != null)
+			{
+				discCalc = subTotal * discAmt / 100;
+			}			
+		}
+		return discCalc;
+	}
+	
 	public Double getNetAmount()
 	{
 		return this.getSalesTxn().getAmount();

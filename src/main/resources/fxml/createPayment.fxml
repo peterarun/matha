@@ -12,7 +12,7 @@
   <items>
     <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="60.0" prefWidth="398.0">
          <children>
-            <Label layoutX="30.0" layoutY="21.0" text="Add/Edit Bill">
+            <Label layoutX="30.0" layoutY="21.0" text="Add/Edit Payment">
                <font>
                   <Font name="Tahoma" size="24.0" />
                </font>

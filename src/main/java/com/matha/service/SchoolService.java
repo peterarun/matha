@@ -1167,7 +1167,7 @@ public class SchoolService
 
 	public List<Sales> fetchBills(School school)
 	{
-		return salesRepository.findAllBySchool(school);
+		return salesRepository.findAllByTxnSchool(school);
 	}
 
 	@Transactional

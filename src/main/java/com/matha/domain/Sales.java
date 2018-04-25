@@ -11,12 +11,17 @@ import javax.persistence.FetchType;
 import javax.persistence.GeneratedValue;
 import javax.persistence.Id;
 import javax.persistence.JoinColumn;
+import javax.persistence.ManyToOne;
 import javax.persistence.OneToMany;
 import javax.persistence.OneToOne;
 import javax.persistence.Table;
 
 import org.hibernate.annotations.GenericGenerator;
 
+/**
+ * @author Norman
+ *
+ */
 @Entity
 @Table(name = "Sales")
 public class Sales
@@ -68,6 +73,14 @@ public class Sales
 	@OneToMany(mappedBy = "sale", fetch = FetchType.EAGER)
 	private Set<OrderItem> orderItems;
 
+	@OneToMany(fetch = FetchType.EAGER)
+	@JoinColumn(name="SerialId")
+	private Set<SalesDet> saleItems;
+
+	@ManyToOne
+	@JoinColumn(name = "CustId")
+	private School school;
+
 	public LocalDate getInvoiceDate()
 	{
 		return salesTxn.getTxnDate();
@@ -114,6 +127,16 @@ public class Sales
 	public void setOrderItems(Set<OrderItem> orderItems)
 	{
 		this.orderItems = orderItems;
+	}
+
+	public Set<SalesDet> getSaleItems()
+	{
+		return saleItems;
+	}
+
+	public void setSaleItems(Set<SalesDet> saleItems)
+	{
+		this.saleItems = saleItems;
 	}
 
 	public String getId()
@@ -236,4 +259,49 @@ public class Sales
 		this.deletedAmt = deletedAmt;
 	}
 
+	public School getSchool()
+	{
+		return school;
+	}
+
+	public void setSchool(School school)
+	{
+		this.school = school;
+	}
+
+	@Override
+	public String toString()
+	{
+		StringBuilder builder = new StringBuilder();
+		builder.append("Sales [id=");
+		builder.append(id);
+		builder.append(", despatch=");
+		builder.append(despatch);
+		builder.append(", docsThru=");
+		builder.append(docsThru);
+		builder.append(", grNum=");
+		builder.append(grNum);
+		builder.append(", invoiceNo=");
+		builder.append(invoiceNo);
+		builder.append(", packages=");
+		builder.append(packages);
+		builder.append(", discAmt=");
+		builder.append(discAmt);
+		builder.append(", discType=");
+		builder.append(discType);
+		builder.append(", subTotal=");
+		builder.append(subTotal);
+		builder.append(", otherAmount=");
+		builder.append(otherAmount);
+		builder.append(", financialYear=");
+		builder.append(financialYear);
+		builder.append(", deletedAmt=");
+		builder.append(deletedAmt);
+		builder.append(", salesTxn=");
+		builder.append(salesTxn);
+		builder.append("]");
+		return builder.toString();
+	}
+
+	
 }

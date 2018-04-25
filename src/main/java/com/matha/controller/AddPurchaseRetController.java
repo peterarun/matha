@@ -1,16 +1,19 @@
 package com.matha.controller;
 
+import static com.matha.util.UtilConstants.NEW_LINE;
 import static com.matha.util.Utils.getDoubleVal;
 import static com.matha.util.Utils.getStringVal;
+import static com.matha.util.Utils.showErrorAlert;
 
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 import java.util.TreeSet;
-import java.util.logging.Logger;
 import java.util.stream.Collector;
 import java.util.stream.Collectors;
 
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 import org.controlsfx.control.textfield.TextFields;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
@@ -37,7 +40,7 @@ import javafx.stage.Stage;
 public class AddPurchaseRetController
 {
 
-	private static final Logger LOGGER = Logger.getLogger("AddPurchaseRetController");
+	private static final Logger LOGGER = LogManager.getLogger(AddPurchaseRetController.class);
 
 	@Autowired
 	private SchoolService schoolService;
@@ -132,7 +135,10 @@ public class AddPurchaseRetController
 		itemIn.setBook(this.bookMap.get(bookStr));
 		itemIn.setCount(Integer.parseInt(this.quantity.getText()));
 		itemIn.setBookPrice(Double.parseDouble(this.price.getText()));
+		
 		this.addedBooks.getItems().add(itemIn);
+		LOGGER.debug("Added Item: " + itemIn);
+		
 		loadSubTotal();
 		clearBookFields();
 	}
@@ -144,9 +150,33 @@ public class AddPurchaseRetController
 		this.price.clear();
 	}
 
+	private boolean validateData()
+	{
+		boolean valid = true;
+		StringBuilder errorMsg = new StringBuilder();
+		if(this.subTotal.getText() == null)
+		{
+			errorMsg.append("Please provide an Amount");
+			errorMsg.append(NEW_LINE);
+			valid = false;
+		}
+		if (this.returnDate.getValue() == null)
+		{
+			errorMsg.append("Please provide a Return Date");
+			valid = false;
+		}
+		showErrorAlert("Error in Saving Order", "Please correct the following errors", errorMsg.toString());
+		return valid;
+	}
+
 	@FXML
 	void saveData(ActionEvent event)
 	{
+		if(!validateData())
+		{
+			return;
+		}
+		
 		PurchaseReturn returnIn = this.purchaseReturn;		
 		if(returnIn == null)
 		{
