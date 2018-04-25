@@ -1,21 +1,21 @@
-sqlcmd /d Matha /E /i alterBook.sql
-sqlcmd /d Matha /E /i alterPublisher.sql
-sqlcmd /d Matha /E /i alterSales.sql
-sqlcmd /d Matha /E /i alterSchool.sql
-sqlcmd /d Matha /E /i alterSOrder.sql
-sqlcmd /d Matha /E /i alterSOrderDet.sql
-sqlcmd /d Matha /E /i createBookPurchase.sql
-sqlcmd /d Matha /E /i createCashBook.sql
-sqlcmd /d Matha /E /i createCashHead.sql
-sqlcmd /d Matha /E /i createDistricts.sql
-sqlcmd /d Matha /E /i createPPayment.sql
-sqlcmd /d Matha /E /i createPTransactions.sql
-sqlcmd /d Matha /E /i createPurchaseReturn.sql
-sqlcmd /d Matha /E /i createSchoolReturn.sql
-sqlcmd /d Matha /E /i createSPayment.sql
-sqlcmd /d Matha /E /i createState.sql
-sqlcmd /d Matha /E /i createSTransactions.sql
-sqlcmd /d Matha /E /i create_Seq_SalesSeq.sql
-sqlcmd /d Matha /E /i create_Seq_SalesSerialSeq.sql
-sqlcmd /d Matha /E /i create_Seq_SOrderSeq.sql
-sqlcmd /d Matha /E /i deleteDup.sql
+sqlcmd -S .\SQLEXPRESS2014 /d MathaNew /E /i alterBook.sql
+sqlcmd -S .\SQLEXPRESS2014 /d MathaNew /E /i alterPublisher.sql
+sqlcmd -S .\SQLEXPRESS2014 /d MathaNew /E /i alterSales.sql
+sqlcmd -S .\SQLEXPRESS2014 /d MathaNew /E /i alterSchool.sql
+sqlcmd -S .\SQLEXPRESS2014 /d MathaNew /E /i alterSOrder.sql
+sqlcmd -S .\SQLEXPRESS2014 /d MathaNew /E /i alterSOrderDet.sql
+sqlcmd -S .\SQLEXPRESS2014 /d MathaNew /E /i createBookPurchase.sql
+sqlcmd -S .\SQLEXPRESS2014 /d MathaNew /E /i createCashBook.sql
+sqlcmd -S .\SQLEXPRESS2014 /d MathaNew /E /i createCashHead.sql
+sqlcmd -S .\SQLEXPRESS2014 /d MathaNew /E /i createDistricts.sql
+sqlcmd -S .\SQLEXPRESS2014 /d MathaNew /E /i createPPayment.sql
+sqlcmd -S .\SQLEXPRESS2014 /d MathaNew /E /i createPTransactions.sql
+sqlcmd -S .\SQLEXPRESS2014 /d MathaNew /E /i createPurchaseReturn.sql
+sqlcmd -S .\SQLEXPRESS2014 /d MathaNew /E /i createSchoolReturn.sql
+sqlcmd -S .\SQLEXPRESS2014 /d MathaNew /E /i createSPayment.sql
+sqlcmd -S .\SQLEXPRESS2014 /d MathaNew /E /i createState.sql
+sqlcmd -S .\SQLEXPRESS2014 /d MathaNew /E /i createSTransactions.sql
+sqlcmd -S .\SQLEXPRESS2014 /d MathaNew /E /i create_Seq_SalesSeq.sql
+sqlcmd -S .\SQLEXPRESS2014 /d MathaNew /E /i create_Seq_SalesSerialSeq.sql
+sqlcmd -S .\SQLEXPRESS2014 /d MathaNew /E /i create_Seq_SOrderSeq.sql
+sqlcmd -S .\SQLEXPRESS2014 /d MathaNew /E /i deleteDup.sql

@@ -1,10 +1,10 @@
-sqlcmd /d Matha /E /i alterSTransactions.sql
+sqlcmd -S .\SQLEXPRESS2014 /d MathaNew /E /i alterSTransactions.sql
 
-sqlcmd /d Matha /E /i alterPTransactions.sql
+sqlcmd -S .\SQLEXPRESS2014 /d MathaNew /E /i alterPTransactions.sql
 
-sqlcmd /d Matha /E /i alterPublisher2.sql
-sqlcmd /d Matha /E /i alterSchool2.sql
+sqlcmd -S .\SQLEXPRESS2014 /d MathaNew /E /i alterPublisher2.sql
+sqlcmd -S .\SQLEXPRESS2014 /d MathaNew /E /i alterSchool2.sql
 
-sqlcmd /d Matha /E /i alterSOrderDet2.sql
+sqlcmd -S .\SQLEXPRESS2014 /d MathaNew /E /i alterSOrderDet2.sql
 
-sqlcmd /d Matha /E /i updateBooks.sql
+sqlcmd -S .\SQLEXPRESS2014 /d MathaNew /E /i updateBooks.sql

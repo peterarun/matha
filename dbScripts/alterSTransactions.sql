@@ -1,4 +1,4 @@
-USE [Matha]
+USE [MathaNew]
 GO
 
 /****** Object:  Table [dbo].[STrans]    Script Date: 24-01-2018 09:00:08 ******/

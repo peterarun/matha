@@ -1,7 +1,7 @@
-sqlcmd /d Matha /E /i createAddresses.sql
+sqlcmd -S .\SQLEXPRESS2014 /d MathaNew /E /i createAddresses.sql
 
-sqlcmd /d Matha /E /i insertAddresses.sql
+sqlcmd -S .\SQLEXPRESS2014 /d MathaNew /E /i insertAddresses.sql
 
-sqlcmd /d Matha /E /i createAccounts.sql
+sqlcmd -S .\SQLEXPRESS2014 /d MathaNew /E /i createAccounts.sql
 
-sqlcmd /d Matha /E /i insertAccounts.sql
+sqlcmd -S .\SQLEXPRESS2014 /d MathaNew /E /i insertAccounts.sql

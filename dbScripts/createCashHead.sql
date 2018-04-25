@@ -1,4 +1,4 @@
-USE [Matha]
+USE [MathaNew]
 GO
 
 /****** Object:  Table [dbo].[ACCategory]    Script Date: 14-01-2018 20:49:17 ******/

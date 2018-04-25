@@ -1,4 +1,4 @@
-USE [Matha]
+USE [MathaNew]
 GO
 
 SET ANSI_NULLS ON
@@ -7,7 +7,7 @@ GO
 SET QUOTED_IDENTIFIER ON
 GO
 
-update [Matha].[dbo].[Book] 
+update [MathaNew].[dbo].[Book] 
   set PubId = 55
   where PubId = 45;
   
