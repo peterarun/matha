@@ -29,13 +29,13 @@ public class OrderItem implements Serializable, Comparable<OrderItem>
 	@JoinColumn(name = "SerialId")
 	private Order order;
 
-	@ManyToOne
-	@JoinColumn(name = "PurchaseId")
-	private Purchase purchase;
-
-	@ManyToOne
-	@JoinColumn(name = "SalesId")
-	private Sales sale;
+//	@ManyToOne
+//	@JoinColumn(name = "PurchaseId")
+//	private Purchase purchase;
+//
+//	@ManyToOne
+//	@JoinColumn(name = "SalesId")
+//	private Sales sale;
 	
 	@ManyToOne()
 	@JoinColumn(name = "BkNo")
@@ -56,13 +56,13 @@ public class OrderItem implements Serializable, Comparable<OrderItem>
 	@Column(name = "BookPrice")
 	private Double bookPrice;
 
-	@ManyToOne()
-	@JoinColumn(name = "ReturnId")
-	private SchoolReturn bookReturn;
-
-	@ManyToOne()
-	@JoinColumn(name = "PurReturnId")
-	private PurchaseReturn purchReturn;
+//	@ManyToOne()
+//	@JoinColumn(name = "ReturnId")
+//	private SchoolReturn bookReturn;
+//
+//	@ManyToOne()
+//	@JoinColumn(name = "PurReturnId")
+//	private PurchaseReturn purchReturn;
 
 	public double getTotal()
 	{
@@ -93,25 +93,25 @@ public class OrderItem implements Serializable, Comparable<OrderItem>
 		this.bookPrice = bookPrice;
 	}
 
-	public SchoolReturn getBookReturn()
-	{
-		return bookReturn;
-	}
-
-	public void setBookReturn(SchoolReturn bookReturn)
-	{
-		this.bookReturn = bookReturn;
-	}
-
-	public PurchaseReturn getPurchReturn()
-	{
-		return purchReturn;
-	}
-
-	public void setPurchReturn(PurchaseReturn purchReturn)
-	{
-		this.purchReturn = purchReturn;
-	}
+//	public SchoolReturn getBookReturn()
+//	{
+//		return bookReturn;
+//	}
+//
+//	public void setBookReturn(SchoolReturn bookReturn)
+//	{
+//		this.bookReturn = bookReturn;
+//	}
+//
+//	public PurchaseReturn getPurchReturn()
+//	{
+//		return purchReturn;
+//	}
+//
+//	public void setPurchReturn(PurchaseReturn purchReturn)
+//	{
+//		this.purchReturn = purchReturn;
+//	}
 
 	public String getBookName()
 	{
@@ -148,25 +148,25 @@ public class OrderItem implements Serializable, Comparable<OrderItem>
 		this.order = order;
 	}
 
-	public Purchase getPurchase()
-	{
-		return purchase;
-	}
-
-	public void setPurchase(Purchase purchase)
-	{
-		this.purchase = purchase;
-	}
-	
-	public Sales getSale()
-	{
-		return sale;
-	}
-
-	public void setSale(Sales sale)
-	{
-		this.sale = sale;
-	}
+//	public Purchase getSchoolReturn()
+//	{
+//		return purchase;
+//	}
+//
+//	public void setSchoolReturn(Purchase purchase)
+//	{
+//		this.purchase = purchase;
+//	}
+//
+//	public Sales getSchoolReturn()
+//	{
+//		return sale;
+//	}
+//
+//	public void setSchoolReturn(Sales sale)
+//	{
+//		this.sale = sale;
+//	}
 
 	public Book getBook()
 	{

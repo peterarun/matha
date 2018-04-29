@@ -187,7 +187,7 @@ public class CreatePurchaseController {
 	public void initEdit(Purchase purchase) {
 
 		this.purchase = purchase;
-//		List<OrderItem> orderList = new ArrayList<>(purchase.getOrderItem());
+//		List<OrderItem> orderList = new ArrayList<>(purchase.getPurchaseReturnDetSet());
 //		addedOrders.setItems(FXCollections.observableList(orderList));
 //		this.publisher = purchase.getPublisher();
 //		this.purchaseDate.setValue(purchase.getPurchaseDate());

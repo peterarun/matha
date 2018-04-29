@@ -1,0 +1,17 @@
+USE [MathaNew]
+GO
+
+SET ANSI_NULLS ON
+GO
+
+SET QUOTED_IDENTIFIER ON
+GO
+
+alter table PReturn add TxnId int null;
+GO
+
+ALTER TABLE [dbo].[PReturn] ALTER COLUMN [SerialId] NVARCHAR(15) NOT NULL;
+GO
+
+ALTER TABLE [dbo].[PReturn] ADD CONSTRAINT PReturn_PK PRIMARY KEY([SerialId]);
+GO

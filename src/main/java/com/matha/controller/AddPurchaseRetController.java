@@ -9,20 +9,17 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 import java.util.TreeSet;
+import java.util.concurrent.atomic.AtomicInteger;
 import java.util.stream.Collector;
 import java.util.stream.Collectors;
 
+import com.matha.domain.*;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.controlsfx.control.textfield.TextFields;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
-import com.matha.domain.Book;
-import com.matha.domain.OrderItem;
-import com.matha.domain.Publisher;
-import com.matha.domain.PurchaseReturn;
-import com.matha.domain.PurchaseTransaction;
 import com.matha.service.SchoolService;
 
 import javafx.collections.FXCollections;
@@ -67,7 +64,7 @@ public class AddPurchaseRetController
 	private TextField price;
 
 	@FXML
-	private TableView<OrderItem> addedBooks;	
+	private TableView<PurchaseReturnDet> addedBooks;
 
 	@FXML
 	private TextField subTotal;
@@ -81,7 +78,8 @@ public class AddPurchaseRetController
 	private Publisher publisher;
 	private PurchaseReturn purchaseReturn;
 	private Map<String, Book> bookMap;
-	private Collector<OrderItem, ?, Double> summingDblCollector = Collectors.summingDouble(OrderItem::getTotal);
+	private AtomicInteger index = new AtomicInteger();
+	private Collector<PurchaseReturnDet, ?, Double> summingDblCollector = Collectors.summingDouble(PurchaseReturnDet::getTotalBought);
 	private Collector<Book, ?, Map<String, Book>> bookMapCollector = Collectors.toMap(o -> o.getShortName() + ": " + o.getName() + " - " + o.getPublisherName(), o -> o);	
 	
 	void initData(Publisher publisherIn, PurchaseReturn purchaseReturnIn)
@@ -104,11 +102,12 @@ public class AddPurchaseRetController
 	{
 		if (purchaseReturnIn != null)
 		{
-			if (purchaseReturnIn.getOrderItem() != null)
+			if (purchaseReturnIn.getPurchaseReturnDetSet() != null)
 			{
-				ObservableList<OrderItem> orderItemsIn = FXCollections
-						.observableList(new ArrayList<OrderItem>(purchaseReturnIn.getOrderItem()));
+				ObservableList<PurchaseReturnDet> orderItemsIn = FXCollections
+						.observableList(new ArrayList<PurchaseReturnDet>(purchaseReturnIn.getPurchaseReturnDetSet()));
 				this.addedBooks.setItems(orderItemsIn);
+				this.index.set(orderItemsIn.size());
 			}
 			this.returnDate.setValue(purchaseReturnIn.getSalesTxn().getTxnDate());
 			this.notes.setText(purchaseReturnIn.getSalesTxn().getNote());
@@ -122,7 +121,7 @@ public class AddPurchaseRetController
 
 	private void loadSubTotal()
 	{
-		ObservableList<OrderItem> orderItemsIn = this.addedBooks.getItems();
+		ObservableList<PurchaseReturnDet> orderItemsIn = this.addedBooks.getItems();
 		Double subTotalDbl = orderItemsIn.stream().collect(summingDblCollector);
 		this.subTotal.setText(subTotalDbl.toString());		
 	}
@@ -130,11 +129,10 @@ public class AddPurchaseRetController
 	@FXML
 	void addBookData(ActionEvent event)
 	{
-		OrderItem itemIn = new OrderItem();
-		String bookStr = this.bookName.getText(); 
-		itemIn.setBook(this.bookMap.get(bookStr));
-		itemIn.setCount(Integer.parseInt(this.quantity.getText()));
-		itemIn.setBookPrice(Double.parseDouble(this.price.getText()));
+		String bookStr = this.bookName.getText();
+		PurchaseReturnDet itemIn = new PurchaseReturnDet(index.incrementAndGet(),
+				Integer.parseInt(this.quantity.getText()),
+				Double.parseDouble(this.price.getText()),this.bookMap.get(bookStr));
 		
 		this.addedBooks.getItems().add(itemIn);
 		LOGGER.debug("Added Item: " + itemIn);
@@ -190,7 +188,7 @@ public class AddPurchaseRetController
 			salesTxn.setPublisher(publisher);
 		}
 		
-		TreeSet<OrderItem> orderItems = new TreeSet<>();	
+		TreeSet<PurchaseReturnDet> orderItems = new TreeSet<>();
 		orderItems.addAll(this.addedBooks.getItems());
 		
 		salesTxn.setTxnDate(this.returnDate.getValue());
@@ -210,7 +208,7 @@ public class AddPurchaseRetController
 	@FXML
 	void removeOperation(ActionEvent event)
 	{
-		OrderItem itemIn = this.addedBooks.getSelectionModel().getSelectedItem();
+		PurchaseReturnDet itemIn = this.addedBooks.getSelectionModel().getSelectedItem();
 		this.addedBooks.getItems().remove(itemIn);
 		loadSubTotal();
 	}

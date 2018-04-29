@@ -47,7 +47,7 @@
 	<queryString>
 		<![CDATA[]]>
 	</queryString>
-	<field name="soldCnt" class="java.lang.Integer"/>
+	<field name="qty" class="java.lang.Integer"/>
 	<field name="bookName" class="java.lang.String"/>
 	<field name="totalSold" class="java.lang.Double"/>
 	<field name="bookPrice" class="java.lang.Double"/>
@@ -489,7 +489,7 @@
 				<textElement textAlignment="Center">
 					<font fontName="SansSerif" size="8"/>
 				</textElement>
-				<textFieldExpression><![CDATA[$F{soldCnt}]]></textFieldExpression>
+				<textFieldExpression><![CDATA[$F{qty}]]></textFieldExpression>
 			</textField>
 		</band>
 	</detail>

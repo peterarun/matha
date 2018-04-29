@@ -120,7 +120,7 @@ public class SalesApplicationTests
 
 			Sort sort = new Sort(new Sort.Order(Direction.ASC, "txnDate"), new Sort.Order(Direction.ASC, "id"));
 			Publisher pub = pubRepo.findOne(45);
-			List<OrderItem> tableData = orderItemRepo.findAllByPurchaseIsNotNull();
+			List<OrderItem> tableData = orderItemRepo.fetchOrdersForPublisher(pub);
 			System.out.println(tableData);
 			
 			hm.put("reportData", tableData);

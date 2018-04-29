@@ -15,6 +15,8 @@ import javax.persistence.EntityManager;
 import javax.persistence.PersistenceContext;
 import javax.transaction.Transactional;
 
+import com.matha.domain.*;
+import com.matha.repository.*;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -23,47 +25,6 @@ import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Sort;
 import org.springframework.data.domain.Sort.Direction;
 import org.springframework.stereotype.Service;
-
-import com.matha.domain.Account;
-import com.matha.domain.Address;
-import com.matha.domain.Book;
-import com.matha.domain.BookCategory;
-import com.matha.domain.CashBook;
-import com.matha.domain.CashHead;
-import com.matha.domain.District;
-import com.matha.domain.Order;
-import com.matha.domain.OrderItem;
-import com.matha.domain.Publisher;
-import com.matha.domain.Purchase;
-import com.matha.domain.PurchasePayment;
-import com.matha.domain.PurchaseReturn;
-import com.matha.domain.PurchaseTransaction;
-import com.matha.domain.Sales;
-import com.matha.domain.SalesTransaction;
-import com.matha.domain.School;
-import com.matha.domain.SchoolPayment;
-import com.matha.domain.SchoolReturn;
-import com.matha.domain.State;
-import com.matha.repository.AccountsRepository;
-import com.matha.repository.AddressesRepository;
-import com.matha.repository.BookRepository;
-import com.matha.repository.CashBookRepository;
-import com.matha.repository.CashHeadRepository;
-import com.matha.repository.CategoryRepository;
-import com.matha.repository.DistrictRepository;
-import com.matha.repository.OrderItemRepository;
-import com.matha.repository.OrderRepository;
-import com.matha.repository.PublisherRepository;
-import com.matha.repository.PurchasePayRepository;
-import com.matha.repository.PurchaseRepository;
-import com.matha.repository.PurchaseReturnRepository;
-import com.matha.repository.PurchaseTxnRepository;
-import com.matha.repository.SalesRepository;
-import com.matha.repository.SalesTxnRepository;
-import com.matha.repository.SchoolPayRepository;
-import com.matha.repository.SchoolRepository;
-import com.matha.repository.SchoolReturnRepository;
-import com.matha.repository.StateRepository;
 
 @Service
 public class SchoolService
@@ -85,6 +46,18 @@ public class SchoolService
 
 	@Autowired
 	OrderItemRepository orderItemRepository;
+
+	@Autowired
+	SalesDetRepository salesDetRepository;
+
+	@Autowired
+	PurDetRepository purDetRepository;
+
+	@Autowired
+	SalesReturnDetRepository salesReturnDetRepository;
+
+	@Autowired
+	PurchaseReturnDetRepository purchaseReturnDetRepository;
 
 	@Autowired
 	private DistrictRepository districtRepository;
@@ -621,10 +594,10 @@ public class SchoolService
 	}
 
 	@Transactional
-	public void savePurchase(Purchase pur, List<OrderItem> orderItems, PurchaseTransaction txn)
+	public void savePurchase(Purchase pur, List<PurchaseDet> orderItems, PurchaseTransaction txn)
 	{
 		txn.setPurchase(pur);
-		List<OrderItem> orderItemsOrig = new ArrayList<>();
+		List<PurchaseDet> orderItemsOrig = new ArrayList<>();
 		if (txn.getId() == null)
 		{
 			txn = saveNewPurchaseTxn(txn);
@@ -635,13 +608,13 @@ public class SchoolService
 			txn.setPurchase(pur);
 			purchaseTxnRepository.save(txn);
 
-			for (OrderItem orderIn : orderItems)
+			for (PurchaseDet orderIn : orderItems)
 			{
 				orderIn.setPurchase(pur);
 			}
-			orderItemRepository.save(orderItems);
-			Set<String> bookSet = orderItems.stream().map(OrderItem::getBook).map(Book::getBookNum).collect(Collectors.toSet());
-			updateBookInventory(true, orderItemsOrig, bookSet, new ArrayList<>(orderItems), new ArrayList<>(), new ArrayList<>());
+			purDetRepository.save(orderItems);
+			Set<String> bookSet = orderItems.stream().map(PurchaseDet::getBook).map(Book::getBookNum).collect(Collectors.toSet());
+			updateBookInventory(orderItemsOrig, new ArrayList<>(orderItems), new ArrayList<>(), new ArrayList<>(), bookSet);
 
 		}
 		else
@@ -654,18 +627,20 @@ public class SchoolService
 			txn.setPurchase(pur);
 			purchaseTxnRepository.save(txn);
 
-			List<Integer> orderIds = pur.getOrderItems().stream().map(OrderItem::getId).collect(Collectors.toList());
-			orderItemsOrig.addAll(orderItemRepository.findAll(orderIds));
+			List<Integer> orderIds = pur.getPurchaseItems().stream().map(PurchaseDet::getPurDetId).collect(Collectors.toList());
+			orderItemsOrig.addAll(purDetRepository.findAll(orderIds));
 
 			saveOrderItemUpdates(orderItemsOrig, orderItems, pur);
 		}
 	}
 
-	private void saveOrderItemUpdates(List<OrderItem> ordersOrig, List<OrderItem> ordersIn, Purchase pur)
+	private void saveOrderItemUpdates(List<PurchaseDet> ordersOrig,
+									  List<PurchaseDet> ordersIn,
+									  Purchase pur)
 	{
-		List<OrderItem> removedOrders = new ArrayList<>();
-		List<OrderItem> addedOrders = new ArrayList<>();
-		List<OrderItem> affectedOrders = new ArrayList<>();
+		List<PurchaseDet> removedOrders = new ArrayList<>();
+		List<PurchaseDet> addedOrders = new ArrayList<>();
+		List<PurchaseDet> affectedOrders = new ArrayList<>();
 		Set<String> bookNums = new HashSet<>();
 
 		if (ordersOrig != null && !ordersOrig.isEmpty())
@@ -677,7 +652,7 @@ public class SchoolService
 				removedOrders.removeAll(ordersIn);
 				affectedOrders.removeAll(removedOrders);
 			}
-			Set<String> bookSet = ordersOrig.stream().map(OrderItem::getBook).map(Book::getBookNum).collect(Collectors.toSet());
+			Set<String> bookSet = ordersOrig.stream().map(InventoryData::getBook).map(Book::getBookNum).collect(Collectors.toSet());
 			bookNums.addAll(bookSet);
 		}
 
@@ -689,24 +664,24 @@ public class SchoolService
 				addedOrders.removeAll(ordersOrig);
 				affectedOrders.removeAll(addedOrders);
 			}
-			Set<String> bookSet = ordersIn.stream().map(OrderItem::getBook).map(Book::getBookNum).collect(Collectors.toSet());
+			Set<String> bookSet = ordersIn.stream().map(InventoryData::getBook).map(Book::getBookNum).collect(Collectors.toSet());
 			bookNums.addAll(bookSet);
 		}
 
-		for (OrderItem orderIn : addedOrders)
+		for (PurchaseDet orderIn : addedOrders)
 		{
-			orderIn.setId(null);
+			orderIn.setPurDetId(null);
 			orderIn.setPurchase(pur);
 		}
-		orderItemRepository.save(addedOrders);
+		purDetRepository.save(addedOrders);
 
-		for (OrderItem orderIn : removedOrders)
+		for (PurchaseDet orderIn : removedOrders)
 		{
 			orderIn.setPurchase(null);
 		}
-		orderItemRepository.save(removedOrders);
-		orderItemRepository.save(affectedOrders);
-		updateBookInventory(true, ordersOrig, bookNums, addedOrders, removedOrders, affectedOrders);
+		purDetRepository.save(removedOrders);
+		purDetRepository.save(affectedOrders);
+		updateBookInventory(ordersOrig, addedOrders, removedOrders, affectedOrders, bookNums);
 	}
 
 	public List<Purchase> fetchPurchasesForPublisher(Publisher pub)
@@ -718,19 +693,19 @@ public class SchoolService
 	public void deletePurchase(Purchase pur)
 	{
 		PurchaseTransaction txn = pur.getSalesTxn();
-		Set<OrderItem> orderItems = pur.getOrderItems();
-		for (OrderItem orderItem : orderItems)
+		Set<PurchaseDet> orderItems = pur.getPurchaseItems();
+		for (PurchaseDet orderItem : orderItems)
 		{
 			orderItem.setPurchase(null);
 		}
-		orderItemRepository.save(orderItems);
+		purDetRepository.save(orderItems);
 		purchaseRepoitory.delete(pur);
 		deletePurchaseTxn(txn);
 
 	}
 
 	@Transactional
-	public void savePurchaseReturn(PurchaseReturn returnIn, PurchaseTransaction txn, Set<OrderItem> orderItems)
+	public void savePurchaseReturn(PurchaseReturn returnIn, PurchaseTransaction txn, Set<PurchaseReturnDet> orderItems)
 	{
 		txn.setPurchaseReturn(returnIn);
 		if (txn.getId() == null)
@@ -749,8 +724,8 @@ public class SchoolService
 		txn = purchaseTxnRepository.save(txn);
 
 		PurchaseReturn returnFinal = returnIn;
-		orderItems.forEach(it -> it.setPurchReturn(returnFinal));
-		orderItemRepository.save(orderItems);
+		orderItems.forEach(it -> it.setPurchaseReturn(returnFinal));
+		purchaseReturnDetRepository.save(orderItems);
 
 	}
 
@@ -843,14 +818,15 @@ public class SchoolService
 
 	public Page<Order> fetchOrders(Publisher pub, int page, int size, boolean billed)
 	{
-		PageRequest pageable = new PageRequest(page, size, Direction.DESC, "orderDate");
 		Page<Order> orderList = null;
 		if (billed)
 		{
+			PageRequest pageable = new PageRequest(page, size, Direction.DESC, "orderDate");
 			orderList = orderRepository.fetchOrdersForPublisher(pub, pageable);
 		}
 		else
 		{
+			PageRequest pageable = new PageRequest(page, size, Direction.DESC, "ord.orderDate");
 			orderList = orderRepository.fetchUnBilledOrdersForPub(pub, pageable);
 		}
 
@@ -859,14 +835,15 @@ public class SchoolService
 
 	public Page<Order> fetchOrderSearch(Publisher pub, int page, int size, boolean billed, String searchText)
 	{
-		PageRequest pageable = new PageRequest(page, size, Direction.DESC, "orderDate");
 		Page<Order> orderList = null;
 		if (billed)
 		{
+			PageRequest pageable = new PageRequest(page, size, Direction.DESC, "orderDate");
 			orderList = orderRepository.fetchOrdersForPublisherAndSearchStr(pub, searchText, pageable);
 		}
 		else
 		{
+			PageRequest pageable = new PageRequest(page, size, Direction.DESC, "ord.orderDate");
 			orderList = orderRepository.fetchUnBilledOrdersForPubAndSearchStr(pub, searchText, pageable);
 		}
 
@@ -888,6 +865,7 @@ public class SchoolService
 	public List<Order> fetchUnBilledOrders(Publisher pub)
 	{
 		List<Order> orderList = orderRepository.fetchUnBilledOrdersForPub(pub);
+//		List<Order> orderList = new ArrayList<>();
 		return orderList;
 	}
 
@@ -989,6 +967,11 @@ public class SchoolService
 
 	private void deleteSalesTxnSoft(SalesTransaction txn)
 	{
+		if(txn == null)
+		{
+			LOGGER.info("Null STxn passed in for updating balance");
+			return;
+		}
 		txn.setAmount(0.0);
 		txn.setTxnFlag(DELETED_STR);
 		salesTxnRepository.save(txn);
@@ -1000,13 +983,13 @@ public class SchoolService
 	{
 		return salesRepository.fetchNextSerialSeqVal(fy);
 	}
-	
+
 	@Transactional
-	public Sales saveSales(Sales pur, Set<OrderItem> ordersIn, SalesTransaction txn)
+	public Sales saveSalesData(Sales pur, Set<SalesDet> ordersIn, SalesTransaction txn)
 	{
 		// correct
 		txn.setSale(pur);
-		List<OrderItem> ordersOrig = new ArrayList<>();
+		List<SalesDet> ordersOrig = new ArrayList<>();
 		if (txn.getId() == null)
 		{
 			txn = saveNewSalesTxn(txn);
@@ -1017,13 +1000,13 @@ public class SchoolService
 			txn.setSale(pur);
 			salesTxnRepository.save(txn);
 
-			for (OrderItem orderIn : ordersIn)
+			for (SalesDet orderIn : ordersIn)
 			{
 				orderIn.setSale(pur);
 			}
-			orderItemRepository.save(ordersIn);
-			Set<String> bookSet = ordersIn.stream().map(OrderItem::getBook).map(Book::getBookNum).collect(Collectors.toSet());
-			updateBookInventory(false, ordersOrig, bookSet, new ArrayList<>(ordersIn), new ArrayList<>(), new ArrayList<>());
+			salesDetRepository.save(ordersIn);
+			Set<String> bookSet = ordersIn.stream().map(SalesDet::getBook).map(Book::getBookNum).collect(Collectors.toSet());
+			updateBookInventory(ordersOrig, new ArrayList<>(ordersIn), new ArrayList<>(), new ArrayList<>(), bookSet);
 		}
 		else
 		{
@@ -1035,18 +1018,18 @@ public class SchoolService
 			txn.setSale(pur);
 			salesTxnRepository.save(txn);
 
-			List<Integer> orderItemIds = pur.getOrderItems().stream().map(OrderItem::getId).collect(Collectors.toList());
-			ordersOrig = orderItemRepository.findAll(orderItemIds);
-			saveOrderItemUpdates(ordersOrig, ordersIn, pur);
+			List<Integer> orderItemIds = pur.getSaleItems().stream().map(SalesDet::getSalesDetId).collect(Collectors.toList());
+			ordersOrig = salesDetRepository.findAll(orderItemIds);
+			saveSalesDetUpdates(ordersOrig, ordersIn, pur);
 		}
 		return pur;
 	}
 
-	private void saveOrderItemUpdates(List<OrderItem> ordersOrig, Set<OrderItem> ordersIn, Sales pur)
+	private void saveSalesDetUpdates(List<SalesDet> ordersOrig, Set<SalesDet> ordersIn, Sales pur)
 	{
-		List<OrderItem> removedOrders = new ArrayList<>();
-		List<OrderItem> addedOrders = new ArrayList<>();
-		List<OrderItem> affectedOrders = new ArrayList<>();
+		List<SalesDet> removedOrders = new ArrayList<>();
+		List<SalesDet> addedOrders = new ArrayList<>();
+		List<SalesDet> affectedOrders = new ArrayList<>();
 		Set<String> bookNums = new HashSet<>();
 
 		if (ordersOrig != null && !ordersOrig.isEmpty())
@@ -1058,7 +1041,7 @@ public class SchoolService
 				removedOrders.removeAll(ordersIn);
 				affectedOrders.removeAll(removedOrders);
 			}
-			Set<String> bookSet = ordersOrig.stream().map(OrderItem::getBook).map(Book::getBookNum).collect(Collectors.toSet());
+			Set<String> bookSet = ordersOrig.stream().map(SalesDet::getBook).map(Book::getBookNum).collect(Collectors.toSet());
 			bookNums.addAll(bookSet);
 		}
 
@@ -1070,77 +1053,67 @@ public class SchoolService
 				addedOrders.removeAll(ordersOrig);
 				affectedOrders.removeAll(addedOrders);
 			}
-			Set<String> bookSet = ordersIn.stream().map(OrderItem::getBook).map(Book::getBookNum).collect(Collectors.toSet());
+			Set<String> bookSet = ordersIn.stream().map(SalesDet::getBook).map(Book::getBookNum).collect(Collectors.toSet());
 			bookNums.addAll(bookSet);
 		}
 
-		for (OrderItem orderIn : addedOrders)
+		for (SalesDet orderIn : addedOrders)
 		{
-			orderIn.setId(null);
+			orderIn.setSalesDetId(null);
 			orderIn.setSale(pur);
 		}
-		orderItemRepository.save(addedOrders);
+		salesDetRepository.save(addedOrders);
 
-		for (OrderItem orderIn : removedOrders)
+		for (SalesDet orderIn : removedOrders)
 		{
 			orderIn.setSale(null);
 		}
-		orderItemRepository.save(removedOrders);
-		orderItemRepository.save(affectedOrders);
-		updateBookInventory(false, ordersOrig, bookNums, addedOrders, removedOrders, affectedOrders);
+		salesDetRepository.save(removedOrders);
+		salesDetRepository.save(affectedOrders);
+		updateBookInventory(ordersOrig, addedOrders, removedOrders, affectedOrders, bookNums);
 	}
 
-	private void updateBookInventory(boolean add, List<OrderItem> ordersOrig, Set<String> bookNums, List<OrderItem> addedOrders, List<OrderItem> removedOrders, List<OrderItem> affectedOrders)
+	private void updateBookInventory(List<? extends InventoryData> ordersOrig,
+										  List<? extends InventoryData> addedOrders,
+										  List<? extends InventoryData> removedOrders,
+										  List<? extends InventoryData> affectedOrders,
+										  Set<String> bookNums)
 	{
-		int addFactor = add ? 1 : -1;
-
 		Map<String, Integer> bookCounts = new HashMap<>();
-		for (OrderItem orderItem : addedOrders)
+		for (InventoryData orderItem : addedOrders)
 		{
 			if (bookCounts.containsKey(orderItem.getBook().getBookNum()))
 			{
 				int bookCnt = bookCounts.get(orderItem.getBook().getBookNum());
-				int chgCnt = add ? orderItem.getFullFilledCnt() : orderItem.getSoldCnt();
-				bookCounts.put(orderItem.getBook().getBookNum(), bookCnt + chgCnt);
+				bookCounts.put(orderItem.getBook().getBookNum(), bookCnt + orderItem.getQuantity());
 			}
 			else
 			{
-				int chgCnt = add ? orderItem.getFullFilledCnt() : orderItem.getSoldCnt();
+				int chgCnt = orderItem.getQuantity();
 				bookCounts.put(orderItem.getBook().getBookNum(), chgCnt);
 			}
 		}
 
-		for (OrderItem orderItem : removedOrders)
+		for (InventoryData orderItem : removedOrders)
 		{
 			if (bookCounts.containsKey(orderItem.getBook().getBookNum()))
 			{
 				int bookCnt = bookCounts.get(orderItem.getBook().getBookNum());
-				int chgCnt = add ? orderItem.getFullFilledCnt() : orderItem.getSoldCnt();
-				bookCounts.put(orderItem.getBook().getBookNum(), bookCnt - chgCnt);
+				bookCounts.put(orderItem.getBook().getBookNum(), bookCnt - orderItem.getQuantity());
 			}
 			else
 			{
-				int chgCnt = add ? orderItem.getFullFilledCnt() : orderItem.getSoldCnt();
-				bookCounts.put(orderItem.getBook().getBookNum(), -chgCnt);
+				bookCounts.put(orderItem.getBook().getBookNum(), -orderItem.getQuantity());
 			}
 		}
 
-		for (OrderItem orderItem : affectedOrders)
+		for (InventoryData orderItem : affectedOrders)
 		{
 			int origItemIdx = ordersOrig.indexOf(orderItem);
 			if (origItemIdx > -1)
 			{
-				OrderItem origItem = ordersOrig.get(origItemIdx);
-
-				int diff = 0;
-				if (add)
-				{
-					diff = origItem.getFullFilledCnt() - orderItem.getFullFilledCnt();
-				}
-				else
-				{
-					diff = origItem.getSoldCnt() - orderItem.getSoldCnt();
-				}
+				InventoryData origItem = ordersOrig.get(origItemIdx);
+				int diff = origItem.getQuantity() - orderItem.getQuantity();
 				if (bookCounts.containsKey(orderItem.getBook().getBookNum()))
 				{
 					int bookCnt = bookCounts.get(orderItem.getBook().getBookNum());
@@ -1159,7 +1132,7 @@ public class SchoolService
 			if (bookCounts.containsKey(book.getBookNum()))
 			{
 				int diff = bookCounts.get(book.getBookNum());
-				book.addInventory(addFactor * diff);
+				book.addInventory(diff);
 			}
 		}
 		bookRepository.save(origBooks);
@@ -1167,19 +1140,20 @@ public class SchoolService
 
 	public List<Sales> fetchBills(School school)
 	{
-		return salesRepository.findAllByTxnSchool(school);
+//		return salesRepository.findAllByTxnSchool(school);
+		return salesRepository.findAllBySchool(school);
 	}
 
 	@Transactional
 	public void deleteBill(Sales selectedSale)
 	{
-		Set<OrderItem> orders = selectedSale.getOrderItems();
-		for (OrderItem order : orders)
+		Set<SalesDet> orders = selectedSale.getSaleItems();
+		for (SalesDet order : orders)
 		{
 			order.setSale(null);
 		}
-		orderItemRepository.save(orders);
-		double netAmt = selectedSale.getSalesTxn().getAmount();
+		salesDetRepository.save(orders);
+		double netAmt = selectedSale.getNetAmount();
 		deleteSalesTxnSoft(selectedSale.getSalesTxn());
 		selectedSale.setDeletedAmt(netAmt);
 //		salesRepository.delete(selectedSale);
@@ -1226,7 +1200,7 @@ public class SchoolService
 	}
 
 	@Transactional
-	public void saveSchoolReturn(SchoolReturn returnIn, SalesTransaction txn, Set<OrderItem> orderItemsIn)
+	public void saveSchoolReturn(SchoolReturn returnIn, SalesTransaction txn, Set<SalesReturnDet> orderItemsIn)
 	{
 		txn.setSalesReturn(returnIn);
 
@@ -1246,8 +1220,8 @@ public class SchoolService
 		txn = salesTxnRepository.save(txn);
 
 		final SchoolReturn returnInFinal = returnIn;
-		orderItemsIn.forEach(it -> it.setBookReturn(returnInFinal));
-		orderItemRepository.save(returnIn.getOrderItem());
+		orderItemsIn.forEach(it -> it.setSchoolReturn(returnInFinal));
+		salesReturnDetRepository.save(returnIn.getSalesReturnDetSet());
 
 	}
 

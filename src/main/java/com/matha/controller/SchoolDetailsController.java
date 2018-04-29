@@ -326,7 +326,7 @@ public class SchoolDetailsController
 		try
 		{
 			Sales selectedSale = billData.getSelectionModel().getSelectedItem();
-			if (selectedSale.getSalesTxn().getTxnFlag() != null)
+			if (selectedSale.getSalesTxn() != null && selectedSale.getSalesTxn().getTxnFlag() != null)
 			{
 				showAlert(selectedSale);
 				return;
@@ -350,7 +350,7 @@ public class SchoolDetailsController
 	{
 		Alert alert = new Alert(AlertType.ERROR);
 		alert.setTitle("Edit Bill Error");
-		alert.setHeaderText("Unable to edit a deleted bill: " + selectedSale.getInvoiceNo());
+		alert.setHeaderText("Unable to edit a deleted bill: " + selectedSale.getSerialNo());
 		alert.setContentText("Cannot Edit; Please use View option");
 		alert.showAndWait();
 	}
@@ -383,7 +383,7 @@ public class SchoolDetailsController
 		Sales selectedSale = billData.getSelectionModel().getSelectedItem();
 		Alert alert = new Alert(AlertType.CONFIRMATION);
 		alert.setTitle("Delete Bill Confirmation");
-		alert.setHeaderText("Are you sure you want to delete the bill: " + selectedSale.getInvoiceNo());
+		alert.setHeaderText("Are you sure you want to delete the bill: " + selectedSale.getSerialNo());
 		alert.setContentText("Click Ok to Delete");
 
 		Optional<ButtonType> result = alert.showAndWait();

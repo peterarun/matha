@@ -15,4 +15,6 @@ public interface PurchaseRepository extends JpaRepository<Purchase, String> {
 	@Query("select sales from Purchase sales where sales.salesTxn.publisher = ?1")
 	List<Purchase> findAllByPublisher(Publisher pub);
 
+	@Query(value = "SELECT NEXT VALUE FOR PurchaseSeq", nativeQuery = true)
+	Long fetchNextSeqVal();
 }

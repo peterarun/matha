@@ -3,18 +3,10 @@ package com.matha.domain;
 import static com.matha.util.UtilConstants.DATE_CONV;
 
 import java.time.LocalDate;
+import java.util.Date;
 import java.util.Set;
 
-import javax.persistence.Column;
-import javax.persistence.Entity;
-import javax.persistence.FetchType;
-import javax.persistence.GeneratedValue;
-import javax.persistence.Id;
-import javax.persistence.JoinColumn;
-import javax.persistence.ManyToOne;
-import javax.persistence.OneToMany;
-import javax.persistence.OneToOne;
-import javax.persistence.Table;
+import javax.persistence.*;
 
 import org.hibernate.annotations.GenericGenerator;
 
@@ -43,8 +35,8 @@ public class Sales
 	private String grNum;
 
 	@Column(name = "SerialNo")
-	private Integer invoiceNo;
-	
+	private Integer serialNo;
+
 	@Column(name = "Packages")
 	private String packages;
 
@@ -70,20 +62,34 @@ public class Sales
 	@JoinColumn(name = "TxnId")
 	private SalesTransaction salesTxn;
 
-	@OneToMany(mappedBy = "sale", fetch = FetchType.EAGER)
-	private Set<OrderItem> orderItems;
+//	@OneToMany(mappedBy = "sale", fetch = FetchType.EAGER)
+//	private Set<OrderItem> orderItems;
 
-	@OneToMany(fetch = FetchType.EAGER)
-	@JoinColumn(name="SerialId")
+	@OneToMany(fetch = FetchType.EAGER, mappedBy = "sale")
+//	@JoinColumn(name = "SerialId")
 	private Set<SalesDet> saleItems;
 
 	@ManyToOne
 	@JoinColumn(name = "CustId")
 	private School school;
 
+	@Column(name = "TDate")
+	private LocalDate txnDate;
+
 	public LocalDate getInvoiceDate()
 	{
-		return salesTxn.getTxnDate();
+		if(getTxnDate() != null)
+		{
+			return getTxnDate();
+		}
+		else if(salesTxn != null)
+		{
+			return salesTxn.getTxnDate();
+		}
+		else
+		{
+			return null;
+		}
 	}
 
 	public String getInvoiceDateStr()
@@ -97,7 +103,7 @@ public class Sales
 		{
 			return 0.0;
 		}
-		if (discType)
+		if (discType != null && discType)
 		{
 			return subTotal * discAmt / 100;
 		}
@@ -106,6 +112,10 @@ public class Sales
 	
 	public Double getNetAmount()
 	{
+		if(salesTxn == null)
+		{
+			return getSubTotal() - getCalcDisc();
+		}
 		return salesTxn.getAmount();
 	}
 
@@ -119,15 +129,15 @@ public class Sales
 		this.salesTxn = salesTxn;
 	}
 	
-	public Set<OrderItem> getOrderItems()
-	{
-		return orderItems;
-	}
-
-	public void setOrderItems(Set<OrderItem> orderItems)
-	{
-		this.orderItems = orderItems;
-	}
+//	public Set<OrderItem> getPurchaseItems()
+//	{
+//		return orderItems;
+//	}
+//
+//	public void setPurchaseItems(Set<OrderItem> orderItems)
+//	{
+//		this.orderItems = orderItems;
+//	}
 
 	public Set<SalesDet> getSaleItems()
 	{
@@ -149,14 +159,12 @@ public class Sales
 		this.id = id;
 	}
 
-	public Integer getInvoiceNo()
-	{
-		return invoiceNo;
+	public Integer getSerialNo() {
+		return serialNo;
 	}
 
-	public void setInvoiceNo(Integer invoiceNo)
-	{
-		this.invoiceNo = invoiceNo;
+	public void setSerialNo(Integer serialNo) {
+		this.serialNo = serialNo;
 	}
 
 	public String getDespatch()
@@ -269,39 +277,34 @@ public class Sales
 		this.school = school;
 	}
 
-	@Override
-	public String toString()
-	{
-		StringBuilder builder = new StringBuilder();
-		builder.append("Sales [id=");
-		builder.append(id);
-		builder.append(", despatch=");
-		builder.append(despatch);
-		builder.append(", docsThru=");
-		builder.append(docsThru);
-		builder.append(", grNum=");
-		builder.append(grNum);
-		builder.append(", invoiceNo=");
-		builder.append(invoiceNo);
-		builder.append(", packages=");
-		builder.append(packages);
-		builder.append(", discAmt=");
-		builder.append(discAmt);
-		builder.append(", discType=");
-		builder.append(discType);
-		builder.append(", subTotal=");
-		builder.append(subTotal);
-		builder.append(", otherAmount=");
-		builder.append(otherAmount);
-		builder.append(", financialYear=");
-		builder.append(financialYear);
-		builder.append(", deletedAmt=");
-		builder.append(deletedAmt);
-		builder.append(", salesTxn=");
-		builder.append(salesTxn);
-		builder.append("]");
-		return builder.toString();
+	public LocalDate getTxnDate() {
+		return txnDate;
 	}
 
-	
+	public void setTxnDate(LocalDate txnDate) {
+		this.txnDate = txnDate;
+	}
+
+	@Override
+	public String toString() {
+		final StringBuilder sb = new StringBuilder("Sales{");
+		sb.append("id='").append(id).append('\'');
+		sb.append(", despatch='").append(despatch).append('\'');
+		sb.append(", docsThru='").append(docsThru).append('\'');
+		sb.append(", grNum='").append(grNum).append('\'');
+		sb.append(", serialNo=").append(serialNo);
+		sb.append(", packages='").append(packages).append('\'');
+		sb.append(", discAmt=").append(discAmt);
+		sb.append(", discType=").append(discType);
+		sb.append(", subTotal=").append(subTotal);
+		sb.append(", otherAmount=").append(otherAmount);
+		sb.append(", financialYear=").append(financialYear);
+		sb.append(", deletedAmt=").append(deletedAmt);
+		sb.append(", salesTxn=").append(salesTxn);
+		sb.append(", saleItems=").append(saleItems);
+		sb.append(", school=").append(school);
+		sb.append(", txnDate=").append(txnDate);
+		sb.append('}');
+		return sb.toString();
+	}
 }

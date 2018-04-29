@@ -19,30 +19,32 @@ import javax.persistence.Table;
 
 import org.hibernate.annotations.Cascade;
 import org.hibernate.annotations.CascadeType;
+import org.hibernate.annotations.GenericGenerator;
 
 @Entity
-@Table(name = "PurchaseReturn")
+@Table(name = "PReturn")
 public class PurchaseReturn {
 
 	@Id
-	@GeneratedValue(strategy = GenerationType.IDENTITY)
+	@GenericGenerator(name = "pReturnId", strategy = "com.matha.generator.PurchaseRetIdGenerator")
+	@GeneratedValue(generator = "pReturnId")
 	@Column(name = "SerialId")
-	private Integer id;
+	private String id;
 
 	@OneToOne
 	@JoinColumn(name = "TxnId")
 	private PurchaseTransaction salesTxn;
 
-	@OneToMany(fetch= FetchType.EAGER, mappedBy = "purchReturn")
+	@OneToMany(fetch= FetchType.EAGER, mappedBy = "purchaseReturn")
 	@Cascade({CascadeType.SAVE_UPDATE, CascadeType.DELETE})	
-	private Set<OrderItem> orderItem;
+	private Set<PurchaseReturnDet> purchaseReturnDetSet;
 	
 	public Integer getUnitCount()
 	{
 		int unitCount = 0;
-		if(getOrderItem() != null)
+		if(getPurchaseReturnDetSet() != null)
 		{
-			unitCount = getOrderItem().stream().collect(Collectors.summingInt(OrderItem::getCount));
+			unitCount = getPurchaseReturnDetSet().stream().collect(Collectors.summingInt(PurchaseReturnDet::getQty));
 		}
 		
 		return unitCount;
@@ -68,11 +70,11 @@ public class PurchaseReturn {
 		return salesTxn.getAmount();
 	}
 	
-	public Integer getId() {
+	public String getId() {
 		return id;
 	}
 
-	public void setId(Integer id) {
+	public void setId(String id) {
 		this.id = id;
 	}
 
@@ -84,12 +86,12 @@ public class PurchaseReturn {
 		this.salesTxn = salesTxn;
 	}
 
-	public Set<OrderItem> getOrderItem() {
-		return orderItem;
+	public Set<PurchaseReturnDet> getPurchaseReturnDetSet() {
+		return purchaseReturnDetSet;
 	}
 
-	public void setOrderItem(Set<OrderItem> orderItem) {
-		this.orderItem = orderItem;
+	public void setPurchaseReturnDetSet(Set<PurchaseReturnDet> purchaseReturnDetSet) {
+		this.purchaseReturnDetSet = purchaseReturnDetSet;
 	}
 
 	public Double getAmount()

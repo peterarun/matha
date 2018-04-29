@@ -11,9 +11,11 @@ import com.matha.domain.Publisher;
 import com.matha.domain.PurchaseReturn;
 
 @Repository
-public interface PurchaseReturnRepository extends JpaRepository<PurchaseReturn, Integer>
+public interface PurchaseReturnRepository extends JpaRepository<PurchaseReturn, String>
 {
 	@Query("select payment from PurchaseReturn payment where payment.salesTxn.publisher = ?1")
 	public List<PurchaseReturn> findAllByPublisher(Publisher school, Sort dateSort);
 
+	@Query(value = "SELECT NEXT VALUE FOR PReturnSeq", nativeQuery = true)
+	Long fetchNextSeqVal();
 }

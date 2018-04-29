@@ -4,11 +4,8 @@ import static com.matha.util.UtilConstants.DATE_CONV;
 import static com.matha.util.UtilConstants.NEW_LINE;
 import static com.matha.util.UtilConstants.PERCENT_SIGN;
 import static com.matha.util.UtilConstants.RUPEE_SIGN;
-import static com.matha.util.Utils.fetchPriceColumnFactory;
-import static com.matha.util.Utils.getDoubleVal;
-import static com.matha.util.Utils.getIntegerVal;
-import static com.matha.util.Utils.getStringVal;
-import static com.matha.util.Utils.showErrorAlert;
+import static com.matha.util.Utils.*;
+import static java.util.stream.Collectors.toList;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -16,20 +13,17 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
+import java.util.concurrent.atomic.AtomicInteger;
 import java.util.logging.Logger;
 import java.util.stream.Collector;
 import java.util.stream.Collectors;
 
+import com.matha.domain.*;
 import org.apache.commons.lang.StringUtils;
 import org.controlsfx.control.textfield.TextFields;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
-import com.matha.domain.Order;
-import com.matha.domain.OrderItem;
-import com.matha.domain.Publisher;
-import com.matha.domain.Purchase;
-import com.matha.domain.PurchaseTransaction;
 import com.matha.service.SchoolService;
 
 import javafx.beans.binding.Bindings;
@@ -101,13 +95,13 @@ public class AddPurchaseBillController
 	private TextField note;
 
 	@FXML
-	private TableView<OrderItem> addedBooks;
+	private TableView<PurchaseDet> addedBooks;
 
 	@FXML
-	private TableColumn<OrderItem, String> priceColumn;
+	private TableColumn<PurchaseDet, String> priceColumn;
 
 	@FXML
-	private TableColumn<OrderItem, String> totalColumn;
+	private TableColumn<PurchaseDet, String> totalColumn;
 	
 	@FXML
 	private TextField subTotal;
@@ -141,24 +135,24 @@ public class AddPurchaseBillController
 
 	private Publisher publisher;
 	private Purchase purchase;
-
+	private AtomicInteger index = new AtomicInteger();
 	private Map<String, Order> orderMap = new HashMap<>();
 	private List<String> items = new ArrayList<>();
 	private Set<Order> orderSet = new HashSet<>();
 	private Collector<Order, ?, Map<String, Order>> orderMapCollector = Collectors.toMap(o -> o.getSerialNo(), o -> o);
-	private Collector<OrderItem, ?, Double> summingDblCollector = Collectors.summingDouble(OrderItem::getTotalBought);
+	private Collector<PurchaseDet, ?, Double> summingDblCollector = Collectors.summingDouble(PurchaseDet::getTotalBought);
 
 	private void loadAddDefaults()
 	{
 		this.invoiceDate.setConverter(DATE_CONV);
 		this.addedBooks.getSelectionModel().cellSelectionEnabledProperty().set(true);
 		this.priceColumn.setCellFactory(TextFieldTableCell.forTableColumn());
-		this.priceColumn.setCellValueFactory(fetchPriceColumnFactory());
-		this.priceColumn.setOnEditCommit(new EventHandler<CellEditEvent<OrderItem, String>>() {
-			public void handle(CellEditEvent<OrderItem, String> t)
+		this.priceColumn.setCellValueFactory(fetchPurPriceColumnFactory());
+		this.priceColumn.setOnEditCommit(new EventHandler<CellEditEvent<PurchaseDet, String>>() {
+			public void handle(CellEditEvent<PurchaseDet, String> t)
 			{
-				OrderItem oItem = ((OrderItem) t.getTableView().getItems().get(t.getTablePosition().getRow()));
-				oItem.setBookPrice(Double.parseDouble(t.getNewValue()));
+				PurchaseDet oItem = ((PurchaseDet) t.getTableView().getItems().get(t.getTablePosition().getRow()));
+				oItem.setRate(Double.parseDouble(t.getNewValue()));
 				t.getTableView().refresh();
 				loadSubTotal();
 				calcNetAmount(discAmt.getText());
@@ -178,7 +172,7 @@ public class AddPurchaseBillController
 		});
 		this.publisherDetails.setText(this.publisher.getAddress());
 		this.totalColumn.setCellValueFactory(cellData -> 
-			Bindings.format("%.2f", cellData.getValue().getTotal()));
+			Bindings.format("%.2f", cellData.getValue().getTotalBought()));
 		
 		this.discAmt.textProperty().addListener((observable, oldValue, newValue) -> {		    
 		    updateNetAmt();
@@ -201,17 +195,22 @@ public class AddPurchaseBillController
 			this.discCalc.setText(getStringVal(purchaseIn.getCalculatedDisc()));
 			this.netAmt.setText(getStringVal(purchaseIn.getSalesTxn().getAmount()));
 
-			if (purchaseIn.getOrderItems() != null && !purchaseIn.getOrderItems().isEmpty())
+			if (purchaseIn.getPurchaseItems() != null && !purchaseIn.getPurchaseItems().isEmpty())
 			{
-				orderSet = purchaseIn.getOrderItems().stream().map(OrderItem::getOrder).filter(o -> o != null).collect(Collectors.toSet());
+				orderSet = purchaseIn.getPurchaseItems().stream()
+						.filter(po -> po != null)
+						.map(poi -> poi.getOrderItem().getOrder())
+						.filter(o -> o != null)
+						.collect(Collectors.toSet());
 				List<String> orderIdList = orderSet.stream().map(Order::getSerialNo).collect(Collectors.toList());
 				this.orderList.setItems(FXCollections.observableList(orderIdList));
+				this.index.set(orderIdList.size());
 
-				List<OrderItem> bookItems = new ArrayList<OrderItem>();
+				List<PurchaseDet> bookItems = new ArrayList<>();
 
-				if (purchaseIn.getOrderItems() != null)
+				if (purchaseIn.getPurchaseItems() != null)
 				{
-					bookItems.addAll(purchaseIn.getOrderItems());
+					bookItems.addAll(purchaseIn.getPurchaseItems());
 				}
 				this.addedBooks.setItems(FXCollections.observableList(bookItems));
 				this.calculateTotalQty();
@@ -276,34 +275,28 @@ public class AddPurchaseBillController
 		LOGGER.info("Test");
 	}
 
-	private void addItems(List<OrderItem> bookItems)
+	private void addItems(List<PurchaseDet> bookItems)
 	{
 		if (addedBooks.getItems() == null)
 		{
 			addedBooks.setItems(FXCollections.observableList(new ArrayList<>()));
 		}
-		ObservableList<OrderItem> itemsIn = addedBooks.getItems(); 
+		ObservableList<PurchaseDet> itemsIn = addedBooks.getItems();
 		itemsIn.addAll(bookItems);
-		for (OrderItem orderItem : itemsIn)
-		{
-			if(orderItem.getFullFilledCnt() == null)
-			{
-				orderItem.setFullFilledCnt(orderItem.getCount());
-			}
-		}
 	}
 	
 	private void loadBooksAndSubTotal(Set<Order> ordersIn)
-	{		
+	{
 		if (ordersIn != null)
 		{
-			List<OrderItem> bookItems = new ArrayList<>();
-			for (Order orderIn : ordersIn)
-			{
-				List<OrderItem> orderItems = orderIn.getOrderItem();
-				List<OrderItem> filteredItems = orderItems.stream().filter(o -> o.getPurchase() == null && o.getBook().getPublisher().getId().equals(this.publisher.getId())).collect(Collectors.toList());
-				bookItems.addAll(filteredItems);
-			}
+			List<PurchaseDet> bookItems = ordersIn.stream()
+					.map(Order::getOrderItem)
+					.flatMap(List::stream)
+					.map(oi -> new PurchaseDet(null,
+							null,
+							index.incrementAndGet(),
+							oi))
+					.collect(toList());
 			addItems(bookItems);
 		}
 		loadSubTotal();
@@ -314,7 +307,7 @@ public class AddPurchaseBillController
 	{
 		double subTotalVal = 0;
 
-		ObservableList<OrderItem> orderListIn = addedBooks.getItems();
+		ObservableList<PurchaseDet> orderListIn = addedBooks.getItems();
 		subTotalVal += orderListIn.stream().collect(summingDblCollector);
 		subTotal.setText(getStringVal(subTotalVal));
 	}
@@ -389,9 +382,9 @@ public class AddPurchaseBillController
 
 	private void calculateTotalQty()
 	{
-		ObservableList<OrderItem> orderItems = addedBooks.getItems();
+		ObservableList<PurchaseDet> orderItems = addedBooks.getItems();
 		int bookQty = 0;
-		bookQty += orderItems.stream().collect(Collectors.summingInt(OrderItem::getCount));
+		bookQty += orderItems.stream().collect(Collectors.summingInt(PurchaseDet::getQty));
 		this.totalCount.setText(getStringVal(bookQty));
 	}
 
@@ -445,7 +438,10 @@ public class AddPurchaseBillController
 			errorMsg.append("Please provide a date");
 			valid = false;
 		}
-		showErrorAlert("Error in Saving Order", "Please correct the following errors", errorMsg.toString());
+		if(!valid)
+		{
+			showErrorAlert("Error in Saving Order", "Please correct the following errors", errorMsg.toString());
+		}
 		return valid;
 	}
 	
@@ -498,7 +494,7 @@ public class AddPurchaseBillController
 	@FXML
 	void removeOrderItem(ActionEvent event)
 	{
-		ObservableList<OrderItem> orderNumSel = this.addedBooks.getSelectionModel().getSelectedItems();
+		ObservableList<PurchaseDet> orderNumSel = this.addedBooks.getSelectionModel().getSelectedItems();
 		if (orderNumSel != null)
 		{
 			this.addedBooks.getItems().removeAll(orderNumSel);
@@ -510,8 +506,13 @@ public class AddPurchaseBillController
 	
 	private void reBalanceOrders()
 	{
-		ObservableList<OrderItem> orderItems = this.addedBooks.getItems();
-		Set<String> orderNumSet = orderItems.stream().map(OrderItem::getOrder).map(Order::getSerialNo).collect(Collectors.toSet());
+		ObservableList<PurchaseDet> orderItems = this.addedBooks.getItems();
+		Set<String> orderNumSet = orderItems.stream()
+				.filter(pi -> pi.getOrderItem() != null)
+				.map(pi -> pi.getOrderItem().getOrder())
+				.filter(pi -> pi.getSerialNo() != null)
+				.map(Order::getSerialNo)
+				.collect(Collectors.toSet());
 		this.orderList.getItems().retainAll(orderNumSet);
 	}
 	

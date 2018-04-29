@@ -7,9 +7,11 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
+import java.util.concurrent.atomic.AtomicInteger;
 import java.util.stream.Collector;
 import java.util.stream.Collectors;
 
+import com.matha.domain.*;
 import org.apache.commons.lang.StringUtils;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
@@ -17,11 +19,6 @@ import org.controlsfx.control.textfield.TextFields;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
-import com.matha.domain.Book;
-import com.matha.domain.OrderItem;
-import com.matha.domain.SalesTransaction;
-import com.matha.domain.School;
-import com.matha.domain.SchoolReturn;
 import com.matha.service.SchoolService;
 
 import javafx.collections.FXCollections;
@@ -69,12 +66,13 @@ public class AddReturnController
 	private TextField price;
 
 	@FXML
-	private TableView<OrderItem> addedBooks;
+	private TableView<SalesReturnDet> addedBooks;
 
 	private School school;
 	private SchoolReturn schoolReturn;
 	private Map<String, Book> bookMap;
-	private Collector<OrderItem, ?, Double> summingDblCollector = Collectors.summingDouble(OrderItem::getTotal);
+	private AtomicInteger index = new AtomicInteger();
+	private Collector<SalesReturnDet, ?, Double> summingDblCollector = Collectors.summingDouble(SalesReturnDet::getTotalBought);
 	private Collector<Book, ?, Map<String, Book>> bookMapCollector = Collectors.toMap(o -> o.getName() + " - " + o.getPublisherName(), o -> o);	
 	
 	void initData(School schoolIn, SchoolReturn returnIn)
@@ -96,11 +94,12 @@ public class AddReturnController
 	{
 		if (returnIn != null)
 		{
-			if (returnIn.getOrderItem() != null)
+			if (returnIn.getSalesReturnDetSet() != null)
 			{
-				ObservableList<OrderItem> orderItemsIn = FXCollections
-						.observableList(new ArrayList<OrderItem>(returnIn.getOrderItem()));
+				ObservableList<SalesReturnDet> orderItemsIn = FXCollections
+						.observableList(new ArrayList<SalesReturnDet>(returnIn.getSalesReturnDetSet()));
 				this.addedBooks.setItems(orderItemsIn);
+				this.index.set(orderItemsIn.size());
 			}
 			this.returnDate.setValue(returnIn.getSalesTxn().getTxnDate());
 			this.notes.setText(returnIn.getSalesTxn().getNote());
@@ -115,7 +114,7 @@ public class AddReturnController
 
 	private void loadSubTotal()
 	{
-		ObservableList<OrderItem> orderItemsIn = this.addedBooks.getItems();
+		ObservableList<SalesReturnDet> orderItemsIn = this.addedBooks.getItems();
 		Double subTotalDbl = orderItemsIn.stream().collect(summingDblCollector);
 		this.subTotal.setText(subTotalDbl.toString());		
 	}
@@ -123,11 +122,9 @@ public class AddReturnController
 	@FXML
 	void addBookData(ActionEvent event)
 	{
-		OrderItem itemIn = new OrderItem();
-		String bookStr = this.bookName.getText(); 
+		SalesReturnDet itemIn = new SalesReturnDet(index.incrementAndGet(), Integer.parseInt(this.quantity.getText()), Double.parseDouble(this.price.getText()), null);
+		String bookStr = this.bookName.getText();
 		itemIn.setBook(this.bookMap.get(bookStr));
-		itemIn.setCount(Integer.parseInt(this.quantity.getText()));
-		itemIn.setBookPrice(Double.parseDouble(this.price.getText()));
 		this.addedBooks.getItems().add(itemIn);
 		LOGGER.debug("Added" + itemIn);
 		loadSubTotal();
@@ -173,7 +170,7 @@ public class AddReturnController
 		{
 			salesTxn = returnIn.getSalesTxn();
 		}
-		Set<OrderItem> orderItems = returnIn.getOrderItem();
+		Set<SalesReturnDet> orderItems = returnIn.getSalesReturnDetSet();
 		if(orderItems == null)
 		{
 			orderItems = new HashSet<>();
@@ -203,7 +200,7 @@ public class AddReturnController
 	@FXML
 	void removeOperation(ActionEvent event)
 	{
-		OrderItem itemIn = this.addedBooks.getSelectionModel().getSelectedItem();
+		SalesReturnDet itemIn = this.addedBooks.getSelectionModel().getSelectedItem();
 		this.addedBooks.getItems().remove(itemIn);
 		loadSubTotal();
 	}

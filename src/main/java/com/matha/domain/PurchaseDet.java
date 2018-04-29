@@ -1,25 +1,24 @@
 package com.matha.domain;
 
-import java.util.Objects;
-
 import javax.persistence.*;
+import java.util.Objects;
 
 /**
  * @author Norman
  *
  */
 @Entity
-@Table(name = "SalesDet")
-public class SalesDet implements InventoryData
+@Table(name = "PurDet")
+public class PurchaseDet implements InventoryData
 {
 	@Id
-	@Column(name = "SalesDetId")
+	@Column(name = "PurDetId")
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
-	private Integer salesDetId;
+	private Integer purDetId;
 
 	@ManyToOne
 	@JoinColumn(name = "SerialId")
-	private Sales sale;
+	private Purchase purchase;
 
 	@Column(name = "SlNo")
 	private Integer slNum;
@@ -38,15 +37,14 @@ public class SalesDet implements InventoryData
 	@JoinColumn(name = "OrderItemId")
 	private OrderItem orderItem;
 
-	public SalesDet()
+	public PurchaseDet()
 	{
-
 	}
 
-	public SalesDet(Integer salesDetId, Sales sale, Integer slNum, OrderItem orderItem)
+	public PurchaseDet(Integer salesDetId, Purchase purchase, Integer slNum, OrderItem orderItem)
 	{
-		this.salesDetId = salesDetId;
-		this.sale = sale;
+		this.purDetId = salesDetId;
+		this.purchase = purchase;
 		this.slNum = slNum;
 		this.qty = orderItem.getCount();
 		this.rate = orderItem.getBookPrice();
@@ -54,7 +52,7 @@ public class SalesDet implements InventoryData
 		this.orderItem = orderItem;
 	}
 
-	public SalesDet(Integer slNum, Integer qty, Double rate, Book book)
+	public PurchaseDet(Integer slNum, Integer qty, Double rate, Book book)
 	{
 		this.slNum = slNum;
 		this.qty = qty;
@@ -62,14 +60,9 @@ public class SalesDet implements InventoryData
 		this.book = book;
 	}
 
-	public double getTotalSold()
+	public double getTotalBought()
 	{
 		return getBookPrice() * this.qty;
-	}
-
-	public String getBookName()
-	{
-		return book.getName();
 	}
 
 	public Double getBookPrice()
@@ -81,20 +74,25 @@ public class SalesDet implements InventoryData
 		return rate;
 	}
 
-	public Integer getSalesDetId() {
-		return salesDetId;
+	public String getBookName()
+	{
+		return book.getName();
 	}
 
-	public void setSalesDetId(Integer salesDetId) {
-		this.salesDetId = salesDetId;
+	public Integer getPurDetId() {
+		return purDetId;
 	}
 
-	public Sales getSale() {
-		return sale;
+	public void setPurDetId(Integer purDetId) {
+		this.purDetId = purDetId;
 	}
 
-	public void setSale(Sales sale) {
-		this.sale = sale;
+	public Purchase getPurchase() {
+		return purchase;
+	}
+
+	public void setPurchase(Purchase purchase) {
+		this.purchase = purchase;
 	}
 
 	public Integer getSlNum() {
@@ -141,8 +139,8 @@ public class SalesDet implements InventoryData
 	public String toString()
 	{
 		final StringBuilder sb = new StringBuilder("SalesDet{");
-		sb.append("salesDetId='").append(salesDetId).append('\'');
-		sb.append(", sale=").append(sale);
+		sb.append("purDetId='").append(purDetId).append('\'');
+		sb.append(", purchase=").append(purchase);
 		sb.append(", slNum='").append(slNum).append('\'');
 		sb.append(", qty='").append(qty).append('\'');
 		sb.append(", rate=").append(rate);
@@ -156,14 +154,14 @@ public class SalesDet implements InventoryData
 	{
 		if (this == o) return true;
 		if (o == null || getClass() != o.getClass()) return false;
-		SalesDet salesDet = (SalesDet) o;
-		return Objects.equals(salesDetId, salesDet.salesDetId);
+		PurchaseDet salesDet = (PurchaseDet) o;
+		return Objects.equals(purDetId, salesDet.purDetId);
 	}
 
 	@Override
 	public int hashCode()
 	{
-		return Objects.hash(salesDetId);
+		return Objects.hash(purDetId);
 	}
 
 	@Override

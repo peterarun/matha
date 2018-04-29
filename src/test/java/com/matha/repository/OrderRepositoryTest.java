@@ -2,6 +2,7 @@ package com.matha.repository;
 
 import java.util.List;
 
+import com.matha.domain.OrderItem;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -44,10 +45,23 @@ public class OrderRepositoryTest {
 	
 	@Test
 	public void testSearchResult() {
-		PageRequest pageable = new PageRequest(0, 5, Sort.Direction.DESC, "orderDate");
+//		PageRequest pageable = new PageRequest(0, 5, Sort.Direction.DESC, "orderDate");
+		PageRequest pageable = new PageRequest(0, 5);
 		Publisher pub = publisherRepository.findOne(48);
 //		Order ord = orderService.findOne("2");
-		Page<Order> orderList = orderService.fetchUnBilledOrdersForPubAndSearchStr(pub, "226", pageable);
+		Page<Order> orderList = orderService.fetchUnBilledOrdersForPub(pub, pageable);
+		for(Order o: orderList.getContent())
+		{
+			System.out.println(o);
+		}
+	}
+
+	@Test
+	public void test_fetchUnBilledOrdersForPubAndSearchStr(){
+		PageRequest pageable = new PageRequest(0, 5, Sort.Direction.DESC, "ord.orderDate");
+		Publisher pub = publisherRepository.findOne(48);
+//		Order ord = orderService.findOne("2");
+		Page<Order> orderList = orderService.fetchUnBilledOrdersForPubAndSearchStr(pub, "2", pageable);
 		for(Order o: orderList.getContent())
 		{
 			System.out.println(o);

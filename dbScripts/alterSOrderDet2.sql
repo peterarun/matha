@@ -6,10 +6,10 @@ GO
 
 SET QUOTED_IDENTIFIER ON
 GO
-
-alter table SOrderDet 
-add SalesId nvarchar(20) null,
-    fullfilledCnt int,
-    soldCnt int;
-    
-GO
+--
+--alter table SOrderDet
+--add SalesId nvarchar(20) null,
+--    fullfilledCnt int,
+--    soldCnt int;
+--
+--GO

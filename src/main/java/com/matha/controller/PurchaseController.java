@@ -29,21 +29,13 @@ import java.util.Optional;
 import java.util.Set;
 import java.util.stream.Collectors;
 
+import com.matha.domain.*;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Sort;
 import org.springframework.data.domain.Sort.Direction;
 import org.springframework.stereotype.Component;
 
-import com.matha.domain.Address;
-import com.matha.domain.Book;
-import com.matha.domain.Order;
-import com.matha.domain.OrderItem;
-import com.matha.domain.Publisher;
-import com.matha.domain.Purchase;
-import com.matha.domain.PurchasePayment;
-import com.matha.domain.PurchaseReturn;
-import com.matha.domain.PurchaseTransaction;
 import com.matha.service.SchoolService;
 import com.matha.util.Converters;
 import com.matha.util.LoadUtils;
@@ -400,9 +392,14 @@ public class PurchaseController
 			strBuild.append(HYPHEN_SPC_SIGN);
 			strBuild.append(salesAddr.getPin());
 			
-			Set<OrderItem> tableData = purchase.getOrderItems();
+			Set<PurchaseDet> tableData = purchase.getPurchaseItems();
 			PurchaseTransaction txn = purchase.getSalesTxn();
-			Set<String> orderIdSet = tableData.stream().map(OrderItem::getOrder).map(Order::getSerialNo).collect(Collectors.toSet());
+			Set<String> orderIdSet = tableData.stream()
+					.filter(pd -> pd.getOrderItem() != null)
+					.map(PurchaseDet::getOrderItem)
+					.filter(oi -> oi.getOrder() != null)
+					.map(oi -> oi.getOrder().getSerialNo())
+					.collect(Collectors.toSet());
 			String orderIds = String.join(",", orderIdSet);
 			Double subTotal = purchase.getSubTotal();
 			Double discAmt = purchase.getDiscAmt();

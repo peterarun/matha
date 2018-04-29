@@ -10,17 +10,17 @@ GO
 alter table SOrderDet add OrderDetId int null;
 GO
 
-alter table SOrderDet add BookPrice decimal(8,2) null;
-GO
-
-alter table SOrderDet add ReturnId int null;
-GO
-
-alter table SOrderDet add PurReturnId int null;
-GO
-
-alter table SOrderDet add PurchaseId nvarchar(20) null;
-GO
+--alter table SOrderDet add BookPrice decimal(8,2) null;
+--GO
+--
+--alter table SOrderDet add ReturnId int null;
+--GO
+--
+--alter table SOrderDet add PurReturnId int null;
+--GO
+--
+--alter table SOrderDet add PurchaseId nvarchar(20) null;
+--GO
 
 ALTER TABLE [dbo].[SOrderDet]  WITH CHECK ADD  CONSTRAINT [FK_SOrderDet_Book] FOREIGN KEY([BkNo])
 REFERENCES [dbo].[Book] ([BookNo])

@@ -121,7 +121,7 @@ public class SalesTransaction
 	{
 		if(this.sale != null)
 		{
-			return getStringVal(this.sale.getInvoiceNo());
+			return getStringVal(this.sale.getSerialNo());
 		}
 		else
 		{

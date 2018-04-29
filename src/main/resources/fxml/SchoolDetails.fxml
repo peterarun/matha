@@ -68,7 +68,7 @@
 													<columns>
 														<TableColumn prefWidth="101.0" text="Receipt No.">
 															<cellValueFactory>
-																<PropertyValueFactory property="invoiceNo" />
+																<PropertyValueFactory property="serialNo" />
 															</cellValueFactory>														
 														</TableColumn>
 														<TableColumn prefWidth="132.0" text="Date">

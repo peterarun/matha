@@ -76,9 +76,9 @@
 			<fieldDescription><![CDATA[txnDate]]></fieldDescription>
 		</field>
 		<field name="type" class="java.lang.String"/>
-		<field name="purchase" class="com.matha.domain.Purchase"/>
+		<field name="schoolReturn" class="com.matha.domain.Purchase"/>
 		<field name="payment" class="com.matha.domain.PurchasePayment"/>
-		<field name="purchaseReturn" class="com.matha.domain.PurchaseReturn"/>
+		<field name="schoolReturn" class="com.matha.domain.PurchaseReturn"/>
 		<field name="balance" class="java.lang.Double"/>
 		<field name="multiplier" class="java.lang.Integer"/>
 		<field name="note" class="java.lang.String"/>
@@ -249,7 +249,7 @@
 							</box>
 							<textField>
 								<reportElement style="Style_Matha" x="0" y="0" width="60" height="20" uuid="186dffe6-c779-4ffc-8c77-e3f75128c55b"/>
-								<textFieldExpression><![CDATA[$F{purchase} != null ? $F{purchase}.getId() : "None"]]></textFieldExpression>
+								<textFieldExpression><![CDATA[$F{schoolReturn} != null ? $F{schoolReturn}.getId() : "None"]]></textFieldExpression>
 							</textField>
 						</jr:detailCell>
 					</jr:column>

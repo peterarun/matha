@@ -105,12 +105,12 @@ public class Order implements Serializable, Comparable<Order>
 		this.school = school;
 	}
 
-//	public Sales getSale()
+//	public Sales getSchoolReturn()
 //	{
 //		return sale;
 //	}
 //
-//	public void setSale(Sales sale)
+//	public void setSchoolReturn(Sales sale)
 //	{
 //		this.sale = sale;
 //	}

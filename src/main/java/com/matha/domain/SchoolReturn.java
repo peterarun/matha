@@ -18,7 +18,7 @@ import org.hibernate.annotations.Cascade;
 import org.hibernate.annotations.CascadeType;
 
 @Entity
-@Table(name = "SchoolReturn")
+@Table(name = "SReturn")
 public class SchoolReturn {
 
 	@Id
@@ -30,9 +30,9 @@ public class SchoolReturn {
 	@JoinColumn(name = "TxnId")
 	private SalesTransaction salesTxn;
 
-	@OneToMany(fetch= FetchType.EAGER, mappedBy = "bookReturn")
+	@OneToMany(fetch= FetchType.EAGER, mappedBy = "schoolReturn")
 	@Cascade({CascadeType.SAVE_UPDATE, CascadeType.DELETE})	
-	private Set<OrderItem> orderItem;
+	private Set<SalesReturnDet> salesReturnDetSet;
 	
 	public String getNotes()
 	{
@@ -65,12 +65,12 @@ public class SchoolReturn {
 		this.salesTxn = salesTxn;
 	}
 
-	public Set<OrderItem> getOrderItem() {
-		return orderItem;
+	public Set<SalesReturnDet> getSalesReturnDetSet() {
+		return salesReturnDetSet;
 	}
 
-	public void setOrderItem(Set<OrderItem> orderItem) {
-		this.orderItem = orderItem;
+	public void setSalesReturnDetSet(Set<SalesReturnDet> salesReturnDetSet) {
+		this.salesReturnDetSet = salesReturnDetSet;
 	}
 
 	public Double getAmount()

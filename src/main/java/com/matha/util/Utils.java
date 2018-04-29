@@ -27,19 +27,13 @@ import javax.print.attribute.standard.MediaSizeName;
 import javax.print.attribute.standard.OrientationRequested;
 import javax.print.attribute.standard.PrinterName;
 
+import com.matha.domain.*;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
 import com.matha.controller.PrintOrderController;
 import com.matha.controller.PrintSalesBillController;
-import com.matha.domain.Account;
-import com.matha.domain.Address;
-import com.matha.domain.Order;
-import com.matha.domain.OrderItem;
-import com.matha.domain.Sales;
-import com.matha.domain.SalesTransaction;
-import com.matha.domain.School;
 import com.matha.service.SchoolService;
 
 import javafx.beans.property.ReadOnlyStringWrapper;
@@ -199,7 +193,7 @@ public class Utils
 		{			
 			Parent addOrderRoot = createOrderLoader.load();
 			PrintSalesBillController ctrl = createOrderLoader.getController();						
-			JasperPrint jasperPrint = prepareSaleBillPrint(schoolService, purchase.getSalesTxn().getSchool(), purchase, jasperStream);
+			JasperPrint jasperPrint = prepareSaleBillPrint(schoolService, purchase.getSchool(), purchase, jasperStream);
 			ctrl.initData(jasperPrint);
 			addOrderScene = new Scene(addOrderRoot);			
 		}
@@ -276,15 +270,18 @@ public class Utils
 			strBuildAcct.append(HYPHEN_SPC_SIGN);
 			strBuildAcct.append(acct.getIfsc());
 			
-			Set<OrderItem> tableData = sale.getOrderItems();
-			SalesTransaction txn = sale.getSalesTxn();
-			Set<String> orderIdSet = tableData.stream().map(OrderItem::getOrder).filter(o-> o != null).map(Order::getSerialNo).collect(Collectors.toSet());
+			Set<SalesDet> tableData = sale.getSaleItems();
+			Set<String> orderIdSet = tableData.stream()
+					.map(SalesDet::getOrderItem)
+					.filter(o-> o != null)
+					.map(o -> o.getOrder().getSerialNo())
+					.collect(Collectors.toSet());
 			String orderIds = String.join(",", orderIdSet);
 			Double subTotal = sale.getSubTotal();
 			Double discAmt = sale.getDiscAmt();
 			if(discAmt != null)
 			{
-				discAmt = sale.getDiscType() ? subTotal * discAmt /100 : discAmt;  
+				discAmt = sale.getDiscType() != null && sale.getDiscType() ? subTotal * discAmt /100 : discAmt;
 			}
 			 			
 			hm.put("partyName", sch.getName());
@@ -293,8 +290,8 @@ public class Utils
 			hm.put("agencyDetails", strBuild.toString());
 			hm.put("partyPhone", sch.getPhone1() == null ? sch.getPhone2() : sch.getPhone1());
 			hm.put("documentsThrough", sale.getDocsThru());
-			hm.put("invoiceNo", getStringVal(sale.getInvoiceNo()));
-			hm.put("txnDate", txn.getTxnDateStr());
+			hm.put("invoiceNo", getStringVal(sale.getSerialNo()));
+			hm.put("txnDate", sale.getInvoiceDateStr());
 			hm.put("orderNumbers", orderIds);
 			hm.put("despatchedPer", sale.getDespatch());
 			hm.put("grNo", sale.getGrNum());
@@ -423,6 +420,30 @@ public class Utils
 		return priceColumnFactory;
 	}
 
+	public static Callback<CellDataFeatures<PurchaseDet, String>, ObservableValue<String>> fetchPurPriceColumnFactory()
+	{
+		Callback<CellDataFeatures<PurchaseDet, String>, ObservableValue<String>> priceColumnFactory = new Callback<CellDataFeatures<PurchaseDet, String>, ObservableValue<String>>() {
+			public ObservableValue<String> call(CellDataFeatures<PurchaseDet, String> p)
+			{
+				// p.getValue() returns the Person instance for a particular TableView row
+				return new ReadOnlyStringWrapper(getStringVal(p.getValue().getBookPrice()));
+			}
+		};
+		return priceColumnFactory;
+	}
+
+	public static Callback<CellDataFeatures<SalesDet, String>, ObservableValue<String>> fetchSalesPrcColFactory()
+	{
+		Callback<CellDataFeatures<SalesDet, String>, ObservableValue<String>> priceColumnFactory = new Callback<CellDataFeatures<SalesDet, String>, ObservableValue<String>>() {
+			public ObservableValue<String> call(CellDataFeatures<SalesDet, String> p)
+			{
+				// p.getValue() returns the Person instance for a particular TableView row
+				return new ReadOnlyStringWrapper(getStringVal(p.getValue().getBookPrice()));
+			}
+		};
+		return priceColumnFactory;
+	}
+
 	public static Callback<CellDataFeatures<OrderItem, String>, ObservableValue<String>> fetchQuantityFactory()
 	{
 		Callback<CellDataFeatures<OrderItem, String>, ObservableValue<String>> qtyColumnFactory = new Callback<CellDataFeatures<OrderItem, String>, ObservableValue<String>>() {
@@ -458,7 +479,19 @@ public class Utils
 		};
 		return qtyColumnFactory;
 	}
-	
+
+	public static Callback<CellDataFeatures<SalesDet, String>, ObservableValue<String>> fetchSalesCntFactory()
+	{
+		Callback<CellDataFeatures<SalesDet, String>, ObservableValue<String>> qtyColumnFactory = new Callback<CellDataFeatures<SalesDet, String>, ObservableValue<String>>() {
+			public ObservableValue<String> call(CellDataFeatures<SalesDet, String> p)
+			{
+				// p.getValue() returns the Person instance for a particular TableView row
+				return new ReadOnlyStringWrapper(getStringVal(p.getValue().getQty()));
+			}
+		};
+		return qtyColumnFactory;
+	}
+
 	public static void calcNetAmountGen(String discAmtStr, TextField subTotal, RadioButton percentRad, RadioButton rupeeRad, String otherChargesField, TextField netAmt, TextField calcDisc)
 	{
 		String netTotalStr = netAmt.getText();

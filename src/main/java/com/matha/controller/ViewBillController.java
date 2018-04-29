@@ -10,13 +10,9 @@ import java.util.List;
 import java.util.Set;
 import java.util.stream.Collectors;
 
+import com.matha.domain.*;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
-
-import com.matha.domain.Order;
-import com.matha.domain.OrderItem;
-import com.matha.domain.Sales;
-import com.matha.domain.School;
 
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
@@ -93,7 +89,7 @@ public class ViewBillController
 	private ListView<String> orderList;
 
 	@FXML
-	private TableView<OrderItem> addedBooks;
+	private TableView<SalesDet> addedBooks;
 
 	private School school;
 	private ObservableList<Order> orders;
@@ -126,21 +122,26 @@ public class ViewBillController
 	{
 		if (sale != null)
 		{
-			Set<Order> orderSet = sale.getOrderItems().stream().map(OrderItem::getOrder).filter(o -> o != null).collect(Collectors.toSet());
+			Set<Order> orderSet = sale.getSaleItems().stream()
+					.filter(sd -> sd.getOrderItem() != null)
+					.map(SalesDet::getOrderItem)
+					.filter(oi -> oi.getOrder() != null)
+					.map(oi -> oi.getOrder())
+					.collect(Collectors.toSet());
 			this.orders = FXCollections.observableList(new ArrayList<Order>(orderSet));
-			this.addedBooks.setItems(FXCollections.observableArrayList(sale.getOrderItems()));
+			this.addedBooks.setItems(FXCollections.observableArrayList(sale.getSaleItems()));
 			this.billDate.setValue(sale.getInvoiceDate());
 			this.subTotal.setText(getStringVal(sale.getSubTotal()));
 			this.discAmt.setText(getStringVal(sale.getDiscAmt()));
-			this.netAmt.setText(getStringVal(sale.getSalesTxn().getAmount()));
+			this.netAmt.setText(getStringVal(sale.getNetAmount()));
 			this.despatchPer.setText(sale.getDespatch());
 			this.docsThru.setText(sale.getDocsThru());
 			this.grNum.setText(sale.getGrNum());
-			this.invoiceNum.setText(getStringVal(sale.getInvoiceNo()));
+			this.invoiceNum.setText(getStringVal(sale.getSerialNo()));
 			this.packageCnt.setText(sale.getPackages());
 			this.otherCharges.setText(getStringVal(sale.getOtherAmount()));
 
-			if (!sale.getDiscType())
+			if (sale.getDiscType() == null || !sale.getDiscType())
 			{
 				this.rupeeRad.setSelected(true);
 				this.discTypeInd.setText(RUPEE_SIGN);

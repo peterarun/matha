@@ -1,9 +1,5 @@
 package com.matha.sales;
 
-import static java.util.stream.Collectors.groupingBy;
-import static java.util.stream.Collectors.mapping;
-import static java.util.stream.Collectors.toSet;
-
 import java.util.Collections;
 import java.util.Comparator;
 import java.util.HashMap;
@@ -12,6 +8,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
 import java.util.Set;
+import java.util.stream.Stream;
 
 import org.apache.logging.log4j.Level;
 import org.apache.logging.log4j.LogManager;
@@ -38,13 +35,16 @@ import com.matha.repository.SalesRepository;
 import com.matha.repository.SchoolRepository;
 import com.matha.util.LogUtil;
 
+import static java.util.stream.Collectors.*;
+
 @RunWith(SpringRunner.class)
 @SpringBootTest
 public class MigrationTest
 {
 	
 	private static final Logger LOGGER = LogManager.getLogger(LogUtil.class);
-	
+	private static final int FIN_YEAR = 9;
+
 	@Autowired
 	PurchaseTxnRepository pRepo;
 
@@ -75,13 +75,13 @@ public class MigrationTest
 	@Test
 	public void testMigration()
 	{
-//		List<School> schoolList = schoolRepository.findTop10ByNameLike("B%");
-		List<School> schoolList = schoolRepository.findAll();
+		List<School> schoolList = schoolRepository.findTop10ByNameLike("B%");
+//		List<School> schoolList = schoolRepository.findAll();
 		for (School sc : schoolList)
 		{
 			LOGGER.debug("School: " + sc);
 			List<Order> ordList = orderRepo.findAllBySchoolOrderByOrderDateDesc(sc);
-			Map<String, Set<String>> ordMap = ordList.stream().filter((Order o) -> o.getFinancialYear() == 9).map(o -> o.getOrderItem()).flatMap(List<OrderItem>::stream).collect(groupingBy(OrderItem::getOrderId, mapping(o -> o.getBook().getBookNum(), toSet())));
+			Map<String, Set<String>> ordMap = ordList.stream().filter((Order o) -> o.getFinancialYear() == FIN_YEAR).map(o -> o.getOrderItem()).flatMap(List<OrderItem>::stream).collect(groupingBy(OrderItem::getOrderId, mapping(o -> o.getBook().getBookNum(), toSet())));
 			LOGGER.debug("orderEnt");
 			for (Entry<String, Set<String>> orderEnt : ordMap.entrySet())
 			{
@@ -91,7 +91,7 @@ public class MigrationTest
 //			{
 //				if(order.getFinancialYear() == 9)
 //				{
-//					List<OrderItem> orddItem = order.getOrderItem();
+//					List<OrderItem> orddItem = order.getPurchaseReturnDetSet();
 //					LOGGER.debug(orddItem.size());
 //					for (OrderItem orderItemIn : orddItem)
 //					{
@@ -102,10 +102,10 @@ public class MigrationTest
 //				}
 //			}
 			
-			List<Sales> sales = salesRepository.findAllBySchool(sc);			 
-//			Map<String, Set<String>> saleMap = sales.stream().filter(s -> s.getFinancialYear() == 9).map(s -> s.getSaleItems()).flatMap(Set<SalesDet>::stream).collect(toMap(s -> s.getSale().getId(), s -> s.getDetId().getBookNum()));
+			List<Sales> sales = salesRepository.findAllBySchool(sc);
+//			Map<String, Set<String>> saleMap = sales.stream().filter(s -> s.getFinancialYear() == 9).map(s -> s.getSaleItems()).flatMap(Set<SalesDet>::stream).collect(toMap(s -> s.getSchoolReturn().getId(), s -> s.getDetId().getBookNum()));
 //			List<SalesDet> sLit = new ArrayList<>();
-//			sLit.stream().collect(toMap(s -> s.getSale().getId(), s -> s.getDetId().getBookNum()));
+//			sLit.stream().collect(toMap(s -> s.getSchoolReturn().getId(), s -> s.getDetId().getBookNum()));
 //			for (Entry<String, Set<String>> saleEnt : saleMap.entrySet())
 //			{
 //				LOGGER.debug(saleEnt.getKey() + " " + saleEnt.getValue());
@@ -129,7 +129,9 @@ public class MigrationTest
 					{
 						saleMap.put(saleId, new HashSet<>());						
 					}
-					Set<String> salesDetIn = salesIn.getSaleItems().stream().map(SalesDet::getBookNum).collect(toSet());
+					Set<String> salesDetIn = salesIn.getSaleItems().stream()
+							.map(sd -> sd.getBook().getBookNum())
+							.collect(toSet());
 					saleMap.get(saleId).addAll(salesDetIn);
 				}
 			}
@@ -180,5 +182,50 @@ public class MigrationTest
 		}
 		return correlationMap;
 	}
-	
+
+	@Test
+	public void testMigration2()
+	{
+		int financialYear = FIN_YEAR;
+		List<School> schoolList = schoolRepository.findTop10ByNameLike("B%");
+//		List<School> schoolList = schoolRepository.findAll();
+		for (School sc : schoolList)
+		{
+			LOGGER.debug("School: " + sc);
+
+			List<Order> ordList = orderRepo.findAllBySchoolOrderByOrderDateDesc(sc);
+			Stream<OrderItem> baseStream = ordList.stream()
+					.filter((Order o) -> o.getFinancialYear() == financialYear)
+					.map(o -> o.getOrderItem())
+					.flatMap(List<OrderItem>::stream);
+			Map<String, Set<String>> ordMap = baseStream.collect(groupingBy(OrderItem::getOrderId, mapping(o -> o.getBook().getBookNum(), toSet())));
+			Map<String, Integer> ordItemBookMap = baseStream.collect(toMap(o -> o.getBook().getBookNum(), OrderItem::getId));
+			LOGGER.debug("orderEnt");
+			for (Entry<String, Set<String>> orderEnt : ordMap.entrySet())
+			{
+				LOGGER.debug(orderEnt.getKey() + " " + orderEnt.getValue());
+			}
+
+			List<Sales> sales = salesRepository.findAllBySchool(sc);
+			Stream<SalesDet> baseSalesStream = sales.stream()
+					.filter(s -> s.getFinancialYear() == financialYear)
+					.map(o -> o.getSaleItems())
+					.flatMap(Set<SalesDet>::stream);
+			Map<String, Set<String>> saleMap = baseSalesStream.collect(groupingBy(sd -> sd.getSale().getId(), mapping(sd -> sd.getBook().getBookNum(), toSet())));
+			Map<String, Integer> saleDetBookMap = baseSalesStream.collect(toMap(o -> o.getBook().getBookNum(), SalesDet::getSalesDetId));
+			LOGGER.debug("salesEnt");
+			for (Entry<String, Set<String>> salesEnt : saleMap.entrySet())
+			{
+				LOGGER.debug(salesEnt.getKey() + " " + salesEnt.getValue());
+			}
+
+			Map<String, String> corrMap = findCorrelation(ordMap, saleMap);
+			LOGGER.debug("corrMap");
+			for (Entry<String, String> corrEnt : corrMap.entrySet())
+			{
+				LOGGER.debug(corrEnt.getKey() + " - " + corrEnt.getValue());
+			}
+		}
+	}
+
 }

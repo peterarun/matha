@@ -1,5 +1,7 @@
 package com.matha.domain;
 
+import org.hibernate.annotations.GenericGenerator;
+
 import static com.matha.util.UtilConstants.DATE_CONV;
 
 import java.io.Serializable;
@@ -7,17 +9,10 @@ import java.time.LocalDate;
 import java.util.Set;
 import java.util.stream.Collectors;
 
-import javax.persistence.Column;
-import javax.persistence.Entity;
-import javax.persistence.FetchType;
-import javax.persistence.Id;
-import javax.persistence.JoinColumn;
-import javax.persistence.OneToMany;
-import javax.persistence.OneToOne;
-import javax.persistence.Table;
+import javax.persistence.*;
 
 @Entity
-@Table(name = "BookPurchase")
+@Table(name = "Purchase")
 public class Purchase implements Serializable
 {
 	/**
@@ -26,8 +21,16 @@ public class Purchase implements Serializable
 	private static final long serialVersionUID = -3847049966939941709L;
 
 	@Id
-	@Column(name = "Id")
+	@Column(name = "SerialId")
+	@GenericGenerator(name = "serialId", strategy = "com.matha.generator.PurchaseIdGenerator")
+	@GeneratedValue(generator = "serialId")
 	private String id;
+
+	@Column(name = "InvNo")
+	private String invoiceNo;
+
+	@Column(name = "serialNo")
+	private Integer serialNo;
 
 	@Column(name = "DespatchedTo")
 	private String despatchedTo;
@@ -53,7 +56,7 @@ public class Purchase implements Serializable
 	@Column(name = "SubTotal")
 	private Double subTotal;
 
-	@Column(name = "PurchaseDate")
+	@Column(name = "TDate")
 	private LocalDate purchaseDate;
 
 	@OneToOne	
@@ -61,7 +64,7 @@ public class Purchase implements Serializable
 	private PurchaseTransaction salesTxn;
 
 	@OneToMany(mappedBy = "purchase", fetch = FetchType.EAGER)
-	private Set<OrderItem> orderItems;
+	private Set<PurchaseDet> purchaseItems;
 
 	public LocalDate getTxnDate()
 	{
@@ -76,9 +79,9 @@ public class Purchase implements Serializable
 	public Integer getUnitCount()
 	{
 		int unitCount = 0;
-		if(getOrderItems() != null)
+		if(getPurchaseItems() != null)
 		{
-			unitCount = getOrderItems().stream().collect(Collectors.summingInt(OrderItem::getFullFilledCnt));
+			unitCount = getPurchaseItems().stream().collect(Collectors.summingInt(PurchaseDet::getQty));
 		}
 		
 		return unitCount;
@@ -212,14 +215,14 @@ public class Purchase implements Serializable
 		this.salesTxn = salesTxn;
 	}
 
-	public Set<OrderItem> getOrderItems()
+	public Set<PurchaseDet> getPurchaseItems()
 	{
-		return orderItems;
+		return purchaseItems;
 	}
 
-	public void setOrderItems(Set<OrderItem> order)
+	public void setPurchaseItems(Set<PurchaseDet> order)
 	{
-		this.orderItems = order;
+		this.purchaseItems = order;
 	}
 
 }

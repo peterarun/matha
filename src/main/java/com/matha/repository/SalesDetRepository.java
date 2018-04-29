@@ -11,7 +11,7 @@ import com.matha.domain.SalesDet;
 import com.matha.domain.School;
 
 @Repository
-public interface SalesDetRepository extends JpaRepository<SalesDet, String> {
+public interface SalesDetRepository extends JpaRepository<SalesDet, Integer> {
 
 //	List<SalesDet> findAllBySerialId(String id);
 
