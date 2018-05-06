@@ -32,6 +32,7 @@ import java.util.stream.Collectors;
 import com.matha.domain.*;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Sort;
 import org.springframework.data.domain.Sort.Direction;
 import org.springframework.stereotype.Component;
@@ -119,6 +120,9 @@ public class PurchaseController
 	private TableView<Purchase> purchaseData;
 
 	@FXML
+	private Pagination billPaginator;
+
+	@FXML
 	private Tab returnsTab;
 
 	@FXML
@@ -177,7 +181,7 @@ public class PurchaseController
 		toDate.setValue(toDateVal);
 
 		orderPaginator.setPageFactory(this::createPage);
-
+		billPaginator.setPageFactory(this::createBillPage);
 	}
 
 	private Node createPage(int pageIndex)
@@ -189,6 +193,17 @@ public class PurchaseController
 			orderTable.prefHeightProperty().set(ROWS_PER_PAGE * orderTable.getFixedCellSize() + 30);
 		}
 		return new BorderPane(orderTable);
+	}
+
+	private Node createBillPage(int pageIndex)
+	{
+		loadPurchases(pageIndex);
+
+		if(purchaseData.getItems() != null && !purchaseData.getItems().isEmpty())
+		{
+			purchaseData.prefHeightProperty().set(ROWS_PER_PAGE * purchaseData.getFixedCellSize() + 30);
+		}
+		return new BorderPane(purchaseData);
 	}
 
 	private Node createPageSearch(int pageIndex)
@@ -350,7 +365,8 @@ public class PurchaseController
 		if (result.get() == ButtonType.OK)
 		{
 			schoolService.deletePurchase(purchase);
-			loadPurchases();
+			int pageIdx = this.billPaginator.getCurrentPageIndex();
+			loadPurchases(pageIdx);
 		}
 	}
 
@@ -364,7 +380,7 @@ public class PurchaseController
 			Parent addOrderRoot = createOrderLoader.load();
 			PrintPurchaseBillController ctrl = createOrderLoader.getController();
 			Purchase purchase = purchaseData.getSelectionModel().getSelectedItem();
-			JasperPrint jasperPrint = prepareJasperPrint(purchase.getSalesTxn().getPublisher(), purchase);
+			JasperPrint jasperPrint = prepareJasperPrint(purchase.getPublisher(), purchase);
 			ctrl.initData(jasperPrint);
 			Scene addOrderScene = new Scene(addOrderRoot);
 			prepareAndShowStage(ev, addOrderScene);
@@ -393,7 +409,6 @@ public class PurchaseController
 			strBuild.append(salesAddr.getPin());
 			
 			Set<PurchaseDet> tableData = purchase.getPurchaseItems();
-			PurchaseTransaction txn = purchase.getSalesTxn();
 			Set<String> orderIdSet = tableData.stream()
 					.filter(pd -> pd.getOrderItem() != null)
 					.map(PurchaseDet::getOrderItem)
@@ -402,12 +417,8 @@ public class PurchaseController
 					.collect(Collectors.toSet());
 			String orderIds = String.join(",", orderIdSet);
 			Double subTotal = purchase.getSubTotal();
-			Double discAmt = purchase.getDiscAmt();
-			if(discAmt != null && purchase.getNetAmount() != null && subTotal != null)
-			{
-				discAmt = purchase.getDiscType() ? purchase.getNetAmount() - subTotal : discAmt;  
-			}
-			 			
+			Double discAmt = purchase.getCalculatedDisc();
+
 			hm.put("publisherName", pub.getName());
 			hm.put("publisherDetails", pub.getInvAddress());
 			hm.put("partyName", "MATHA DISTRIBUTORS.");
@@ -416,7 +427,7 @@ public class PurchaseController
 			hm.put("documentsThrough", purchase.getDocsThrough());
 			hm.put("despatchedTo", purchase.getDespatchedTo());
 			hm.put("invoiceNo", purchase.getId());
-			hm.put("txnDate", txn.getTxnDate());
+			hm.put("txnDate", purchase.getTxnDate());
 			hm.put("orderNumbers", orderIds);
 			hm.put("despatchedPer", purchase.getDespatchPer());
 			hm.put("grNo", purchase.getGrNum());
@@ -450,7 +461,9 @@ public class PurchaseController
 		{
 			return;
 		}
-		List<Order> orderList = schoolService.fetchOrders(pub, idx, ROWS_PER_PAGE, billedToggle.isSelected()).getContent();
+		Page<Order> orderPages = schoolService.fetchOrders(pub, idx, ROWS_PER_PAGE, billedToggle.isSelected());
+		List<Order> orderList = orderPages.getContent();
+		this.orderPaginator.setPageCount(orderPages.getTotalPages());
 		orderTable.setItems(FXCollections.observableList(orderList));
 	}
 
@@ -484,10 +497,18 @@ public class PurchaseController
 	@FXML
 	public void loadPurchases()
 	{
+		int pageNum = this.billPaginator.getCurrentPageIndex();
+		loadPurchases(pageNum);
+	}
+
+	public void loadPurchases(int pageNum)
+	{
 		if (purchaseBillTab.isSelected())
 		{
 			Publisher pub = publishers.getSelectionModel().getSelectedItem();
-			List<Purchase> purchaseList = schoolService.fetchPurchasesForPublisher(pub);
+			Page<Purchase> purchasePages = schoolService.fetchPurchasesForPublisher(pub, pageNum, ROWS_PER_PAGE);
+			List<Purchase> purchaseList	= purchasePages.getContent();
+			this.billPaginator.setPageCount(purchasePages.getTotalPages());
 			purchaseData.setItems(FXCollections.observableList(purchaseList));
 		}
 	}
@@ -711,7 +732,7 @@ public class PurchaseController
 			Double totalDebit = tableData.stream().collect(Collectors.summingDouble(o->  o.getMultiplier() == 1 ? o.getAmount() : 0.0)); 
 			Double totalCredit = tableData.stream().collect(Collectors.summingDouble(o->  o.getMultiplier() == -1 ? o.getAmount() : 0.0));
 			hm.put("openingBalance", openingBalance);			
-			hm.put("reportData", tableData);
+//			hm.put("reportData", tableData);
 			hm.put("publisherName", pub.getName());
 			hm.put("publisherDetails", pub.getStmtAddress());
 			hm.put("fromDate", fromDateVal);
@@ -721,7 +742,7 @@ public class PurchaseController
 			hm.put("totalCredit", totalCredit);
 			JasperReport compiledFile = JasperCompileManager.compileReport(jasperStream);
 
-			jasperPrint = JasperFillManager.fillReport(compiledFile, hm);
+			jasperPrint = JasperFillManager.fillReport(compiledFile, hm, new JRBeanCollectionDataSource(tableData));
 		}
 		catch (JRException e)
 		{
@@ -802,7 +823,8 @@ public class PurchaseController
 		@Override
 		public void handle(final WindowEvent event)
 		{
-			loadPurchases();
+			int pageIdx = billPaginator.getCurrentPageIndex();
+			loadPurchases(pageIdx);
 		}
 	};
 

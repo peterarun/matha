@@ -25,4 +25,6 @@ public interface SalesRepository extends JpaRepository<Sales, String> {
 
 	public List<Sales> findAllBySchool(School school);
 
+	public List<Sales> findAllBySchoolAndFinancialYear(School school, int fy);
+
 }

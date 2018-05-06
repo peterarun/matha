@@ -55,7 +55,7 @@
 						</TableColumn>
 						<TableColumn prefWidth="72.0" text="Quantity">
 							<cellValueFactory>
-								<PropertyValueFactory property="fullFilledCnt" />
+								<PropertyValueFactory property="qty" />
 							</cellValueFactory>
 						</TableColumn>
 						<TableColumn fx:id="priceColumn" editable="true" prefWidth="102.0" text="Price">

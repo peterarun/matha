@@ -22,4 +22,11 @@ public class UtilsTest
 
 	}
 
+	@Test
+	public void testInt()
+	{
+		int intVal = Integer.MAX_VALUE/ 10;
+		System.out.println(intVal);
+	}
+
 }

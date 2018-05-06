@@ -18,7 +18,9 @@ public interface OrderRepository extends JpaRepository<Order, String> {
 
 //	@Query("Select o from Order o, School s where o.school=:school order by o.orderDate desc")
 	public List<Order> findAllBySchoolOrderByOrderDateDesc(School school);
-	
+
+	public List<Order> findAllBySchoolAndFinancialYearOrderByOrderDateDesc(School school, int financialYear);
+
 	@Query("select distinct ord from Order ord, Publisher pub, Book book, OrderItem oDet where book.bookNum = oDet.book.bookNum and ord = oDet.order and pub = book.publisher and pub=?1")
 	public Page<Order> fetchOrdersForPublisher(Publisher pub, Pageable pageable);
 

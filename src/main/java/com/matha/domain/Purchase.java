@@ -56,6 +56,9 @@ public class Purchase implements Serializable
 	@Column(name = "SubTotal")
 	private Double subTotal;
 
+	@Column(name = "Fy")
+	private Integer financialYear;
+
 	@Column(name = "TDate")
 	private LocalDate purchaseDate;
 
@@ -66,11 +69,19 @@ public class Purchase implements Serializable
 	@OneToMany(mappedBy = "purchase", fetch = FetchType.EAGER)
 	private Set<PurchaseDet> purchaseItems;
 
+	@ManyToOne
+	@JoinColumn(name = "PublisherId")
+	private Publisher publisher;
+
 	public LocalDate getTxnDate()
 	{
-		return this.getSalesTxn().getTxnDate();
+		if(salesTxn != null)
+		{
+			return salesTxn.getTxnDate();
+		}
+		return this.getPurchaseDate();
 	}
-	
+
 	public String getTxnDateStr()
 	{		
 		return DATE_CONV.toString(getTxnDate());
@@ -92,7 +103,7 @@ public class Purchase implements Serializable
 		Double discCalc = discAmt;
 		if(discAmt != null)
 		{			
-			if(discType && subTotal != null)
+			if(discType != null && discType && subTotal != null)
 			{
 				discCalc = subTotal * discAmt / 100;
 			}			
@@ -102,7 +113,11 @@ public class Purchase implements Serializable
 	
 	public Double getNetAmount()
 	{
-		return this.getSalesTxn().getAmount();
+		if(salesTxn == null)
+		{
+			return getSubTotal() - getCalculatedDisc();
+		}
+		return salesTxn.getAmount();
 	}
 	
 	public String getId()
@@ -195,6 +210,14 @@ public class Purchase implements Serializable
 		this.subTotal = subTotal;
 	}
 
+	public Integer getFinancialYear() {
+		return financialYear;
+	}
+
+	public void setFinancialYear(Integer financialYear) {
+		this.financialYear = financialYear;
+	}
+
 	public LocalDate getPurchaseDate()
 	{
 		return purchaseDate;
@@ -225,4 +248,27 @@ public class Purchase implements Serializable
 		this.purchaseItems = order;
 	}
 
+	public String getInvoiceNo() {
+		return invoiceNo;
+	}
+
+	public void setInvoiceNo(String invoiceNo) {
+		this.invoiceNo = invoiceNo;
+	}
+
+	public Integer getSerialNo() {
+		return serialNo;
+	}
+
+	public void setSerialNo(Integer serialNo) {
+		this.serialNo = serialNo;
+	}
+
+	public Publisher getPublisher() {
+		return publisher;
+	}
+
+	public void setPublisher(Publisher publisher) {
+		this.publisher = publisher;
+	}
 }

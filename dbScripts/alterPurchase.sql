@@ -24,3 +24,11 @@ GO
 
 ALTER TABLE Purchase ADD [TxnId] [INT] NULL;
 GO
+
+ALTER TABLE [dbo].[Purchase] ADD [PublisherId] NVARCHAR(10) NULL;
+GO
+
+update pur set PublisherId = sup.PublisherId
+  from [Purchase]  pur
+  join Supplier sup on pur.SuppId = sup.SuppId
+GO

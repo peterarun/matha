@@ -1,13 +1,8 @@
 package com.matha.sales;
 
-import java.util.Collections;
-import java.util.Comparator;
-import java.util.HashMap;
-import java.util.HashSet;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 import java.util.Map.Entry;
-import java.util.Set;
+import java.util.function.Supplier;
 import java.util.stream.Stream;
 
 import org.apache.logging.log4j.Level;
@@ -187,32 +182,34 @@ public class MigrationTest
 	public void testMigration2()
 	{
 		int financialYear = FIN_YEAR;
-		List<School> schoolList = schoolRepository.findTop10ByNameLike("B%");
-//		List<School> schoolList = schoolRepository.findAll();
+//		List<School> schoolList = schoolRepository.findAllByNameLike("A%");
+//		List<School> schoolList = schoolRepository.findTop10ByNameLike("A%");
+		List<School> schoolList = schoolRepository.findAll();
 		for (School sc : schoolList)
 		{
-			LOGGER.debug("School: " + sc);
+			LOGGER.debug(sc.toBasicString());
 
-			List<Order> ordList = orderRepo.findAllBySchoolOrderByOrderDateDesc(sc);
-			Stream<OrderItem> baseStream = ordList.stream()
-					.filter((Order o) -> o.getFinancialYear() == financialYear)
+			List<Order> ordList = orderRepo.findAllBySchoolAndFinancialYearOrderByOrderDateDesc(sc, financialYear);
+			Supplier<Stream<OrderItem>> orderStreamSupp = () -> ordList.stream()
 					.map(o -> o.getOrderItem())
 					.flatMap(List<OrderItem>::stream);
-			Map<String, Set<String>> ordMap = baseStream.collect(groupingBy(OrderItem::getOrderId, mapping(o -> o.getBook().getBookNum(), toSet())));
-			Map<String, Integer> ordItemBookMap = baseStream.collect(toMap(o -> o.getBook().getBookNum(), OrderItem::getId));
+			Map<String, Set<String>> ordMap = orderStreamSupp.get().collect(groupingBy(OrderItem::getOrderId, mapping(o -> o.getBook().getBookNum(), toSet())));
+			Map<String, Order> orderMap = ordList.stream()
+					.collect(toMap(o -> o.getId(), o -> o));
 			LOGGER.debug("orderEnt");
 			for (Entry<String, Set<String>> orderEnt : ordMap.entrySet())
 			{
 				LOGGER.debug(orderEnt.getKey() + " " + orderEnt.getValue());
 			}
 
-			List<Sales> sales = salesRepository.findAllBySchool(sc);
-			Stream<SalesDet> baseSalesStream = sales.stream()
-					.filter(s -> s.getFinancialYear() == financialYear)
+			List<Sales> sales = salesRepository.findAllBySchoolAndFinancialYear(sc, financialYear);
+			Supplier<Stream<SalesDet>> saleStreamSupp = () -> sales.stream()
 					.map(o -> o.getSaleItems())
 					.flatMap(Set<SalesDet>::stream);
-			Map<String, Set<String>> saleMap = baseSalesStream.collect(groupingBy(sd -> sd.getSale().getId(), mapping(sd -> sd.getBook().getBookNum(), toSet())));
-			Map<String, Integer> saleDetBookMap = baseSalesStream.collect(toMap(o -> o.getBook().getBookNum(), SalesDet::getSalesDetId));
+			Map<String, Set<String>> saleMap = saleStreamSupp.get().collect(groupingBy(sd -> sd.getSale().getId(), mapping(sd -> sd.getBook().getBookNum(), toSet())));
+			Map<Integer, SalesDet> saleDetMap = saleStreamSupp.get().collect(toMap(sd -> sd.getSalesDetId(), sd -> sd));
+			Map<String, Sales> salesMap = sales.stream()
+					.collect(toMap(o -> o.getId(), o -> o));
 			LOGGER.debug("salesEnt");
 			for (Entry<String, Set<String>> salesEnt : saleMap.entrySet())
 			{
@@ -224,6 +221,20 @@ public class MigrationTest
 			for (Entry<String, String> corrEnt : corrMap.entrySet())
 			{
 				LOGGER.debug(corrEnt.getKey() + " - " + corrEnt.getValue());
+				Sales currSale = salesMap.get(corrEnt.getValue());
+				Set<SalesDet> saleItems = currSale.getSaleItems();
+				for (SalesDet saleItem : saleItems)
+				{
+					Order order = orderMap.get(corrEnt.getKey());
+					List<OrderItem> orderItems = order.getOrderItem();
+					Optional<OrderItem> foundBook = orderItems.stream().filter(o -> o.getBook().getBookNum().equals(saleItem.getBook().getBookNum())).findFirst();
+					if(foundBook.isPresent())
+					{
+						saleItem.setOrderItem(foundBook.get());
+						LOGGER.debug("Mapping " + saleItem.getSalesDetId() + " to " + foundBook.get().getId());
+						salesDetRepository.save(saleItem);
+					}
+				}
 			}
 		}
 	}

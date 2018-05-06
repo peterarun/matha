@@ -44,7 +44,7 @@
 			<fieldDescription><![CDATA[bookPrice]]></fieldDescription>
 		</field>
 	</subDataset>
-	<parameter name="reportData" class="java.util.List" nestedType="com.matha.domain.OrderItem"/>
+
 	<parameter name="publisherDetails" class="java.lang.String"/>
 	<parameter name="publisherName" class="java.lang.String"/>
 	<parameter name="partyName" class="java.lang.String"/>

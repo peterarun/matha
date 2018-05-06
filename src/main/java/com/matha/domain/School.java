@@ -272,4 +272,14 @@ public class School implements Serializable {
 		return builder.toString();
 	}
 
+	public String toBasicString() {
+		StringBuilder builder = new StringBuilder();
+		builder.append("School [id=");
+		builder.append(id);
+		builder.append(", name=");
+		builder.append(name);
+		builder.append("]");
+		return builder.toString();
+	}
+
 }

@@ -34,13 +34,13 @@
 							<content>
 								<AnchorPane prefHeight="200.0" prefWidth="200.0">
 									<children>
-										<Pagination fx:id="orderPaginator" maxHeight="-Infinity" maxPageIndicatorCount="5" prefHeight="406.0" prefWidth="873.0">
+										<Pagination fx:id="orderPaginator" layoutX="11.0" layoutY="12.0" maxHeight="-Infinity" maxPageIndicatorCount="5" prefHeight="391.0" prefWidth="873.0">
 
 										</Pagination>
 										<Button layoutX="896.0" layoutY="75.0" mnemonicParsing="false" onAction="#editOrder" prefHeight="25.0" prefWidth="89.0" text="Edit Order" />
 										<Button layoutX="896.0" layoutY="112.0" mnemonicParsing="false" onAction="#createPurchase" prefHeight="25.0" prefWidth="89.0" text="Create Invoice" />
 										<Button layoutX="896.0" layoutY="146.0" mnemonicParsing="false" onAction="#printOrder" prefHeight="25.0" prefWidth="89.0" text="Print Order" />
-										<TableView fx:id="orderTable" fixedCellSize="25.0" layoutX="14.0" layoutY="12.0" maxHeight="-Infinity" prefHeight="337.0" prefWidth="857.0">
+										<TableView fx:id="orderTable" fixedCellSize="25.0" layoutX="11.0" layoutY="12.0" maxHeight="-Infinity" prefHeight="327.0" prefWidth="857.0">
 											<columns>
 												<TableColumn prefWidth="107.0" text="Order Number">
 													<cellValueFactory>
@@ -76,7 +76,7 @@
 							<content>
 								<AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="180.0" prefWidth="200.0">
 									<children>
-										<TableView fx:id="purchaseData" layoutY="1.0" prefHeight="405.0" prefWidth="861.0">
+										<TableView fx:id="purchaseData" layoutX="11.0" layoutY="12.0" prefHeight="300.0" prefWidth="861.0">
 											<columns>
 												<TableColumn prefWidth="124.0" text="Invoice No">
 													<cellValueFactory>
@@ -114,6 +114,7 @@
 										<Button layoutX="908.0" layoutY="58.0" mnemonicParsing="false" onAction="#createPurchase" prefHeight="25.0" prefWidth="70.0" text="Add" />
 										<Button layoutX="909.0" layoutY="135.0" mnemonicParsing="false" onAction="#deletePurchase" prefHeight="25.0" prefWidth="70.0" text="Delete" />
                               <Button layoutX="909.0" layoutY="173.0" mnemonicParsing="false" onAction="#printPurchaseBill" prefHeight="25.0" prefWidth="70.0" text="Print" />
+                              <Pagination fx:id="billPaginator" layoutX="10.0" layoutY="11.0" maxPageIndicatorCount="5" pageCount="214748364" prefHeight="391.0" prefWidth="862.0" />
 									</children>
 								</AnchorPane>
 							</content>

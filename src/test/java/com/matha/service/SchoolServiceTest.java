@@ -89,6 +89,7 @@ public class SchoolServiceTest
 	{
 		Publisher pub = publisherRepository.findOne(48);
 		Page<Order> orders = schoolService.fetchOrders(pub, 1, 5, false);
+		LOGGER.info(orders.getTotalPages());
 		for (Order order : orders)
 		{
 			LOGGER.info(order);

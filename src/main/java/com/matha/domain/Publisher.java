@@ -12,32 +12,32 @@ import org.hibernate.annotations.GenericGenerator;
 import static com.matha.util.UtilConstants.*;
 
 @Entity
-@Table(name = "Publisher")
+@Table(name = "Supplier")
 public class Publisher
 {
 
 	@Id
-	@Column(name = "Serialid")
+	@Column(name = "PublisherId")
 	@GenericGenerator(name="pubId" , strategy="increment")
 	@GeneratedValue(generator="pubId")	
 	private Integer id;
 
-	@Column(name = "Pname")
+	@Column(name = "SName")
 	private String name;
 
-	@Column(name = "address1")
+	@Column(name = "Address1")
 	private String address1;
 
-	@Column(name = "address2")
+	@Column(name = "Address2")
 	private String address2;
 
-	@Column(name = "address3")
+	@Column(name = "Address3")
 	private String address3;
 
-	@Column(name = "phone1")
+	@Column(name = "PhNo1")
 	private String phone1;
 
-	@Column(name = "phone2")
+	@Column(name = "PhNo2")
 	private String phone2;
 
 	@Column(name = "PIN")

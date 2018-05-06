@@ -684,9 +684,10 @@ public class SchoolService
 		updateBookInventory(ordersOrig, addedOrders, removedOrders, affectedOrders, bookNums);
 	}
 
-	public List<Purchase> fetchPurchasesForPublisher(Publisher pub)
+	public Page<Purchase> fetchPurchasesForPublisher(Publisher pub, int page, int size)
 	{
-		return purchaseRepoitory.findAllByPublisher(pub);
+		PageRequest pageable = new PageRequest(page, size, Direction.DESC, "purchaseDate");
+		return purchaseRepoitory.findAllByPublisher(pub, pageable);
 	}
 
 	@Transactional
@@ -980,6 +981,11 @@ public class SchoolService
 	}
 	
 	public Integer fetchNextSalesInvoiceNum(Integer fy)
+	{
+		return salesRepository.fetchNextSerialSeqVal(fy);
+	}
+
+	public Integer fetchNextPurchaseSerialNum(Integer fy)
 	{
 		return salesRepository.fetchNextSerialSeqVal(fy);
 	}

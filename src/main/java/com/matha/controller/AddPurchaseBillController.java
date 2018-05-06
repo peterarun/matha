@@ -7,6 +7,7 @@ import static com.matha.util.UtilConstants.RUPEE_SIGN;
 import static com.matha.util.Utils.*;
 import static java.util.stream.Collectors.toList;
 
+import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.HashSet;
@@ -184,7 +185,7 @@ public class AddPurchaseBillController
 		if (purchaseIn != null)
 		{
 			this.invoiceNum.setText(purchaseIn.getId());
-			this.invoiceDate.setValue(purchaseIn.getSalesTxn().getTxnDate());
+			this.invoiceDate.setValue(purchaseIn.getTxnDate());
 			this.despatchedTo.setText(purchaseIn.getDespatchedTo());
 			this.docsThrough.setText(purchaseIn.getDocsThrough());
 			this.despatchedPer.setText(purchaseIn.getDespatchPer());
@@ -193,12 +194,12 @@ public class AddPurchaseBillController
 			this.subTotal.setText(getStringVal(purchaseIn.getSubTotal()));
 			this.discAmt.setText(getStringVal(purchaseIn.getDiscAmt()));
 			this.discCalc.setText(getStringVal(purchaseIn.getCalculatedDisc()));
-			this.netAmt.setText(getStringVal(purchaseIn.getSalesTxn().getAmount()));
+			this.netAmt.setText(getStringVal(purchaseIn.getNetAmount()));
 
 			if (purchaseIn.getPurchaseItems() != null && !purchaseIn.getPurchaseItems().isEmpty())
 			{
 				orderSet = purchaseIn.getPurchaseItems().stream()
-						.filter(po -> po != null)
+						.filter(po -> po.getOrderItem() != null)
 						.map(poi -> poi.getOrderItem().getOrder())
 						.filter(o -> o != null)
 						.collect(Collectors.toSet());
@@ -215,7 +216,7 @@ public class AddPurchaseBillController
 				this.addedBooks.setItems(FXCollections.observableList(bookItems));
 				this.calculateTotalQty();
 			}
-			if (!purchaseIn.getDiscType())
+			if (purchaseIn.getDiscType() == null || !purchaseIn.getDiscType())
 			{
 				this.rupeeRad.setSelected(true);
 				this.discTypeInd.setText(RUPEE_SIGN);
@@ -397,22 +398,26 @@ public class AddPurchaseBillController
 			{
 				return;
 			}
-			Purchase sale = this.purchase;
-			if (sale == null)
+			Purchase purchaseIn = this.purchase;
+			if (purchaseIn == null)
 			{
-				sale = new Purchase();
-				sale.setId(this.invoiceNum.getText());
+				purchaseIn = new Purchase();
+				purchaseIn.setPurchaseDate(LocalDate.now());
+				purchaseIn.setFinancialYear(calcFinYear(purchaseIn.getTxnDate()));
+				purchaseIn.setSerialNo(this.schoolService.fetchNextPurchaseSerialNum(purchaseIn.getFinancialYear()));
+				purchaseIn.setPublisher(this.publisher);
+				purchaseIn.setId(this.invoiceNum.getText());
 			}
-			PurchaseTransaction salesTxn = sale.getSalesTxn();
+			PurchaseTransaction salesTxn = purchaseIn.getSalesTxn();
 			if (salesTxn == null)
 			{
 				salesTxn = new PurchaseTransaction();
 				salesTxn.setPublisher(this.publisher);
 			}
-			preparePurchase(sale);
+			preparePurchase(purchaseIn);
 			prepareTransaction(salesTxn);
 
-			schoolService.savePurchase(sale, this.addedBooks.getItems(), salesTxn);
+			schoolService.savePurchase(purchaseIn, this.addedBooks.getItems(), salesTxn);
 
 			((Stage) cancelBtn.getScene().getWindow()).close();
 		}
