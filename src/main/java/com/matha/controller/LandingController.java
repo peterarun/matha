@@ -1,10 +1,10 @@
 package com.matha.controller;
 
-import static com.matha.util.UtilConstants.booksFxml;
-import static com.matha.util.UtilConstants.cashBookFxml;
-import static com.matha.util.UtilConstants.purchasePageFxmlFile;
-import static com.matha.util.UtilConstants.schoolsFxml;
-
+import javafx.event.Event;
+import javafx.event.EventHandler;
+import javafx.scene.Scene;
+import javafx.stage.Stage;
+import javafx.stage.WindowEvent;
 import org.springframework.stereotype.Component;
 
 import com.matha.util.LoadUtils;
@@ -13,6 +13,10 @@ import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Parent;
 import javafx.scene.control.Tab;
+
+import java.io.IOException;
+
+import static com.matha.util.UtilConstants.*;
 
 @Component
 public class LandingController
@@ -29,6 +33,9 @@ public class LandingController
 
 	@FXML
 	private Tab bookMgmtTab;
+
+	@FXML
+	private Tab statementTab;
 
 	private void loadPage(Tab tabIn, String fxmlFile)
 	{
@@ -79,4 +86,96 @@ public class LandingController
 			loadPage(bookMgmtTab, booksFxml);	
 		}
 	}
+
+	@FXML
+	public void loadStatementsPage()
+	{
+		if (statementTab.isSelected())
+		{
+			loadPage(statementTab, statementsFxml);
+		}
+	}
+
+	@FXML
+	public void openSearchTab(Event event)
+	{
+		try
+		{
+			FXMLLoader fxmlLoader = LoadUtils.loadFxml(this, masterSearchFxmlFile);
+			Parent root = fxmlLoader.load();
+			Scene scene = new Scene(root);
+
+			Stage stage = LoadUtils.loadChildStageFromMenu(salesTab.getTabPane().getScene(), scene);
+			stage.show();
+		}
+		catch (IOException e)
+		{
+			e.printStackTrace();
+		}
+
+	}
+
+	@FXML
+	public void openOrderSearchTab(Event event)
+	{
+		try
+		{
+			FXMLLoader fxmlLoader = LoadUtils.loadFxml(this, masterSearchFxmlFile);
+			Parent root = fxmlLoader.load();
+			SearchController sc = fxmlLoader.getController();
+			sc.initData(ORDER_SEARCH_STR);
+			Scene scene = new Scene(root);
+
+			Stage stage = LoadUtils.loadChildStageFromMenu(salesTab.getTabPane().getScene(), scene);
+			stage.show();
+		}
+		catch (IOException e)
+		{
+			e.printStackTrace();
+		}
+
+	}
+
+	@FXML
+	public void openPurBillSearchTab(Event event)
+	{
+		try
+		{
+			FXMLLoader fxmlLoader = LoadUtils.loadFxml(this, masterSearchFxmlFile);
+			Parent root = fxmlLoader.load();
+			SearchController sc = fxmlLoader.getController();
+			sc.initData(PUR_BILL_SEARCH_STR);
+			Scene scene = new Scene(root);
+
+			Stage stage = LoadUtils.loadChildStageFromMenu(salesTab.getTabPane().getScene(), scene);
+			stage.show();
+		}
+		catch (IOException e)
+		{
+			e.printStackTrace();
+		}
+
+	}
+
+	@FXML
+	public void openSaleBillSearchTab(Event event)
+	{
+		try
+		{
+			FXMLLoader fxmlLoader = LoadUtils.loadFxml(this, masterSearchFxmlFile);
+			Parent root = fxmlLoader.load();
+			SearchController sc = fxmlLoader.getController();
+			sc.initData(SALE_BILL_SEARCH_STR);
+			Scene scene = new Scene(root);
+
+			Stage stage = LoadUtils.loadChildStageFromMenu(salesTab.getTabPane().getScene(), scene);
+			stage.show();
+		}
+		catch (IOException e)
+		{
+			e.printStackTrace();
+		}
+
+	}
+
 }

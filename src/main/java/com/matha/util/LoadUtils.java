@@ -6,6 +6,7 @@ import javafx.event.Event;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Node;
 import javafx.scene.Scene;
+import javafx.scene.control.Menu;
 import javafx.stage.Modality;
 import javafx.stage.Stage;
 import javafx.stage.Window;
@@ -28,6 +29,14 @@ public class LoadUtils {
 
 	public static Stage loadChildStage(Event e, Scene childScene) {
 		Scene parentScene = ((Node) e.getSource()).getScene();
+		Window parentWindow = parentScene.getWindow();
+		Stage stage = loadPopupScene(parentWindow, childScene);
+
+		return stage;
+	}
+
+	public static Stage loadChildStageFromMenu(Scene parentScene, Scene childScene)
+	{
 		Window parentWindow = parentScene.getWindow();
 		Stage stage = loadPopupScene(parentWindow, childScene);
 

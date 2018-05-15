@@ -14,9 +14,11 @@
 						<MenuItem mnemonicParsing="false" text="Close" />
 					</items>
 				</Menu>
-				<Menu mnemonicParsing="false" text="Edit">
+				<Menu mnemonicParsing="false" text="Search">
 					<items>
-						<MenuItem mnemonicParsing="false" text="Delete" />
+						<MenuItem mnemonicParsing="false" onAction="#openOrderSearchTab" text="Order" />
+                  <MenuItem mnemonicParsing="false" onAction="#openPurBillSearchTab" text="Purchase Bill" />
+                  <MenuItem mnemonicParsing="false" onAction="#openSaleBillSearchTab" text="Sales Bill" />
 					</items>
 				</Menu>
 				<Menu mnemonicParsing="false" text="Help">
@@ -55,6 +57,11 @@
 						<AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="180.0" prefWidth="200.0" />
 					</content>
 				</Tab>
+            <Tab fx:id="statementTab" onSelectionChanged="#loadStatementsPage" text="Master Statements">
+              <content>
+                <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="180.0" prefWidth="200.0" />
+              </content>
+            </Tab>
 			</tabs>
 		</TabPane>
 		<Label alignment="CENTER" contentDisplay="CENTER" prefHeight="30.0" prefWidth="1024.0" text="All Rights Reserved - Matha Agencies" textAlignment="CENTER" />

@@ -17,9 +17,14 @@ public interface PurchaseRepository extends JpaRepository<Purchase, String> {
 //	@Query("select sales from Purchase sales where sales.salesTxn.publisher = ?1")
 	Page<Purchase> findAllByPublisher(Publisher pub, Pageable pageable);
 
+	Page<Purchase> findByInvoiceNoLike(String searchStr, Pageable pageable);
+
 	@Query(value = "SELECT NEXT VALUE FOR PurchaseSeq", nativeQuery = true)
 	Long fetchNextSeqVal();
 
 	@Query(value = "select ISNULL(max(serialNo),0) + 1 from Purchase where financialYear = ?1")
 	public Integer fetchNextSerialSeqVal(Integer fy);
+
+	@Query("select sales from Purchase sales where sales.publisher = ?1 and financialYear = ?2 ")
+	List<Purchase> findAllByPublisherAndFinancialYear(Publisher pub, int fy);
 }

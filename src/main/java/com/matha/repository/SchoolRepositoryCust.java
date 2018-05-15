@@ -12,4 +12,6 @@ import com.matha.domain.State;
 public interface SchoolRepositoryCust {
 
 	public List<School> fetchSchools(State state, District district, String name, String city, String pin);
+
+	public List<School> fetchSchools(int startId);
 }

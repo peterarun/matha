@@ -80,4 +80,15 @@ public class OrderRepositoryTest {
 			System.out.println(o);
 		}
 	}
+
+	@Test
+	public void testOrderFetch() {
+		PageRequest pageable = new PageRequest(0, 5, Sort.Direction.DESC, "orderDate");
+
+		List<Order> orderList = orderService.fetchOrdersForSearchStr("19", pageable).getContent();
+		for(Order o: orderList)
+		{
+			System.out.println(o);
+		}
+	}
 }

@@ -14,6 +14,7 @@ import static com.matha.util.UtilConstants.printPurchaseFxmlFile;
 import static com.matha.util.UtilConstants.statementJrxml;
 import static com.matha.util.Utils.convertDouble;
 import static com.matha.util.Utils.getStringVal;
+import static com.matha.util.Utils.prepareJasperPrint;
 
 import java.io.ByteArrayOutputStream;
 import java.io.File;
@@ -380,7 +381,9 @@ public class PurchaseController
 			Parent addOrderRoot = createOrderLoader.load();
 			PrintPurchaseBillController ctrl = createOrderLoader.getController();
 			Purchase purchase = purchaseData.getSelectionModel().getSelectedItem();
-			JasperPrint jasperPrint = prepareJasperPrint(purchase.getPublisher(), purchase);
+			Address salesAddr = schoolService.fetchAddress("Purchase");
+			InputStream iStream = getClass().getResourceAsStream(invoiceJrxml);
+			JasperPrint jasperPrint = prepareJasperPrint(purchase.getPublisher(), purchase, salesAddr, iStream);
 			ctrl.initData(jasperPrint);
 			Scene addOrderScene = new Scene(addOrderRoot);
 			prepareAndShowStage(ev, addOrderScene);
@@ -391,69 +394,6 @@ public class PurchaseController
 		}		
 	}
 
-	private JasperPrint prepareJasperPrint(Publisher pub, Purchase purchase)
-	{
-		JasperPrint jasperPrint = null;
-		InputStream jasperStream = getClass().getResourceAsStream(invoiceJrxml);
-		HashMap<String, Object> hm = new HashMap<>();
-		try
-		{			
-			Address salesAddr = schoolService.fetchAddress("Purchase");
-			StringBuilder strBuild = new StringBuilder();
-			strBuild.append(salesAddr.getAddress1());
-			strBuild.append(NEW_LINE); 
-			strBuild.append(salesAddr.getAddress2());
-			strBuild.append(COMMA_SIGN); 
-			strBuild.append(salesAddr.getAddress3());
-			strBuild.append(HYPHEN_SPC_SIGN);
-			strBuild.append(salesAddr.getPin());
-			
-			Set<PurchaseDet> tableData = purchase.getPurchaseItems();
-			Set<String> orderIdSet = tableData.stream()
-					.filter(pd -> pd.getOrderItem() != null)
-					.map(PurchaseDet::getOrderItem)
-					.filter(oi -> oi.getOrder() != null)
-					.map(oi -> oi.getOrder().getSerialNo())
-					.collect(Collectors.toSet());
-			String orderIds = String.join(",", orderIdSet);
-			Double subTotal = purchase.getSubTotal();
-			Double discAmt = purchase.getCalculatedDisc();
-
-			hm.put("publisherName", pub.getName());
-			hm.put("publisherDetails", pub.getInvAddress());
-			hm.put("partyName", "MATHA DISTRIBUTORS.");
-			hm.put("partyAddress", strBuild.toString());
-			hm.put("partyPhone", "Ph - " + salesAddr.getPhone1());
-			hm.put("documentsThrough", purchase.getDocsThrough());
-			hm.put("despatchedTo", purchase.getDespatchedTo());
-			hm.put("invoiceNo", purchase.getId());
-			hm.put("txnDate", purchase.getTxnDate());
-			hm.put("orderNumbers", orderIds);
-			hm.put("despatchedPer", purchase.getDespatchPer());
-			hm.put("grNo", purchase.getGrNum());
-			hm.put("packageCnt", getStringVal(purchase.getPackages()));
-			hm.put("total", purchase.getSubTotal());
-			hm.put("discount", discAmt);
-			hm.put("grandTotal", purchase.getNetAmount());
-			hm.put("grandTotalInWords", convertDouble(purchase.getNetAmount()));
-			hm.put("imageFileName",pub.getLogoFileName());
-			
-			JasperReport compiledFile = JasperCompileManager.compileReport(jasperStream);
-
-			jasperPrint = JasperFillManager.fillReport(compiledFile, hm, new JRBeanCollectionDataSource(tableData));
-		}
-		catch (JRException e)
-		{
-			e.printStackTrace();
-		}
-		catch (Exception e)
-		{
-			e.printStackTrace();
-		}
-
-		return jasperPrint;
-	}
-	
 	private void loadOrderTable(int idx)
 	{
 		Publisher pub = publishers.getSelectionModel().getSelectedItem();
@@ -687,7 +627,7 @@ public class PurchaseController
 	{
 		try
 		{
-			print = prepareJasperPrint();
+			print = prepareJasperPrintForStmt();
 			ByteArrayOutputStream outputStream = new ByteArrayOutputStream();
 			HtmlExporter exporter = new HtmlExporter();
 			exporter.setExporterOutput(new SimpleHtmlExporterOutput(outputStream));
@@ -704,7 +644,7 @@ public class PurchaseController
 
 	}
 
-	private JasperPrint prepareJasperPrint()
+	private JasperPrint prepareJasperPrintForStmt()
 	{
 		JasperPrint jasperPrint = null;
 		InputStream jasperStream = getClass().getResourceAsStream(statementJrxml);

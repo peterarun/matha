@@ -76,6 +76,11 @@ public class Sales
 	@Column(name = "TDate")
 	private LocalDate txnDate;
 
+	public String getSchoolName()
+	{
+		return school.getName();
+	}
+
 	public LocalDate getInvoiceDate()
 	{
 		if(getTxnDate() != null)
@@ -301,7 +306,7 @@ public class Sales
 		sb.append(", financialYear=").append(financialYear);
 		sb.append(", deletedAmt=").append(deletedAmt);
 		sb.append(", salesTxn=").append(salesTxn);
-		sb.append(", saleItems=").append(saleItems);
+//		sb.append(", saleItems=").append(saleItems);
 		sb.append(", school=").append(school);
 		sb.append(", txnDate=").append(txnDate);
 		sb.append('}');

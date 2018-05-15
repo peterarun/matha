@@ -1,14 +1,14 @@
 package com.matha.repository;
 
-import java.time.LocalDate;
-import java.util.List;
-
+import com.matha.domain.SalesTransaction;
+import com.matha.domain.School;
+import org.springframework.data.domain.Sort;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.stereotype.Repository;
 
-import com.matha.domain.SalesTransaction;
-import com.matha.domain.School;
+import java.time.LocalDate;
+import java.util.List;
 
 @Repository
 public interface SalesTxnRepository extends JpaRepository<SalesTransaction, Integer> {
@@ -26,4 +26,13 @@ public interface SalesTxnRepository extends JpaRepository<SalesTransaction, Inte
 	SalesTransaction findBySchoolAndPrevTxnIsNull(School school);
 
 	SalesTransaction findBySchoolAndNextTxnIsNull(School school);
+
+	List<SalesTransaction> findByTxnDateBetween(LocalDate fromDate, LocalDate toDate, Sort sortIn);
+
+	List<SalesTransaction> findBySaleIsNotNullAndTxnDateBetween(LocalDate fromDate, LocalDate toDate, Sort sortIn);
+
+	List<SalesTransaction> findByPaymentIsNotNullAndTxnDateBetween(LocalDate fromDate, LocalDate toDate, Sort sortIn);
+
+	List<SalesTransaction> findBySalesReturnIsNotNullAndTxnDateBetween(LocalDate fromDate, LocalDate toDate, Sort sortIn);
+
 }

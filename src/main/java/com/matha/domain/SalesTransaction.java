@@ -1,7 +1,6 @@
 package com.matha.domain;
 
-import static com.matha.util.UtilConstants.DATE_CONV;
-import static com.matha.util.UtilConstants.EMPTY_STR;
+import static com.matha.util.UtilConstants.*;
 import static com.matha.util.Utils.getStringVal;
 
 import java.time.LocalDate;
@@ -85,15 +84,27 @@ public class SalesTransaction
 	@Column(name = "TxnId")
 	private String txnFlag;
 
+	public String getSchoolName()
+	{
+		if(school != null)
+		{
+			return school.getName();
+		}
+		else
+		{
+			return EMPTY_STR;
+		}
+	}
+
 	public String getType()
 	{
 		String type = "";
 		if (sale != null)
-			type = "Sale";
+			type = SALE_STR;
 		else if (payment != null)
-			type = "Payment";
+			type = PAYMENT_STR;
 		else if (salesReturn != null)
-			type = "Credit Note";
+			type = CREDIT_NOTE_STR;
 
 		return type;
 	}
@@ -121,7 +132,7 @@ public class SalesTransaction
 	{
 		if(this.sale != null)
 		{
-			return getStringVal(this.sale.getSerialNo());
+			return this.sale.getId();
 		}
 		else
 		{

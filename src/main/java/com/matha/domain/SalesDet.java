@@ -142,7 +142,7 @@ public class SalesDet implements InventoryData
 	{
 		final StringBuilder sb = new StringBuilder("SalesDet{");
 		sb.append("salesDetId='").append(salesDetId).append('\'');
-		sb.append(", sale=").append(sale);
+		sb.append(", sale=").append(sale == null ? "" : sale.getId());
 		sb.append(", slNum='").append(slNum).append('\'');
 		sb.append(", qty='").append(qty).append('\'');
 		sb.append(", rate=").append(rate);

@@ -174,7 +174,7 @@ public class Order implements Serializable, Comparable<Order>
 		builder.append(", serial=");
 		builder.append(serialNo);
 		builder.append(", school=");
-		builder.append(school);
+		builder.append(getSchoolName());
 		// builder.append(", orderItem=");
 		// builder.append(orderItem);
 		builder.append(", orderDate=");

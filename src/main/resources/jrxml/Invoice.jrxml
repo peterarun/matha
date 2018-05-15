@@ -44,7 +44,6 @@
 			<fieldDescription><![CDATA[bookPrice]]></fieldDescription>
 		</field>
 	</subDataset>
-
 	<parameter name="publisherDetails" class="java.lang.String"/>
 	<parameter name="publisherName" class="java.lang.String"/>
 	<parameter name="partyName" class="java.lang.String"/>
@@ -66,9 +65,9 @@
 	<queryString>
 		<![CDATA[]]>
 	</queryString>
-	<field name="count" class="java.lang.Integer"/>
+	<field name="qty" class="java.lang.Integer"/>
 	<field name="bookName" class="java.lang.String"/>
-	<field name="total" class="java.lang.Double"/>
+	<field name="totalBought" class="java.lang.Double"/>
 	<field name="bookPrice" class="java.lang.Double"/>
 	<title>
 		<band height="245" splitType="Stretch">
@@ -391,7 +390,7 @@
 					<rightPen lineWidth="1.0"/>
 				</box>
 				<textElement textAlignment="Right"/>
-				<textFieldExpression><![CDATA[$F{total}]]></textFieldExpression>
+				<textFieldExpression><![CDATA[$F{totalBought}]]></textFieldExpression>
 			</textField>
 			<staticText>
 				<reportElement key="" style="Row" x="380" y="0" width="30" height="15" uuid="33ae80c7-f73e-4895-a492-b99ae023e19d"/>
@@ -426,7 +425,7 @@
 					<bottomPen lineWidth="1.0"/>
 				</box>
 				<textElement textAlignment="Center"/>
-				<textFieldExpression><![CDATA[$F{count}]]></textFieldExpression>
+				<textFieldExpression><![CDATA[$F{qty}]]></textFieldExpression>
 			</textField>
 		</band>
 	</detail>

@@ -1,14 +1,7 @@
 package com.matha.service;
 
-import static com.matha.util.UtilConstants.DELETED_STR;
-
 import java.time.LocalDate;
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.HashSet;
-import java.util.List;
-import java.util.Map;
-import java.util.Set;
+import java.util.*;
 import java.util.stream.Collectors;
 
 import javax.persistence.EntityManager;
@@ -25,6 +18,8 @@ import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Sort;
 import org.springframework.data.domain.Sort.Direction;
 import org.springframework.stereotype.Service;
+
+import static com.matha.util.UtilConstants.*;
 
 @Service
 public class SchoolService
@@ -190,6 +185,14 @@ public class SchoolService
 	public List<OrderItem> fetchOrderItems()
 	{
 		return orderItemRepository.findAll();
+	}
+
+	public List<Order> fetchOrdersForSearchStr(String searchStr)
+	{
+		int page = 0;
+		int size = 10;
+		PageRequest pageable = new PageRequest(page, size, Direction.DESC, "orderDate");
+		return orderRepository.fetchOrdersForSearchStr(searchStr, pageable).getContent();
 	}
 
 	public List<OrderItem> fetchOrderItemsForPublisher(Publisher pub)
@@ -690,6 +693,14 @@ public class SchoolService
 		return purchaseRepoitory.findAllByPublisher(pub, pageable);
 	}
 
+	public Page<Purchase> fetchPurchasesForSearchStr(String searchStr)
+	{
+		int page = 0;
+		int size = 10;
+		PageRequest pageable = new PageRequest(page, size, Direction.DESC, "purchaseDate");
+		return purchaseRepoitory.findByInvoiceNoLike(searchStr + "%", pageable);
+	}
+
 	@Transactional
 	public void deletePurchase(Purchase pur)
 	{
@@ -1150,6 +1161,14 @@ public class SchoolService
 		return salesRepository.findAllBySchool(school);
 	}
 
+	public Page<Sales> fetchBillsForSearchStr(String searchStr)
+	{
+		int page = 0;
+		int size = 10;
+		PageRequest pageable = new PageRequest(page, size, Direction.DESC, "txnDate");
+		return salesRepository.findAllByIdLike(searchStr + "%", pageable);
+	}
+
 	@Transactional
 	public void deleteBill(Sales selectedSale)
 	{
@@ -1267,6 +1286,67 @@ public class SchoolService
 	public Account fetchAccount(String name)
 	{
 		return accountRepository.findOne(name);
+	}
+
+	public List<PurchaseTransaction> fetchAllPurchaseTxnsBetween(LocalDate fromDateVal, LocalDate toDateVal, Sort sort)
+	{
+		return purchaseTxnRepository.findByTxnDateBetween(fromDateVal, toDateVal, sort);
+	}
+
+	public List<PurchaseTransaction> fetchPurchaseTxnsBetween(LocalDate fromDateVal, LocalDate toDateVal, Optional<String> purTypeStr, Sort sort)
+	{
+		List<PurchaseTransaction> tableData = new ArrayList<>();
+		if(!purTypeStr.isPresent())
+		{
+			return purchaseTxnRepository.findByTxnDateBetween(fromDateVal, toDateVal, sort);
+		}
+
+		switch (purTypeStr.get())
+		{
+			case PURCHASE_STR:
+				tableData = purchaseTxnRepository.findByPurchaseIsNotNullAndTxnDateBetween(fromDateVal, toDateVal, sort);
+				break;
+
+			case PAYMENT_STR:
+				tableData = purchaseTxnRepository.findByPaymentIsNotNullAndTxnDateBetween(fromDateVal, toDateVal, sort);
+				break;
+
+			case RETURN_STR:
+				tableData = purchaseTxnRepository.findByPurchaseReturnIsNotNullAndTxnDateBetween(fromDateVal, toDateVal, sort);
+				break;
+
+			default:
+				tableData = purchaseTxnRepository.findByTxnDateBetween(fromDateVal, toDateVal, sort);
+		}
+		return tableData;
+	}
+
+	public List<SalesTransaction> fetchSaleTxnsBetween(LocalDate fromDateVal, LocalDate toDateVal, Optional<String> purTypeStr, Sort sort)
+	{
+		List<SalesTransaction> tableData = new ArrayList<>();
+
+		if(!purTypeStr.isPresent())
+		{
+			return salesTxnRepository.findByTxnDateBetween(fromDateVal, toDateVal, sort);
+		}
+		switch (purTypeStr.get())
+		{
+			case SALE_STR:
+				tableData = salesTxnRepository.findBySaleIsNotNullAndTxnDateBetween(fromDateVal, toDateVal, sort);
+				break;
+
+			case PAYMENT_STR:
+				tableData = salesTxnRepository.findByPaymentIsNotNullAndTxnDateBetween(fromDateVal, toDateVal, sort);
+				break;
+
+			case CREDIT_NOTE_STR:
+				tableData = salesTxnRepository.findBySalesReturnIsNotNullAndTxnDateBetween(fromDateVal, toDateVal, sort);
+				break;
+
+			default:
+				tableData = salesTxnRepository.findByTxnDateBetween(fromDateVal, toDateVal, sort);
+		}
+		return tableData;
 	}
 
 }

@@ -5,6 +5,9 @@ import java.util.Map.Entry;
 import java.util.function.Supplier;
 import java.util.stream.Stream;
 
+import com.matha.domain.*;
+import com.matha.repository.*;
+import com.matha.service.SchoolService;
 import org.apache.logging.log4j.Level;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
@@ -14,20 +17,9 @@ import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.data.domain.Sort;
 import org.springframework.test.context.junit4.SpringRunner;
 
-import com.matha.domain.Order;
-import com.matha.domain.OrderItem;
-import com.matha.domain.Sales;
-import com.matha.domain.SalesDet;
-import com.matha.domain.School;
-import com.matha.repository.OrderItemRepository;
-import com.matha.repository.OrderRepository;
-import com.matha.repository.PublisherRepository;
-import com.matha.repository.PurchaseTxnRepository;
-import com.matha.repository.SalesDetRepository;
-import com.matha.repository.SalesRepository;
-import com.matha.repository.SchoolRepository;
 import com.matha.util.LogUtil;
 
 import static java.util.stream.Collectors.*;
@@ -41,14 +33,14 @@ public class MigrationTest
 	private static final int FIN_YEAR = 9;
 
 	@Autowired
-	PurchaseTxnRepository pRepo;
-
-	@Autowired
-	PublisherRepository pubRepo;
+	PurchaseTxnRepository purchaseTxnRepository;
 	
 	@Autowired
 	OrderRepository orderRepo;
-	
+
+	@Autowired
+	SchoolService schoolService;
+
 	@Autowired
 	OrderItemRepository orderItemRepo;
 	
@@ -60,7 +52,16 @@ public class MigrationTest
 
 	@Autowired
 	SalesDetRepository salesDetRepository;
-	
+
+	@Autowired
+	private PublisherRepository publisherRepository;
+
+	@Autowired
+	private PurchaseRepository purchaseRepository;
+
+	@Autowired
+	private PurchaseDetRepository purchaseDetRepository;
+
 	@Before
 	public void setUp()
 	{
@@ -184,7 +185,7 @@ public class MigrationTest
 		int financialYear = FIN_YEAR;
 //		List<School> schoolList = schoolRepository.findAllByNameLike("A%");
 //		List<School> schoolList = schoolRepository.findTop10ByNameLike("A%");
-		List<School> schoolList = schoolRepository.findAll();
+		List<School> schoolList = schoolRepository.fetchSchools(0);
 		for (School sc : schoolList)
 		{
 			LOGGER.debug(sc.toBasicString());
@@ -239,4 +240,105 @@ public class MigrationTest
 		}
 	}
 
+	@Test
+	public void testMigration3()
+	{
+		int financialYear = FIN_YEAR;
+//		List<School> schoolList = schoolRepository.findAllByNameLike("A%");
+//		List<School> schoolList = schoolRepository.findTop10ByNameLike("A%");
+		List<Publisher> schoolList = publisherRepository.findAll();
+		for (Publisher sc : schoolList)
+		{
+			LOGGER.debug(sc.toBasicString());
+
+			List<Order> ordList = orderRepo.fetchOrdersForPublisherAndFy(sc, financialYear);
+			Supplier<Stream<OrderItem>> orderStreamSupp = () -> ordList.stream()
+					.map(o -> o.getOrderItem())
+					.flatMap(List<OrderItem>::stream);
+			Map<String, Set<String>> ordMap = orderStreamSupp.get().collect(groupingBy(OrderItem::getOrderId, mapping(o -> o.getBook().getBookNum(), toSet())));
+			Map<String, Order> orderMap = ordList.stream()
+					.collect(toMap(o -> o.getId(), o -> o));
+			LOGGER.debug("orderEnt");
+			for (Entry<String, Set<String>> orderEnt : ordMap.entrySet())
+			{
+				LOGGER.debug(orderEnt.getKey() + " " + orderEnt.getValue());
+			}
+
+			List<Purchase> sales = purchaseRepository.findAllByPublisherAndFinancialYear(sc, financialYear);
+			Supplier<Stream<PurchaseDet>> saleStreamSupp = () -> sales.stream()
+					.map(o -> o.getPurchaseItems())
+					.flatMap(Set<PurchaseDet>::stream);
+			Map<String, Set<String>> saleMap = saleStreamSupp.get().collect(groupingBy(sd -> sd.getPurchase().getId(), mapping(sd -> sd.getBook().getBookNum(), toSet())));
+			Map<Integer, PurchaseDet> saleDetMap = saleStreamSupp.get().collect(toMap(sd -> sd.getPurDetId(), sd -> sd));
+			Map<String, Purchase> salesMap = sales.stream()
+					.collect(toMap(o -> o.getId(), o -> o));
+			LOGGER.debug("salesEnt");
+			for (Entry<String, Set<String>> salesEnt : saleMap.entrySet())
+			{
+				LOGGER.debug(salesEnt.getKey() + " " + salesEnt.getValue());
+			}
+
+			Map<String, String> corrMap = findCorrelation(ordMap, saleMap);
+			LOGGER.debug("corrMap");
+			for (Entry<String, String> corrEnt : corrMap.entrySet())
+			{
+				LOGGER.debug(corrEnt.getKey() + " - " + corrEnt.getValue());
+				Purchase currSale = salesMap.get(corrEnt.getValue());
+				Set<PurchaseDet> saleItems = currSale.getPurchaseItems();
+				for (PurchaseDet saleItem : saleItems)
+				{
+					Order order = orderMap.get(corrEnt.getKey());
+					List<OrderItem> orderItems = order.getOrderItem();
+					Optional<OrderItem> foundBook = orderItems.stream().filter(o -> o.getBook().getBookNum().equals(saleItem.getBook().getBookNum())).findFirst();
+					if(foundBook.isPresent())
+					{
+						saleItem.setOrderItem(foundBook.get());
+						LOGGER.debug("Mapping " + saleItem.getPurDetId() + " to " + foundBook.get().getId());
+						purchaseDetRepository.save(saleItem);
+					}
+				}
+			}
+		}
+	}
+
+	@Test
+	public void testMigration4()
+	{
+		Sort idSort = new Sort(new Sort.Order(Sort.Direction.ASC, "id"));
+		List<Purchase> purchases = purchaseRepository.findAll(idSort);
+		for (Purchase purchase : purchases)
+		{
+			if(purchase.getSalesTxn() == null)
+			{
+				PurchaseTransaction pTrans = new PurchaseTransaction();
+				pTrans.setPublisher(purchase.getPublisher());
+				pTrans.setAmount(purchase.getNetAmount());
+				pTrans.setTxnDate(purchase.getPurchaseDate());
+				List<PurchaseDet> orderList = new ArrayList<>(purchase.getPurchaseItems());
+				schoolService.savePurchase(purchase, orderList, pTrans);
+			}
+		}
+	}
+
+	/**
+	 * Migrate Sales Transactions
+	 */
+	@Test
+	public void testMigration5()
+	{
+		Sort idSort = new Sort(new Sort.Order(Sort.Direction.ASC, "id"));
+		List<Sales> purchases = salesRepository.findAll(idSort);
+		for (Sales sale : purchases)
+		{
+			if(sale.getSalesTxn() == null)
+			{
+				LOGGER.info("Processing Sales Item: " + sale.getId());
+				SalesTransaction pTrans = new SalesTransaction();
+				pTrans.setSchool(sale.getSchool());
+				pTrans.setAmount(sale.getNetAmount());
+				pTrans.setTxnDate(sale.getInvoiceDate());
+				schoolService.saveSalesData(sale, sale.getSaleItems(), pTrans);
+			}
+		}
+	}
 }

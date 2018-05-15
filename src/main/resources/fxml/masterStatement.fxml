@@ -1,0 +1,65 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import java.lang.*?>
+<?import java.util.*?>
+<?import javafx.scene.*?>
+<?import javafx.scene.control.*?>
+<?import javafx.scene.layout.*?>
+
+
+<AnchorPane prefHeight="646.0" prefWidth="1024.0" xmlns="http://javafx.com/javafx/8" xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.matha.controller.MasterStmtController">
+   <children>
+      <TabPane layoutX="3.0" layoutY="3.0" prefHeight="646.0" prefWidth="1024.0" tabClosingPolicy="UNAVAILABLE">
+        <tabs>
+          <Tab closable="false" text="Purchase">
+            <content>
+              <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="180.0" prefWidth="200.0">
+                     <children>
+                        <SplitPane dividerPositions="0.2" layoutX="1.0" orientation="VERTICAL" prefHeight="618.0" prefWidth="1024.0">
+                          <items>
+                            <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="28.0" prefWidth="592.0">
+                                 <children>
+                                    <DatePicker fx:id="purFromDate" layoutX="118.0" layoutY="26.0" prefHeight="25.0" prefWidth="118.0" />
+                                    <Label layoutX="56.0" layoutY="30.0" text="From Date" />
+                                    <Label layoutX="70.0" layoutY="63.0" text="To Date" />
+                                    <DatePicker fx:id="purToDate" layoutX="118.0" layoutY="59.0" prefHeight="25.0" prefWidth="118.0" />
+                                    <Label layoutX="278.0" layoutY="25.0" text="Type" />
+                                    <ChoiceBox fx:id="purType" layoutX="310.0" layoutY="21.0" prefWidth="150.0" />
+                                    <Button layoutX="310.0" layoutY="56.0" mnemonicParsing="false" onAction="#generatePurStmt" prefHeight="25.0" prefWidth="150.0" text="Submit" />
+                                 </children>
+                              </AnchorPane>
+                            <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="261.0" prefWidth="592.0" />
+                          </items>
+                        </SplitPane>
+                     </children>
+                  </AnchorPane>
+            </content>
+          </Tab>
+          <Tab closable="false" text="Sales">
+            <content>
+              <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="180.0" prefWidth="200.0">
+                     <children>
+                        <SplitPane dividerPositions="0.2" layoutX="-1.0" orientation="VERTICAL" prefHeight="616.0" prefWidth="1024.0">
+                          <items>
+                            <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="100.0" prefWidth="160.0">
+                                 <children>
+                                    <Label layoutX="70.0" layoutY="63.0" text="To Date" />
+                                    <Label layoutX="56.0" layoutY="30.0" text="From Date" />
+                                    <DatePicker fx:id="saleFromDate" layoutX="118.0" layoutY="26.0" prefHeight="25.0" prefWidth="120.0" />
+                                    <DatePicker fx:id="saleToDate" layoutX="118.0" layoutY="59.0" prefHeight="25.0" prefWidth="120.0" />
+                                    <Label layoutX="285.0" layoutY="30.0" text="Type" />
+                                    <ChoiceBox fx:id="saleType" layoutX="317.0" layoutY="26.0" prefWidth="150.0" />
+                                    <Button layoutX="317.0" layoutY="59.0" mnemonicParsing="false" onAction="#prepareSaleStmt" prefHeight="25.0" prefWidth="150.0" text="Submit" />
+                                 </children>
+                              </AnchorPane>
+                            <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="100.0" prefWidth="160.0" />
+                          </items>
+                        </SplitPane>
+                     </children>
+                  </AnchorPane>
+            </content>
+          </Tab>
+        </tabs>
+      </TabPane>
+   </children>
+</AnchorPane>

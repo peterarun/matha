@@ -6,6 +6,7 @@ import javax.persistence.GeneratedValue;
 import javax.persistence.Id;
 import javax.persistence.Table;
 
+import com.matha.util.Utils;
 import org.apache.commons.lang.StringUtils;
 import org.hibernate.annotations.GenericGenerator;
 
@@ -268,4 +269,14 @@ public class Publisher
 		return true;
 	}
 
+    public String toBasicString()
+	{
+		StringBuilder builder = new StringBuilder();
+		builder.append("Publisher [id=");
+		builder.append(id);
+		builder.append(", name=");
+		builder.append(name);
+		builder.append("]");
+		return builder.toString();
+	}
 }

@@ -25,7 +25,15 @@ public interface UtilConstants {
 	public static final String DATE_FORMAT = "dd/MM/yyyy";
 	public static final String SALES_NOTE = "Sales Bill Note";
 	public static final String DELETED_STR = "DELETED";
-	
+	public static final String PURCHASE_STR = "Purchase";
+	public static final String PAYMENT_STR = "Payment";
+	public static final String RETURN_STR = "Return";
+	public static final String SALE_STR = "Sales";
+	public static final String CREDIT_NOTE_STR = "Credit Note";
+	public static final String ORDER_SEARCH_STR = "Order Search";
+	public static final String PUR_BILL_SEARCH_STR = "Purchase Search";
+	public static final String SALE_BILL_SEARCH_STR = "Sale Search";
+
 	public static final StringConverter<LocalDate> DATE_CONV = Converters.getLocalDateConverter();
 	public static final StringConverter<LocalDateTime> DATE_TIME_CONV = Converters.getLocalDateTimeConverter();
 	
@@ -35,6 +43,8 @@ public interface UtilConstants {
 	public static final String purchasePageFxmlFile = "/fxml/Purchases.fxml";
 	public static final String cashBookFxml = "/fxml/CashBook.fxml";
 	public static final String booksFxml = "/fxml/Books.fxml";
+	public static final String statementsFxml = "/fxml/masterStatement.fxml";
+
 	public static final String addPublisherFxml = "/fxml/addPublisher.fxml";
 	
 	public static final String createOrderFxmlFile = "/fxml/createOrder.fxml";
@@ -51,13 +61,18 @@ public interface UtilConstants {
 	public static final String createPurchasePayFxmlFile = "/fxml/createPurchasePay.fxml";
 	
 	public static final String salesStmtFxmlFile = "/fxml/printSalesStmt.fxml";
+	public static final String masterStmtFxmlFile = "/fxml/printMasterStmt.fxml";
+
+	public static final String masterSearchFxmlFile = "/fxml/masterSearch.fxml";
 	
 	public static final String statementJrxml = "/jrxml/Statement.jrxml";
 	public static final String salesStmtJrxml = "/jrxml/SalesStmt.jrxml";
 	public static final String invoiceJrxml = "/jrxml/Invoice.jrxml";
 	public static final String salesInvoiceJrxml = "/jrxml/SalesInvoice.jrxml";
 	public static final String orderJrxml = "/jrxml/Order.jrxml";
-	
+	public static final String masterPurStmtJrxml = "/jrxml/MasterPurchaseStmt.jrxml";
+	public static final String masterSaleStmtJrxml = "/jrxml/MasterSalesStmt.jrxml";
+
 	public static final ButtonType buttonTypeOne = new ButtonType("Yes", ButtonData.YES);
 	public static final ButtonType buttonTypeCancel = new ButtonType("Cancel", ButtonData.CANCEL_CLOSE);
 

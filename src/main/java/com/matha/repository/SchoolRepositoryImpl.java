@@ -15,7 +15,7 @@ import com.matha.domain.School;
 import com.matha.domain.State;
 
 @Repository
-public class SchoolRepositoryImpl {
+public class SchoolRepositoryImpl implements SchoolRepositoryCust{
 
 	@PersistenceContext
 	private EntityManager entityManger;
@@ -74,6 +74,18 @@ public class SchoolRepositoryImpl {
 		// crit.add(Restrictions.like("name", name + "%"));
 		// }
 
+		return data;
+	}
+
+	@Override
+	public List<School> fetchSchools(int startId) {
+
+		String qryStr = "from School s where id > :id order by id";
+
+		Query crit = entityManger.createQuery(qryStr);
+		crit.setParameter("id", startId);
+
+		List<School> data = crit.getResultList();
 		return data;
 	}
 }

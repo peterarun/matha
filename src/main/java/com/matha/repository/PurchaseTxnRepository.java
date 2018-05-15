@@ -16,7 +16,15 @@ public interface PurchaseTxnRepository extends JpaRepository<PurchaseTransaction
 
 	@Query("select salesTxn from PurchaseTransaction salesTxn where salesTxn.publisher = ?1 and salesTxn.txnDate between ?2 and ?3")
 	List<PurchaseTransaction> findByFromToDate(Publisher school, LocalDate fromDate, LocalDate toDate, Sort sortIn);
-	
+
+    List<PurchaseTransaction> findByTxnDateBetween(LocalDate fromDate, LocalDate toDate, Sort sortIn);
+
+    List<PurchaseTransaction> findByPurchaseIsNotNullAndTxnDateBetween(LocalDate fromDate, LocalDate toDate, Sort sortIn);
+
+	List<PurchaseTransaction> findByPaymentIsNotNullAndTxnDateBetween(LocalDate fromDate, LocalDate toDate, Sort sortIn);
+
+	List<PurchaseTransaction> findByPurchaseReturnIsNotNullAndTxnDateBetween(LocalDate fromDate, LocalDate toDate, Sort sortIn);
+
 //	@Query("select sum(salesTxn.amount) from PurchaseTransaction salesTxn where salesTxn.publisher = ?1 ")
 //	Double findBalance(Publisher school);
 	

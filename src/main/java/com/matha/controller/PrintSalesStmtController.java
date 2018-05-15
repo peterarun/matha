@@ -160,7 +160,66 @@ public class PrintSalesStmtController
 
 		return jasperPrint;
 	}
-	
+
+	public JasperPrint prepareMasterStmtJasperPrint(List<SalesTransaction> tableDataIn, LocalDate fromDateVal, LocalDate toDateVal)
+	{
+		JasperPrint jasperPrint = null;
+		InputStream jasperStream = getClass().getResourceAsStream(salesStmtJrxml);
+		HashMap<String, Object> hm = new HashMap<>();
+		try
+		{
+			if (toDateVal == null)
+			{
+				LOGGER.debug("Null toDateVal");
+				toDateVal = LocalDate.now();
+			}
+
+			hm.put("agencyName", agencyName);
+			hm.put("agencyAddress1", agencyAddress1);
+			hm.put("agencyAddress2", agencyAddress2);
+			hm.put("fromDate", fromDateVal);
+			hm.put("toDate", toDateVal);
+
+			JasperReport compiledFile = JasperCompileManager.compileReport(jasperStream);
+			LOGGER.info("Total Size: " + tableDataIn.size());
+			for (int i = 0; i <= tableDataIn.size() / 38; i++)
+			{
+				int fromIndex = i * 38;
+				int toIndex = Math.min(fromIndex + 38, tableDataIn.size());
+				List<SalesTransaction> tableData = tableDataIn.subList(fromIndex, toIndex);
+				LOGGER.info("i: " + i + " fromIndex: " + fromIndex + " toIndex: " + toIndex + " tabSize: " + tableData.size());
+
+				Map<String, Object> hmOut = Utils.prepareSalesStmtParmMap(hm, tableData);
+				LOGGER.debug("hmOut");
+				for (Entry<String, Object> obj : hmOut.entrySet())
+				{
+					LOGGER.debug(obj.getKey());
+					LOGGER.debug(obj.getValue());
+				}
+
+				if(jasperPrint == null)
+				{
+					jasperPrint = JasperFillManager.fillReport(compiledFile, hmOut, new JRBeanCollectionDataSource(tableData));
+				}
+				else
+				{
+					JasperPrint jasperPrintNxt = JasperFillManager.fillReport(compiledFile, hmOut, new JRBeanCollectionDataSource(tableData));
+					jasperPrint.addPage(jasperPrintNxt.getPages().get(0));
+				}
+			}
+		}
+		catch (JRException e)
+		{
+			e.printStackTrace();
+		}
+		catch (Exception e)
+		{
+			e.printStackTrace();
+		}
+
+		return jasperPrint;
+	}
+
 	private void loadWebInvoice(JasperPrint printIn)
 	{
 		try

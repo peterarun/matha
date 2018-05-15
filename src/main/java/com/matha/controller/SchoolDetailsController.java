@@ -20,16 +20,10 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Optional;
 
+import com.matha.domain.*;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
-import com.matha.domain.Book;
-import com.matha.domain.Order;
-import com.matha.domain.Sales;
-import com.matha.domain.SalesTransaction;
-import com.matha.domain.School;
-import com.matha.domain.SchoolPayment;
-import com.matha.domain.SchoolReturn;
 import com.matha.service.SchoolService;
 import com.matha.util.LoadUtils;
 
@@ -651,7 +645,9 @@ public class SchoolDetailsController
 	{
 		FXMLLoader createOrderLoader = LoadUtils.loadFxml(this, printSaleFxmlFile);
 		InputStream jasperStream = getClass().getResourceAsStream(salesInvoiceJrxml);
-		Scene addOrderScene = preparePrintScene(purchase, createOrderLoader, jasperStream, schoolService);
+		Address salesAddr = schoolService.fetchAddress("Sales");
+		Account acct = schoolService.fetchAccount("Matha Agencies");
+		Scene addOrderScene = preparePrintScene(purchase, createOrderLoader, jasperStream, salesAddr, acct);
 		prepareAndShowStage(ev, addOrderScene);
 	}
 

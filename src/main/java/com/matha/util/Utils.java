@@ -1,12 +1,5 @@
 package com.matha.util;
 
-import static com.matha.util.UtilConstants.COMMA_SIGN;
-import static com.matha.util.UtilConstants.HYPHEN_SPC_SIGN;
-import static com.matha.util.UtilConstants.NEW_LINE;
-import static com.matha.util.UtilConstants.PERCENT_SIGN;
-import static com.matha.util.UtilConstants.RUPEE_SIGN;
-import static com.matha.util.UtilConstants.SPACE_SIGN;
-
 import java.io.ByteArrayOutputStream;
 import java.io.InputStream;
 import java.nio.charset.Charset;
@@ -69,6 +62,8 @@ import net.sf.jasperreports.engine.export.JRPrintServiceExporter;
 import net.sf.jasperreports.export.SimpleExporterInput;
 import net.sf.jasperreports.export.SimpleHtmlExporterOutput;
 import net.sf.jasperreports.export.SimplePrintServiceExporterConfiguration;
+
+import static com.matha.util.UtilConstants.*;
 
 public class Utils
 {
@@ -186,14 +181,14 @@ public class Utils
 		}
 	}
 
-	public static Scene preparePrintScene(Sales purchase, FXMLLoader createOrderLoader, InputStream jasperStream, SchoolService schoolService)
+	public static Scene preparePrintScene(Sales purchase, FXMLLoader createOrderLoader, InputStream jasperStream, Address addrIn, Account acct)
 	{
 		Scene addOrderScene = null;
 		try
 		{			
 			Parent addOrderRoot = createOrderLoader.load();
 			PrintSalesBillController ctrl = createOrderLoader.getController();						
-			JasperPrint jasperPrint = prepareSaleBillPrint(schoolService, purchase.getSchool(), purchase, jasperStream);
+			JasperPrint jasperPrint = prepareSaleBillPrint(purchase.getSchool(), purchase, addrIn, acct, jasperStream);
 			ctrl.initData(jasperPrint);
 			addOrderScene = new Scene(addOrderRoot);			
 		}
@@ -228,15 +223,75 @@ public class Utils
 		
 		return hm;
 	}
-	
-	public static JasperPrint prepareSaleBillPrint(SchoolService schoolService, School sch, Sales sale, InputStream jasperStream)
+
+	public static JasperPrint prepareJasperPrint(Publisher pub, Purchase purchase, Address salesAddr, InputStream jasperStream)
+	{
+		JasperPrint jasperPrint = null;
+		HashMap<String, Object> hm = new HashMap<>();
+		try
+		{
+			StringBuilder strBuild = new StringBuilder();
+			strBuild.append(salesAddr.getAddress1());
+			strBuild.append(NEW_LINE);
+			strBuild.append(salesAddr.getAddress2());
+			strBuild.append(COMMA_SIGN);
+			strBuild.append(salesAddr.getAddress3());
+			strBuild.append(HYPHEN_SPC_SIGN);
+			strBuild.append(salesAddr.getPin());
+
+			Set<PurchaseDet> tableData = purchase.getPurchaseItems();
+			Set<String> orderIdSet = tableData.stream()
+					.filter(pd -> pd.getOrderItem() != null)
+					.map(PurchaseDet::getOrderItem)
+					.filter(oi -> oi.getOrder() != null)
+					.map(oi -> oi.getOrder().getSerialNo())
+					.collect(Collectors.toSet());
+			String orderIds = String.join(",", orderIdSet);
+			Double subTotal = purchase.getSubTotal();
+			Double discAmt = purchase.getCalculatedDisc();
+
+			hm.put("publisherName", pub.getName());
+			hm.put("publisherDetails", pub.getInvAddress());
+			hm.put("partyName", "MATHA DISTRIBUTORS.");
+			hm.put("partyAddress", strBuild.toString());
+			hm.put("partyPhone", "Ph - " + salesAddr.getPhone1());
+			hm.put("documentsThrough", purchase.getDocsThrough());
+			hm.put("despatchedTo", purchase.getDespatchedTo());
+			hm.put("invoiceNo", purchase.getId());
+			hm.put("txnDate", purchase.getTxnDate());
+			hm.put("orderNumbers", orderIds);
+			hm.put("despatchedPer", purchase.getDespatchPer());
+			hm.put("grNo", purchase.getGrNum());
+			hm.put("packageCnt", getStringVal(purchase.getPackages()));
+			hm.put("total", purchase.getSubTotal());
+			hm.put("discount", discAmt);
+			hm.put("grandTotal", purchase.getNetAmount());
+			hm.put("grandTotalInWords", convertDouble(purchase.getNetAmount()));
+			hm.put("imageFileName",pub.getLogoFileName());
+
+			JasperReport compiledFile = JasperCompileManager.compileReport(jasperStream);
+
+			jasperPrint = JasperFillManager.fillReport(compiledFile, hm, new JRBeanCollectionDataSource(tableData));
+		}
+		catch (JRException e)
+		{
+			e.printStackTrace();
+		}
+		catch (Exception e)
+		{
+			e.printStackTrace();
+		}
+
+		return jasperPrint;
+	}
+
+	public static JasperPrint prepareSaleBillPrint(School sch, Sales sale, Address salesAddr, Account acct, InputStream jasperStream)
 	{
 
 		JasperPrint jasperPrint = null;		
 		HashMap<String, Object> hm = new HashMap<>();
 		try
-		{			
-			Address salesAddr = schoolService.fetchAddress("Sales");
+		{
 			StringBuilder strBuild = new StringBuilder();
 			strBuild.append(salesAddr.getAddress1());
 			strBuild.append(NEW_LINE); 
@@ -255,8 +310,7 @@ public class Utils
 			strBuild.append(NEW_LINE);
 			strBuild.append("Email: ");
 			strBuild.append(salesAddr.getEmail());
-			
-			Account acct = schoolService.fetchAccount("Matha Agencies");
+
 			StringBuilder strBuildAcct = new StringBuilder(acct.getName());
 			strBuildAcct.append(COMMA_SIGN);
 			strBuildAcct.append(" State Bank of India");

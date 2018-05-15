@@ -20,6 +20,9 @@ import javax.persistence.TemporalType;
 
 import org.springframework.data.jpa.domain.support.AuditingEntityListener;
 
+import static com.matha.util.UtilConstants.*;
+import static com.matha.util.Utils.getStringVal;
+
 
 @Entity
 @Table(name = "PTransactions")
@@ -78,15 +81,45 @@ public class PurchaseTransaction
 	@JoinColumn(name = "NextTxnId")
 	private PurchaseTransaction nextTxn;
 
+	public String getVoucherNum()
+	{
+		if (purchase != null)
+		{
+			return purchase.getId();
+		}
+		else if (payment != null)
+		{
+			return getStringVal(payment.getId());
+		}
+		else if (purchaseReturn != null)
+		{
+			return purchaseReturn.getId();
+		}
+
+		return EMPTY_STR;
+	}
+
+	public String getPublisherName()
+	{
+		if(publisher != null)
+		{
+			return publisher.getName();
+		}
+		else
+		{
+			return EMPTY_STR;
+		}
+	}
+
 	public String getType()
 	{
 		String type = "";
 		if (purchase != null)
-			type = "Purchase";
+			type = PURCHASE_STR;
 		else if (payment != null)
-			type = "Payment";
+			type = PAYMENT_STR;
 		else if (purchaseReturn != null)
-			type = "Credit Note";
+			type = RETURN_STR;
 
 		return type;
 	}

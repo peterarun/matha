@@ -73,6 +73,11 @@ public class Purchase implements Serializable
 	@JoinColumn(name = "PublisherId")
 	private Publisher publisher;
 
+	public String getPublisherName()
+	{
+		return publisher.getName();
+	}
+
 	public LocalDate getTxnDate()
 	{
 		if(salesTxn != null)

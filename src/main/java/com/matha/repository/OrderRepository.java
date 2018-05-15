@@ -33,8 +33,11 @@ public interface OrderRepository extends JpaRepository<Order, String> {
 
 	@Query("select distinct ord from Order ord, Publisher pub, Book book, OrderItem oDet where book = oDet.book and ord = oDet.order and pub = book.publisher and pub=?1")
 	public List<Order> fetchOrdersForPublisher(Publisher pub);
-	
-//	@Query("select distinct ord from Order ord, Publisher pub, Book book, OrderItem oDet where book.bookNum = oDet.book.bookNum and ord = oDet.order and pub = book.publisher and pub=?1 and oDet.purchase is null")
+
+	@Query("select distinct ord from Order ord, Publisher pub, Book book, OrderItem oDet where book = oDet.book and ord = oDet.order and pub = book.publisher and pub=?1 and ord.financialYear = ?2")
+	public List<Order> fetchOrdersForPublisherAndFy(Publisher pub, int fy);
+
+	//	@Query("select distinct ord from Order ord, Publisher pub, Book book, OrderItem oDet where book.bookNum = oDet.book.bookNum and ord = oDet.order and pub = book.publisher and pub=?1 and oDet.purchase is null")
 	@Query("select distinct oDet.order from PurchaseDet pDet right join pDet.orderItem oDet join oDet.order ord join oDet.book book where book.publisher=?1 and pDet is null")
 	public List<Order> fetchUnBilledOrdersForPub(Publisher pub);
 

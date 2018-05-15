@@ -1,14 +1,14 @@
 package com.matha.repository;
 
-import java.util.List;
-
-import org.springframework.data.jpa.repository.JpaRepository;
-import org.springframework.data.jpa.repository.Query;
-import org.springframework.data.repository.query.Param;
-import org.springframework.stereotype.Repository;
-
 import com.matha.domain.Sales;
 import com.matha.domain.School;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.jpa.repository.JpaRepository;
+import org.springframework.data.jpa.repository.Query;
+import org.springframework.stereotype.Repository;
+
+import java.util.List;
 
 @Repository
 public interface SalesRepository extends JpaRepository<Sales, String> {
@@ -24,6 +24,8 @@ public interface SalesRepository extends JpaRepository<Sales, String> {
 	public List<Sales> findAllByTxnSchool(School school);
 
 	public List<Sales> findAllBySchool(School school);
+
+	public Page<Sales> findAllByIdLike(String searchStr, Pageable pageable);
 
 	public List<Sales> findAllBySchoolAndFinancialYear(School school, int fy);
 

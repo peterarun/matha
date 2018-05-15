@@ -1,0 +1,34 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.scene.web.*?>
+<?import javafx.scene.control.cell.*?>
+<?import javafx.scene.text.*?>
+<?import java.lang.*?>
+<?import javafx.scene.control.*?>
+<?import javafx.scene.control.cell.PropertyValueFactory?>
+<?import javafx.scene.layout.*?>
+<?import javafx.scene.layout.AnchorPane?>
+<?import javafx.collections.*?>
+
+<SplitPane dividerPositions="0.18227424749163879" maxHeight="1.7976931348623157E308" maxWidth="1.7976931348623157E308" minHeight="-Infinity" minWidth="-Infinity" orientation="VERTICAL" prefHeight="600.0" prefWidth="800.0" xmlns="http://javafx.com/javafx/8" xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.matha.controller.PrintStmtController">
+	<items>
+		<AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="96.0" prefWidth="798.0">
+			<children>
+				<Label layoutX="42.0" layoutY="36.0" text="Master Statement">
+					<font>
+						<Font size="24.0" />
+					</font>
+				</Label>
+            <Button layoutX="384.0" layoutY="41.0" mnemonicParsing="false" onAction="#printStmt" prefHeight="25.0" prefWidth="65.0" text="Print" />
+            <Label layoutX="535.0" layoutY="45.0" text="Save As" />
+            <ChoiceBox fx:id="saveType" layoutX="582.0" layoutY="41.0" prefHeight="25.0" prefWidth="69.0" />
+            <Button layoutX="659.0" layoutY="41.0" mnemonicParsing="false" onAction="#exportAndSave" prefHeight="25.0" prefWidth="65.0" text="Save" />
+			</children>
+		</AnchorPane>
+		<AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="100.0" prefWidth="160.0">
+         <children>
+            <WebView fx:id="invoiceData" layoutX="14.0" layoutY="14.0" prefHeight="475.0" prefWidth="771.0" />
+         </children>
+		</AnchorPane>
+	</items>
+</SplitPane>
