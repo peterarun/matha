@@ -1,5 +1,7 @@
 package com.matha.sales;
 
+import java.time.LocalDate;
+import java.time.Month;
 import java.util.*;
 import java.util.Map.Entry;
 import java.util.function.Supplier;
@@ -305,18 +307,20 @@ public class MigrationTest
 	public void testMigration4()
 	{
 		Sort idSort = new Sort(new Sort.Order(Sort.Direction.ASC, "id"));
-		List<Purchase> purchases = purchaseRepository.findAll(idSort);
+		LocalDate ld = LocalDate.of(2017, Month.NOVEMBER, 1);
+		List<Purchase> purchases = purchaseRepository.findAllByFinancialYear(FIN_YEAR, idSort);
 		for (Purchase purchase : purchases)
 		{
-			if(purchase.getSalesTxn() == null)
-			{
-				PurchaseTransaction pTrans = new PurchaseTransaction();
-				pTrans.setPublisher(purchase.getPublisher());
-				pTrans.setAmount(purchase.getNetAmount());
-				pTrans.setTxnDate(purchase.getPurchaseDate());
-				List<PurchaseDet> orderList = new ArrayList<>(purchase.getPurchaseItems());
-				schoolService.savePurchase(purchase, orderList, pTrans);
-			}
+			LOGGER.info(purchase);
+//			if(purchase.getSalesTxn() == null)
+//			{
+//				PurchaseTransaction pTrans = new PurchaseTransaction();
+//				pTrans.setPublisher(purchase.getPublisher());
+//				pTrans.setAmount(purchase.getNetAmount());
+//				pTrans.setTxnDate(purchase.getPurchaseDate());
+//				List<PurchaseDet> orderList = new ArrayList<>(purchase.getPurchaseItems());
+//				schoolService.savePurchase(purchase, orderList, pTrans);
+//			}
 		}
 	}
 
@@ -326,18 +330,21 @@ public class MigrationTest
 	@Test
 	public void testMigration5()
 	{
+		LocalDate ld = LocalDate.of(2017, Month.NOVEMBER, 1);
 		Sort idSort = new Sort(new Sort.Order(Sort.Direction.ASC, "id"));
-		List<Sales> purchases = salesRepository.findAll(idSort);
+//		List<Sales> purchases = salesRepository.findAllByFinancialYear( FIN_YEAR, idSort);
+		List<Sales> purchases = salesRepository.findAllByTxnDateAfter( ld, idSort);
 		for (Sales sale : purchases)
 		{
+			LOGGER.debug(sale);
 			if(sale.getSalesTxn() == null)
 			{
 				LOGGER.info("Processing Sales Item: " + sale.getId());
-				SalesTransaction pTrans = new SalesTransaction();
-				pTrans.setSchool(sale.getSchool());
-				pTrans.setAmount(sale.getNetAmount());
-				pTrans.setTxnDate(sale.getInvoiceDate());
-				schoolService.saveSalesData(sale, sale.getSaleItems(), pTrans);
+//				SalesTransaction pTrans = new SalesTransaction();
+//				pTrans.setSchool(sale.getSchool());
+//				pTrans.setAmount(sale.getNetAmount());
+//				pTrans.setTxnDate(sale.getInvoiceDate());
+//				schoolService.saveSalesData(sale, sale.getSaleItems(), pTrans);
 			}
 		}
 	}

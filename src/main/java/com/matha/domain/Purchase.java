@@ -276,4 +276,26 @@ public class Purchase implements Serializable
 	public void setPublisher(Publisher publisher) {
 		this.publisher = publisher;
 	}
+
+	@Override
+	public String toString() {
+		final StringBuilder sb = new StringBuilder("Purchase{");
+		sb.append("id='").append(id).append('\'');
+		sb.append(", invoiceNo='").append(invoiceNo).append('\'');
+		sb.append(", serialNo=").append(serialNo);
+		sb.append(", despatchedTo='").append(despatchedTo).append('\'');
+		sb.append(", docsThrough='").append(docsThrough).append('\'');
+		sb.append(", despatchPer='").append(despatchPer).append('\'');
+		sb.append(", grNum='").append(grNum).append('\'');
+		sb.append(", packages=").append(packages);
+		sb.append(", discAmt=").append(discAmt);
+		sb.append(", discType=").append(discType);
+		sb.append(", subTotal=").append(subTotal);
+		sb.append(", financialYear=").append(financialYear);
+		sb.append(", purchaseDate=").append(purchaseDate);
+		sb.append(", salesTxn=").append(salesTxn == null ? "" : salesTxn.getId());
+		sb.append(", publisher=").append(publisher == null ? "" : publisher.getName());
+		sb.append('}');
+		return sb.toString();
+	}
 }

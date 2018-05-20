@@ -37,11 +37,6 @@ where SuppId = 17;
 GO
 
 update [dbo].[Supplier]
-set PublisherId = 56
-where SuppId = 16;
-GO
-
-update [dbo].[Supplier]
 set PublisherId = 46
 where SuppId = 18;
 GO
@@ -58,7 +53,7 @@ INSERT INTO [dbo].[Supplier](
 	[Address1],
 	[Email])
 VALUES
-	('45',
+	('60',
 	'13',
 	'Matha Agencies',
 	'Pareekkal Buildings, Vazhakulam',

@@ -42,7 +42,7 @@ public class SalesRepositoryTest {
     public void test_findAllByIdLike()
     {
         int page = 0;
-        int size = 5;
+        int size = 10;
         PageRequest pageable = new PageRequest(page, size, Sort.Direction.DESC, "txnDate");
         String searchStr = "%";
         List<Sales> purList = salesRepository.findAllByIdLike(searchStr, pageable).getContent();

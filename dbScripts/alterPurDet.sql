@@ -7,10 +7,10 @@ GO
 SET QUOTED_IDENTIFIER ON
 GO
 
-alter table PurDet add PurDetId INT IDENTITY(1,1);
+alter table [dbo].[PurDet] add PurDetId INT IDENTITY(1,1);
 GO
 
-alter table PurDet add OrderItemId int null;
+alter table [dbo].[PurDet] add OrderItemId int null;
 GO
 
 ALTER TABLE [dbo].[PurDet] ALTER COLUMN [BkNo] nvarchar(30);

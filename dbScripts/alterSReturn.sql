@@ -7,7 +7,7 @@ GO
 SET QUOTED_IDENTIFIER ON
 GO
 
-alter table SReturn add TxnId int null;
+ALTER TABLE [dbo].[SReturn] ADD [TxnId] INT NULL;
 GO
 
 ALTER TABLE [dbo].[SReturn] ALTER COLUMN [SerialId] INT NOT NULL;

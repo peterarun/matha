@@ -16,8 +16,26 @@ CREATE TABLE [dbo].[STransactions](
 	[Note] [nvarchar](100) NULL,
 	[SalesId] [varchar](15) NULL,
 	[PaymentId] [int] NULL,
-	[ReturnId] [int] NULL
+	[ReturnId] [int] NULL,
+	[AddTime] [datetime] NULL,
+    [ModTime] [datetime] NULL,
+    [TxnId] varchar(15),
+    [Balance] [decimal](12,2) NOT NULL,
+    [PrevTxnId] [int],
+    [NextTxnId] [int]
+);
+GO
+
+CREATE UNIQUE NONCLUSTERED INDEX [Sch_NextTxn_Uniq] ON [dbo].[STransactions]
+(
+	[SchoolId] ASC,
+	[NextTxnId] ASC
 ) ON [PRIMARY]
 GO
 
-
+CREATE UNIQUE NONCLUSTERED INDEX [Sch_Prev_Uniq] ON [dbo].[STransactions]
+(
+	[SchoolId] ASC,
+	[PrevTxnId] ASC
+) ON [PRIMARY]
+GO

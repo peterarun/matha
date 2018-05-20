@@ -4,10 +4,12 @@ import com.matha.domain.Sales;
 import com.matha.domain.School;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.stereotype.Repository;
 
+import java.time.LocalDate;
 import java.util.List;
 
 @Repository
@@ -28,5 +30,9 @@ public interface SalesRepository extends JpaRepository<Sales, String> {
 	public Page<Sales> findAllByIdLike(String searchStr, Pageable pageable);
 
 	public List<Sales> findAllBySchoolAndFinancialYear(School school, int fy);
+
+	public List<Sales> findAllByFinancialYear(int fy, Sort sortIn);
+
+	public List<Sales> findAllByTxnDateAfter(LocalDate txnDt, Sort sortIn);
 
 }

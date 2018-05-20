@@ -1,9 +1,11 @@
 package com.matha.repository;
 
+import java.time.LocalDate;
 import java.util.List;
 
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.stereotype.Repository;
@@ -19,6 +21,9 @@ public interface PurchaseRepository extends JpaRepository<Purchase, String> {
 
 	Page<Purchase> findByInvoiceNoLike(String searchStr, Pageable pageable);
 
+	@Query("select sales from Purchase sales where serialNo like ?1")
+	Page<Purchase> findBySerialNoLikeStr(String searchStr, Pageable pageable);
+
 	@Query(value = "SELECT NEXT VALUE FOR PurchaseSeq", nativeQuery = true)
 	Long fetchNextSeqVal();
 
@@ -27,4 +32,9 @@ public interface PurchaseRepository extends JpaRepository<Purchase, String> {
 
 	@Query("select sales from Purchase sales where sales.publisher = ?1 and financialYear = ?2 ")
 	List<Purchase> findAllByPublisherAndFinancialYear(Publisher pub, int fy);
+
+	List<Purchase> findAllByPurchaseDateAfter(LocalDate dt, Sort sortIn);
+
+	List<Purchase> findAllByFinancialYear(Integer fy, Sort sortIn);
+
 }

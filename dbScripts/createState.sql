@@ -13,7 +13,6 @@ CREATE TABLE [dbo].[State](
  CONSTRAINT [PK_States] PRIMARY KEY 
 (
 	[name] ASC
-)WITH (PAD_INDEX = OFF, STATISTICS_NORECOMPUTE = OFF, IGNORE_DUP_KEY = OFF, ALLOW_ROW_LOCKS = ON, ALLOW_PAGE_LOCKS = ON) ON [PRIMARY]
 ) ON [PRIMARY]
 GO
 
@@ -22,5 +21,3 @@ INSERT INTO [dbo].[State] ([name])
            ('Kerala'),
            ('Tamil Nadu');
 GO
-
-

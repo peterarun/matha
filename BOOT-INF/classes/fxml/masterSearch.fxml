@@ -1,0 +1,134 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.scene.control.cell.*?>
+<?import javafx.scene.text.*?>
+<?import java.lang.*?>
+<?import javafx.scene.control.*?>
+<?import javafx.scene.layout.*?>
+<?import javafx.scene.layout.AnchorPane?>
+<?import javafx.scene.control.cell.PropertyValueFactory?>
+
+<Pane prefHeight="600.0" prefWidth="800.0" xmlns="http://javafx.com/javafx/8" xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.matha.controller.SearchController">
+	<children>
+		<SplitPane dividerPositions="0.08193979933110368" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" orientation="VERTICAL" prefHeight="600.0" prefWidth="800.0">
+			<items>
+				<AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="53.0" prefWidth="798.0">
+					<children>
+						<Label fx:id="schoolName" layoutX="161.0" layoutY="6.0" prefHeight="35.0" prefWidth="477.0" text="Search Page" textAlignment="CENTER">
+							<font>
+								<Font size="24.0" />
+							</font>
+						</Label>
+					</children>
+				</AnchorPane>
+				<AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="530.0" prefWidth="798.0">
+					<children>
+						<TabPane fx:id="saleTabs" prefHeight="546.0" prefWidth="798.0" tabClosingPolicy="UNAVAILABLE">
+							<tabs>
+								<Tab fx:id="ordersTab" closable="false" onSelectionChanged="#loadOrders" text="Orders">
+									<content>
+										<AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="180.0" prefWidth="200.0">
+											<children>
+                        												<TableView fx:id="orderData" layoutX="5.0" layoutY="89.0" prefHeight="424.0" prefWidth="620.0">
+                        													<columns>
+                        														<TableColumn prefWidth="99.0" text="Order No.">
+                        															<cellValueFactory>
+                        																<PropertyValueFactory property="serialNo" />
+                        															</cellValueFactory>
+                        														</TableColumn>
+                        														<TableColumn minWidth="0.0" prefWidth="83.0" text="Date">
+                        															<cellValueFactory>
+                        																<PropertyValueFactory property="orderDateStr" />
+                        															</cellValueFactory>
+                        														</TableColumn>
+                        														<TableColumn prefWidth="235.0" text="School">
+                        															<cellValueFactory>
+                        																<PropertyValueFactory property="schoolName" />
+                        															</cellValueFactory>
+                        														</TableColumn>
+                        													</columns>
+                        												</TableView>
+                        												<Button layoutX="650.0" layoutY="202.0" mnemonicParsing="false" onAction="#editOrder" prefHeight="25.0" prefWidth="120.0" text="Edit" />
+                                    <Button layoutX="650.0" layoutY="243.0" mnemonicParsing="false" onAction="#printOrder" prefHeight="26.0" prefWidth="120.0" text="Print" />
+                                    <TextField fx:id="orderIdStr" layoutX="54.0" layoutY="38.0" onAction="#searchOrder" promptText="Order Id" />
+                                    <Button layoutX="231.0" layoutY="38.0" mnemonicParsing="false" onAction="#searchOrder" text="Search" />
+											</children>
+										</AnchorPane>
+									</content>
+								</Tab>
+								<Tab fx:id="purBillsTab" onSelectionChanged="#loadPurchaseBills" text="Purchase Bills">
+									<content>
+										<AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="180.0" prefWidth="200.0">
+											<children>
+												<Button layoutX="648.0" layoutY="209.0" mnemonicParsing="false" onAction="#printPurBill" prefHeight="25.0" prefWidth="120.0" text="Print" />
+												<Button layoutX="648.0" layoutY="169.0" mnemonicParsing="false" onAction="#editPurBill" prefHeight="25.0" prefWidth="120.0" text="Edit" />
+                                    <TableView fx:id="purBillData" layoutX="6.0" layoutY="87.0" prefHeight="425.0" prefWidth="615.0">
+                                      <columns>
+                                        <TableColumn prefWidth="123.0" text="Invoice No" >
+										  <cellValueFactory>
+											  <PropertyValueFactory property="invoiceNo" />
+										  </cellValueFactory>
+										</TableColumn>
+                                        <TableColumn prefWidth="129.0" text="Date" >
+										  <cellValueFactory>
+											  <PropertyValueFactory property="purchaseDate" />
+										  </cellValueFactory>
+										</TableColumn>
+										  <TableColumn prefWidth="362.0" text="Publisher" >
+										  <cellValueFactory>
+											  <PropertyValueFactory property="publisherName" />
+										  </cellValueFactory>
+										  </TableColumn>
+                                      </columns>
+                                    </TableView>
+                                    <TextField fx:id="purBillNumStr" layoutX="54.0" layoutY="34.0" onAction="#searchPurchaseBill" promptText="Purchase Bill" />
+                                    <Button layoutX="232.0" layoutY="34.0" mnemonicParsing="false" onAction="#searchPurchaseBill" text="Search" />
+											</children>
+										</AnchorPane>
+									</content>
+								</Tab>
+								<Tab fx:id="billsTab" closable="false" onSelectionChanged="#loadSalesBillsTab" text="Sales Bills">
+									<content>
+										<AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="384.0" prefWidth="798.0">
+											<children>
+												<TableView fx:id="billData" layoutX="6.0" layoutY="96.0" prefHeight="416.0" prefWidth="619.0">
+													<columns>
+														<TableColumn prefWidth="101.0" text="Receipt No.">
+															<cellValueFactory>
+																<PropertyValueFactory property="serialNo" />
+															</cellValueFactory>														
+														</TableColumn>
+														<TableColumn prefWidth="132.0" text="Date">
+															<cellValueFactory>
+																<PropertyValueFactory property="invoiceDateStr" />
+															</cellValueFactory>														
+														</TableColumn>
+                                          <TableColumn prefWidth="286.0" text="School" >
+														<cellValueFactory>
+															<PropertyValueFactory property="schoolName" />
+														</cellValueFactory>
+										  </TableColumn>
+                                          				<TableColumn fx:id="amountColumn" prefWidth="105.0" text="Amount">
+															<cellValueFactory>
+																<PropertyValueFactory property="netAmount" />
+															</cellValueFactory>
+                                          				</TableColumn>
+													</columns>
+												</TableView>
+												<Button layoutX="656.0" layoutY="223.0" mnemonicParsing="false" onAction="#editBill" prefHeight="25.0" prefWidth="120.0" text="Edit" />
+                                    			<Button layoutX="656.0" layoutY="265.0" mnemonicParsing="false" onAction="#printSalesBill" prefHeight="25.0" prefWidth="120.0" text="Print" />
+                                    <Button layoutX="656.0" layoutY="183.0" mnemonicParsing="false" onAction="#viewBill" prefHeight="25.0" prefWidth="120.0" text="View" />
+                                    <TextField fx:id="salesBillNumStr" layoutX="55.0" layoutY="39.0" onAction="#searchBill" promptText="Search Bill" />
+                                    <Button layoutX="233.0" layoutY="39.0" mnemonicParsing="false" onAction="#searchBill" text="Search" />
+											</children>
+										</AnchorPane>
+									</content>
+								</Tab>
+							</tabs>
+						</TabPane>
+					</children>
+				</AnchorPane>
+			</items>
+		</SplitPane>
+	</children>
+</Pane>

@@ -1,7 +1,6 @@
 USE [MathaNew]
 GO
 
-/****** Object:  Table [dbo].[STrans]    Script Date: 24-01-2018 09:00:08 ******/
 SET ANSI_NULLS ON
 GO
 
@@ -24,5 +23,20 @@ CREATE TABLE [dbo].[PTransactions](
 	[NextTxnId] [int] UNIQUE
 ) ON [PRIMARY]
 GO
+
+CREATE UNIQUE NONCLUSTERED INDEX [Pub_NextTxn_Uniq] ON [dbo].[PTransactions]
+(
+	[PublisherId] ASC,
+	[NextTxnId] ASC
+) ON [PRIMARY]
+GO
+
+CREATE UNIQUE NONCLUSTERED INDEX [Pub_Prev_Uniq] ON [dbo].[PTransactions]
+(
+	[PublisherId] ASC,
+	[PrevTxnId] ASC
+) ON [PRIMARY]
+GO
+
 
 

@@ -7,20 +7,20 @@ GO
 SET QUOTED_IDENTIFIER ON
 GO
 
-UPDATE SalesDet
+UPDATE [dbo].[SalesDet]
 SET BkNo = 'IDS1C1'
 WHERE BkNo = 'ID1';
 GO
 
-UPDATE SalesDet
+UPDATE [dbo].[SalesDet]
 SET BkNo = 'IDS2C1'
 WHERE BkNo = 'ID2';
 GO
 
-ALTER TABLE SalesDet ADD SalesDetId INT IDENTITY(1,1);
+ALTER TABLE [dbo].[SalesDet] ADD SalesDetId INT IDENTITY(1,1);
 GO
 
-ALTER TABLE SalesDet ADD OrderItemId INT;
+ALTER TABLE [dbo].[SalesDet] ADD OrderItemId INT;
 GO
 
 ALTER TABLE [dbo].[SalesDet] ALTER COLUMN [BkNo] nvarchar(30);
@@ -40,7 +40,7 @@ GO
 --set SalesDetId  = @i , @i = @i + 1
 --where SalesDetId is null;
 
-GO
+--GO
 
 ALTER TABLE [dbo].[SalesDet] ALTER COLUMN [SalesDetId] INT NOT NULL;
 GO

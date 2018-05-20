@@ -29,9 +29,9 @@ public class PurchaseRepositoryTest {
 	public void test_findByInvoiceNoLike()
 	{
 		int page = 0;
-		int size = 5;
+		int size = 10;
 		PageRequest pageable = new PageRequest(page, size, Sort.Direction.DESC, "purchaseDate");
-		String searchStr = "%";
+		String searchStr = "2%";
 		List<Purchase> purList = purchaseRepository.findByInvoiceNoLike(searchStr, pageable).getContent();
 		for (int i = 0; i < purList.size(); i++)
 		{
