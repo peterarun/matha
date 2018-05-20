@@ -19,8 +19,8 @@ CREATE TABLE [dbo].[PTransactions](
 	[PaymentId] [int] NULL,
 	[ReturnId] [nvarchar](15) NULL,
 	[Balance] [decimal](12,2) NOT NULL,
-	[PrevTxnId] [int] UNIQUE,
-	[NextTxnId] [int] UNIQUE
+	[PrevTxnId] [int] NULL,
+	[NextTxnId] [int] NULL
 ) ON [PRIMARY]
 GO
 

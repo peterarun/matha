@@ -44,11 +44,11 @@ public class OrderItem implements Serializable, Comparable<OrderItem>
 	@Column(name = "Qty")
 	private Integer count;
 
-	@Column(name = "fullfilledCnt")
-	private Integer fullFilledCnt;
+//	@Column(name = "fullfilledCnt")
+//	private Integer fullFilledCnt;
 
-	@Column(name = "soldCnt")
-	private Integer soldCnt;
+//	@Column(name = "soldCnt")
+//	private Integer soldCnt;
 
 	@Column(name = "SlNo")
 	private Integer serialNum;
@@ -69,16 +69,16 @@ public class OrderItem implements Serializable, Comparable<OrderItem>
 		return getBookPrice() * count;
 	}
 
-	public double getTotalBought()
-	{
-		return getBookPrice() * fullFilledCnt;
-	}
-	
-	public double getTotalSold()
-	{
-		return getBookPrice() * soldCnt;
-	}
-	
+//	public double getTotalBought()
+//	{
+//		return getBookPrice() * fullFilledCnt;
+//	}
+//
+//	public double getTotalSold()
+//	{
+//		return getBookPrice() * soldCnt;
+//	}
+//
 	public Double getBookPrice()
 	{
 		if (bookPrice == null)
@@ -188,25 +188,25 @@ public class OrderItem implements Serializable, Comparable<OrderItem>
 		this.count = count;
 	}
 	
-	public Integer getFullFilledCnt()
-	{
-		return fullFilledCnt;
-	}
-
-	public void setFullFilledCnt(Integer fullFilledCnt)
-	{
-		this.fullFilledCnt = fullFilledCnt;
-	}
-
-	public Integer getSoldCnt()
-	{
-		return soldCnt;
-	}
-
-	public void setSoldCnt(Integer soldCnt)
-	{
-		this.soldCnt = soldCnt;
-	}
+//	public Integer getFullFilledCnt()
+//	{
+//		return fullFilledCnt;
+//	}
+//
+//	public void setFullFilledCnt(Integer fullFilledCnt)
+//	{
+//		this.fullFilledCnt = fullFilledCnt;
+//	}
+//
+//	public Integer getSoldCnt()
+//	{
+//		return soldCnt;
+//	}
+//
+//	public void setSoldCnt(Integer soldCnt)
+//	{
+//		this.soldCnt = soldCnt;
+//	}
 
 	public Integer getSerialNum()
 	{

@@ -4,7 +4,7 @@ GO
 
 CREATE SEQUENCE [dbo].[SOrderSeq] 
  AS [int]
- MINVALUE 764
+ MINVALUE 585
  NO CACHE 
 
 GO

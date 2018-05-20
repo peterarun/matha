@@ -4,8 +4,10 @@ import com.matha.domain.Sales;
 import com.matha.domain.SalesTransaction;
 import com.matha.repository.SalesRepository;
 import com.matha.service.SchoolService;
+import org.apache.logging.log4j.Level;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
+import org.apache.logging.log4j.core.config.Configurator;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.EnableAutoConfiguration;
@@ -47,6 +49,9 @@ public class SalesTxnMigration
 		{
 			finYear = Integer.parseInt(args[0]);
 		}
+		Configurator.setLevel("com.matha", Level.DEBUG);
+
+		LOGGER.debug("Running Sales Transaction Creation for FY: " + finYear);
 		mig.doMigration(finYear);
 	}
 

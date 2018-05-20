@@ -5,8 +5,10 @@ import com.matha.domain.PurchaseDet;
 import com.matha.domain.PurchaseTransaction;
 import com.matha.repository.PurchaseRepository;
 import com.matha.service.SchoolService;
+import org.apache.logging.log4j.Level;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
+import org.apache.logging.log4j.core.config.Configurator;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.EnableAutoConfiguration;
@@ -49,6 +51,9 @@ public class PurchaseTxnMigration
 		{
 			finYear = Integer.parseInt(args[0]);
 		}
+		Configurator.setLevel("com.matha", Level.DEBUG);
+
+		LOGGER.debug("Running Purchase Transaction Creation for FY: " + finYear);
 		mig.doMigration(finYear);
 	}
 

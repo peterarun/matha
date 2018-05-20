@@ -10,9 +10,10 @@ GO
 
 CREATE TABLE [dbo].[State](
 	[name] [varchar](50) NOT NULL
- CONSTRAINT [PK_States] PRIMARY KEY 
-(
-	[name] ASC
+    CONSTRAINT [PK_States] PRIMARY KEY
+    (
+        [name] ASC
+    )
 ) ON [PRIMARY]
 GO
 

@@ -27,7 +27,7 @@ import com.matha.util.LogUtil;
 import static java.util.stream.Collectors.*;
 
 @RunWith(SpringRunner.class)
-@SpringBootTest
+@SpringBootTest(classes = SalesApplication.class)
 public class MigrationTest
 {
 	

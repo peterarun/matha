@@ -544,30 +544,30 @@ public class AddBillController
 		};
 	}
 
-	public EventHandler<CellEditEvent<OrderItem, String>> fetchQtyEventHandler()
-	{
-		return new EventHandler<CellEditEvent<OrderItem, String>>() {
-			public void handle(CellEditEvent<OrderItem, String> t)
-			{
-				OrderItem oItem = ((OrderItem) t.getTableView().getItems().get(t.getTablePosition().getRow()));
-				oItem.setSoldCnt(Integer.parseInt(t.getNewValue()));	
-				t.getTableView().refresh();
-				loadSubTotal();
-				calcNetAmount(discAmt.getText(), otherCharges.getText());
-				t.getTableView().getSelectionModel().selectBelowCell();
-
-				int rowId = t.getTableView().getSelectionModel().getSelectedIndex();
-				if (rowId < t.getTableView().getItems().size())
-				{
-					if(rowId > 0)
-					{
-						t.getTableView().scrollTo(rowId - 1);
-					}
-					t.getTableView().edit(rowId, t.getTablePosition().getTableColumn());
-				}
-			}
-		};
-	}
+//	public EventHandler<CellEditEvent<OrderItem, String>> fetchQtyEventHandler()
+//	{
+//		return new EventHandler<CellEditEvent<OrderItem, String>>() {
+//			public void handle(CellEditEvent<OrderItem, String> t)
+//			{
+//				OrderItem oItem = ((OrderItem) t.getTableView().getItems().get(t.getTablePosition().getRow()));
+//				oItem.setSoldCnt(Integer.parseInt(t.getNewValue()));
+//				t.getTableView().refresh();
+//				loadSubTotal();
+//				calcNetAmount(discAmt.getText(), otherCharges.getText());
+//				t.getTableView().getSelectionModel().selectBelowCell();
+//
+//				int rowId = t.getTableView().getSelectionModel().getSelectedIndex();
+//				if (rowId < t.getTableView().getItems().size())
+//				{
+//					if(rowId > 0)
+//					{
+//						t.getTableView().scrollTo(rowId - 1);
+//					}
+//					t.getTableView().edit(rowId, t.getTablePosition().getTableColumn());
+//				}
+//			}
+//		};
+//	}
 
 	public EventHandler<CellEditEvent<SalesDet, String>> fetchSalesQtyEventHandler()
 	{

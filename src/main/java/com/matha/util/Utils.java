@@ -509,30 +509,30 @@ public class Utils
 		};
 		return qtyColumnFactory;
 	}
+//
+//	public static Callback<CellDataFeatures<OrderItem, String>, ObservableValue<String>> fetchPurCntFactory()
+//	{
+//		Callback<CellDataFeatures<OrderItem, String>, ObservableValue<String>> qtyColumnFactory = new Callback<CellDataFeatures<OrderItem, String>, ObservableValue<String>>() {
+//			public ObservableValue<String> call(CellDataFeatures<OrderItem, String> p)
+//			{
+//				// p.getValue() returns the Person instance for a particular TableView row
+//				return new ReadOnlyStringWrapper(getStringVal(p.getValue().getFullFilledCnt()));
+//			}
+//		};
+//		return qtyColumnFactory;
+//	}
 
-	public static Callback<CellDataFeatures<OrderItem, String>, ObservableValue<String>> fetchPurCntFactory()
-	{
-		Callback<CellDataFeatures<OrderItem, String>, ObservableValue<String>> qtyColumnFactory = new Callback<CellDataFeatures<OrderItem, String>, ObservableValue<String>>() {
-			public ObservableValue<String> call(CellDataFeatures<OrderItem, String> p)
-			{
-				// p.getValue() returns the Person instance for a particular TableView row
-				return new ReadOnlyStringWrapper(getStringVal(p.getValue().getFullFilledCnt()));
-			}
-		};
-		return qtyColumnFactory;
-	}
-
-	public static Callback<CellDataFeatures<OrderItem, String>, ObservableValue<String>> fetchSaleCntFactory()
-	{
-		Callback<CellDataFeatures<OrderItem, String>, ObservableValue<String>> qtyColumnFactory = new Callback<CellDataFeatures<OrderItem, String>, ObservableValue<String>>() {
-			public ObservableValue<String> call(CellDataFeatures<OrderItem, String> p)
-			{
-				// p.getValue() returns the Person instance for a particular TableView row
-				return new ReadOnlyStringWrapper(getStringVal(p.getValue().getSoldCnt()));
-			}
-		};
-		return qtyColumnFactory;
-	}
+//	public static Callback<CellDataFeatures<OrderItem, String>, ObservableValue<String>> fetchSaleCntFactory()
+//	{
+//		Callback<CellDataFeatures<OrderItem, String>, ObservableValue<String>> qtyColumnFactory = new Callback<CellDataFeatures<OrderItem, String>, ObservableValue<String>>() {
+//			public ObservableValue<String> call(CellDataFeatures<OrderItem, String> p)
+//			{
+//				// p.getValue() returns the Person instance for a particular TableView row
+//				return new ReadOnlyStringWrapper(getStringVal(p.getValue().getSoldCnt()));
+//			}
+//		};
+//		return qtyColumnFactory;
+//	}
 
 	public static Callback<CellDataFeatures<SalesDet, String>, ObservableValue<String>> fetchSalesCntFactory()
 	{

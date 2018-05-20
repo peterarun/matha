@@ -4,7 +4,7 @@ GO
 
 CREATE SEQUENCE [dbo].[SalesSeq] 
  AS [int]
- MINVALUE 2680
+ MINVALUE 2673
  NO CACHE 
 
 GO

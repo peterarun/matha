@@ -45,5 +45,5 @@ GO
 ALTER TABLE [dbo].[SalesDet] ALTER COLUMN [SalesDetId] INT NOT NULL;
 GO
 
-ALTER TABLE [dbo].[SalesDet] ADD CONSTRAINT SalesDet_UK PRIMARY KEY([SalesDetId]);
+ALTER TABLE [dbo].[SalesDet] ADD CONSTRAINT SalesDet_PK PRIMARY KEY([SalesDetId]);
 GO
