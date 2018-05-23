@@ -1,4 +1,4 @@
-USE [MathaNew]
+USE [Matha]
 GO
 
 /****** Object:  Table [dbo].[Districts]    Script Date: 06-02-2018 07:58:01 ******/

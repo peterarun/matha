@@ -1,4 +1,4 @@
-USE [MathaNew]
+USE [Matha]
 GO
 
 /****** Object:  Table [dbo].[Journal]    Script Date: 14-01-2018 15:04:04 ******/

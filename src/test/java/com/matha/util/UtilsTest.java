@@ -9,9 +9,12 @@ import org.apache.logging.log4j.core.config.LoggerConfig;
 import org.apache.logging.log4j.spi.LoggerContext;
 import org.junit.Test;
 
+import java.time.LocalDate;
+import java.time.format.DateTimeFormatter;
+
 public class UtilsTest
-{	
-	
+{
+
 	@Test
 	public void testConvertDouble()
 	{
@@ -27,6 +30,12 @@ public class UtilsTest
 	{
 		int intVal = Integer.MAX_VALUE/ 10;
 		System.out.println(intVal);
+
+		String date = LocalDate
+				.parse("2014-05-04")
+				.format(DateTimeFormatter.ISO_DATE_TIME) ;
+		System.out.println(date);
+
 	}
 
 }

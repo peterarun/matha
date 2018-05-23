@@ -1,4 +1,4 @@
-USE [MathaNew]
+USE [Matha]
 GO
 
 SET ANSI_NULLS ON
@@ -10,6 +10,7 @@ GO
 ALTER TABLE [dbo].[Supplier]
 ADD
     PublisherId INT,
+    GSTIN varchar(30),
     Email nvarchar(120),
     PIN nvarchar(12),
     logoName nvarchar(120),
