@@ -155,13 +155,14 @@ public class PurchaseDet implements InventoryData
 		if (this == o) return true;
 		if (o == null || getClass() != o.getClass()) return false;
 		PurchaseDet salesDet = (PurchaseDet) o;
-		return Objects.equals(purDetId, salesDet.purDetId);
+		Book thatOi = salesDet.getBook();
+		return Objects.equals(purDetId, salesDet.purDetId) && Objects.equals(book, thatOi);
 	}
 
 	@Override
 	public int hashCode()
 	{
-		return Objects.hash(purDetId);
+		return Objects.hash(purDetId, book);
 	}
 
 	@Override

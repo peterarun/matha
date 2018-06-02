@@ -3,34 +3,28 @@ package com.matha.controller;
 import com.matha.domain.*;
 import com.matha.service.SchoolService;
 import com.matha.util.LoadUtils;
-import javafx.beans.binding.Bindings;
 import javafx.collections.FXCollections;
-import javafx.collections.ObservableList;
 import javafx.event.ActionEvent;
 import javafx.event.Event;
-import javafx.event.EventHandler;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
 import javafx.scene.control.*;
-import javafx.scene.control.Alert.AlertType;
 import javafx.stage.Stage;
-import javafx.stage.WindowEvent;
 import net.sf.jasperreports.engine.JasperPrint;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
-import javax.swing.text.View;
 import java.io.IOException;
 import java.io.InputStream;
-import java.time.LocalDate;
 import java.util.*;
+import java.util.stream.Collector;
 
 import static com.matha.util.UtilConstants.*;
 import static com.matha.util.Utils.prepareJasperPrint;
-import static com.matha.util.Utils.preparePrintScene;
 import static com.matha.util.Utils.prepareSaleBillPrint;
+import static java.util.stream.Collectors.toMap;
 
 @Component
 public class SearchController
@@ -71,7 +65,8 @@ public class SearchController
 	@FXML
 	private TextField salesBillNumStr;
 
-//	private String orderSearchStr;
+	private Map<String, Book> bookMap;
+	private Collector<Book, ?, Map<String, Book>> bookMapCollector = toMap(o -> o.getShortName() + ": " + o.getName() + " - " + o.getPublisherName(), o -> o);
 
 	@FXML
 	void loadOrders()
@@ -93,12 +88,9 @@ public class SearchController
 			Parent addOrderRoot = createOrderLoader.load();
 			AddOrderController ctrl = createOrderLoader.getController();
 			Order selectedOrder = orderData.getSelectionModel().getSelectedItem();
-			Map<String, Book> bookMap = new HashMap<>();
 			List<Book> schools = schoolService.fetchAllBooks();
-			for (Book bookIn : schools)
-			{
-				bookMap.put(bookIn.getName() + " - " + bookIn.getPublisherName(), bookIn);
-			}
+			this.bookMap = this.schoolService.fetchAllBooks().stream().collect(this.bookMapCollector);
+
 			ctrl.initData(selectedOrder.getSchool(), bookMap, selectedOrder);
 			Scene addOrderScene = new Scene(addOrderRoot);
 			prepareAndShowStage(event, addOrderScene);
@@ -181,7 +173,11 @@ public class SearchController
 			AddPurchaseBillController ctrl = createOrderLoader.getController();
 
 			Purchase selectedOrder = purBillData.getSelectionModel().getSelectedItem();
-			ctrl.initData(new HashSet<>(), selectedOrder.getPublisher(), selectedOrder);
+
+			List<Book> books = schoolService.fetchBooksForPublisher(selectedOrder.getPublisher());
+			this.bookMap = books.stream().collect(this.bookMapCollector);
+
+			ctrl.initData(new HashSet<>(), selectedOrder.getPublisher(), selectedOrder, this.bookMap);
 
 			Scene addOrderScene = new Scene(addOrderRoot);
 			prepareAndShowStage(event, addOrderScene);
@@ -219,15 +215,10 @@ public class SearchController
 			Parent addOrderRoot = createOrderLoader.load();
 			AddBillController ctrl = createOrderLoader.getController();
 
-			HashMap<String, Book> bookMap = new HashMap<>();
-			List<Book> schools = schoolService.fetchAllBooks();
-			for (Book bookIn : schools)
-			{
-				bookMap.put(bookIn.getName() + " - " + bookIn.getPublisherName(), bookIn);
-			}
-
+			List<Book> books = schoolService.fetchAllBooks();
+			bookMap = books.stream().collect(bookMapCollector);
 			Sales bill = billData.getSelectionModel().getSelectedItem();
-			ctrl.initData(null, bill.getSchool(), bill, bookMap);
+			ctrl.initData(null, bill.getSchool(), bill, this.bookMap);
 
 			Scene addOrderScene = new Scene(addOrderRoot);
 			prepareAndShowStage(event, addOrderScene);
@@ -298,7 +289,6 @@ public class SearchController
 
 	public void initData(String orderSearchStrIn)
 	{
-//		this.orderSearchStr = orderSearchStrIn;
 
 		switch (orderSearchStrIn)
 		{

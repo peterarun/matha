@@ -33,8 +33,12 @@ CREATE NONCLUSTERED INDEX [IX_Purchase_InvNo] ON [dbo].[Purchase]
 	[InvNo] ASC
 ) ON [PRIMARY];
 GO
+--
+--delete from [dbo].[Purchase]
+--where TDate < '2017-10-01';
+--GO
 
 update pur set PublisherId = sup.PublisherId
-  from [Purchase]  pur
+  from [dbo].[Purchase]  pur
   join Supplier sup on pur.SuppId = sup.SuppId
 GO

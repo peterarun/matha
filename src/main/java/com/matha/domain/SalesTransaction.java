@@ -132,14 +132,47 @@ public class SalesTransaction
 	{
 		if(this.sale != null)
 		{
-			return this.sale.getId();
+			return getStringVal(this.sale.getSerialNo());
+		}
+		else if(this.payment != null)
+		{
+			return this.payment.getReceiptNum();
+		}
+		else if(this.salesReturn != null)
+		{
+			return this.salesReturn.getCreditNoteNum();
 		}
 		else
 		{
 			return EMPTY_STR;
 		}
 	}
-	
+
+	public String getRefNum()
+	{
+		if(this.payment != null && this.payment.getReferenceNum() != null)
+		{
+			return this.payment.getReferenceNum();
+		}
+		else
+		{
+			return EMPTY_STR;
+		}
+	}
+
+
+	public String getMode()
+	{
+		if(this.payment != null)
+		{
+			return this.payment.getPaymentMode();
+		}
+		else
+		{
+			return EMPTY_STR;
+		}
+	}
+
 	public String getParticulars()
 	{
 		return this.getNote();

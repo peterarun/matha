@@ -1,5 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
+<?import javafx.scene.effect.*?>
 <?import javafx.scene.shape.*?>
 <?import javafx.scene.control.cell.*?>
 <?import javafx.scene.text.*?>
@@ -9,7 +10,7 @@
 <?import javafx.scene.layout.AnchorPane?>
 <?import javafx.scene.control.cell.PropertyValueFactory?>
 
-<SplitPane dividerPositions="0.19312602291325695" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" orientation="VERTICAL" prefHeight="655.0" prefWidth="800.0" xmlns="http://javafx.com/javafx/8" xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.matha.controller.AddPurchaseBillController">
+<SplitPane dividerPositions="0.14548238897396631" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" orientation="VERTICAL" prefHeight="655.0" prefWidth="781.0" xmlns="http://javafx.com/javafx/8" xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.matha.controller.AddPurchaseBillController">
 	<items>
 		<AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="115.0" prefWidth="606.0">
 			<children>
@@ -18,7 +19,7 @@
 						<Font name="Tahoma" size="24.0" />
 					</font>
 				</Label>
-				<TextArea fx:id="publisherDetails" editable="false" focusTraversable="false" layoutX="121.0" layoutY="55.0" prefHeight="59.0" prefWidth="350.0">
+				<TextArea fx:id="publisherDetails" editable="false" focusTraversable="false" layoutX="305.0" layoutY="22.0" prefHeight="59.0" prefWidth="350.0">
 					<font>
 						<Font size="14.0" />
 					</font>
@@ -28,25 +29,25 @@
 		</AnchorPane>
 		<AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="535.0" prefWidth="606.0">
 			<children>
-			<Label layoutX="27.0" layoutY="10.0" text="Invoice No." />
-				<TextField fx:id="invoiceNum" layoutX="27.0" layoutY="25.0" prefHeight="25.0" prefWidth="149.0" />
-				<Label layoutX="27.0" layoutY="60.0" text="Date" />
-				<DatePicker fx:id="invoiceDate" layoutX="27.0" layoutY="76.0" prefHeight="25.0" prefWidth="149.0" />
-				<Label layoutX="215.0" layoutY="9.0" text="Despatched To" />
-				<TextField fx:id="despatchedTo" layoutX="215.0" layoutY="25.0" />
-				<TextField fx:id="docsThrough" layoutX="215.0" layoutY="76.0" />
-				<Label layoutX="215.0" layoutY="60.0" text="Documents Through" />
+			<Label layoutX="605.0" layoutY="15.0" text="Invoice No." />
+				<TextField fx:id="invoiceNum" layoutX="605.0" layoutY="30.0" prefHeight="25.0" prefWidth="150.0" />
+				<Label layoutX="605.0" layoutY="60.0" text="Date" />
+				<DatePicker fx:id="invoiceDate" layoutX="605.0" layoutY="75.0" prefHeight="25.0" prefWidth="150.0" />
+				<Label layoutX="605.0" layoutY="105.0" text="Despatched To" />
+				<TextField fx:id="despatchedTo" layoutX="605.0" layoutY="120.0" prefWidth="150.0" />
+				<TextField fx:id="docsThrough" layoutX="605.0" layoutY="210.0" prefWidth="150.0" />
+				<Label layoutX="605.0" layoutY="195.0" text="Documents Through" />
 				
-				<TextField fx:id="despatchedPer" layoutX="432.0" layoutY="26.0" />
-				<Label layoutX="432.0" layoutY="10.0" text="Despatched Per" />
-				<Label layoutX="432.0" layoutY="60.0" text="GR No." />
-				<TextField fx:id="grNum" layoutX="432.0" layoutY="76.0" />
-				<TextField fx:id="packageCount" layoutX="614.0" layoutY="25.0" />
-				<Label layoutX="614.0" layoutY="9.0" text="No. of packages" />
-	            <Label layoutX="613.0" layoutY="58.0" text="Notes" />
-	            <TextField fx:id="note" layoutX="614.0" layoutY="75.0" />									
+				<TextField fx:id="despatchedPer" layoutX="605.0" layoutY="165.0" prefWidth="150.0" />
+				<Label layoutX="605.0" layoutY="150.0" text="Despatched Per" />
+				<Label layoutX="605.0" layoutY="240.0" text="GR No." />
+				<TextField fx:id="grNum" layoutX="605.0" layoutY="255.0" prefWidth="150.0" />
+				<TextField fx:id="packageCount" layoutX="605.0" layoutY="300.0" prefWidth="150.0" />
+				<Label layoutX="605.0" layoutY="283.0" text="No. of packages" />
+	            <Label layoutX="605.0" layoutY="330.0" text="Notes" />
+	            <TextField fx:id="note" layoutX="605.0" layoutY="345.0" prefHeight="25.0" prefWidth="150.0" />									
 									
-				<TableView fx:id="addedBooks" editable="true" layoutX="26.0" layoutY="116.0" prefHeight="313.0" prefWidth="555.0">
+				<TableView fx:id="addedBooks" editable="true" layoutX="26.0" layoutY="18.0" prefHeight="379.0" prefWidth="555.0">
 					<columns>
 						<TableColumn prefWidth="273.0" text="Book Name">
 							<cellValueFactory>
@@ -67,32 +68,40 @@
 					</columns>
 				</TableView>
 				
-				<Label layoutX="613.0" layoutY="325.0" text="Sub Total" />
-				<TextField fx:id="subTotal" alignment="CENTER_RIGHT" layoutX="613.0" layoutY="342.0" prefHeight="25.0" prefWidth="149.0" />
-				<Label layoutX="231.0" layoutY="443.0" text="Discount" />
-				<RadioButton fx:id="rupeeRad" layoutX="284.0" layoutY="443.0" mnemonicParsing="false" prefHeight="17.0" prefWidth="66.0" text="Rupees">
+				<Label layoutX="396.0" layoutY="443.0" text="Sub Total" />
+				<TextField fx:id="subTotal" alignment="CENTER_RIGHT" layoutX="455.0" layoutY="439.0" prefHeight="25.0" prefWidth="126.0" />
+				<Label layoutX="224.0" layoutY="477.0" text="Disc Type:" />
+				<RadioButton fx:id="rupeeRad" layoutX="284.0" layoutY="477.0" mnemonicParsing="false" prefHeight="17.0" prefWidth="51.0" text="Rs.">
 					<toggleGroup>
 						<ToggleGroup fx:id="discType" />
 					</toggleGroup>
 				</RadioButton>
-				<RadioButton fx:id="percentRad" layoutX="356.0" layoutY="443.0" mnemonicParsing="false" prefHeight="17.0" prefWidth="66.0" selected="true" text="Percent" toggleGroup="$discType" />				
-				<TextField fx:id="discAmt" alignment="CENTER_RIGHT" layoutX="432.0" layoutY="439.0" prefHeight="25.0" prefWidth="136.0" />
-				<Label fx:id="discTypeInd" layoutX="570.0" layoutY="443.0" text="\%" />					
-				<Label layoutX="614.0" layoutY="376.0" text="Grand Total" />
-				<TextField fx:id="netAmt" alignment="CENTER_RIGHT" layoutX="613.0" layoutY="393.0" prefHeight="25.0" prefWidth="149.0" />
+				<RadioButton fx:id="percentRad" layoutX="335.0" layoutY="477.0" mnemonicParsing="false" prefHeight="17.0" prefWidth="51.0" selected="true" text="\%" toggleGroup="$discType" />				
+				<TextField fx:id="discAmt" alignment="CENTER_RIGHT" layoutX="282.0" layoutY="508.0" prefHeight="25.0" prefWidth="71.0" />
+				<Label fx:id="discTypeInd" layoutX="356.0" layoutY="512.0" text="\%" />					
+				<Label layoutX="383.0" layoutY="512.0" text="Grand Total" />
+				<TextField fx:id="netAmt" alignment="CENTER_RIGHT" layoutX="455.0" layoutY="508.0" prefHeight="25.0" prefWidth="126.0" style="-fx-background-color: beige;" />
 				
-				<TextField fx:id="totalCount" alignment="CENTER_RIGHT" layoutX="26.0" layoutY="474.0" prefHeight="25.0" prefWidth="126.0" />
-				<Label layoutX="156.0" layoutY="478.0" text="Pcs." />
-				<Button layoutX="613.0" layoutY="459.0" mnemonicParsing="false" onAction="#saveData" prefHeight="40.0" prefWidth="149.0" text="Save" />
-				<Button fx:id="cancelBtn" layoutX="613.0" layoutY="426.0" mnemonicParsing="false" onAction="#cancelOperation" prefHeight="25.0" prefWidth="149.0" text="Cancel" />
+				<TextField fx:id="totalCount" alignment="CENTER_RIGHT" editable="false" layoutX="282.0" layoutY="439.0" prefHeight="25.0" prefWidth="71.0" />
+				<Label layoutX="258.0" layoutY="443.0" text="Pcs." />
+				<Button layoutX="26.0" layoutY="480.0" mnemonicParsing="false" onAction="#saveData" prefHeight="52.0" prefWidth="126.0" text="Save" />
+				<Button fx:id="cancelBtn" layoutX="26.0" layoutY="439.0" mnemonicParsing="false" onAction="#cancelOperation" prefHeight="25.0" prefWidth="126.0" text="Cancel" />
 					
-				<Label layoutX="613.0" layoutY="116.0" text="Selected Orders" />
-				<TextField fx:id="orderNum" layoutX="613.0" layoutY="262.0" onAction="#addOrderNum" prefHeight="25.0" prefWidth="149.0" promptText="Search Order" />
-				<ListView fx:id="orderList" layoutX="613.0" layoutY="139.0" prefHeight="123.0" prefWidth="149.0" />
-				<Button layoutX="613.0" layoutY="287.0" mnemonicParsing="false" onAction="#removeOperation" prefHeight="25.0" prefWidth="149.0" text="Remove Order" />
-            <Button layoutX="27.0" layoutY="439.0" mnemonicParsing="false" onAction="#removeOrderItem" prefHeight="25.0" prefWidth="149.0" text="Remove Item" />
-            <Label layoutX="375.0" layoutY="478.0" text="Amount" />
-            <TextField fx:id="discCalc" alignment="CENTER_RIGHT" editable="false" focusTraversable="false" layoutX="432.0" layoutY="474.0" prefHeight="25.0" prefWidth="136.0" />
+				<Label layoutX="605.0" layoutY="380.0" text="Added Orders" />
+				<TextField fx:id="orderNum" layoutX="605.0" layoutY="485.0" onAction="#addOrderNum" prefHeight="25.0" prefWidth="150.0" promptText="Search Order" />
+				<ListView fx:id="orderList" layoutX="605.0" layoutY="395.0" prefHeight="90.0" prefWidth="150.0" />
+				<Button layoutX="605.0" layoutY="510.0" mnemonicParsing="false" onAction="#removeOperation" prefHeight="25.0" prefWidth="150.0" text="Remove Order" />
+            <Button layoutX="26.0" layoutY="397.0" mnemonicParsing="false" onAction="#removeOrderItem" prefHeight="25.0" prefWidth="126.0" text="Remove Item" />
+            <Label layoutX="399.0" layoutY="477.0" text="Discount" />
+            <TextField fx:id="discCalc" alignment="CENTER_RIGHT" editable="false" focusTraversable="false" layoutX="455.0" layoutY="473.0" prefHeight="25.0" prefWidth="126.0" style="-fx-background-color: beige;" />
+            <TextField fx:id="bookName" layoutX="162.0" layoutY="397.0" prefHeight="25.0" prefWidth="308.0" promptText="Search Book to Add">
+               <effect>
+                  <Blend />
+               </effect>
+            </TextField>
+            <TextField fx:id="quantity" layoutX="474.0" layoutY="397.0" prefHeight="25.0" prefWidth="43.0" promptText="Qty." />
+            <TextField fx:id="price" layoutX="521.0" layoutY="397.0" onAction="#addBookData" prefHeight="25.0" prefWidth="60.0" promptText="Price" />
+            <Label layoutX="227.0" layoutY="512.0" text="Disc Amt:" />
 			</children>
 		</AnchorPane>
 	</items>

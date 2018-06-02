@@ -30,27 +30,32 @@
 			<children>
 				<TableView fx:id="tableView" layoutY="1.0" prefHeight="435.0" prefWidth="798.0">
 					<columns>
-						<TableColumn prefWidth="327.0" text="Name">
+					  <TableColumn prefWidth="92.0" text="Short Name" >
+						  <cellValueFactory>
+							  <PropertyValueFactory property="shortName" />
+						  </cellValueFactory>
+					  </TableColumn>
+						<TableColumn prefWidth="264.0" text="Name">
 							<cellValueFactory>
 								<PropertyValueFactory property="name" />
 							</cellValueFactory>
 						</TableColumn>
-						<TableColumn minWidth="5.0" prefWidth="180.0" text="Publisher">
+						<TableColumn minWidth="5.0" prefWidth="153.0" text="Publisher">
 							<cellValueFactory>
 								<PropertyValueFactory property="publisherName" />
 							</cellValueFactory>
 						</TableColumn>
-						<TableColumn prefWidth="68.0" text="Inventory">
+						<TableColumn prefWidth="75.0" text="Inventory">
 							<cellValueFactory>
 								<PropertyValueFactory property="inventory" />
 							</cellValueFactory>						
 						</TableColumn>
-						<TableColumn prefWidth="140.0" text="Category">
+						<TableColumn prefWidth="128.0" text="Category">
 							<cellValueFactory>
 								<PropertyValueFactory property="categoryName" />
 							</cellValueFactory>
 						</TableColumn>
-						<TableColumn prefWidth="81.0" text="Price">
+						<TableColumn prefWidth="85.0" text="Price">
 							<cellValueFactory>
 								<PropertyValueFactory property="price" />
 							</cellValueFactory>

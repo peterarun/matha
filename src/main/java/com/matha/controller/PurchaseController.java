@@ -1,8 +1,5 @@
 package com.matha.controller;
 
-import static com.matha.util.UtilConstants.COMMA_SIGN;
-import static com.matha.util.UtilConstants.HYPHEN_SPC_SIGN;
-import static com.matha.util.UtilConstants.NEW_LINE;
 import static com.matha.util.UtilConstants.addPublisherFxml;
 import static com.matha.util.UtilConstants.createOrderFxmlFile;
 import static com.matha.util.UtilConstants.createPurchaseFxmlFile;
@@ -12,9 +9,9 @@ import static com.matha.util.UtilConstants.invoiceJrxml;
 import static com.matha.util.UtilConstants.printOrderFxmlFile;
 import static com.matha.util.UtilConstants.printPurchaseFxmlFile;
 import static com.matha.util.UtilConstants.statementJrxml;
-import static com.matha.util.Utils.convertDouble;
 import static com.matha.util.Utils.getStringVal;
 import static com.matha.util.Utils.prepareJasperPrint;
+import static java.util.stream.Collectors.toMap;
 
 import java.io.ByteArrayOutputStream;
 import java.io.File;
@@ -28,11 +25,13 @@ import java.util.List;
 import java.util.Map;
 import java.util.Optional;
 import java.util.Set;
+import java.util.stream.Collector;
 import java.util.stream.Collectors;
 
 import com.matha.domain.*;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Sort;
 import org.springframework.data.domain.Sort.Direction;
@@ -86,6 +85,9 @@ public class PurchaseController
 {
 
 	private static final int ROWS_PER_PAGE = 10;
+
+	@Value("#{'${datedPurPaymentModes}'.split(',')}")
+	private List<String> datedSchoolPaymentModes;
 
 	@Autowired
 	private SchoolService schoolService;
@@ -152,6 +154,8 @@ public class PurchaseController
 
 	private JasperPrint print;
 	private Map<String, Publisher> pubMap;
+	private Map<String, Book> bookMap;
+	private Collector<Book, ?, Map<String, Book>> bookMapCollector = toMap(o -> o.getShortName() + ": " + o.getName() + " - " + o.getPublisherName(), o -> o);
 
 	@FXML
 	protected void initialize()
@@ -226,6 +230,9 @@ public class PurchaseController
 		
 		orderPaginator.setPageFactory((Integer pageIndex) -> createPage(pageIndex));
 		purTabs.getSelectionModel().select(ordersTab);
+
+		List<Book> allBooks = schoolService.fetchBooksForPublisher(pub);
+		this.bookMap = allBooks.stream().collect(bookMapCollector);
 	}
 
 	@FXML
@@ -277,18 +284,9 @@ public class PurchaseController
 			addOrderRoot = createOrderLoader.load();
 
 			AddOrderController ctrl = createOrderLoader.getController();
-
-			List<Book> schools = schoolService.fetchAllBooks();
-			// LOGGER.info(schools.toString());
-			HashMap<String, Book> bookMap = new HashMap<>();
-			for (Book bookIn : schools)
-			{
-				bookMap.put(bookIn.getName(), bookIn);
-			}
-
 			Order order = orderTable.getSelectionModel().getSelectedItem();
 
-			ctrl.initData(order.getSchool(), bookMap, order);
+			ctrl.initData(order.getSchool(), this.bookMap, order);
 			Scene addOrderScene = new Scene(addOrderRoot);
 			prepareAndShowStage(event, addOrderScene);
 		}
@@ -317,7 +315,7 @@ public class PurchaseController
 			FXMLLoader createOrderLoader = LoadUtils.loadFxml(this, createPurchaseFxmlFile);
 			Parent addOrderRoot = createOrderLoader.load();
 			AddPurchaseBillController ctrl = createOrderLoader.getController();
-			ctrl.initData(orderSet, this.publishers.getSelectionModel().getSelectedItem(), null);
+			ctrl.initData(orderSet, this.publishers.getSelectionModel().getSelectedItem(), null, this.bookMap);
 			Scene addOrderScene = new Scene(addOrderRoot);
 			prepareAndShowStage(event, addOrderScene, purchaseEventHandler);
 			
@@ -341,7 +339,7 @@ public class PurchaseController
 			FXMLLoader createOrderLoader = LoadUtils.loadFxml(this, createPurchaseFxmlFile);
 			Parent addOrderRoot = createOrderLoader.load();
 			AddPurchaseBillController ctrl = createOrderLoader.getController();
-			ctrl.initData(null, this.publishers.getSelectionModel().getSelectedItem(), purchase);
+			ctrl.initData(null, this.publishers.getSelectionModel().getSelectedItem(), purchase, this.bookMap);
 			Scene addOrderScene = new Scene(addOrderRoot);
 			prepareAndShowStage(event, addOrderScene, purchaseEventHandler);
 
@@ -680,6 +678,7 @@ public class PurchaseController
 			hm.put("accountDetails", "Matha Distributors (Chennai)");
 			hm.put("totalDebit", totalDebit);
 			hm.put("totalCredit", totalCredit);
+			hm.put("datedSchoolPaymentModes", datedSchoolPaymentModes);
 			JasperReport compiledFile = JasperCompileManager.compileReport(jasperStream);
 
 			jasperPrint = JasperFillManager.fillReport(compiledFile, hm, new JRBeanCollectionDataSource(tableData));

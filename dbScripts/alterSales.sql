@@ -12,3 +12,7 @@ GO
 
 alter table [dbo].[Sales] add discType bit null;
 GO
+--
+--delete from [dbo].[Sales]
+--where TDate < '2018-02-01';
+--GO

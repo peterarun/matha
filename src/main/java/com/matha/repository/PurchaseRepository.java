@@ -33,6 +33,8 @@ public interface PurchaseRepository extends JpaRepository<Purchase, String> {
 	@Query("select sales from Purchase sales where sales.publisher = ?1 and financialYear = ?2 ")
 	List<Purchase> findAllByPublisherAndFinancialYear(Publisher pub, int fy);
 
+	List<Purchase> findAllByPublisherAndPurchaseDateAfter(Publisher pub, LocalDate dt, Sort sortIn);
+
 	List<Purchase> findAllByPurchaseDateAfter(LocalDate dt, Sort sortIn);
 
 	List<Purchase> findAllByFinancialYear(Integer fy, Sort sortIn);

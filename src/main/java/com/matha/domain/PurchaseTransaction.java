@@ -85,15 +85,15 @@ public class PurchaseTransaction
 	{
 		if (purchase != null)
 		{
-			return purchase.getId();
+			return purchase.getInvoiceNo();
 		}
 		else if (payment != null)
 		{
-			return getStringVal(payment.getId());
+			return payment.getReceiptNum();
 		}
 		else if (purchaseReturn != null)
 		{
-			return purchaseReturn.getId();
+			return purchaseReturn.getCreditNoteNum();
 		}
 
 		return EMPTY_STR;
@@ -122,6 +122,30 @@ public class PurchaseTransaction
 			type = RETURN_STR;
 
 		return type;
+	}
+
+	public String getRefNum()
+	{
+		if(this.payment != null && this.payment.getReferenceNum() != null)
+		{
+			return this.payment.getReferenceNum();
+		}
+		else
+		{
+			return EMPTY_STR;
+		}
+	}
+
+	public String getMode()
+	{
+		if(this.payment != null)
+		{
+			return this.payment.getPaymentMode();
+		}
+		else
+		{
+			return EMPTY_STR;
+		}
 	}
 
 	public Integer getMultiplier()

@@ -5,21 +5,18 @@ import static com.matha.util.UtilConstants.NEW_LINE;
 import static com.matha.util.UtilConstants.RUPEE_SIGN;
 import static com.matha.util.UtilConstants.SALES_NOTE;
 import static com.matha.util.Utils.*;
+import static java.util.Comparator.comparing;
 import static java.util.stream.Collectors.toList;
+import static java.util.stream.Collectors.toSet;
 
 import java.time.LocalDate;
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.HashMap;
-import java.util.HashSet;
-import java.util.List;
-import java.util.Map;
-import java.util.Set;
+import java.util.*;
 import java.util.concurrent.atomic.AtomicInteger;
 import java.util.stream.Collector;
 import java.util.stream.Collectors;
 
 import com.matha.domain.*;
+import javafx.collections.ObservableSet;
 import org.apache.commons.lang.StringUtils;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
@@ -139,8 +136,8 @@ public class AddBillController
 
 	private School school;
 	private Sales selectedSale;
-	private ObservableList<Order> orders;
-	private HashMap<String, Book> bookMap;
+//	private ObservableSet<Order> orders;
+	private Map<String, Book> bookMap;
 	private AtomicInteger index = new AtomicInteger();
 
 	private Map<String, Order> orderMap = new HashMap<>();
@@ -150,11 +147,10 @@ public class AddBillController
 	@Value("${listOfDespatchers}")
 	private String[] despatcherArray;
 
-	void initData(ObservableList<Order> ordersIn, School schoolIn, Sales sale, HashMap<String, Book> bookMapIn)
+	void initData(ObservableList<Order> ordersIn, School schoolIn, Sales sale, Map<String, Book> bookMapIn)
 	{
 		this.school = schoolIn;
 		this.selectedSale = sale;
-		this.orders = ordersIn;
 		this.bookMap = bookMapIn;
 		this.prepareEditData(sale);
 		this.loadAddDefaults();
@@ -168,17 +164,18 @@ public class AddBillController
 		LOGGER.debug("despatcherArray: " + despatcherArray);
 		TextFields.bindAutoCompletion(this.despatchPer, Arrays.asList(despatcherArray));
 
-		if (this.orders != null)
+		if (ordersIn != null)
 		{
-			List<String> orderStrings = this.orders.stream().map(o -> o.getSerialNo()).collect(toList());
-			this.orderList.setItems(FXCollections.observableList(orderStrings));
+			Set<String> orderStrings = ordersIn.stream().map(o -> o.getSerialNo()).collect(toSet());
+			this.orderList.setItems(FXCollections.observableList(new ArrayList<>(orderStrings)));
+
+			// To avoid different objects of the same type getting loaded.
+			for (Order order : ordersIn)
+			{
+				orderMap.put(order.getSerialNo(), order);
+			}
 		}
-		
-		// To avoid different objects of the same type getting loaded.
-		for (Order order : this.orders)
-		{
-			orderMap.put(order.getSerialNo(), order);
-		}
+
 		loadNewBooksAndSubTotal(ordersIn);
 		loadDiscSymbol(percentRad, rupeeRad, discTypeInd);
 	}
@@ -240,15 +237,17 @@ public class AddBillController
 		{
 			if(sale.getSaleItems() != null)
 			{
-				this.addedBooks.setItems(FXCollections.observableArrayList(sale.getSaleItems()));
+				Set<SalesDet> addedBookList = sale.getSaleItems().stream().sorted(comparing(sd -> sd.getSlNum())).collect(toSet());
+				this.addedBooks.setItems(FXCollections.observableArrayList(addedBookList));
 				this.index.set(sale.getSaleItems().size());
 
-				List<Order> orderListIn = sale.getSaleItems().stream()
+				Set<String> orderListIn = sale.getSaleItems().stream()
 						.filter(sa -> sa.getOrderItem() != null)
 						.map(sa -> sa.getOrderItem().getOrder())
 						.filter(o -> o != null)
-						.collect(toList());
-				this.orders = FXCollections.observableList(orderListIn);
+						.map(o -> o.getSerialNo())
+						.collect(toSet());
+				this.orderList.setItems(FXCollections.observableList(new ArrayList<>(orderListIn)));
 			}
 			this.billDate.setValue(sale.getInvoiceDate());
 			this.subTotal.setText(getStringVal(sale.getSubTotal()));
@@ -271,20 +270,26 @@ public class AddBillController
 
 	private void loadNewBooksAndSubTotal(List<Order> orders)
 	{
+		if (addedBooks.getItems() == null)
+		{
+			addedBooks.setItems(FXCollections.observableList(new ArrayList<>()));
+		}
+
 		if (orders != null)
 		{
-			List<SalesDet> bookItems = orders.stream()
+			List<OrderItem> newItems = orders.stream()
 					.map(Order::getOrderItem)
 					.flatMap(List::stream)
+					.collect(toList());
+			newItems.removeAll(addedBooks.getItems().stream().map(sd -> sd.getOrderItem()).collect(toList()));
+
+			List<SalesDet> bookItems = newItems.stream()
 					.map(oi -> new SalesDet(null,
 							null,
 							index.incrementAndGet(),
 							oi))
 					.collect(toList());
-			if (addedBooks.getItems() == null)
-			{
-				addedBooks.setItems(FXCollections.observableList(new ArrayList<>()));
-			}
+
 			addedBooks.getItems().addAll(bookItems);
 		}
 		loadSubTotal();
@@ -330,7 +335,10 @@ public class AddBillController
 		Order addedOrder = orderMap.get(orderNum.getText());
 		if (addedOrder != null)
 		{
-			orderList.getItems().add(orderNum.getText());
+			if(!orderList.getItems().contains(orderNum.getText()))
+			{
+				orderList.getItems().add(orderNum.getText());
+			}
 			orderNum.clear();
 
 			List<Order> ordersIn = new ArrayList<Order>();
@@ -487,6 +495,8 @@ public class AddBillController
 		addedBooks.getItems().add(item);
 		bookText.clear();
 		bookCnt.clear();
+		addedBooks.getSelectionModel().clearSelection();
+		bookText.requestFocus();
 	}
 	
 	public Sales getSelectedSale()

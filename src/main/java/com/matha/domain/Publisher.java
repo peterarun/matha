@@ -222,8 +222,6 @@ public class Publisher
 	public String getAddress()
 	{
 		StringBuilder builder = new StringBuilder();
-		builder.append(name);
-		builder.append(NEW_LINE);
 		if(!StringUtils.isBlank(address1))
 		{
 			builder.append(address1);

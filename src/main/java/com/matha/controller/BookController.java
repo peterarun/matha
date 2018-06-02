@@ -1,6 +1,7 @@
 package com.matha.controller;
 
 import static com.matha.util.UtilConstants.NEW_LINE;
+import static com.matha.util.UtilConstants.addBookFxmlFile;
 
 import java.io.IOException;
 import java.util.ArrayList;
@@ -44,8 +45,6 @@ public class BookController
 
 	@FXML
 	private TextField bookName;
-
-	private String addBookFxmlFile = "/fxml/addBook.fxml";;
 
 	@FXML
 	protected void initialize()

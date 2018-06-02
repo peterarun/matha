@@ -31,3 +31,4 @@ GO
 
 ALTER TABLE [dbo].[PReturnDet] ADD CONSTRAINT PReturnDet_PK PRIMARY KEY([PReturnDetId]);
 GO
+

@@ -22,8 +22,17 @@ public class PurchasePayment {
 	@Column(name = "SerialId")
 	private Integer id;
 
+	@Column(name = "ReceiptNum")
+	private String receiptNum;
+
 	@Column(name = "Mode")
 	private String paymentMode;
+
+	@Column(name = "Dated")
+	private LocalDate dated;
+
+	@Column(name = "RefNum")
+	private String referenceNum;
 
 	@OneToOne
 	@JoinColumn(name = "TxnId")
@@ -60,6 +69,22 @@ public class PurchasePayment {
 		this.paymentMode = paymentMode;
 	}
 
+	public LocalDate getDated() {
+		return dated;
+	}
+
+	public void setDated(LocalDate dated) {
+		this.dated = dated;
+	}
+
+	public String getReferenceNum() {
+		return referenceNum;
+	}
+
+	public void setReferenceNum(String referenceNum) {
+		this.referenceNum = referenceNum;
+	}
+
 	public PurchaseTransaction getSalesTxn() {
 		return salesTxn;
 	}
@@ -68,4 +93,11 @@ public class PurchasePayment {
 		this.salesTxn = salesTxn;
 	}
 
+	public String getReceiptNum() {
+		return receiptNum;
+	}
+
+	public void setReceiptNum(String receiptNum) {
+		this.receiptNum = receiptNum;
+	}
 }

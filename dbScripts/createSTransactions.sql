@@ -16,7 +16,7 @@ CREATE TABLE [dbo].[STransactions](
 	[Note] [nvarchar](100) NULL,
 	[SalesId] [varchar](15) NULL,
 	[PaymentId] [int] NULL,
-	[ReturnId] [int] NULL,
+	[ReturnId] [nvarchar](10) NULL,
 	[AddTime] [datetime] NULL,
     [ModTime] [datetime] NULL,
     [TxnId] varchar(15),

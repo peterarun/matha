@@ -47,3 +47,13 @@ GO
 
 ALTER TABLE [dbo].[SalesDet] ADD CONSTRAINT SalesDet_PK PRIMARY KEY([SalesDetId]);
 GO
+
+update sd
+set sd.OrderItemId = sod.OrderDetId, sd.OrderId = sod.SerialId
+  FROM [dbo].[SOrder] so
+  join [dbo].[Sales] s on s.CustId = so.CustId
+  join [dbo].[SOrderDet] sod on so.SerialId = sod.SerialId
+  join [dbo].[SalesDet] sd on sod.BkNo = sd.BkNo and s.SerialId = sd.SerialId
+  where so.TDate > '2017-10-01'
+  and s.TDate > '2018-02-01';
+GO

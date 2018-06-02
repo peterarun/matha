@@ -6,16 +6,7 @@ import java.time.LocalDate;
 import java.util.Set;
 import java.util.stream.Collectors;
 
-import javax.persistence.Column;
-import javax.persistence.Entity;
-import javax.persistence.FetchType;
-import javax.persistence.GeneratedValue;
-import javax.persistence.GenerationType;
-import javax.persistence.Id;
-import javax.persistence.JoinColumn;
-import javax.persistence.OneToMany;
-import javax.persistence.OneToOne;
-import javax.persistence.Table;
+import javax.persistence.*;
 
 import org.hibernate.annotations.Cascade;
 import org.hibernate.annotations.CascadeType;
@@ -35,6 +26,25 @@ public class PurchaseReturn {
 	@JoinColumn(name = "TxnId")
 	private PurchaseTransaction salesTxn;
 
+	@Column(name = "CreditNoteNum")
+	private String creditNoteNum;
+
+	@Column(name = "Discount")
+	private Double discAmt;
+
+	@Column(name = "discPerc")
+	private Double discPerc;
+
+	@Column(name = "SubTotal")
+	private Double subTotal;
+
+	@Column(name = "TDate")
+	private LocalDate returnDate;
+
+	@ManyToOne
+	@JoinColumn(name = "PublisherId")
+	private Publisher publisher;
+
 	@OneToMany(fetch= FetchType.EAGER, mappedBy = "purchaseReturn")
 	@Cascade({CascadeType.SAVE_UPDATE, CascadeType.DELETE})	
 	private Set<PurchaseReturnDet> purchaseReturnDetSet;
@@ -49,7 +59,28 @@ public class PurchaseReturn {
 		
 		return unitCount;
 	}
-	
+
+	public Double getDiscount()
+	{
+		if(discAmt != null)
+		{
+			return discAmt;
+		}
+		else if (discPerc != null && subTotal != null)
+		{
+			return subTotal * discPerc / 100;
+		}
+		else
+		{
+			return Double.valueOf(0.0);
+		}
+	}
+
+	public Double getCalcNetTotal()
+	{
+		return subTotal - getDiscount();
+	}
+
 	public String getNotes()
 	{
 		return salesTxn.getNote();
@@ -99,4 +130,51 @@ public class PurchaseReturn {
 		return this.getSalesTxn().getAmount();
 	}
 
+	public Double getDiscAmt() {
+		return discAmt;
+	}
+
+	public void setDiscAmt(Double discAmt) {
+		this.discAmt = discAmt;
+	}
+
+	public Double getDiscPerc() {
+		return discPerc;
+	}
+
+	public void setDiscPerc(Double discPerc) {
+		this.discPerc = discPerc;
+	}
+
+	public Double getSubTotal() {
+		return subTotal;
+	}
+
+	public void setSubTotal(Double subTotal) {
+		this.subTotal = subTotal;
+	}
+
+	public String getCreditNoteNum() {
+		return creditNoteNum;
+	}
+
+	public void setCreditNoteNum(String creditNoteNum) {
+		this.creditNoteNum = creditNoteNum;
+	}
+
+	public LocalDate getReturnDate() {
+		return returnDate;
+	}
+
+	public void setReturnDate(LocalDate returnDate) {
+		this.returnDate = returnDate;
+	}
+
+	public Publisher getPublisher() {
+		return publisher;
+	}
+
+	public void setPublisher(Publisher publisher) {
+		this.publisher = publisher;
+	}
 }

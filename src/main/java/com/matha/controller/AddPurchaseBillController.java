@@ -5,7 +5,9 @@ import static com.matha.util.UtilConstants.NEW_LINE;
 import static com.matha.util.UtilConstants.PERCENT_SIGN;
 import static com.matha.util.UtilConstants.RUPEE_SIGN;
 import static com.matha.util.Utils.*;
+import static java.util.stream.Collectors.summingDouble;
 import static java.util.stream.Collectors.toList;
+import static java.util.stream.Collectors.toMap;
 
 import java.time.LocalDate;
 import java.util.ArrayList;
@@ -15,12 +17,13 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 import java.util.concurrent.atomic.AtomicInteger;
-import java.util.logging.Logger;
 import java.util.stream.Collector;
 import java.util.stream.Collectors;
 
 import com.matha.domain.*;
 import org.apache.commons.lang.StringUtils;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 import org.controlsfx.control.textfield.TextFields;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
@@ -54,7 +57,7 @@ import javafx.stage.Stage;
 public class AddPurchaseBillController
 {
 
-	private static final Logger LOGGER = Logger.getLogger("AddPurchaseBillController");
+	private static final Logger LOGGER = LogManager.getLogger("AddPurchaseBillController");
 
 	@Autowired
 	private SchoolService schoolService;
@@ -103,6 +106,15 @@ public class AddPurchaseBillController
 
 	@FXML
 	private TableColumn<PurchaseDet, String> totalColumn;
+
+	@FXML
+	private TextField bookName;
+
+	@FXML
+	private TextField quantity;
+
+	@FXML
+	private TextField price;
 	
 	@FXML
 	private TextField subTotal;
@@ -140,8 +152,9 @@ public class AddPurchaseBillController
 	private Map<String, Order> orderMap = new HashMap<>();
 	private List<String> items = new ArrayList<>();
 	private Set<Order> orderSet = new HashSet<>();
-	private Collector<Order, ?, Map<String, Order>> orderMapCollector = Collectors.toMap(o -> o.getSerialNo(), o -> o);
-	private Collector<PurchaseDet, ?, Double> summingDblCollector = Collectors.summingDouble(PurchaseDet::getTotalBought);
+	private Map<String, Book> bookMap;
+	private Collector<Order, ?, Map<String, Order>> orderMapCollector = toMap(o -> o.getSerialNo(), o -> o);
+	private Collector<PurchaseDet, ?, Double> summingDblCollector = summingDouble(PurchaseDet::getTotalBought);
 
 	private void loadAddDefaults()
 	{
@@ -159,7 +172,6 @@ public class AddPurchaseBillController
 				calcNetAmount(discAmt.getText());
 				calculateTotalQty();
 				t.getTableView().getSelectionModel().selectBelowCell();
-
 				int rowId = t.getTableView().getSelectionModel().getSelectedIndex();
 				if (rowId < t.getTableView().getItems().size())
 				{
@@ -171,7 +183,7 @@ public class AddPurchaseBillController
 				}
 			}
 		});
-		this.publisherDetails.setText(this.publisher.getAddress());
+		this.publisherDetails.setText(this.publisher.getName());
 		this.totalColumn.setCellValueFactory(cellData -> 
 			Bindings.format("%.2f", cellData.getValue().getTotalBought()));
 		
@@ -184,7 +196,7 @@ public class AddPurchaseBillController
 	{
 		if (purchaseIn != null)
 		{
-			this.invoiceNum.setText(purchaseIn.getId());
+			this.invoiceNum.setText(purchaseIn.getInvoiceNo());
 			this.invoiceDate.setValue(purchaseIn.getTxnDate());
 			this.despatchedTo.setText(purchaseIn.getDespatchedTo());
 			this.docsThrough.setText(purchaseIn.getDocsThrough());
@@ -224,7 +236,7 @@ public class AddPurchaseBillController
 		}
 	}
 
-	void initData(Set<Order> ordersIn, Publisher publisherIn, Purchase purchaseIn)
+	void initData(Set<Order> ordersIn, Publisher publisherIn, Purchase purchaseIn, Map<String, Book> bookMapIn)
 	{
 		this.publisher = publisherIn;
 		this.purchase = purchaseIn;
@@ -261,6 +273,11 @@ public class AddPurchaseBillController
 			}
 		}
 
+		bookMap = bookMapIn;
+
+		List<String> items = new ArrayList<>(bookMap.keySet());
+		TextFields.bindAutoCompletion(bookName, items);
+
 		discType.selectedToggleProperty().addListener(new ChangeListener<Toggle>() {
 			public void changed(ObservableValue<? extends Toggle> ov, Toggle old_toggle, Toggle new_toggle)
 			{
@@ -272,8 +289,6 @@ public class AddPurchaseBillController
 				}
 			}
 		});
-
-		LOGGER.info("Test");
 	}
 
 	private void addItems(List<PurchaseDet> bookItems)
@@ -284,8 +299,28 @@ public class AddPurchaseBillController
 		}
 		ObservableList<PurchaseDet> itemsIn = addedBooks.getItems();
 		itemsIn.addAll(bookItems);
+		addedBooks.getSelectionModel().clearSelection();
 	}
-	
+
+	@FXML
+	void addBookData(ActionEvent event)
+	{
+		String bookStr = this.bookName.getText();
+		PurchaseDet itemIn = new PurchaseDet(index.incrementAndGet(),
+				Integer.parseInt(this.quantity.getText()),
+				Double.parseDouble(this.price.getText()),
+				this.bookMap.get(bookStr));
+
+		this.addedBooks.getItems().add(itemIn);
+		LOGGER.debug("Added Item: " + itemIn);
+
+		loadSubTotal();
+		String discAmtStr = StringUtils.defaultString(discAmt.getText());
+		calcNetAmount(discAmtStr);
+		clearBookFields();
+		this.bookName.requestFocus();
+	}
+
 	private void loadBooksAndSubTotal(Set<Order> ordersIn)
 	{
 		if (ordersIn != null)
@@ -302,6 +337,8 @@ public class AddPurchaseBillController
 		}
 		loadSubTotal();
 		calcNetAmount(discAmt.getText());
+		clearBookFields();
+		this.bookName.requestFocus();
 	}
 
 	private void loadSubTotal()
@@ -355,30 +392,29 @@ public class AddPurchaseBillController
 		if (subTotalStr != null)
 		{
 			double subTotalDbl = Double.parseDouble(subTotalStr);
+			double discAmtDbl = StringUtils.isEmpty(discAmtStr) ? 0 : Double.parseDouble(discAmtStr);
+
 			if (subTotalDbl > 0)
 			{
-				double discAmtDbl = StringUtils.isEmpty(discAmtStr) ? 0 : Double.parseDouble(discAmtStr);				 
-				if (discAmtDbl > 0)
-				{					
-					if (rupeeRad.isSelected())
-					{
-						discVal = discAmtDbl;
-						netTotalDbl = subTotalDbl - discVal;
-					}
-					else if (percentRad.isSelected())
-					{
-						discVal = subTotalDbl * discAmtDbl / 100;
-						netTotalDbl = subTotalDbl - discVal;
-					}					
-				}
-				else
+				if (rupeeRad.isSelected())
 				{
-					netTotalDbl = subTotalDbl;
+					discVal = discAmtDbl;
+					netTotalDbl = subTotalDbl - discVal;
 				}
+				else if (percentRad.isSelected())
+				{
+					discVal = subTotalDbl * discAmtDbl / 100;
+					netTotalDbl = subTotalDbl - discVal;
+				}
+			}
+			else
+			{
+				netTotalDbl = subTotalDbl;
 			}
 		}
 		this.netAmt.setText(getStringVal(netTotalDbl));	
 		this.discCalc.setText(getStringVal(discVal));
+		this.calculateTotalQty();
 	}
 
 	private void calculateTotalQty()
@@ -406,7 +442,7 @@ public class AddPurchaseBillController
 				purchaseIn.setFinancialYear(calcFinYear(purchaseIn.getTxnDate()));
 				purchaseIn.setSerialNo(this.schoolService.fetchNextPurchaseSerialNum(purchaseIn.getFinancialYear()));
 				purchaseIn.setPublisher(this.publisher);
-				purchaseIn.setId(this.invoiceNum.getText());
+				purchaseIn.setInvoiceNo(this.invoiceNum.getText());
 			}
 			PurchaseTransaction salesTxn = purchaseIn.getSalesTxn();
 			if (salesTxn == null)
@@ -537,5 +573,14 @@ public class AddPurchaseBillController
 		{
 			this.discTypeInd.setText(RUPEE_SIGN);
 		}
+	}
+
+
+	private void clearBookFields()
+	{
+		this.bookName.clear();
+		this.quantity.clear();
+		this.price.clear();
+		this.addedBooks.getSelectionModel().clearSelection();
 	}
 }

@@ -5,8 +5,11 @@ import static com.matha.util.Utils.getDoubleVal;
 import static com.matha.util.Utils.getStringVal;
 import static com.matha.util.Utils.showErrorAlert;
 
+import javafx.collections.FXCollections;
+import javafx.scene.control.*;
 import org.apache.commons.lang.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
 
 import com.matha.domain.Publisher;
@@ -16,11 +19,11 @@ import com.matha.service.SchoolService;
 
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
-import javafx.scene.control.Button;
-import javafx.scene.control.DatePicker;
-import javafx.scene.control.Label;
-import javafx.scene.control.TextField;
 import javafx.stage.Stage;
+
+import java.io.IOException;
+import java.util.Arrays;
+import java.util.List;
 
 @Component
 public class AddPurchasePayController
@@ -33,7 +36,13 @@ public class AddPurchasePayController
 	private TextField publisherDetails;
 
 	@FXML
-	private Label message;
+	private Label datedStr;
+
+	@FXML
+	private DatePicker dated;
+
+	@FXML
+	private TextField receiptNum;
 
 	@FXML
 	private DatePicker payDate;
@@ -42,7 +51,10 @@ public class AddPurchasePayController
 	private TextField amount;
 
 	@FXML
-	private TextField mode;
+	private ChoiceBox<String> mode;
+
+	@FXML
+	private TextField refNum;
 
 	@FXML
 	private TextField notes;
@@ -53,6 +65,32 @@ public class AddPurchasePayController
 	private Publisher publisher;
 	private PurchasePayment purchasePayment;
 
+	@Value("${purPaymentModes}")
+	private String[] schoolPaymentModes;
+
+	@Value("${datedPurPaymentModes}")
+	private String[] datedSchoolPaymentModes;
+
+	@FXML
+	protected void initialize() throws IOException
+	{
+		List datedSchoolPaymentModesList = Arrays.asList(datedSchoolPaymentModes);
+		this.mode.setItems(FXCollections.observableList(Arrays.asList(schoolPaymentModes)));
+		this.mode.setOnAction( ev -> {
+			if(datedSchoolPaymentModesList.contains(this.mode.getValue()))
+			{
+				this.dated.setDisable(false);
+				this.datedStr.setDisable(false);
+				this.refNum.setDisable(false);
+			}
+			else
+			{
+				this.dated.setDisable(true);
+				this.datedStr.setDisable(true);
+				this.refNum.setDisable(true);
+			}
+		});
+	}
 
 	private boolean validateData()
 	{
@@ -69,7 +107,10 @@ public class AddPurchasePayController
 			errorMsg.append("Please provide a Payment Date");
 			valid = false;
 		}
-		showErrorAlert("Error in Saving Order", "Please correct the following errors", errorMsg.toString());
+		if(!valid)
+		{
+			showErrorAlert("Error in Saving Order", "Please correct the following errors", errorMsg.toString());
+		}
 		return valid;
 	}
 
@@ -77,24 +118,25 @@ public class AddPurchasePayController
 	{
 		this.publisher = schoolIn;
 		this.purchasePayment = schoolPaymentIn;
-		this.publisherDetails.setText(this.publisher.getAddress());
+		this.publisherDetails.setText(this.publisher.getName());
 		
 		if (schoolPaymentIn != null)
 		{
 			payDate.setValue(schoolPaymentIn.getTxnDate());
-			mode.setText(schoolPaymentIn.getPaymentMode());
+			mode.getSelectionModel().select(schoolPaymentIn.getPaymentMode());
+			dated.setValue(schoolPaymentIn.getDated());
+			receiptNum.setText(schoolPaymentIn.getReceiptNum());
 			if (schoolPaymentIn.getSalesTxn() != null && schoolPaymentIn.getSalesTxn().getAmount() != null)
 			{
 				amount.setText(getStringVal(schoolPaymentIn.getSalesTxn().getAmount()));
 			}
+			refNum.setText(schoolPaymentIn.getReferenceNum());
 			notes.setText(StringUtils.defaultString(schoolPaymentIn.getSalesTxn().getNote()));
 		}
-	}
-
-	private void loadMessage(String msg)
-	{
-		message.setText(msg);
-		message.setVisible(true);
+		else
+		{
+			this.mode.getSelectionModel().select(0);
+		}
 	}
 
 	@FXML
@@ -120,7 +162,10 @@ public class AddPurchasePayController
 				sTxn.setPublisher(publisher);
 			}
 
-			sPayment.setPaymentMode(mode.getText());
+			sPayment.setReceiptNum(receiptNum.getText());
+			sPayment.setPaymentMode(mode.getValue());
+			sPayment.setDated(dated.getValue());
+			sPayment.setReferenceNum(refNum.getText());
 
 			double amountVal = getDoubleVal(amount);
 			sTxn.setAmount(amountVal);
@@ -133,7 +178,7 @@ public class AddPurchasePayController
 		catch (Throwable e)
 		{
 			e.printStackTrace();
-			loadMessage(e.getMessage());
+			showErrorAlert("Error in Saving Order", "An Unexpected Error has occurred", e.getMessage());
 		}
 	}
 

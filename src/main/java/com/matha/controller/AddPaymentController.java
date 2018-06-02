@@ -1,24 +1,25 @@
 package com.matha.controller;
 
-import static com.matha.util.UtilConstants.NEW_LINE;
-import static com.matha.util.Utils.showErrorAlert;
-
-import org.apache.commons.lang.StringUtils;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.stereotype.Component;
-
 import com.matha.domain.SalesTransaction;
 import com.matha.domain.School;
 import com.matha.domain.SchoolPayment;
 import com.matha.service.SchoolService;
-
+import javafx.collections.FXCollections;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
-import javafx.scene.control.Button;
-import javafx.scene.control.DatePicker;
-import javafx.scene.control.Label;
-import javafx.scene.control.TextField;
+import javafx.scene.control.*;
 import javafx.stage.Stage;
+import org.apache.commons.lang.StringUtils;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
+import org.springframework.stereotype.Component;
+
+import java.io.IOException;
+import java.util.Arrays;
+import java.util.List;
+
+import static com.matha.util.UtilConstants.NEW_LINE;
+import static com.matha.util.Utils.showErrorAlert;
 
 @Component
 public class AddPaymentController
@@ -28,10 +29,28 @@ public class AddPaymentController
 	private SchoolService schoolService;
 
 	@FXML
-	private TextField mode;
+	private Label schoolName;
+
+	@FXML
+	private TextField receiptNum;
+
+	@FXML
+	private DatePicker payDate;
 
 	@FXML
 	private TextField amount;
+
+	@FXML
+	private ChoiceBox<String> mode;
+
+	@FXML
+	private Label datedStr;
+
+	@FXML
+	private DatePicker dated;
+
+	@FXML
+	private TextField refNum;
 
 	@FXML
 	private TextField notes;
@@ -39,19 +58,46 @@ public class AddPaymentController
 	@FXML
 	private Button cancelBtn;
 
-	@FXML
-	private Label schoolName;
-
-	@FXML
-	private DatePicker payDate;
-
 	private School school;
 	private SchoolPayment schoolPayment;
+
+	@Value("${schoolPaymentModes}")
+	private String[] schoolPaymentModes;
+
+	@Value("${datedSchoolPaymentModes}")
+	private String[] datedSchoolPaymentModes;
+
+	@FXML
+	protected void initialize() throws IOException
+	{
+		List datedSchoolPaymentModesList = Arrays.asList(datedSchoolPaymentModes);
+		this.mode.setItems(FXCollections.observableList(Arrays.asList(schoolPaymentModes)));
+		this.mode.setOnAction( ev -> {
+			if(datedSchoolPaymentModesList.contains(this.mode.getValue()))
+			{
+				this.dated.setDisable(false);
+				this.datedStr.setDisable(false);
+				this.refNum.setDisable(false);
+			}
+			else
+			{
+				this.dated.setDisable(true);
+				this.datedStr.setDisable(true);
+				this.refNum.setDisable(true);
+			}
+		});
+	}
 
 	private boolean validateData()
 	{
 		boolean valid = true;
 		StringBuilder errorMsg = new StringBuilder();
+		if(this.receiptNum.getText() == null)
+		{
+			errorMsg.append("Please provide a Receipt Number");
+			errorMsg.append(NEW_LINE);
+			valid = false;
+		}
 		if(this.amount.getText() == null)
 		{
 			errorMsg.append("Please provide an Amount");
@@ -63,7 +109,10 @@ public class AddPaymentController
 			errorMsg.append("Please provide a Payment Date");
 			valid = false;
 		}
-		showErrorAlert("Error in Saving Order", "Please correct the following errors", errorMsg.toString());
+		if(!valid)
+		{
+			showErrorAlert("Error in Saving Order", "Please correct the following errors", errorMsg.toString());
+		}
 		return valid;
 	}
 	
@@ -83,7 +132,11 @@ public class AddPaymentController
 			sPayment.setSalesTxn(sTransaction);
 		}
 
-		sPayment.setPaymentMode(mode.getText());
+		sPayment.setReceiptNum(receiptNum.getText());
+		sPayment.setPaymentMode(mode.getValue());
+		sPayment.setDated(dated.getValue());
+		sPayment.setReferenceNum(refNum.getText());
+
 		SalesTransaction sTxn = sPayment.getSalesTxn();
 		String amountStr = amount.getText();
 		double amountVal = 0.0;
@@ -109,18 +162,21 @@ public class AddPaymentController
 	{
 		this.school = schoolIn;
 		this.schoolPayment = schoolPaymentIn;
+		this.schoolName.setText(schoolIn.getName());
 
 		if (schoolPaymentIn != null)
 		{
-			payDate.setValue(schoolPaymentIn.getTxnDate());
-			mode.setText(schoolPaymentIn.getPaymentMode());
+			this.receiptNum.setText(schoolPaymentIn.getReceiptNum());
+			this.payDate.setValue(schoolPaymentIn.getTxnDate());
+			this.mode.getSelectionModel().select(schoolPaymentIn.getPaymentMode());
+			this.dated.setValue(schoolPaymentIn.getDated());
+			this.refNum.setText(schoolPaymentIn.getReferenceNum());
 			if (schoolPaymentIn.getSalesTxn().getAmount() != null)
 			{
-				amount.setText(schoolPaymentIn.getSalesTxn().getAmount().toString());
+				this.amount.setText(schoolPaymentIn.getSalesTxn().getAmount().toString());
 			}
-			notes.setText(StringUtils.defaultString(schoolPaymentIn.getSalesTxn().getNote()));
+			this.notes.setText(StringUtils.defaultString(schoolPaymentIn.getSalesTxn().getNote()));
 		}
-
 	}
 
 }

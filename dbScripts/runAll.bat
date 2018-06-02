@@ -33,6 +33,7 @@ sqlcmd -S .\SQLEXPRESS2014 /d Matha /E /i create_Seq_SalesSeq.sql
 sqlcmd -S .\SQLEXPRESS2014 /d Matha /E /i create_Seq_SOrderSeq.sql
 sqlcmd -S .\SQLEXPRESS2014 /d Matha /E /i create_Seq_PurchaseSeq.sql
 sqlcmd -S .\SQLEXPRESS2014 /d Matha /E /i create_Seq_PReturnSeq.sql
+sqlcmd -S .\SQLEXPRESS2014 /d Matha /E /i create_Seq_SReturnSeq.sql
 
 sqlcmd -S .\SQLEXPRESS2014 /d Matha /E /i createAddresses.sql
 sqlcmd -S .\SQLEXPRESS2014 /d Matha /E /i insertAddresses.sql

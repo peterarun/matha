@@ -80,7 +80,7 @@
 											<columns>
 												<TableColumn prefWidth="124.0" text="Invoice No">
 													<cellValueFactory>
-														<PropertyValueFactory property="id" />
+														<PropertyValueFactory property="invoiceNo" />
 													</cellValueFactory>
 												</TableColumn>
 												<TableColumn prefWidth="107.0" text="Date">
@@ -111,7 +111,7 @@
 											</columns>
 										</TableView>
 										<Button layoutX="908.0" layoutY="96.0" mnemonicParsing="false" onAction="#editPurchase" prefHeight="25.0" prefWidth="70.0" text="Edit" />
-										<Button layoutX="908.0" layoutY="58.0" mnemonicParsing="false" onAction="#createPurchase" prefHeight="25.0" prefWidth="70.0" text="Add" />
+										<Button layoutX="908.0" layoutY="58.0" mnemonicParsing="false" onAction="#createPurchase" prefHeight="25.0" prefWidth="70.0" text="Generate" />
 										<Button layoutX="909.0" layoutY="135.0" mnemonicParsing="false" onAction="#deletePurchase" prefHeight="25.0" prefWidth="70.0" text="Delete" />
                               <Button layoutX="909.0" layoutY="173.0" mnemonicParsing="false" onAction="#printPurchaseBill" prefHeight="25.0" prefWidth="70.0" text="Print" />
                               <Pagination fx:id="billPaginator" layoutX="10.0" layoutY="11.0" maxPageIndicatorCount="5" pageCount="214748364" prefHeight="391.0" prefWidth="862.0" />
@@ -127,7 +127,7 @@
 											<columns>
 												<TableColumn prefWidth="101.0" text="Credit Note No.">
 													<cellValueFactory>
-														<PropertyValueFactory property="id" />
+														<PropertyValueFactory property="creditNoteNum" />
 													</cellValueFactory>
 												</TableColumn>
 												<TableColumn prefWidth="153.0" text="Date">
@@ -147,7 +147,7 @@
 												</TableColumn>
 											</columns>
 										</TableView>
-										<Button layoutX="868.0" layoutY="90.0" mnemonicParsing="false" onAction="#addReturn" prefHeight="25.0" prefWidth="106.0" text="Add" />
+										<Button layoutX="868.0" layoutY="90.0" mnemonicParsing="false" onAction="#addReturn" prefHeight="25.0" prefWidth="106.0" text="Generate" />
 										<Button layoutX="868.0" layoutY="144.0" mnemonicParsing="false" onAction="#editReturn" prefHeight="25.0" prefWidth="106.0" text="Edit" />
 										<Button layoutX="868.0" layoutY="204.0" mnemonicParsing="false" onAction="#deleteReturn" prefHeight="25.0" prefWidth="106.0" text="Delete" />
 									</children>
@@ -162,7 +162,7 @@
 											<columns>
 												<TableColumn prefWidth="88.0" text="Payment No.">
 													<cellValueFactory>
-														<PropertyValueFactory property="id" />
+														<PropertyValueFactory property="receiptNum" />
 													</cellValueFactory>												
 												</TableColumn>
 												<TableColumn prefWidth="109.0" text="Date">
@@ -182,7 +182,7 @@
 												</TableColumn>
 											</columns>
 										</TableView>
-										<Button layoutX="869.0" layoutY="70.0" mnemonicParsing="false" onAction="#addPayment" prefHeight="25.0" prefWidth="106.0" text="Add" />
+										<Button layoutX="869.0" layoutY="70.0" mnemonicParsing="false" onAction="#addPayment" prefHeight="25.0" prefWidth="106.0" text="Generate" />
 										<Button layoutX="869.0" layoutY="119.0" mnemonicParsing="false" onAction="#editPayment" prefHeight="25.0" prefWidth="106.0" text="Edit" />
 										<Button layoutX="869.0" layoutY="166.0" mnemonicParsing="false" onAction="#deletePayment" prefHeight="25.0" prefWidth="106.0" text="Delete" />
 									</children>

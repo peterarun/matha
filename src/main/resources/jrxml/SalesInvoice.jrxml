@@ -44,6 +44,7 @@
 	<parameter name="accountDet" class="java.lang.String"/>
 	<parameter name="grandTotalInWords" class="java.lang.String"/>
 	<parameter name="otherCharges" class="java.lang.Double"/>
+	<parameter name="datedSchoolPaymentModes" class="java.util.List"/>
 	<queryString>
 		<![CDATA[]]>
 	</queryString>
@@ -662,10 +663,10 @@
 			<staticText>
 				<reportElement x="0" y="125" width="245" height="45" isPrintWhenDetailOverflows="true" uuid="cd94540e-371f-4854-9be1-3a07bfb976d2"/>
 				<box topPadding="2" leftPadding="2">
-					<topPen lineWidth="1.0" lineStyle="Solid" lineColor="#000000"/>
-					<leftPen lineWidth="1.0" lineStyle="Solid" lineColor="#000000"/>
-					<bottomPen lineWidth="1.0" lineStyle="Solid" lineColor="#000000"/>
-					<rightPen lineWidth="1.0" lineStyle="Solid" lineColor="#000000"/>
+					<topPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
+					<leftPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
+					<bottomPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
+					<rightPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
 				</box>
 				<textElement>
 					<font isBold="true" pdfFontName="Helvetica-Bold"/>

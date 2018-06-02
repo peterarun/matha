@@ -1,10 +1,12 @@
 package com.matha.repository;
 
+import java.time.LocalDate;
 import java.util.List;
 
 import com.matha.domain.OrderItem;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.stereotype.Repository;
@@ -20,6 +22,17 @@ public interface OrderRepository extends JpaRepository<Order, String> {
 	public List<Order> findAllBySchoolOrderByOrderDateDesc(School school);
 
 	public List<Order> findAllBySchoolAndFinancialYearOrderByOrderDateDesc(School school, int financialYear);
+
+	public List<Order> findAllBySchoolAndOrderDateAfterOrderByOrderDateDesc(School school, LocalDate startDate);
+
+	@Query("select distinct ord from Order ord, Publisher pub, Book book, OrderItem oDet where book.bookNum = oDet.book.bookNum and ord = oDet.order and pub = book.publisher and pub=?1 and ord.orderDate > ?2")
+	public List<Order> findAllByPublisherAndOrderDateAfter(Publisher pub, LocalDate startDate, Sort sortIn);
+
+	@Query("select distinct ord from Order ord, Publisher pub, Book book, OrderItem oDet where book.bookNum = oDet.book.bookNum and ord = oDet.order and pub = book.publisher and pub=?1 and ord.orderDate > ?2")
+	public Page<Order> findAllByPublisherAndOrderDateAfter(Publisher pub, LocalDate startDate, Pageable pageable);
+
+	@Query("select distinct oDet.order from PurchaseDet pDet right join pDet.orderItem oDet join oDet.order ord join oDet.book book where book.publisher=?1 and pDet is null and oDet.order.orderDate > ?2")
+	public Page<Order> fetchUnBilledOrdersForPub(Publisher pub, LocalDate startDate, Pageable pageable);
 
 	@Query("select distinct ord from Order ord, Publisher pub, Book book, OrderItem oDet where book.bookNum = oDet.book.bookNum and ord = oDet.order and pub = book.publisher and pub=?1")
 	public Page<Order> fetchOrdersForPublisher(Publisher pub, Pageable pageable);

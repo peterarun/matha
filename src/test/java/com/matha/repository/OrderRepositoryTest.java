@@ -1,5 +1,7 @@
 package com.matha.repository;
 
+import java.time.LocalDate;
+import java.time.Month;
 import java.util.List;
 
 import com.matha.domain.OrderItem;
@@ -90,5 +92,14 @@ public class OrderRepositoryTest {
 		{
 			System.out.println(o);
 		}
+	}
+
+	@Test
+	public void test_findAllByPublisherAndOrderDateAfter()
+	{
+		Publisher pub = publisherRepository.findOne(48);
+		LocalDate ld = LocalDate.of(2017, Month.OCTOBER, 1);
+		Sort sortIn = new Sort(new Sort.Order(Sort.Direction.DESC, "orderDate"));
+		orderService.findAllByPublisherAndOrderDateAfter(pub, ld, sortIn);
 	}
 }

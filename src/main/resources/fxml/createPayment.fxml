@@ -8,28 +8,33 @@
 <?import javafx.scene.layout.AnchorPane?>
 <?import javafx.scene.control.cell.PropertyValueFactory?>
 
-<SplitPane dividerPositions="0.2376237623762376" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" orientation="VERTICAL" prefHeight="327.0" prefWidth="358.0" xmlns="http://javafx.com/javafx/8" xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.matha.controller.AddPaymentController">
+<SplitPane dividerPositions="0.23" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" orientation="VERTICAL" prefHeight="456.0" prefWidth="358.0" xmlns="http://javafx.com/javafx/8" xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.matha.controller.AddPaymentController">
   <items>
     <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="60.0" prefWidth="398.0">
          <children>
-            <Label layoutX="30.0" layoutY="21.0" text="Add/Edit Payment">
+            <Label layoutX="24.0" layoutY="14.0" text="Add/Edit Payment">
                <font>
                   <Font name="Tahoma" size="24.0" />
                </font>
             </Label>
-            <Label fx:id="schoolName" layoutX="30.0" layoutY="55.0" prefHeight="17.0" prefWidth="88.0" />
+            <Label fx:id="schoolName" layoutX="24.0" layoutY="51.0" prefHeight="30.0" prefWidth="300.0" />
          </children></AnchorPane>
-    <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="344.0" prefWidth="356.0">
+    <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="350.0" prefWidth="350.0">
          <children>
-            <Label layoutX="30.0" layoutY="20.0" text="Date" />
-            <DatePicker fx:id="payDate" layoutX="28.0" layoutY="37.0" prefHeight="25.0" prefWidth="115.0" />
-            <Button layoutX="213.0" layoutY="95.0" mnemonicParsing="false" onAction="#saveData" prefHeight="81.0" prefWidth="115.0" text="Save" />
-            <Button fx:id="cancelBtn" layoutX="213.0" layoutY="37.0" mnemonicParsing="false" onAction="#cancelOperation" prefHeight="25.0" prefWidth="115.0" text="Cancel" />
-            <TextField fx:id="mode" layoutX="28.0" layoutY="152.0" prefHeight="25.0" prefWidth="160.0" />
-            <Label layoutX="28.0" layoutY="78.0" text="Amount" />
-            <TextField fx:id="amount" layoutX="28.0" layoutY="95.0" prefHeight="25.0" prefWidth="160.0" />
-            <Label layoutX="28.0" layoutY="135.0" text="Mode" />
-            <TextField fx:id="notes" layoutX="28.0" layoutY="193.0" prefHeight="25.0" prefWidth="301.0" promptText="Notes" />            
+             <Label layoutX="29.0" layoutY="14.0" text="Receipt No." />
+             <TextField fx:id="receiptNum" layoutX="28.0" layoutY="31.0" prefHeight="25.0" prefWidth="140.0" />
+             <Label layoutX="188.0" layoutY="14.0" text="Date" />
+             <DatePicker fx:id="payDate" layoutX="187.0" layoutY="31.0" prefHeight="25.0" prefWidth="140.0" />
+             <Label layoutX="29.0" layoutY="70.0" text="Amount" />
+             <TextField fx:id="amount" layoutX="28.0" layoutY="84.0" prefHeight="25.0" prefWidth="140.0" />
+             <Label layoutX="29.0" layoutY="129.0" text="Mode" />
+             <ChoiceBox fx:id="mode" layoutX="28.0" layoutY="147.0" prefHeight="25.0" prefWidth="140.0" />
+             <Label fx:id="datedStr" layoutX="25.0" layoutY="190.0" text="Dated" visible="false" />
+             <DatePicker fx:id="dated" disable="true" layoutX="28.0" layoutY="205.0" prefHeight="25.0" prefWidth="140.0" />
+             <Button layoutX="187.0" layoutY="83.0" mnemonicParsing="false" onAction="#saveData" prefHeight="90.0" prefWidth="140.0" text="Save" />
+             <Button fx:id="cancelBtn" layoutX="187.0" layoutY="205.0" mnemonicParsing="false" onAction="#cancelOperation" prefHeight="25.0" prefWidth="140.0" text="Cancel" />
+             <TextField fx:id="notes" layoutX="28.0" layoutY="293.0" prefHeight="25.0" prefWidth="300.0" promptText="Notes" />
+            <TextField fx:id="refNum" disable="true" layoutX="28.0" layoutY="251.0" prefHeight="25.0" prefWidth="301.0" promptText="Cheque/DD/UTR Number" />
          </children></AnchorPane>
   </items>
 </SplitPane>

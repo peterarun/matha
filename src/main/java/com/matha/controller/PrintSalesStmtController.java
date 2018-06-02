@@ -1,9 +1,6 @@
 package com.matha.controller;
 
-import static com.matha.util.UtilConstants.Docx;
-import static com.matha.util.UtilConstants.Excel;
-import static com.matha.util.UtilConstants.PDF;
-import static com.matha.util.UtilConstants.salesStmtJrxml;
+import static com.matha.util.UtilConstants.*;
 import static com.matha.util.Utils.printJasper;
 
 import java.io.ByteArrayOutputStream;
@@ -70,6 +67,12 @@ public class PrintSalesStmtController
 	@Value("${agencyAddress2}")
 	private String agencyAddress2;
 
+	@Value("${purPaymentModes}")
+	private String[] schoolPaymentModes;
+
+	@Value("#{'${datedPurPaymentModes}'.split(',')}")
+	private List<String> datedSchoolPaymentModes;
+
 	@FXML
 	private TextField schoolName;
 
@@ -94,6 +97,7 @@ public class PrintSalesStmtController
 		this.print = printIn;
 		this.fromDate.setValue(fromDateVal);
 		this.toDate.setValue(toDateVal);
+		this.schoolName.setText(school.getName());
 		this.loadWebInvoice(printIn);
 		List<String> saveTypes = Arrays.asList(PDF,Excel,Docx);
 		this.saveType.setItems(FXCollections.observableList(saveTypes));
@@ -118,9 +122,10 @@ public class PrintSalesStmtController
 			hm.put("agencyAddress2", agencyAddress2);
 			hm.put("schoolName", school.getAddress1());
 			hm.put("schoolDetails", school.getStmtAddress());
-			hm.put("fromDate", fromDateVal);
-			hm.put("toDate", toDateVal);
-			
+			hm.put("fromDate", DATE_CONV.toString(fromDateVal));
+			hm.put("toDate", DATE_CONV.toString(toDateVal));
+			hm.put("datedSchoolPaymentModes", datedSchoolPaymentModes);
+
 			JasperReport compiledFile = JasperCompileManager.compileReport(jasperStream);
 			LOGGER.info("Total Size: " + tableDataIn.size());
 			for (int i = 0; i <= tableDataIn.size() / 38; i++)
@@ -275,6 +280,10 @@ public class PrintSalesStmtController
                 );
             
 			File file = fileChooser.showSaveDialog(((Node) ev.getSource()).getScene().getWindow());
+			if(file == null)
+			{
+				return;
+			}
 			if(selection.equals(PDF))
 			{
 				JasperExportManager.exportReportToPdfFile(print, file.getAbsolutePath());

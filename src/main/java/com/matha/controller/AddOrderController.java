@@ -79,7 +79,6 @@ public class AddOrderController
 	private SchoolService srvc;
 
 	private Order order;
-	private List<OrderItem> origOrders;
 
 	public void initData(School school, Map<String, Book> bookMap, Order selectedOrder)
 	{
@@ -87,10 +86,6 @@ public class AddOrderController
 		this.school = school;
 		this.bookMap = bookMap;
 		this.order = selectedOrder;
-		if (this.order != null)
-		{
-			this.origOrders = new ArrayList<>(this.order.getOrderItem());
-		}
 		updateFormData(selectedOrder);
 
 		List<String> items = new ArrayList<>(bookMap.keySet());
@@ -128,6 +123,7 @@ public class AddOrderController
 		addedBooks.getItems().add(item);
 		bookText.clear();
 		bookCount.clear();
+		bookText.requestFocus();
 	}
 
 	@FXML
@@ -145,27 +141,21 @@ public class AddOrderController
 		{
 			return;
 		}
-		Order item;
+		Order item = this.order;
 		List<OrderItem> items = addedBooks.getItems();
-		if (this.order == null)
+		if (item == null)
 		{
 			item = new Order();
-		}
-		else
-		{
-			item = this.order;
-			origOrders.removeAll(addedBooks.getItems());
 		}
 
 		item.setOrderItem(items);
 		item.setSerialNo(orderNum.getText());
 		item.setSchool(school);
-		LocalDate dt = orderDate.getValue();
-		item.setOrderDate(dt);
+		item.setOrderDate(orderDate.getValue());
 		item.setDeliveryDate(despatchDate.getValue());
 		item.setDesLocation(desLocation.getText());
 
-		srvc.updateOrderData(order, items, origOrders);
+		srvc.updateOrderData(item, items);
 
 		((Stage) cancelBtn.getScene().getWindow()).close();
 	}
@@ -204,7 +194,11 @@ public class AddOrderController
 			errorMsg.append("Please provide an Order Date");
 			valid = false;
 		}
-		showErrorAlert("Error in Saving Order", "Please correct the following errors", errorMsg.toString());
+
+		if(!valid)
+		{
+			showErrorAlert("Error in Saving Order", "Please correct the following errors", errorMsg.toString());
+		}
 		return valid;
 	}
 }

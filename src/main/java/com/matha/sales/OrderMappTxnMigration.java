@@ -13,8 +13,11 @@ import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.boot.autoconfigure.domain.EntityScan;
 import org.springframework.context.ConfigurableApplicationContext;
 import org.springframework.context.annotation.ComponentScan;
+import org.springframework.data.domain.Sort;
 import org.springframework.data.jpa.repository.config.EnableJpaRepositories;
 
+import java.time.LocalDate;
+import java.time.Month;
 import java.util.*;
 import java.util.function.Supplier;
 import java.util.stream.Stream;
@@ -31,7 +34,7 @@ import static java.util.stream.Collectors.*;
 public class OrderMappTxnMigration
 {
 	private static final Logger LOGGER = LogManager.getLogger(OrderMappTxnMigration.class);
-	private static final int FIN_YEAR = 11;
+//	private static final int FIN_YEAR = 11;
 
 	@Autowired
 	private SchoolRepository schoolRepository;
@@ -60,21 +63,21 @@ public class OrderMappTxnMigration
 	{
 		ctx = SpringApplication.run(OrderMappTxnMigration.class, args);
 		OrderMappTxnMigration mig = ctx.getBean(OrderMappTxnMigration.class);
-		Integer finYear = FIN_YEAR;
+//		Integer finYear = FIN_YEAR;
 		if(args != null && args.length > 0 && args[0] != null)
 		{
-			finYear = Integer.parseInt(args[0]);
+//			finYear = Integer.parseInt(args[0]);
 		}
 		Configurator.setLevel("com.matha", Level.DEBUG);
+		LocalDate orderMinDate = LocalDate.of(2017, Month.OCTOBER, 1);
+//		LOGGER.debug("Running Sales Mapping for FY: " + orderMinDate);
+//		mig.doSalesMigration(orderMinDate);
 
-		LOGGER.debug("Running Sales Mapping for FY: " + finYear);
-		mig.doSalesMigration(finYear);
-
-		LOGGER.debug("Running Purchase Mapping for FY: " + finYear);
-		mig.doPurchMigration(finYear);
+		LOGGER.debug("Running Purchase Mapping for FY: " + orderMinDate);
+		mig.doPurchMigration(orderMinDate);
 	}
 
-	public void doSalesMigration(Integer finYear)
+	public void doSalesMigration(LocalDate orderMinDate)
 	{
 //		List<School> schoolList = schoolRepository.findAllByNameLike("A%");
 //		List<School> schoolList = schoolRepository.findTop10ByNameLike("A%");
@@ -83,7 +86,8 @@ public class OrderMappTxnMigration
 		{
 			LOGGER.debug(sc.toBasicString());
 
-			List<Order> ordList = orderRepo.findAllBySchoolAndFinancialYearOrderByOrderDateDesc(sc, finYear);
+//			List<Order> ordList = orderRepo.findAllBySchoolAndFinancialYearOrderByOrderDateDesc(sc, finYear);
+			List<Order> ordList = orderRepo.findAllBySchoolAndOrderDateAfterOrderByOrderDateDesc(sc, orderMinDate);
 			Supplier<Stream<OrderItem>> orderStreamSupp = () -> ordList.stream()
 					.map(o -> o.getOrderItem())
 					.flatMap(List<OrderItem>::stream);
@@ -96,7 +100,10 @@ public class OrderMappTxnMigration
 				LOGGER.debug(orderEnt.getKey() + " " + orderEnt.getValue());
 			}
 
-			List<Sales> sales = salesRepository.findAllBySchoolAndFinancialYear(sc, finYear);
+
+			Sort sortIn = new Sort(new Sort.Order(Sort.Direction.DESC, "txnDate"));
+			LocalDate salesMinDate = LocalDate.of(2018, Month.FEBRUARY, 1);
+			List<Sales> sales = salesRepository.findAllBySchoolAndTxnDateAfter(sc, salesMinDate, sortIn);
 			Supplier<Stream<SalesDet>> saleStreamSupp = () -> sales.stream()
 					.map(o -> o.getSaleItems())
 					.flatMap(Set<SalesDet>::stream);
@@ -133,14 +140,15 @@ public class OrderMappTxnMigration
 		}
 	}
 
-	public void doPurchMigration(Integer finYear)
+	public void doPurchMigration(LocalDate orderMinDate)
 	{
 		List<Publisher> schoolList = publisherRepository.findAll();
 		for (Publisher sc : schoolList)
 		{
 			LOGGER.debug(sc.toBasicString());
 
-			List<Order> ordList = orderRepo.fetchOrdersForPublisherAndFy(sc, finYear);
+			Sort sortIn = new Sort(new Sort.Order(Sort.Direction.DESC, "orderDate"));
+			List<Order> ordList = orderRepo.findAllByPublisherAndOrderDateAfter(sc, orderMinDate, sortIn);
 			Supplier<Stream<OrderItem>> orderStreamSupp = () -> ordList.stream()
 					.map(o -> o.getOrderItem())
 					.flatMap(List<OrderItem>::stream);
@@ -153,7 +161,9 @@ public class OrderMappTxnMigration
 				LOGGER.debug(orderEnt.getKey() + " " + orderEnt.getValue());
 			}
 
-			List<Purchase> sales = purchaseRepository.findAllByPublisherAndFinancialYear(sc, finYear);
+			LocalDate purchaseMinDate = LocalDate.of(2017, Month.OCTOBER, 1);
+			Sort purSortIn = new Sort(new Sort.Order(Sort.Direction.DESC, "purchaseDate"));
+			List<Purchase> sales = purchaseRepository.findAllByPublisherAndPurchaseDateAfter(sc, purchaseMinDate, purSortIn);
 			Supplier<Stream<PurchaseDet>> saleStreamSupp = () -> sales.stream()
 					.map(o -> o.getPurchaseItems())
 					.flatMap(Set<PurchaseDet>::stream);
@@ -173,16 +183,19 @@ public class OrderMappTxnMigration
 				LOGGER.debug(corrEnt.getKey() + " - " + corrEnt.getValue());
 				Purchase currSale = salesMap.get(corrEnt.getValue());
 				Set<PurchaseDet> saleItems = currSale.getPurchaseItems();
+				Order order = orderMap.get(corrEnt.getKey());
+				List<OrderItem> orderItems = order.getOrderItem();
+				Map<String, OrderItem> ordMapIn = orderItems.stream().collect(toMap(oi -> oi.getBook().getBookNum(), oi -> oi));
+
 				for (PurchaseDet saleItem : saleItems)
 				{
-					Order order = orderMap.get(corrEnt.getKey());
-					List<OrderItem> orderItems = order.getOrderItem();
-					Optional<OrderItem> foundBook = orderItems.stream().filter(o -> o.getBook().getBookNum().equals(saleItem.getBook().getBookNum())).findFirst();
-					if(foundBook.isPresent())
+					OrderItem itemIn = ordMapIn.get(saleItem.getBook().getBookNum());
+					if(itemIn != null)
 					{
-						saleItem.setOrderItem(foundBook.get());
-						LOGGER.debug("Mapping " + saleItem.getPurDetId() + " to " + foundBook.get().getId());
+						saleItem.setOrderItem(itemIn);
+//						LOGGER.debug("Mapping " + saleItem.getPurDetId() + " to " + foundBook.get().getId());
 						purchaseDetRepository.save(saleItem);
+						orderItems.remove(itemIn);
 					}
 				}
 			}
@@ -197,29 +210,58 @@ public class OrderMappTxnMigration
 			return correlationMap;
 		}
 
-		for (Map.Entry<String, Set<String>> ordEntry : ordMap.entrySet())
+		for (int i = 0; i < 2; i++)
 		{
-			Set<String> ordBooks = ordEntry.getValue();
-			Map<String, Double> corrMap = new HashMap<>();
-			for (Map.Entry<String, Set<String>> saleEntry : saleMap.entrySet())
+			for (Map.Entry<String, Set<String>> ordEntry : ordMap.entrySet())
 			{
-				Set<String> saleBooks = saleEntry.getValue();
+				Set<String> ordBooks = ordEntry.getValue();
+				if(ordBooks.isEmpty())
+				{
+					continue;
+				}
+				LOGGER.debug("ordBooks:");
+				LOGGER.debug(ordBooks);
+				Map<String, Double> corrMap = new HashMap<>();
+				for (Map.Entry<String, Set<String>> saleEntry : saleMap.entrySet())
+				{
+					Set<String> saleBooks = saleEntry.getValue();
+					if(saleBooks.isEmpty())
+					{
+						continue;
+					}
+					LOGGER.debug("saleBooks:");
+					LOGGER.debug(saleBooks);
+					long retSize = ordBooks.stream().filter(o -> saleBooks.contains(o)).count();
+					if (retSize == 0)
+					{
+						continue;
+					}
+					double corrVal = (double) retSize / saleBooks.size();
+					LOGGER.debug("corrVal:" + corrVal);
+					corrMap.put(saleEntry.getKey(), corrVal);
+					if(corrVal == 1.0)
+					{
+						break;
+					}
+				}
+				if (corrMap.isEmpty())
+				{
+					LOGGER.debug("No Correlation");
+					continue;
+				}
+				String corrSaleKey = max(corrMap.entrySet(), comparingDouble(Map.Entry::getValue)).getKey();
+				correlationMap.put(ordEntry.getKey(), corrSaleKey);
+				Set<String> saleSet = saleMap.get(corrSaleKey);
+				LOGGER.debug("Correlation Found");
+				LOGGER.debug("saleSet:");
+				LOGGER.debug(saleSet);
 
-				HashSet<String> ordBooksDup = new HashSet<String>(ordBooks);
-//				LOGGER.debug("ordBooksDup 1: " + ordBooksDup);
-				int totSize = ordBooksDup.size();
-//				LOGGER.debug("saleBooks: " + saleBooks);
-				ordBooksDup.retainAll(saleBooks);
-//				LOGGER.debug("ordBooksDup 2: " + ordBooksDup);
-				int retSize = ordBooksDup.size();
-				double corrVal = (double)retSize / totSize;
-//				LOGGER.debug("corrVal:" + corrVal);
-				corrMap.put(saleEntry.getKey(), corrVal);
+				HashSet<String> ordBooksDup = new HashSet<>(ordBooks);
+				ordBooks.removeAll(saleSet);
+				saleSet.removeAll(ordBooksDup);
 			}
-			String corrSaleKey = max(corrMap.entrySet(), comparingDouble(Map.Entry::getValue)).getKey();
-			correlationMap.put(ordEntry.getKey(), corrSaleKey);
 		}
+
 		return correlationMap;
 	}
-
 }

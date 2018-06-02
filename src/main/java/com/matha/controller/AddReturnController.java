@@ -1,17 +1,19 @@
 package com.matha.controller;
 
-import static com.matha.util.Utils.showErrorAlert;
+import static com.matha.util.UtilConstants.NEW_LINE;
+import static com.matha.util.UtilConstants.PERCENT_SIGN;
+import static com.matha.util.UtilConstants.RUPEE_SIGN;
+import static com.matha.util.Utils.*;
 
-import java.util.ArrayList;
-import java.util.HashSet;
-import java.util.List;
-import java.util.Map;
-import java.util.Set;
+import java.util.*;
 import java.util.concurrent.atomic.AtomicInteger;
 import java.util.stream.Collector;
 import java.util.stream.Collectors;
 
 import com.matha.domain.*;
+import javafx.beans.value.ChangeListener;
+import javafx.beans.value.ObservableValue;
+import javafx.scene.control.*;
 import org.apache.commons.lang.StringUtils;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
@@ -25,11 +27,6 @@ import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
-import javafx.scene.control.Button;
-import javafx.scene.control.DatePicker;
-import javafx.scene.control.Label;
-import javafx.scene.control.TableView;
-import javafx.scene.control.TextField;
 import javafx.stage.Stage;
 
 @Component
@@ -45,13 +42,13 @@ public class AddReturnController
 	private DatePicker returnDate;
 
 	@FXML
+	private TextField creditNoteNum;
+
+	@FXML
 	private TextField notes;
 
 	@FXML
 	private Button cancelBtn;
-
-	@FXML
-	private TextField subTotal;
 
 	@FXML
 	private Label schoolName;
@@ -68,26 +65,61 @@ public class AddReturnController
 	@FXML
 	private TableView<SalesReturnDet> addedBooks;
 
+	@FXML
+	private ToggleGroup discType;
+
+	@FXML
+	private RadioButton rupeeRad;
+
+	@FXML
+	private RadioButton percentRad;
+
+	@FXML
+	private TextField discText;
+
+	@FXML
+	private Label discTypeInd;
+
+	@FXML
+	private TextField subTotal;
+
+	@FXML
+	private TextField calcDiscount;
+
+	@FXML
+	private TextField netTotal;
+
 	private School school;
 	private SchoolReturn schoolReturn;
 	private Map<String, Book> bookMap;
-	private AtomicInteger index = new AtomicInteger();
+//	private AtomicInteger index = new AtomicInteger();
 	private Collector<SalesReturnDet, ?, Double> summingDblCollector = Collectors.summingDouble(SalesReturnDet::getTotalBought);
-	private Collector<Book, ?, Map<String, Book>> bookMapCollector = Collectors.toMap(o -> o.getName() + " - " + o.getPublisherName(), o -> o);	
 	
-	void initData(School schoolIn, SchoolReturn returnIn)
+	void initData(School schoolIn, Map<String, Book> bookMapIn, SchoolReturn returnIn)
 	{
 		this.school = schoolIn;
 		this.schoolReturn = returnIn;
 		this.loadReturnData(returnIn);
 		this.schoolName.setText(schoolIn.getName());
+		this.bookMap = bookMapIn;
 
-		List<Book> allOrders = schoolService.fetchBooksForSchool(schoolIn);
-		bookMap = allOrders.stream().collect(bookMapCollector);
-
-		List<String> items = new ArrayList<>(bookMap.keySet());
+		List<String> items = new ArrayList<>(this.bookMap.keySet());
 		TextFields.bindAutoCompletion(bookName, items);
 
+		this.discText.textProperty().addListener((observable, oldValue, newValue) -> {
+			updateNetAmt();
+		});
+
+		discType.selectedToggleProperty().addListener(new ChangeListener<Toggle>() {
+			public void changed(ObservableValue<? extends Toggle> ov, Toggle old_toggle, Toggle new_toggle)
+			{
+				if (discType.getSelectedToggle() != null)
+				{
+					calcNetAmount(discText.getText());
+					loadDiscSymbol();
+				}
+			}
+		});
 	}
 
 	private void loadReturnData(SchoolReturn returnIn)
@@ -99,16 +131,35 @@ public class AddReturnController
 				ObservableList<SalesReturnDet> orderItemsIn = FXCollections
 						.observableList(new ArrayList<SalesReturnDet>(returnIn.getSalesReturnDetSet()));
 				this.addedBooks.setItems(orderItemsIn);
-				this.index.set(orderItemsIn.size());
 			}
+			else
+			{
+				this.addedBooks.setItems(FXCollections.observableList(new ArrayList<>()));
+			}
+			this.creditNoteNum.setText(returnIn.getCreditNoteNum());
 			this.returnDate.setValue(returnIn.getSalesTxn().getTxnDate());
 			this.notes.setText(returnIn.getSalesTxn().getNote());
 			
-			Double subTotalDbl = returnIn.getSalesTxn().getAmount();
+			Double subTotalDbl = returnIn.getSubTotal();
 			if (subTotalDbl != null)
 			{
 				this.subTotal.setText(subTotalDbl.toString());
 			}
+			this.netTotal.setText(getStringVal(returnIn.getNetAmount()));
+			if(returnIn.getDiscAmt() != null)
+			{
+				this.rupeeRad.setSelected(true);
+				this.discText.setText(getStringVal(returnIn.getDiscAmt()));
+			}
+			else
+			{
+				this.discText.setText(getStringVal(returnIn.getDiscPercent()));
+			}
+			this.calcDiscount.setText(getStringVal(returnIn.getDiscount()));
+		}
+		else
+		{
+			this.addedBooks.setItems(FXCollections.observableList(new ArrayList<>()));
 		}
 	}
 
@@ -122,13 +173,15 @@ public class AddReturnController
 	@FXML
 	void addBookData(ActionEvent event)
 	{
-		SalesReturnDet itemIn = new SalesReturnDet(index.incrementAndGet(), Integer.parseInt(this.quantity.getText()), Double.parseDouble(this.price.getText()), null);
+		SalesReturnDet itemIn = new SalesReturnDet(this.addedBooks.getItems().size(), getIntegerVal(this.quantity), Double.parseDouble(this.price.getText()), null);
 		String bookStr = this.bookName.getText();
 		itemIn.setBook(this.bookMap.get(bookStr));
 		this.addedBooks.getItems().add(itemIn);
 		LOGGER.debug("Added" + itemIn);
 		loadSubTotal();
+		calcNetAmount(discText.getText());
 		clearBookFields();
+		this.bookName.requestFocus();
 	}
 	
 	private void clearBookFields()
@@ -142,12 +195,21 @@ public class AddReturnController
 	{
 		boolean valid = true;
 		StringBuilder errorMsg = new StringBuilder();
+		if (this.creditNoteNum.getText() == null)
+		{
+			errorMsg.append("Please provide a Credit Note Number");
+			errorMsg.append(NEW_LINE);
+			valid = false;
+		}
 		if (this.returnDate.getValue() == null)
 		{
 			errorMsg.append("Please provide a date");
 			valid = false;
 		}
-		showErrorAlert("Error in Saving Order", "Please correct the following errors", errorMsg.toString());
+		if(!valid)
+		{
+			showErrorAlert("Error in Saving Order", "Please correct the following errors", errorMsg.toString());
+		}
 		return valid;
 	}
 	
@@ -170,6 +232,18 @@ public class AddReturnController
 		{
 			salesTxn = returnIn.getSalesTxn();
 		}
+
+		if(percentRad.isSelected())
+		{
+			returnIn.setDiscPercent(getDoubleVal(this.discText));
+		}
+		else
+		{
+			returnIn.setDiscAmt(getDoubleVal(this.discText.getText()));
+		}
+		returnIn.setSubTotal(getDoubleVal(this.subTotal.getText()));
+		returnIn.setCreditNoteNum(this.creditNoteNum.getText());
+
 		Set<SalesReturnDet> orderItems = returnIn.getSalesReturnDetSet();
 		if(orderItems == null)
 		{
@@ -180,7 +254,7 @@ public class AddReturnController
 		salesTxn.setTxnDate(this.returnDate.getValue());
 		salesTxn.setNote(this.notes.getText());
 	
-		String subTotalStr = this.subTotal.getText();				
+		String subTotalStr = this.netTotal.getText();
 		if (StringUtils.isNotBlank(subTotalStr))
 		{
 			salesTxn.setAmount(Double.parseDouble(subTotalStr));
@@ -203,6 +277,60 @@ public class AddReturnController
 		SalesReturnDet itemIn = this.addedBooks.getSelectionModel().getSelectedItem();
 		this.addedBooks.getItems().remove(itemIn);
 		loadSubTotal();
+	}
+
+	private void updateNetAmt()
+	{
+		String discAmtStr = StringUtils.defaultString(discText.getText());
+		if (!StringUtils.isEmpty(discAmtStr))
+		{
+			calcNetAmount(discAmtStr);
+		}
+	}
+
+	private void calcNetAmount(String discAmtStr)
+	{
+		String netTotalStr = netTotal.getText();
+		Double netTotalDbl = StringUtils.isEmpty(netTotalStr) ? 0.0 : Double.parseDouble(netTotalStr);
+
+		String subTotalStr = this.subTotal.getText();
+		double discVal = 0;
+		if (subTotalStr != null)
+		{
+			double subTotalDbl = Double.parseDouble(subTotalStr);
+			if (subTotalDbl > 0)
+			{
+				double discAmtDbl = StringUtils.isEmpty(discAmtStr) ? 0 : Double.parseDouble(discAmtStr);
+				if (rupeeRad.isSelected())
+				{
+					discVal = discAmtDbl;
+					netTotalDbl = subTotalDbl - discVal;
+				}
+				else if (percentRad.isSelected())
+				{
+					discVal = subTotalDbl * discAmtDbl / 100;
+					netTotalDbl = subTotalDbl - discVal;
+				}
+			}
+			else
+			{
+				netTotalDbl = subTotalDbl;
+			}
+		}
+		this.netTotal.setText(getStringVal(netTotalDbl));
+		this.calcDiscount.setText(getStringVal(discVal));
+	}
+
+	private void loadDiscSymbol()
+	{
+		if (this.percentRad.isSelected())
+		{
+			this.discTypeInd.setText(PERCENT_SIGN);
+		}
+		else if (this.rupeeRad.isSelected())
+		{
+			this.discTypeInd.setText(RUPEE_SIGN);
+		}
 	}
 
 }

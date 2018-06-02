@@ -10,7 +10,10 @@ GO
 ALTER TABLE [dbo].[SReturn] ADD [TxnId] INT NULL;
 GO
 
-ALTER TABLE [dbo].[SReturn] ALTER COLUMN [SerialId] INT NOT NULL;
+ALTER TABLE [dbo].[SReturn] ADD [CreditNoteNum] NVARCHAR(10);
+GO
+
+ALTER TABLE [dbo].[SReturn] ALTER COLUMN [SerialId] NVARCHAR(10) NOT NULL;
 GO
 
 ALTER TABLE [dbo].[SReturn] ADD CONSTRAINT SReturn_PK PRIMARY KEY([SerialId]);

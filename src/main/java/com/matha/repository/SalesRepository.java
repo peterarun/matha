@@ -35,4 +35,6 @@ public interface SalesRepository extends JpaRepository<Sales, String> {
 
 	public List<Sales> findAllByTxnDateAfter(LocalDate txnDt, Sort sortIn);
 
+	public List<Sales> findAllBySchoolAndTxnDateAfter(School sc, LocalDate txnDt, Sort sortIn);
+
 }

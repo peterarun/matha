@@ -1,7 +1,9 @@
 package com.matha.repository;
 
+import java.time.LocalDate;
 import java.util.List;
 
+import com.matha.domain.Purchase;
 import org.springframework.data.domain.Sort;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
@@ -18,4 +20,6 @@ public interface PurchaseReturnRepository extends JpaRepository<PurchaseReturn, 
 
 	@Query(value = "SELECT NEXT VALUE FOR PReturnSeq", nativeQuery = true)
 	Long fetchNextSeqVal();
+
+    List<PurchaseReturn> findAllByReturnDateAfter(LocalDate ld, Sort idSort);
 }

@@ -14,9 +14,12 @@ pause
 java -cp sales-0.0.1-SNAPSHOT\BOOT-INF\lib\*;sales-0.0.1-SNAPSHOT.jar.original com.matha.sales.SalesTxnMigration %fy%
 pause
 
+rem java -cp sales-0.0.1-SNAPSHOT\BOOT-INF\lib\*;sales-0.0.1-SNAPSHOT.jar.original com.matha.sales.PurchaseReturnTxnMigration %fy%
+rem pause
+
 java -cp sales-0.0.1-SNAPSHOT\BOOT-INF\lib\*;sales-0.0.1-SNAPSHOT.jar.original com.matha.sales.OrderMappTxnMigration %fy%
 pause
 
-rmdir sales-0.0.1-SNAPSHOT.jar
+rmdir sales-0.0.1-SNAPSHOT
 
 cd ..\dbScripts

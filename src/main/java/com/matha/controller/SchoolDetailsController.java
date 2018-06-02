@@ -12,13 +12,16 @@ import static com.matha.util.UtilConstants.printSaleFxmlFile;
 import static com.matha.util.UtilConstants.salesInvoiceJrxml;
 import static com.matha.util.UtilConstants.*;
 import static com.matha.util.Utils.*;
+import static java.util.Comparator.comparing;
+import static java.util.stream.Collectors.toList;
+import static java.util.stream.Collectors.toMap;
 
 import java.io.IOException;
 import java.io.InputStream;
 import java.time.LocalDate;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Optional;
+import java.util.*;
+import java.util.stream.Collector;
+import java.util.stream.Collectors;
 
 import com.matha.domain.*;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -122,19 +125,17 @@ public class SchoolDetailsController
 	@FXML
 	private DatePicker toDate;
 
-	private HashMap<String, Book> bookMap;
+	private Map<String, Book> bookMap;
+	private Collector<Book, ?, Map<String, Book>> bookMapCollector = toMap(o -> o.getShortName() + ": " + o.getName() + " - " + o.getPublisherName(), o -> o);
+
 	// private JasperPrint jasperPrint;
 
 	@FXML
 	protected void initialize() throws IOException
 	{
 
-		List<Book> schools = schoolService.fetchAllBooks();
-		bookMap = new HashMap<>();
-		for (Book bookIn : schools)
-		{
-			bookMap.put(bookIn.getName() + " - " + bookIn.getPublisherName(), bookIn);
-		}
+		List<Book> books = schoolService.fetchAllBooks();
+		bookMap = books.stream().collect(bookMapCollector);
 
 		txnData.getSelectionModel().setSelectionMode(SelectionMode.MULTIPLE);
 		this.amountColumn.setCellValueFactory(cellData -> Bindings.format("%.2f", cellData.getValue().getNetAmount()));
@@ -187,7 +188,8 @@ public class SchoolDetailsController
 	{
 		if (this.ordersTab.isSelected())
 		{
-			this.txnData.setItems(FXCollections.observableList(schoolService.fetchOrderForSchool(school)));
+			List<Order> ordersIn = schoolService.fetchOrderForSchool(school);
+			this.txnData.setItems(FXCollections.observableList(ordersIn.stream().sorted(comparing(Order::getOrderDate).reversed()).collect(toList())));
 			this.loadBalance();
 		}
 		else
@@ -205,6 +207,7 @@ public class SchoolDetailsController
 		ctrl.initData(this.school, this.bookMap, null);
 		addOrderScene = new Scene(addOrderRoot);
 		prepareAndShowStage(e, addOrderScene, orderEventHandler);
+		saleTabs.getSelectionModel().select(ordersTab);
 	}
 
 	@FXML
@@ -263,7 +266,7 @@ public class SchoolDetailsController
 		if (this.billsTab.isSelected())
 		{
 			List<Sales> billDataList = schoolService.fetchBills(this.school);
-			this.billData.setItems(FXCollections.observableList(billDataList));
+			this.billData.setItems(FXCollections.observableList(billDataList.stream().sorted(comparing(s -> ((Sales) s).getTxnDate()).reversed()).collect(toList())));
 			this.loadBalance();
 		}
 		else
@@ -285,7 +288,9 @@ public class SchoolDetailsController
 			Scene addBillScene = new Scene(addBillRoot);
 			prepareAndShowStage(event, addBillScene, billEventHandler);
 			saleTabs.getSelectionModel().select(billsTab);
-			showPrintDialog(ctrl.getSelectedSale(), event);
+
+			Sales savedSale = schoolService.fetchSale(ctrl.getSelectedSale().getId());
+			showPrintDialog(savedSale, event);
 		}
 		catch (Exception e)
 		{
@@ -305,7 +310,9 @@ public class SchoolDetailsController
 			ctrl.initData(selectedOrder, this.school, null, this.bookMap);
 			Scene addBillScene = new Scene(addBillRoot);
 			prepareAndShowStage(event, addBillScene, billEventHandler);
-			showPrintDialog(ctrl.getSelectedSale(), event);
+
+			Sales saleIn = schoolService.fetchSale(ctrl.getSelectedSale().getId());
+			showPrintDialog(saleIn, event);
 
 		}
 		catch (Exception e)
@@ -408,7 +415,7 @@ public class SchoolDetailsController
 		if (creditNoteTab.isSelected())
 		{
 			List<SchoolReturn> creditNotes = schoolService.fetchReturnsForSchool(this.school);
-			creditNoteData.setItems(FXCollections.observableList(creditNotes));
+			creditNoteData.setItems(FXCollections.observableList(creditNotes.stream().sorted(comparing(SchoolReturn::getTxnDate).reversed()).collect(toList())));
 			this.loadBalance();
 		}
 		else
@@ -425,7 +432,7 @@ public class SchoolDetailsController
 			FXMLLoader createReturnLoader = LoadUtils.loadFxml(this, addReturnFxmlFile);
 			Parent addReturnRoot = createReturnLoader.load();
 			AddReturnController ctrl = createReturnLoader.getController();
-			ctrl.initData(this.school, null);
+			ctrl.initData(this.school, this.bookMap, null);
 			Scene addCreditNoteScene = new Scene(addReturnRoot);
 			prepareAndShowStage(event, addCreditNoteScene, returnEventHandler);
 
@@ -445,7 +452,7 @@ public class SchoolDetailsController
 			FXMLLoader createReturnLoader = LoadUtils.loadFxml(this, addReturnFxmlFile);
 			Parent addReturnRoot = createReturnLoader.load();
 			AddReturnController ctrl = createReturnLoader.getController();
-			ctrl.initData(this.school, this.creditNoteData.getSelectionModel().getSelectedItem());
+			ctrl.initData(this.school, this.bookMap, this.creditNoteData.getSelectionModel().getSelectedItem());
 			Scene addCreditNoteScene = new Scene(addReturnRoot);
 			prepareAndShowStage(event, addCreditNoteScene, returnEventHandler);
 
@@ -479,7 +486,7 @@ public class SchoolDetailsController
 		if (paymentTab.isSelected())
 		{
 			List<SchoolPayment> paymentList = schoolService.fetchPayments(school);
-			ObservableList<SchoolPayment> paymentItems = FXCollections.observableList(paymentList);
+			ObservableList<SchoolPayment> paymentItems = FXCollections.observableList(paymentList.stream().sorted(comparing(SchoolPayment::getTxnDate).reversed()).collect(toList()));
 			paymentData.setItems(paymentItems);
 			this.loadBalance();
 		}

@@ -44,23 +44,21 @@ public class SalesTxnMigration
 	{
 		ctx = SpringApplication.run(SalesTxnMigration.class, args);
 		SalesTxnMigration mig = ctx.getBean(SalesTxnMigration.class);
-		Integer finYear = FIN_YEAR;
+//		Integer finYear = FIN_YEAR;
 		if(args != null && args.length > 0 && args[0] != null)
 		{
-			finYear = Integer.parseInt(args[0]);
+//			finYear = Integer.parseInt(args[0]);
 		}
 		Configurator.setLevel("com.matha", Level.DEBUG);
-
-		LOGGER.debug("Running Sales Transaction Creation for FY: " + finYear);
-		mig.doMigration(finYear);
+		LocalDate ld = LocalDate.of(2018, Month.FEBRUARY, 1);
+		LOGGER.debug("Running Sales Transaction Creation for FY: " + ld);
+		mig.doMigration(ld);
 	}
 
-	public void doMigration(Integer finYear)
+	public void doMigration(LocalDate ld)
 	{
-		LocalDate ld = LocalDate.of(2017, Month.NOVEMBER, 1);
 		Sort idSort = new Sort(new Sort.Order(Sort.Direction.ASC, "id"));
-		List<Sales> purchases = salesRepository.findAllByFinancialYear( finYear, idSort);
-//		List<Sales> purchases = salesRepository.findAllByTxnDateAfter( ld, idSort);
+		List<Sales> purchases = salesRepository.findAllByTxnDateAfter( ld, idSort);
 		for (Sales sale : purchases)
 		{
 			LOGGER.debug(sale);

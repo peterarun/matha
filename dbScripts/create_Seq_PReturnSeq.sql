@@ -3,7 +3,7 @@ GO
 
 CREATE SEQUENCE [dbo].[PReturnSeq]
  AS [int]
- MINVALUE 10
+ MINVALUE 81
  NO CACHE 
 
 GO

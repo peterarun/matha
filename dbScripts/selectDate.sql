@@ -4,14 +4,14 @@ GO
 select GETDATE();
 GO
 
-SELECT MAX([SerialId]) from [dbo].[PReturn];
+SELECT MAX(cast( substring([SerialId], 4, 10) as int)) from [dbo].[PReturn];
 GO
 
-SELECT MAX([SerialId]) from [dbo].[Purchase];
+SELECT MAX(cast( substring([SerialId], 3, 10) as int)) from [dbo].[Purchase];
 GO
 
-SELECT MAX([SerialId]) from [dbo].[Sales];
+SELECT MAX(cast( substring([SerialId], 3, 10) as int)) from [dbo].[Sales];
 GO
 
-SELECT MAX([SerialId]) from [dbo].[SOrder];
+SELECT MAX(cast( substring([SerialId], 4, 10) as int)) from [dbo].[SOrder];
 GO
