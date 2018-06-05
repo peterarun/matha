@@ -34,14 +34,14 @@
 											<children>
 												<TableView fx:id="txnData" prefHeight="417.0" prefWidth="625.0">
 													<columns>
-														<TableColumn prefWidth="99.0" text="Order No.">
-															<cellValueFactory>
-																<PropertyValueFactory property="serialNo" />
-															</cellValueFactory>
-														</TableColumn>
 														<TableColumn minWidth="0.0" prefWidth="83.0" text="Date">
 															<cellValueFactory>
 																<PropertyValueFactory property="orderDateStr" />
+															</cellValueFactory>
+														</TableColumn>
+														<TableColumn prefWidth="99.0" text="Order No.">
+															<cellValueFactory>
+																<PropertyValueFactory property="serialNo" />
 															</cellValueFactory>
 														</TableColumn>
 														<TableColumn prefWidth="235.0" text="Book Count">
@@ -66,19 +66,14 @@
 											<children>
 												<TableView fx:id="billData" prefHeight="415.0" prefWidth="625.0">
 													<columns>
-														<TableColumn prefWidth="101.0" text="Invoice No.">
-															<cellValueFactory>
-																<PropertyValueFactory property="serialNo" />
-															</cellValueFactory>														
-														</TableColumn>
 														<TableColumn prefWidth="132.0" text="Date">
 															<cellValueFactory>
 																<PropertyValueFactory property="invoiceDateStr" />
 															</cellValueFactory>														
 														</TableColumn>
-														<TableColumn prefWidth="145.0" text="GR No.">
+														<TableColumn prefWidth="101.0" text="Invoice No.">
 															<cellValueFactory>
-																<PropertyValueFactory property="grNum" />
+																<PropertyValueFactory property="serialNo" />
 															</cellValueFactory>														
 														</TableColumn>
                                           				<TableColumn fx:id="amountColumn" prefWidth="121.0" text="Amount">
@@ -86,11 +81,6 @@
 																<PropertyValueFactory property="netAmount" />
 															</cellValueFactory>
                                           				</TableColumn>
-			                                          <TableColumn prefWidth="125.0" text="Discount">
-															<cellValueFactory>
-																<PropertyValueFactory property="calcDisc" />
-															</cellValueFactory>			                                          
-			                                          </TableColumn>
 													</columns>
 												</TableView>
 												<Button layoutX="656.0" layoutY="25.0" mnemonicParsing="false" onAction="#addBill" prefHeight="26.0" prefWidth="120.0" text="Generate" />
@@ -108,14 +98,14 @@
 											<children>
 												<TableView fx:id="creditNoteData" prefHeight="415.0" prefWidth="625.0">
 													<columns>
-														<TableColumn prefWidth="116.0" text="Credit Note No.">
-															<cellValueFactory>
-																<PropertyValueFactory property="creditNoteNum" />
-															</cellValueFactory>														
-														</TableColumn>
 														<TableColumn prefWidth="119.0" text="Date">
 															<cellValueFactory>
 																<PropertyValueFactory property="txnDateStr" />
+															</cellValueFactory>														
+														</TableColumn>
+														<TableColumn prefWidth="116.0" text="Credit Note No.">
+															<cellValueFactory>
+																<PropertyValueFactory property="creditNoteNum" />
 															</cellValueFactory>														
 														</TableColumn>
 														<TableColumn prefWidth="117.0" text="Amount">
@@ -138,6 +128,11 @@
 											<children>
 												<TableView fx:id="paymentData" prefHeight="415.0" prefWidth="625.0">
 													<columns>
+														<TableColumn prefWidth="131.0" text="Date">
+															<cellValueFactory>
+																<PropertyValueFactory property="txnDateStr" />
+															</cellValueFactory>  														
+														</TableColumn>
 														<TableColumn prefWidth="110.0" text="Receipt No.">
 															<cellValueFactory>
 																<PropertyValueFactory property="receiptNum" />
@@ -147,11 +142,6 @@
 															<cellValueFactory>
 																<PropertyValueFactory property="paymentMode" />
 															</cellValueFactory>														
-														</TableColumn>
-														<TableColumn prefWidth="131.0" text="Date">
-															<cellValueFactory>
-																<PropertyValueFactory property="txnDateStr" />
-															</cellValueFactory>  														
 														</TableColumn>
 														<TableColumn prefWidth="130.0" text="Amount">
 															<cellValueFactory>

@@ -4,11 +4,7 @@ import java.io.ByteArrayOutputStream;
 import java.io.InputStream;
 import java.nio.charset.Charset;
 import java.time.LocalDate;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-import java.util.Optional;
-import java.util.Set;
+import java.util.*;
 import java.util.stream.Collectors;
 
 import javax.print.PrintException;
@@ -21,6 +17,8 @@ import javax.print.attribute.standard.OrientationRequested;
 import javax.print.attribute.standard.PrinterName;
 
 import com.matha.domain.*;
+import javafx.event.ActionEvent;
+import javafx.scene.control.*;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
@@ -40,12 +38,7 @@ import javafx.print.PrinterJob;
 import javafx.scene.Node;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
-import javafx.scene.control.Alert;
-import javafx.scene.control.ChoiceDialog;
-import javafx.scene.control.Label;
-import javafx.scene.control.RadioButton;
 import javafx.scene.control.TableColumn.CellDataFeatures;
-import javafx.scene.control.TextField;
 import javafx.scene.control.Alert.AlertType;
 import javafx.scene.transform.Scale;
 import javafx.scene.web.WebView;
@@ -64,6 +57,9 @@ import net.sf.jasperreports.export.SimpleHtmlExporterOutput;
 import net.sf.jasperreports.export.SimplePrintServiceExporterConfiguration;
 
 import static com.matha.util.UtilConstants.*;
+import static java.util.Comparator.comparing;
+import static java.util.stream.Collectors.toList;
+import static java.util.stream.Collectors.toSet;
 
 public class Utils
 {
@@ -245,7 +241,7 @@ public class Utils
 					.map(PurchaseDet::getOrderItem)
 					.filter(oi -> oi.getOrder() != null)
 					.map(oi -> oi.getOrder().getSerialNo())
-					.collect(Collectors.toSet());
+					.collect(toSet());
 			String orderIds = String.join(",", orderIdSet);
 			Double subTotal = purchase.getSubTotal();
 			Double discAmt = purchase.getCalculatedDisc();
@@ -324,12 +320,12 @@ public class Utils
 			strBuildAcct.append(HYPHEN_SPC_SIGN);
 			strBuildAcct.append(acct.getIfsc());
 			
-			Set<SalesDet> tableData = sale.getSaleItems();
+			List<SalesDet> tableData = sale.getSaleItems().stream().sorted(comparing(sd -> sd.getSlNum())).collect(toList());
 			Set<String> orderIdSet = tableData.stream()
 					.map(SalesDet::getOrderItem)
 					.filter(o-> o != null)
 					.map(o -> o.getOrder().getSerialNo())
-					.collect(Collectors.toSet());
+					.collect(toSet());
 			String orderIds = String.join(",", orderIdSet);
 			Double subTotal = sale.getSubTotal();
 			Double discAmt = sale.getDiscAmt();
@@ -607,7 +603,25 @@ public class Utils
 		alert.setContentText(content);
 		alert.showAndWait();
 	}
-	
+
+	public static boolean showConfirmation(String title, String message)
+	{
+		Alert alert = new Alert(AlertType.CONFIRMATION);
+		alert.setTitle(title);
+		alert.setHeaderText(message);
+		alert.setContentText("Click Ok to Delete");
+
+		Optional<ButtonType> result = alert.showAndWait();
+		if (result.get() == ButtonType.OK)
+		{
+			return true;
+		}
+		else
+		{
+			return false;
+		}
+	}
+
 	public static String convertDouble(double dbl)
 	{
 		int mainPart = (int) dbl;

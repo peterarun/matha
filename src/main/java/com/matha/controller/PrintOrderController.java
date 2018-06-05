@@ -5,6 +5,8 @@ import static com.matha.util.UtilConstants.Excel;
 import static com.matha.util.UtilConstants.PDF;
 import static com.matha.util.UtilConstants.*;
 import static com.matha.util.Utils.printJasper;
+import static java.util.Comparator.comparing;
+import static java.util.stream.Collectors.toList;
 
 import java.io.ByteArrayOutputStream;
 import java.io.File;
@@ -13,6 +15,7 @@ import java.nio.charset.Charset;
 import java.util.Arrays;
 import java.util.HashMap;
 import java.util.List;
+import java.util.stream.Collectors;
 
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Value;
@@ -87,7 +90,7 @@ public class PrintOrderController
 
 			School school = orderIn.getSchool();
 			this.schoolName.setText(school.getName());
-			List<OrderItem> tableData = orderIn.getOrderItem();
+			List<OrderItem> tableData = orderIn.getOrderItem().stream().sorted(comparing(oi -> oi.getSerialNum())).collect(toList());
 			
 			hm.put("agencyName", agencyName);
 			hm.put("agencyAddress1", agencyAddress1);

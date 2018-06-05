@@ -48,29 +48,34 @@
 																											
 				<TableView fx:id="addedBooks" editable="true" layoutX="23.0" layoutY="23.0" prefHeight="318.0" prefWidth="512.0">
 					<columns>
-						<TableColumn prefWidth="273.0" text="Book Name">
+					  <TableColumn prefWidth="45.0" text="Sl. No.">
+						  <cellValueFactory>
+							  <PropertyValueFactory property="slNum" />
+						  </cellValueFactory>
+					  </TableColumn>
+						<TableColumn prefWidth="254.0" text="Book Name">
 							<cellValueFactory>
 								<PropertyValueFactory property="bookName" />
 							</cellValueFactory>
 						</TableColumn>
-						<TableColumn fx:id="qtyColumn" editable="true" prefWidth="72.0" text="Quantity">
+						<TableColumn fx:id="qtyColumn" editable="true" prefWidth="59.0" text="Quantity">
 							<cellValueFactory>
 								<PropertyValueFactory property="soldCnt" />
 							</cellValueFactory>
 						</TableColumn>
-						<TableColumn fx:id="priceColumn" editable="true" prefWidth="75.0" text="Price">
+						<TableColumn fx:id="priceColumn" editable="true" prefWidth="71.0" text="Price">
 							<cellValueFactory>
 								<PropertyValueFactory property="bookPrice" />
 							</cellValueFactory>
 						</TableColumn>
-    	              <TableColumn fx:id="totalColumn" prefWidth="91.0" text="Total" >
+    	              <TableColumn fx:id="totalColumn" prefWidth="81.0" text="Total">
 						  <cellValueFactory>
 							  <PropertyValueFactory property="totalSold" />
 						  </cellValueFactory>
 					  </TableColumn>
 					</columns>
 				</TableView>
-				<Button focusTraversable="false" layoutX="23.0" layoutY="343.0" mnemonicParsing="false" onAction="#removeOrderItem" prefHeight="25.0" prefWidth="129.0" text="Remove Item" />
+				<Button focusTraversable="false" layoutX="23.0" layoutY="341.0" mnemonicParsing="false" onAction="#removeOrderItem" prefHeight="25.0" prefWidth="109.0" text="Remove Item" />
 				
 				<Label layoutX="560.0" layoutY="325.0" text="Added Orders:" />
 				<ListView fx:id="orderList" focusTraversable="false" layoutX="559.0" layoutY="342.0" prefHeight="69.0" prefWidth="129.0" />
@@ -99,16 +104,17 @@
 				<Label layoutX="355.0" layoutY="453.0" text="Net Amount:" />
 				<TextField fx:id="netAmt" editable="false" focusTraversable="false" layoutX="426.0" layoutY="449.0" prefHeight="25.0" prefWidth="109.0" style="-fx-background-color: beige;" />
 
-				<Button layoutX="23.0" layoutY="414.0" mnemonicParsing="false" onAction="#saveData" prefHeight="59.0" prefWidth="129.0" text="Save" />
-				<Button fx:id="cancelBtn" layoutX="23.0" layoutY="382.0" mnemonicParsing="false" onAction="#cancelOperation" prefHeight="25.0" prefWidth="129.0" text="Cancel" />
-            <TextField fx:id="bookText" layoutX="164.0" layoutY="343.0" prefHeight="25.0" prefWidth="325.0" promptText="Search Book to Add">
+				<Button layoutX="23.0" layoutY="414.0" mnemonicParsing="false" onAction="#saveData" prefHeight="59.0" prefWidth="109.0" text="Save" />
+				<Button fx:id="cancelBtn" layoutX="23.0" layoutY="382.0" mnemonicParsing="false" onAction="#cancelOperation" prefHeight="25.0" prefWidth="109.0" text="Cancel" />
+            <TextField fx:id="bookText" layoutX="142.0" layoutY="341.0" prefHeight="25.0" prefWidth="298.0" promptText="Search Book to Add">
                <effect>
                   <Blend />
                </effect>
             </TextField>
-            <TextField fx:id="bookCnt" layoutX="499.0" layoutY="343.0" onAction="#addBookData" prefHeight="25.0" prefWidth="36.0" promptText="Qty." />
+            <TextField fx:id="bookCnt" layoutX="445.0" layoutY="341.0" onAction="#addBookData" prefHeight="25.0" prefWidth="36.0" promptText="Qty." />
             <Label layoutX="375.0" layoutY="419.0" text="Discount" />
             <TextField fx:id="calculatedDisc" editable="false" focusTraversable="false" layoutX="426.0" layoutY="415.0" prefHeight="25.0" prefWidth="109.0" style="-fx-background-color: beige;" />
+            <TextField fx:id="bookPrice" layoutX="487.0" layoutY="341.0" onAction="#addBookData" prefHeight="25.0" prefWidth="47.0" promptText="Price" />
 				
 			</children>
 		</AnchorPane>

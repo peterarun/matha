@@ -17,6 +17,7 @@ import java.util.stream.Collectors;
 
 import com.matha.domain.*;
 import javafx.collections.ObservableSet;
+import javafx.collections.transformation.SortedList;
 import org.apache.commons.lang.StringUtils;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
@@ -134,11 +135,13 @@ public class AddBillController
 	@FXML
 	private TextField bookCnt;
 
+	@FXML
+	private TextField bookPrice;
+
 	private School school;
 	private Sales selectedSale;
 //	private ObservableSet<Order> orders;
 	private Map<String, Book> bookMap;
-	private AtomicInteger index = new AtomicInteger();
 
 	private Map<String, Order> orderMap = new HashMap<>();
 	private Collector<Order, ?, Map<String, Order>> orderMapCollector = Collectors.toMap(o -> o.getSerialNo(), o -> o);
@@ -237,9 +240,8 @@ public class AddBillController
 		{
 			if(sale.getSaleItems() != null)
 			{
-				Set<SalesDet> addedBookList = sale.getSaleItems().stream().sorted(comparing(sd -> sd.getSlNum())).collect(toSet());
+				List<SalesDet> addedBookList = sale.getSaleItems().stream().sorted(comparing(sd -> sd.getSlNum())).collect(toList());
 				this.addedBooks.setItems(FXCollections.observableArrayList(addedBookList));
-				this.index.set(sale.getSaleItems().size());
 
 				Set<String> orderListIn = sale.getSaleItems().stream()
 						.filter(sa -> sa.getOrderItem() != null)
@@ -280,20 +282,40 @@ public class AddBillController
 			List<OrderItem> newItems = orders.stream()
 					.map(Order::getOrderItem)
 					.flatMap(List::stream)
+					.sorted(comparing(OrderItem::getSerialNum))
 					.collect(toList());
 			newItems.removeAll(addedBooks.getItems().stream().map(sd -> sd.getOrderItem()).collect(toList()));
 
-			List<SalesDet> bookItems = newItems.stream()
-					.map(oi -> new SalesDet(null,
-							null,
-							index.incrementAndGet(),
-							oi))
-					.collect(toList());
+			int idx = addedBooks.getItems().size();
+			for (OrderItem orderItem : newItems)
+			{
+				SalesDet salesDet = new SalesDet(null, null, ++idx,orderItem);
+				addedBooks.getItems().add(salesDet);
+			}
+//			List<SalesDet> bookItems = newItems.stream()
+//					.map(oi -> new SalesDet(null,
+//							null,
+//							index.incrementAndGet(),
+//							oi))
+//					.collect(toList());
 
-			addedBooks.getItems().addAll(bookItems);
+//			addedBooks.getItems().addAll(bookItems);
+		}
+		else
+		{
+			reArrangeItems(addedBooks.getItems());
 		}
 		loadSubTotal();
 		calcNetAmount(discAmt.getText(), otherCharges.getText());
+	}
+
+	private void reArrangeItems(ObservableList<SalesDet> items)
+	{
+		int idx = 0;
+		for (SalesDet orderItem : items)
+		{
+			orderItem.setSlNum(++idx);
+		}
 	}
 
 	private void loadSubTotal()
@@ -490,13 +512,21 @@ public class AddBillController
 	@FXML
 	void addBookData(ActionEvent e)
 	{
-		SalesDet item = new SalesDet(index.incrementAndGet(), Integer.parseInt(bookCnt.getText()), null, bookMap.get(bookText.getText()));
-		item.setRate(item.getBookPrice());
+		int idx = addedBooks.getItems().size();
+		Double bookPriceIn = getDoubleVal(bookPrice);
+		SalesDet item = new SalesDet(++idx, getIntegerVal(bookCnt), bookPriceIn, bookMap.get(bookText.getText()));
+		if(bookPriceIn == null)
+		{
+			item.setRate(item.getBookPrice());
+		}
 		addedBooks.getItems().add(item);
 		bookText.clear();
 		bookCnt.clear();
+		bookPrice.clear();
 		addedBooks.getSelectionModel().clearSelection();
 		bookText.requestFocus();
+		loadSubTotal();
+		calcNetAmount(discAmt.getText(), otherCharges.getText());
 	}
 	
 	public Sales getSelectedSale()

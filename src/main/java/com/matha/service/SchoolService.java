@@ -246,18 +246,21 @@ public class SchoolService
 		orderItemRepository.delete(orderItem);
 	}
 
-	@Transactional
-	public void updateOrderData(Order order, List<OrderItem> orderItem)
+	public Order fetchOrder(String id)
 	{
-		List<OrderItem> removedItems = new ArrayList<>();
+		return orderRepository.findOne(id);
+	}
+
+	@Transactional
+	public void updateOrderData(Order order,
+								List<OrderItem> orderItem,
+								List<OrderItem> removedItems,
+								Set<SalesTransaction> saleTxns,
+								Set<PurchaseTransaction> purTxns)
+	{
 		if(order.getId() == null)
 		{
 			orderRepository.save(order);
-		}
-		else
-		{
-			removedItems = orderRepository.getOne(order.getId()).getOrderItem();
-			removedItems.removeAll(orderItem);
 		}
 
 		for (OrderItem orderItemIn : orderItem)
@@ -266,10 +269,43 @@ public class SchoolService
 		}
 		orderItemRepository.save(orderItem);
 		orderItemRepository.delete(removedItems);
+
+		for (SalesTransaction saleTxn : saleTxns)
+		{
+			updateBalance(saleTxn.getPrevTxn());
+		}
+
+		for (PurchaseTransaction purTxn : purTxns)
+		{
+			updateBalance(purTxn.getPrevTxn());
+		}
 	}
 
-	public void deleteSchool(School school)
+	public void deleteSchool(School school, List<Order> ordersIn, List<Sales> bills, List<SchoolReturn> returns, List<SchoolPayment> payments, Set<PurchaseDet> purchasesIn)
 	{
+		Set<SalesTransaction> billTxns = bills.stream().map(Sales::getSalesTxn).filter(st -> st != null).collect(toSet());
+		Set<SalesTransaction> returnTxns = returns.stream().map(SchoolReturn::getSalesTxn).filter(st -> st != null).collect(toSet());
+		Set<SalesTransaction> paymentTxns = payments.stream().map(SchoolPayment::getSalesTxn).filter(st -> st != null).collect(toSet());
+		Set<SalesTransaction> allTxns = new HashSet<SalesTransaction>(billTxns);
+		allTxns.addAll(returnTxns);
+		allTxns.addAll(paymentTxns);
+
+		for (SalesTransaction txn : allTxns)
+		{
+			deleteSalesTxn(txn);
+		}
+		salesRepository.delete(bills);
+		schoolReturnRepository.delete(returns);
+		schoolPayRepository.delete(payments);
+
+		Set<PurchaseTransaction> purchases = purchasesIn.stream().map(pd -> pd.getPurchase().getSalesTxn()).collect(toSet());
+		purDetRepository.delete(purchasesIn);
+		for (PurchaseTransaction purTransaction : purchases)
+		{
+			updatePurchaseTxn(purTransaction);
+		}
+
+		orderRepository.delete(ordersIn);
 		schoolRepoitory.delete(school);
 	}
 

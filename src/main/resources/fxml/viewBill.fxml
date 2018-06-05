@@ -48,22 +48,27 @@
 																											
 				<TableView fx:id="addedBooks" editable="true" layoutX="23.0" layoutY="23.0" prefHeight="318.0" prefWidth="512.0">
 					<columns>
-						<TableColumn prefWidth="273.0" text="Book Name">
+					  <TableColumn prefWidth="43.0" text="Sl No." >
+						  <cellValueFactory>
+							  <PropertyValueFactory property="slNum" />
+						  </cellValueFactory>
+					  </TableColumn>
+						<TableColumn prefWidth="276.0" text="Book Name">
 							<cellValueFactory>
 								<PropertyValueFactory property="bookName" />
 							</cellValueFactory>
 						</TableColumn>
-						<TableColumn fx:id="qtyColumn" editable="true" prefWidth="72.0" text="Quantity">
+						<TableColumn fx:id="qtyColumn" editable="true" prefWidth="55.0" text="Quantity">
 							<cellValueFactory>
 								<PropertyValueFactory property="quantity" />
 							</cellValueFactory>
 						</TableColumn>
-						<TableColumn fx:id="priceColumn" editable="true" prefWidth="75.0" text="Price">
+						<TableColumn fx:id="priceColumn" editable="true" prefWidth="68.0" text="Price">
 							<cellValueFactory>
 								<PropertyValueFactory property="bookPrice" />
 							</cellValueFactory>
 						</TableColumn>
-					  <TableColumn fx:id="totalColumn" prefWidth="91.0" text="Total" >
+					  <TableColumn fx:id="totalColumn" prefWidth="68.0" text="Total">
 						  <cellValueFactory>
 							  <PropertyValueFactory property="totalSold" />
 						  </cellValueFactory>

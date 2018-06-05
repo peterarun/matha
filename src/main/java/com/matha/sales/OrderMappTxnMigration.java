@@ -152,7 +152,7 @@ public class OrderMappTxnMigration
 			Supplier<Stream<OrderItem>> orderStreamSupp = () -> ordList.stream()
 					.map(o -> o.getOrderItem())
 					.flatMap(List<OrderItem>::stream);
-			Map<String, Set<String>> ordMap = orderStreamSupp.get().collect(groupingBy(OrderItem::getOrderId, mapping(o -> o.getBook().getBookNum(), toSet())));
+			Map<String, Set<String>> ordMap = orderStreamSupp.get().filter(oi -> oi.getBook().getPublisher().getId().equals(sc.getId())).collect(groupingBy(OrderItem::getOrderId, mapping(o -> o.getBook().getBookNum(), toSet())));
 			Map<String, Order> orderMap = ordList.stream()
 					.collect(toMap(o -> o.getId(), o -> o));
 			LOGGER.debug("orderEnt");

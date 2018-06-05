@@ -1,6 +1,8 @@
 package com.matha.controller;
 
 import static com.matha.util.UtilConstants.*;
+import static com.matha.util.Utils.showConfirmation;
+import static java.util.stream.Collectors.toSet;
 
 import java.io.IOException;
 import java.util.ArrayList;
@@ -8,14 +10,12 @@ import java.util.List;
 import java.util.Optional;
 import java.util.Set;
 
+import com.matha.domain.*;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 
-import com.matha.domain.District;
-import com.matha.domain.School;
-import com.matha.domain.State;
 import com.matha.service.SchoolService;
 import com.matha.util.Converters;
 import com.matha.util.LoadUtils;
@@ -238,7 +238,26 @@ public class SchoolController
 		Optional<ButtonType> result = alert.showAndWait();
 		if (result.get() == ButtonType.OK)
 		{
-			srvc.deleteSchool(selectedOrder);
+			List<Sales> bills = srvc.fetchBills(selectedOrder);
+			List<SchoolReturn> returns = srvc.fetchReturnsForSchool(selectedOrder);
+			List<SchoolPayment> payments = srvc.fetchPayments(selectedOrder);
+
+			List<Order> ordersIn = srvc.fetchOrderForSchool(selectedOrder);
+			Set<PurchaseDet> purchasesIn = ordersIn.stream().map(o -> o.getOrderItem()).flatMap(List::stream).map(oi -> oi.getPurchaseDet()).flatMap(Set::stream).collect(toSet());
+
+			if((bills != null && !bills.isEmpty()) ||
+					(returns != null && !returns.isEmpty()) ||
+					(payments != null && !payments.isEmpty()) ||
+					(purchasesIn != null && !purchasesIn.isEmpty()))
+			{
+				if(!showConfirmation("Bill/Return/Payment transactions available", "There are Bill/Return/Payment transactions already created for the school getting removed. Are you sure you want to remove?"))
+				{
+					return;
+				}
+
+			}
+
+			srvc.deleteSchool(selectedOrder, ordersIn, bills, returns, payments, purchasesIn);
 			initData();
 		}
 	}

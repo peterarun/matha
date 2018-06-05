@@ -1,10 +1,16 @@
 package com.matha.domain;
 
 import java.io.Serializable;
+import java.util.List;
+import java.util.Set;
 
 import javax.persistence.*;
 
+import org.hibernate.annotations.Cascade;
 import org.hibernate.annotations.GenericGenerator;
+
+import static org.hibernate.annotations.CascadeType.DELETE;
+import static org.hibernate.annotations.CascadeType.SAVE_UPDATE;
 
 @Entity
 @Table(name = "SOrderDet")
@@ -22,13 +28,13 @@ public class OrderItem implements Serializable, Comparable<OrderItem>
 	@JoinColumn(name = "SerialId")
 	private Order order;
 
-//	@ManyToOne
-//	@JoinColumn(name = "PurchaseId")
-//	private Purchase purchase;
-//
-//	@ManyToOne
-//	@JoinColumn(name = "SalesId")
-//	private Sales sale;
+	@OneToMany(fetch= FetchType.EAGER, mappedBy = "orderItem")
+	@Cascade({DELETE})
+	private Set<PurchaseDet> purchaseDet;
+
+	@OneToMany(fetch= FetchType.EAGER, mappedBy = "orderItem")
+	@Cascade({DELETE})
+	private Set<SalesDet> salesDet;
 	
 	@ManyToOne()
 	@JoinColumn(name = "BkNo")
@@ -214,6 +220,22 @@ public class OrderItem implements Serializable, Comparable<OrderItem>
 	public String getOrderId()
 	{
 		return this.order.getId();
+	}
+
+	public Set<SalesDet> getSalesDet() {
+		return salesDet;
+	}
+
+	public void setSalesDet(Set<SalesDet> salesDet) {
+		this.salesDet = salesDet;
+	}
+
+	public Set<PurchaseDet> getPurchaseDet() {
+		return purchaseDet;
+	}
+
+	public void setPurchaseDet(Set<PurchaseDet> purchaseDet) {
+		this.purchaseDet = purchaseDet;
 	}
 
 	@Override

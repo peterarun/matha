@@ -1,25 +1,29 @@
 package com.matha.controller;
 
 import static com.matha.util.Converters.getIntegerConverter;
+import static com.matha.util.Utils.calcFinYear;
+import static com.matha.util.Utils.showConfirmation;
 import static com.matha.util.Utils.showErrorAlert;
 import static com.matha.util.UtilConstants.*;
+import static java.util.Comparator.comparing;
+import static java.util.stream.Collectors.toList;
+import static java.util.stream.Collectors.toSet;
 
 import java.time.LocalDate;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
+import java.util.stream.Collectors;
 
+import com.matha.domain.*;
+import javafx.collections.ObservableList;
+import javafx.collections.transformation.SortedList;
 import org.apache.commons.lang.StringUtils;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.controlsfx.control.textfield.TextFields;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.cglib.core.Local;
 import org.springframework.stereotype.Component;
 
-import com.matha.domain.Book;
-import com.matha.domain.Order;
-import com.matha.domain.OrderItem;
-import com.matha.domain.School;
 import com.matha.service.SchoolService;
 
 import javafx.collections.FXCollections;
@@ -68,7 +72,10 @@ public class AddOrderController
 
 	@FXML
 	private TableView<OrderItem> addedBooks;
-	
+
+	@FXML
+	private TableColumn<OrderItem, Integer> slNumColumn;
+
 	@FXML
 	private TableColumn<OrderItem, Integer> qtyCol;
 
@@ -117,9 +124,11 @@ public class AddOrderController
 	@FXML
 	void addBookData(ActionEvent e)
 	{
+		int idx = addedBooks.getItems().size() + 1;
 		OrderItem item = new OrderItem();
 		item.setBook(bookMap.get(bookText.getText()));
 		item.setCount(Integer.parseInt(bookCount.getText()));
+		item.setSerialNum(idx);
 		addedBooks.getItems().add(item);
 		bookText.clear();
 		bookCount.clear();
@@ -131,6 +140,16 @@ public class AddOrderController
 	{
 		int sels = addedBooks.getSelectionModel().getSelectedIndex();
 		addedBooks.getItems().remove(sels);
+		reArrangeItems(addedBooks.getItems());
+	}
+
+	private void reArrangeItems(ObservableList<OrderItem> items)
+	{
+		int idx = 0;
+		for (OrderItem orderItem : items)
+		{
+			orderItem.setSerialNum(++idx);
+		}
 	}
 
 	@FXML
@@ -141,21 +160,61 @@ public class AddOrderController
 		{
 			return;
 		}
+
+		Set<SalesDet> orderSales = new HashSet<>();
+		Set<PurchaseDet> orderPurchases = new HashSet<>();
+		Set<SalesTransaction> saleTxns = new HashSet<>();
+		Set<PurchaseTransaction> purTxns = new HashSet<>();
+
 		Order item = this.order;
-		List<OrderItem> items = addedBooks.getItems();
 		if (item == null)
 		{
 			item = new Order();
 		}
 
+		List<OrderItem> origOrders = new ArrayList<>();
+		if(item.getId() != null)
+		{
+			Order orderIn = srvc.fetchOrder(item.getId());
+			origOrders = orderIn.getOrderItem();
+		}
+
+		if (origOrders != null && !origOrders.isEmpty())
+		{
+			origOrders.removeAll(this.addedBooks.getItems());
+			if (!origOrders.isEmpty())
+			{
+				orderSales = origOrders.stream().map(oi -> oi.getSalesDet()).flatMap(Set::stream).collect(toSet());
+				orderPurchases = origOrders.stream().map(oi -> oi.getPurchaseDet()).flatMap(Set::stream).collect(toSet());
+				if ((orderSales != null && !orderSales.isEmpty()) || (orderPurchases != null && !orderPurchases.isEmpty()))
+				{
+					if (!showConfirmation("Purchase/Sale Bills available for the order", "There are Purchase/Sale already created for the items getting removed. Are you sure you want to remove?"))
+					{
+						return;
+					}
+					if (orderSales != null && !orderSales.isEmpty())
+					{
+						saleTxns = orderSales.stream().filter(sd -> sd.getSale() != null).map(sd -> sd.getSale().getSalesTxn()).collect(toSet());
+					}
+					if (orderPurchases != null && !orderPurchases.isEmpty())
+					{
+						purTxns = orderPurchases.stream().filter(sd -> sd.getPurchase() != null).map(sd -> sd.getPurchase().getSalesTxn()).collect(toSet());
+					}
+				}
+			}
+		}
+
+		List<OrderItem> items = addedBooks.getItems();
 		item.setOrderItem(items);
 		item.setSerialNo(orderNum.getText());
 		item.setSchool(school);
 		item.setOrderDate(orderDate.getValue());
 		item.setDeliveryDate(despatchDate.getValue());
 		item.setDesLocation(desLocation.getText());
+		item.setFinancialYear(calcFinYear(LocalDate.now()));
+		item.setPrefix(item.getSerialNo() + " - " + item.getFinancialYear());
 
-		srvc.updateOrderData(item, items);
+		srvc.updateOrderData(item, items, origOrders, saleTxns, purTxns);
 
 		((Stage) cancelBtn.getScene().getWindow()).close();
 	}
@@ -176,7 +235,8 @@ public class AddOrderController
 		this.orderDate.setValue(selectedOrder.getOrderDate());
 		this.desLocation.setText(selectedOrder.getDesLocation());
 		this.despatchDate.setValue(selectedOrder.getDeliveryDate());
-		this.addedBooks.setItems(FXCollections.observableList(selectedOrder.getOrderItem()));
+		List<OrderItem> items = selectedOrder.getOrderItem().stream().sorted(comparing(OrderItem::getSerialNum)).collect(toList());
+		this.addedBooks.setItems(FXCollections.observableList(items));
 	}
 
 	private boolean validateData()

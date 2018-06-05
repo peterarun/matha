@@ -35,12 +35,17 @@
 
             <TableView fx:id="addedBooks" editable="true" layoutX="25.0" layoutY="76.0" prefHeight="243.0" prefWidth="554.0">
               <columns>
-                <TableColumn prefWidth="449.0" text="Book Name">
+                  <TableColumn fx:id="slNumColumn" prefWidth="51.0" text="Sl No." >
+                      <cellValueFactory>
+                          <PropertyValueFactory property="serialNum" />
+                      </cellValueFactory>
+                  </TableColumn>
+                <TableColumn prefWidth="398.0" text="Book Name">
                   <cellValueFactory>
                       <PropertyValueFactory property="bookName" />
                   </cellValueFactory>                
                 </TableColumn>
-                <TableColumn fx:id="qtyCol" prefWidth="103.0" text="Quantity">
+                <TableColumn fx:id="qtyCol" prefWidth="104.0" text="Quantity">
                   <cellValueFactory>
                       <PropertyValueFactory property="count" />
                   </cellValueFactory>                

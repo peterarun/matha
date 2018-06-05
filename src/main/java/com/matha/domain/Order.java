@@ -57,8 +57,11 @@ public class Order implements Serializable, Comparable<Order>
 	private String desLocation;
 
 	@Column(name = "Fy")
-	private Integer financialYear;	
-	
+	private Integer financialYear;
+
+	@Column(name = "Prefix")
+	private String prefix;
+
 	public Integer getOrderCount()
 	{
 		return orderItem == null ? 0 : orderItem.size();
@@ -163,6 +166,14 @@ public class Order implements Serializable, Comparable<Order>
 	public void setFinancialYear(Integer financialYear)
 	{
 		this.financialYear = financialYear;
+	}
+
+	public String getPrefix() {
+		return prefix;
+	}
+
+	public void setPrefix(String prefix) {
+		this.prefix = prefix;
 	}
 
 	@Override

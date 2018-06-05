@@ -289,8 +289,11 @@ public class SchoolDetailsController
 			prepareAndShowStage(event, addBillScene, billEventHandler);
 			saleTabs.getSelectionModel().select(billsTab);
 
-			Sales savedSale = schoolService.fetchSale(ctrl.getSelectedSale().getId());
-			showPrintDialog(savedSale, event);
+			if(ctrl.getSelectedSale() != null && ctrl.getSelectedSale().getId() != null)
+			{
+				Sales savedSale = schoolService.fetchSale(ctrl.getSelectedSale().getId());
+				showPrintDialog(savedSale, event);
+			}
 		}
 		catch (Exception e)
 		{
@@ -311,9 +314,11 @@ public class SchoolDetailsController
 			Scene addBillScene = new Scene(addBillRoot);
 			prepareAndShowStage(event, addBillScene, billEventHandler);
 
-			Sales saleIn = schoolService.fetchSale(ctrl.getSelectedSale().getId());
-			showPrintDialog(saleIn, event);
-
+			if(ctrl.getSelectedSale() != null && ctrl.getSelectedSale().getId() != null)
+			{
+				Sales saleIn = schoolService.fetchSale(ctrl.getSelectedSale().getId());
+				showPrintDialog(saleIn, event);
+			}
 		}
 		catch (Exception e)
 		{
@@ -338,7 +343,8 @@ public class SchoolDetailsController
 			ctrl.initData(null, this.school, selectedSale, this.bookMap);
 			Scene addBillScene = new Scene(addBillRoot);
 			prepareAndShowStage(event, addBillScene, billEventHandler);
-			showPrintDialog(ctrl.getSelectedSale(), event);
+			Sales saleIn = schoolService.fetchSale(ctrl.getSelectedSale().getId());
+			showPrintDialog(saleIn, event);
 		}
 		catch (Exception e)
 		{
