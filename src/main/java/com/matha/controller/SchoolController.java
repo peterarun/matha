@@ -5,10 +5,7 @@ import static com.matha.util.Utils.showConfirmation;
 import static java.util.stream.Collectors.toSet;
 
 import java.io.IOException;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Optional;
-import java.util.Set;
+import java.util.*;
 
 import com.matha.domain.*;
 import org.apache.logging.log4j.LogManager;
@@ -108,6 +105,7 @@ public class SchoolController
 				}
 				catch (Exception e)
 				{
+					LOGGER.error("Error...", e);
 					e.printStackTrace();
 				}
 
@@ -176,6 +174,7 @@ public class SchoolController
 		}
 		catch (IOException e)
 		{
+			LOGGER.error("Error...", e);
 			e.printStackTrace();
 		}
 	}
@@ -205,6 +204,7 @@ public class SchoolController
 		}
 		catch (IOException e)
 		{
+			LOGGER.error("Error...", e);
 			e.printStackTrace();
 		}
 	}
@@ -243,7 +243,8 @@ public class SchoolController
 			List<SchoolPayment> payments = srvc.fetchPayments(selectedOrder);
 
 			List<Order> ordersIn = srvc.fetchOrderForSchool(selectedOrder);
-			Set<PurchaseDet> purchasesIn = ordersIn.stream().map(o -> o.getOrderItem()).flatMap(List::stream).map(oi -> oi.getPurchaseDet()).flatMap(Set::stream).collect(toSet());
+			List<PurchaseDet> purchasesIn = srvc.fetchPurDetForOrders(ordersIn);
+//			Set<PurchaseDet> purchasesIn = ordersIn.stream().map(o -> o.getOrderItem()).flatMap(List::stream).map(oi -> oi.getPurchaseDet()).flatMap(Set::stream).collect(toSet());
 
 			if((bills != null && !bills.isEmpty()) ||
 					(returns != null && !returns.isEmpty()) ||

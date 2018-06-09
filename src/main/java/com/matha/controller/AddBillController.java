@@ -7,6 +7,7 @@ import static com.matha.util.UtilConstants.SALES_NOTE;
 import static com.matha.util.Utils.*;
 import static java.util.Comparator.comparing;
 import static java.util.stream.Collectors.toList;
+import static java.util.stream.Collectors.toMap;
 import static java.util.stream.Collectors.toSet;
 
 import java.time.LocalDate;
@@ -440,7 +441,7 @@ public class AddBillController
 			sale.setDiscType(false);
 		}
 
-		Set<SalesDet> orderItems = new HashSet<>(this.addedBooks.getItems());
+		List<SalesDet> orderItems = new ArrayList<>(this.addedBooks.getItems());
 
 		if (!StringUtils.isEmpty(subTotal.getText()))
 		{
@@ -448,15 +449,9 @@ public class AddBillController
 			sale.setSubTotal(subTotalVal);
 		}
 
-		if (StringUtils.isEmpty(netAmt.getText()))
-		{
-			salesTxn.setAmount(0.0);
-		}
-		else
-		{
-			Double netAmtVal = Double.parseDouble(netAmt.getText());
-			salesTxn.setAmount(netAmtVal);
-		}
+		Double netAmtVal = getDoubleVal(netAmt);
+		salesTxn.setAmount(netAmtVal);
+		sale.setDeletedAmt(netAmtVal);
 		
 		salesTxn.setNote(SALES_NOTE);
 		salesTxn.setTxnDate(billDate.getValue());
@@ -485,26 +480,30 @@ public class AddBillController
 	@FXML
 	void removeOperation(ActionEvent event)
 	{
-		String orderNumSel = orderList.getSelectionModel().getSelectedItem();
-		if (orderNumSel != null)
+		int orderNumSel = orderList.getSelectionModel().getSelectedIndex();
+		orderList.getItems().remove(orderNumSel);
+
+		List<Order> leftOrders = orderList.getItems().stream().map(o -> orderMap.get(o)).collect(toList());
+		List<OrderItem> newItems = leftOrders.stream()
+				.map(Order::getOrderItem)
+				.flatMap(List::stream)
+				.sorted(comparing(OrderItem::getOrderId).thenComparing(OrderItem::getSerialNum))
+				.collect(toList());
+
+		int idx = addedBooks.getItems().size();
+		for (OrderItem orderItem : newItems)
 		{
-			orderList.getItems().remove(orderNumSel);
-			Order removedOrder = orderMap.get(orderNumSel);
-
-			addedBooks.getItems().removeAll(removedOrder.getOrderItem());
+			SalesDet salesDet = new SalesDet(null, null, ++idx,orderItem);
+			addedBooks.getItems().add(salesDet);
 		}
-
 		loadNewBooksAndSubTotal(null);
 	}
 
 	@FXML
 	void removeOrderItem(ActionEvent event)
 	{
-		ObservableList<SalesDet> orderNumSel = addedBooks.getSelectionModel().getSelectedItems();
-		if (orderNumSel != null)
-		{
-			addedBooks.getItems().removeAll(orderNumSel);
-		}
+		int sels = addedBooks.getSelectionModel().getSelectedIndex();
+		addedBooks.getItems().remove(sels);
 
 		loadNewBooksAndSubTotal(null);
 	}

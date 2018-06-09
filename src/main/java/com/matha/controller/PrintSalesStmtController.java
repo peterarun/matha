@@ -73,9 +73,6 @@ public class PrintSalesStmtController
 	@Value("#{'${datedPurPaymentModes}'.split(',')}")
 	private List<String> datedSchoolPaymentModes;
 
-	@FXML
-	private TextField schoolName;
-
     @FXML
     private DatePicker fromDate;
     
@@ -91,14 +88,13 @@ public class PrintSalesStmtController
 	private JasperPrint print;
 	private School school;
 
-	public void initData(School school, JasperPrint printIn, LocalDate fromDateVal, LocalDate toDateVal)
+	public void initData(School school, List<SalesTransaction> tableDataIn, LocalDate fromDateVal, LocalDate toDateVal)
 	{
 		this.school = school;
-		this.print = printIn;
+		this.print = prepareJasperPrint(school, tableDataIn, fromDateVal, toDateVal);
 		this.fromDate.setValue(fromDateVal);
 		this.toDate.setValue(toDateVal);
-		this.schoolName.setText(school.getName());
-		this.loadWebInvoice(printIn);
+		this.loadWebInvoice(this.print);
 		List<String> saveTypes = Arrays.asList(PDF,Excel,Docx);
 		this.saveType.setItems(FXCollections.observableList(saveTypes));
 		this.saveType.getSelectionModel().selectFirst();

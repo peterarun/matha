@@ -16,15 +16,35 @@ import static java.util.Comparator.comparing;
 import static java.util.stream.Collectors.toList;
 import static java.util.stream.Collectors.toMap;
 
+import java.io.ByteArrayOutputStream;
+import java.io.File;
 import java.io.IOException;
 import java.io.InputStream;
+import java.nio.charset.Charset;
 import java.time.LocalDate;
 import java.util.*;
 import java.util.stream.Collector;
 import java.util.stream.Collectors;
 
 import com.matha.domain.*;
+import com.matha.util.Utils;
+import javafx.scene.Node;
+import javafx.scene.control.*;
+import javafx.scene.web.WebView;
+import javafx.stage.FileChooser;
+import net.sf.jasperreports.engine.*;
+import net.sf.jasperreports.engine.data.JRBeanCollectionDataSource;
+import net.sf.jasperreports.engine.export.HtmlExporter;
+import net.sf.jasperreports.engine.export.ooxml.JRDocxExporter;
+import net.sf.jasperreports.engine.export.ooxml.JRXlsxExporter;
+import net.sf.jasperreports.export.SimpleExporterInput;
+import net.sf.jasperreports.export.SimpleHtmlExporterOutput;
+import net.sf.jasperreports.export.SimpleOutputStreamExporterOutput;
+import org.apache.commons.lang3.StringUtils;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
 
 import com.matha.service.SchoolService;
@@ -40,26 +60,15 @@ import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
-import javafx.scene.control.Alert;
 import javafx.scene.control.Alert.AlertType;
-import javafx.scene.control.ButtonType;
-import javafx.scene.control.DatePicker;
-import javafx.scene.control.Label;
-import javafx.scene.control.SelectionMode;
-import javafx.scene.control.Tab;
-import javafx.scene.control.TabPane;
-import javafx.scene.control.TableColumn;
-import javafx.scene.control.TableRow;
-import javafx.scene.control.TableView;
-import javafx.scene.control.TextArea;
-import javafx.scene.control.TextField;
 import javafx.stage.Stage;
 import javafx.stage.WindowEvent;
-import net.sf.jasperreports.engine.JasperPrint;
 
 @Component
 public class SchoolDetailsController
 {
+
+	private static final Logger LOGGER = LogManager.getLogger(SchoolDetailsController.class);
 
 	private Parent addOrderRoot;
 	private Scene addOrderScene;
@@ -67,6 +76,21 @@ public class SchoolDetailsController
 
 	@Autowired
 	SchoolService schoolService;
+
+	@Value("${agencyName}")
+	private String agencyName;
+
+	@Value("${agencyAddress1}")
+	private String agencyAddress1;
+
+	@Value("${agencyAddress2}")
+	private String agencyAddress2;
+
+	@Value("${purPaymentModes}")
+	private String[] schoolPaymentModes;
+
+	@Value("#{'${datedPurPaymentModes}'.split(',')}")
+	private List<String> datedSchoolPaymentModes;
 
 	@FXML
 	private TabPane saleTabs;
@@ -94,6 +118,18 @@ public class SchoolDetailsController
 
 	@FXML
 	private Tab statementTab;
+
+	@FXML
+	private DatePicker fromDateSt;
+
+	@FXML
+	private DatePicker toDateSt;
+
+	@FXML
+	private ChoiceBox<String> saveType;
+
+	@FXML
+	private WebView invoiceData;
 
 	@FXML
 	private TableView<SalesTransaction> transactionData;
@@ -127,6 +163,7 @@ public class SchoolDetailsController
 
 	private Map<String, Book> bookMap;
 	private Collector<Book, ?, Map<String, Book>> bookMapCollector = toMap(o -> o.getShortName() + ": " + o.getName() + " - " + o.getPublisherName(), o -> o);
+	private JasperPrint print;
 
 	// private JasperPrint jasperPrint;
 
@@ -256,6 +293,7 @@ public class SchoolDetailsController
 		}
 		catch (Exception e)
 		{
+			LOGGER.error("Error...", e);
 			e.printStackTrace();
 		}
 	}
@@ -297,6 +335,7 @@ public class SchoolDetailsController
 		}
 		catch (Exception e)
 		{
+			LOGGER.error("Error...", e);
 			e.printStackTrace();
 		}
 	}
@@ -322,6 +361,7 @@ public class SchoolDetailsController
 		}
 		catch (Exception e)
 		{
+			LOGGER.error("Error...", e);
 			e.printStackTrace();
 		}
 	}
@@ -343,11 +383,15 @@ public class SchoolDetailsController
 			ctrl.initData(null, this.school, selectedSale, this.bookMap);
 			Scene addBillScene = new Scene(addBillRoot);
 			prepareAndShowStage(event, addBillScene, billEventHandler);
-			Sales saleIn = schoolService.fetchSale(ctrl.getSelectedSale().getId());
-			showPrintDialog(saleIn, event);
+			if(ctrl.getSelectedSale() != null && ctrl.getSelectedSale().getId() != null)
+			{
+				Sales saleIn = schoolService.fetchSale(ctrl.getSelectedSale().getId());
+				showPrintDialog(saleIn, event);
+			}
 		}
 		catch (Exception e)
 		{
+			LOGGER.error("Error...", e);
 			e.printStackTrace();
 		}
 
@@ -379,6 +423,7 @@ public class SchoolDetailsController
 		}
 		catch (Exception e)
 		{
+			LOGGER.error("Error...", e);
 			e.printStackTrace();
 		}
 
@@ -411,6 +456,7 @@ public class SchoolDetailsController
 		}
 		catch (Exception e)
 		{
+			LOGGER.error("Error...", e);
 			e.printStackTrace();
 		}
 	}
@@ -445,6 +491,7 @@ public class SchoolDetailsController
 		}
 		catch (Exception e)
 		{
+			LOGGER.error("Error...", e);
 			e.printStackTrace();
 		}
 
@@ -465,7 +512,32 @@ public class SchoolDetailsController
 		}
 		catch (Exception e)
 		{
+			LOGGER.error("Error...", e);
 			e.printStackTrace();
+		}
+	}
+
+	@FXML
+	void printCreditNote(ActionEvent ev)
+	{
+		try
+		{
+			SchoolReturn purchase = this.creditNoteData.getSelectionModel().getSelectedItem();
+			FXMLLoader createOrderLoader = LoadUtils.loadFxml(this, printCreditNoteFxmlFile);
+
+			InputStream jasperStream = getClass().getResourceAsStream(creditNoteJrxml);
+			Address salesAddr = schoolService.fetchAddress("Sales");
+			Account acct = schoolService.fetchAccount("Matha Agencies");
+
+			Parent addOrderRoot = createOrderLoader.load();
+			PrintCreditNoteController ctrl = createOrderLoader.getController();
+			ctrl.initData(purchase.getSchool(), purchase, salesAddr, acct, jasperStream);
+			addOrderScene = new Scene(addOrderRoot);
+			prepareAndShowStage(ev, addOrderScene);
+		}
+		catch (Exception e)
+		{
+			LOGGER.error("Error....", e);
 		}
 	}
 
@@ -517,6 +589,7 @@ public class SchoolDetailsController
 		}
 		catch (Exception e)
 		{
+			LOGGER.error("Error...", e);
 			e.printStackTrace();
 		}
 
@@ -538,6 +611,7 @@ public class SchoolDetailsController
 		}
 		catch (Exception e)
 		{
+			LOGGER.error("Error...", e);
 			e.printStackTrace();
 		}
 
@@ -563,21 +637,38 @@ public class SchoolDetailsController
 	}
 
 	@FXML
-	void loadStatement(Event e)
+	void loadStatement(Event ev)
 	{
 		if (statementTab.isSelected())
 		{
-			LocalDate toDateVal = LocalDate.now();
-			LocalDate fromDateVal = toDateVal.minusMonths(6);
-			fromDate.setValue(fromDateVal);
-			toDate.setValue(toDateVal);
-			List<SalesTransaction> txnItems = schoolService.fetchTransactions(school, fromDateVal, toDateVal);
-			transactionData.setItems(FXCollections.observableList(txnItems));
+			try
+			{
+				LocalDate toDateVal = LocalDate.now();
+				LocalDate fromDateVal = toDateVal.minusMonths(6);
+
+				List<SalesTransaction> tableData = schoolService.fetchTransactions(school, fromDateVal, toDateVal);
+
+				JasperPrint print = prepareJasperPrint(school, tableData, fromDateVal, toDateVal);
+				this.print = print;
+				ByteArrayOutputStream outputStream = new ByteArrayOutputStream();
+				HtmlExporter exporter = new HtmlExporter();
+				exporter.setExporterOutput(new SimpleHtmlExporterOutput(outputStream));
+				exporter.setExporterInput(new SimpleExporterInput(print));
+				exporter.exportReport();
+
+				String content = StringUtils.toEncodedString(outputStream.toByteArray(), Charset.defaultCharset());
+				invoiceData.getEngine().loadContent(content);
+			}
+			catch (Exception e)
+			{
+				LOGGER.error("Error...", e);
+				e.printStackTrace();
+			}
 		}
 	}
 
-	@FXML
-	void generateStmt(ActionEvent event)
+//	@FXML
+	void generateStmtOld(ActionEvent event)
 	{
 		try
 		{
@@ -590,69 +681,17 @@ public class SchoolDetailsController
 			FXMLLoader createOrderLoader = LoadUtils.loadFxml(this, salesStmtFxmlFile);
 			Parent addOrderRoot = createOrderLoader.load();
 			PrintSalesStmtController ctrl = createOrderLoader.getController();
-			JasperPrint jasperPrint = ctrl.prepareJasperPrint(this.school, txnItems, fromDateVal, toDateVal);
-			ctrl.initData(this.school, jasperPrint, fromDateVal, toDateVal);
+			List<SalesTransaction> tableData = schoolService.fetchTransactions(school, fromDateVal, toDateVal);
+			ctrl.initData(this.school, tableData, fromDateVal, toDateVal);
 			Scene addOrderScene = new Scene(addOrderRoot);
 			prepareAndShowStage(event, addOrderScene);
 		}
 		catch (Exception e)
 		{
+			LOGGER.error("Error...", e);
 			e.printStackTrace();
 		}
 	}
-
-	// @FXML
-	// public void exportAndSave(ActionEvent ev)
-	// {
-	// try
-	// {
-	//
-	// String selection = saveType.getSelectionModel().getSelectedItem();
-	// String filterStr = "*.*";
-	// if(selection.equals(PDF))
-	// {
-	// filterStr = "*.pdf";
-	// }
-	// else if(selection.equals(Excel))
-	// {
-	// filterStr = "*.xls";
-	// }
-	// FileChooser fileChooser = new FileChooser();
-	// fileChooser.setTitle("Save File");
-	// fileChooser.getExtensionFilters().addAll(
-	// new FileChooser.ExtensionFilter(selection, filterStr)
-	// );
-	//
-	// File file = fileChooser.showSaveDialog(((Node)
-	// ev.getSource()).getScene().getWindow());
-	// if(selection.equals(PDF))
-	// {
-	// JasperExportManager.exportReportToPdfFile(jasperPrint,
-	// file.getAbsolutePath());
-	// }
-	// else if(selection.equals(Excel))
-	// {
-	// JRXlsxExporter exporter = new JRXlsxExporter();
-	// exporter.setExporterInput(new SimpleExporterInput(jasperPrint));
-	// exporter.setExporterOutput(new SimpleOutputStreamExporterOutput(file));
-	//
-	// exporter.exportReport();
-	// }
-	// else if(selection.equals(Docx))
-	// {
-	// JRDocxExporter exporter = new JRDocxExporter();
-	// exporter.setExporterInput(new SimpleExporterInput(jasperPrint));
-	// exporter.setExporterOutput(new SimpleOutputStreamExporterOutput(file));
-	//
-	// exporter.exportReport();
-	// }
-	//
-	// }
-	// catch (Throwable e)
-	// {
-	// e.printStackTrace();
-	// }
-	// }
 
 	private void printBill(Sales purchase, ActionEvent ev)
 	{
@@ -735,4 +774,167 @@ public class SchoolDetailsController
 			printBill(sales, event);
 		}
 	}
+
+	public JasperPrint prepareJasperPrint(School school, List<SalesTransaction> tableDataIn, LocalDate fromDateVal, LocalDate toDateVal)
+	{
+		JasperPrint jasperPrint = null;
+		InputStream jasperStream = getClass().getResourceAsStream(salesStmtJrxml);
+		HashMap<String, Object> hm = new HashMap<>();
+		try
+		{
+			if (toDateVal == null)
+			{
+				LOGGER.debug("Null toDateVal");
+				toDateVal = LocalDate.now();
+			}
+
+			hm.put("agencyName", agencyName);
+			hm.put("agencyAddress1", agencyAddress1);
+			hm.put("agencyAddress2", agencyAddress2);
+			hm.put("schoolName", school.getAddress1());
+			hm.put("schoolDetails", school.getStmtAddress());
+			hm.put("fromDate", DATE_CONV.toString(fromDateVal));
+			hm.put("toDate", DATE_CONV.toString(toDateVal));
+			hm.put("datedSchoolPaymentModes", datedSchoolPaymentModes);
+
+			JasperReport compiledFile = JasperCompileManager.compileReport(jasperStream);
+			LOGGER.info("Total Size: " + tableDataIn.size());
+			for (int i = 0; i <= tableDataIn.size() / 38; i++)
+			{
+				int fromIndex = i * 38;
+				int toIndex = Math.min(fromIndex + 38, tableDataIn.size());
+				List<SalesTransaction> tableData = tableDataIn.subList(fromIndex, toIndex);
+				LOGGER.info("i: " + i + " fromIndex: " + fromIndex + " toIndex: " + toIndex + " tabSize: " + tableData.size());
+
+				Map<String, Object> hmOut = Utils.prepareSalesStmtParmMap(hm, tableData);
+				LOGGER.debug("hmOut");
+				for (Map.Entry<String, Object> obj : hmOut.entrySet())
+				{
+					LOGGER.debug(obj.getKey());
+					LOGGER.debug(obj.getValue());
+				}
+
+				if(jasperPrint == null)
+				{
+					jasperPrint = JasperFillManager.fillReport(compiledFile, hmOut, new JRBeanCollectionDataSource(tableData));
+				}
+				else
+				{
+					JasperPrint jasperPrintNxt = JasperFillManager.fillReport(compiledFile, hmOut, new JRBeanCollectionDataSource(tableData));
+					jasperPrint.addPage(jasperPrintNxt.getPages().get(0));
+				}
+			}
+		}
+		catch (JRException e)
+		{
+			e.printStackTrace();
+		}
+		catch (Exception e)
+		{
+			e.printStackTrace();
+		}
+
+		return jasperPrint;
+	}
+
+	@FXML
+	void generateStmt(ActionEvent event)
+	{
+		LocalDate fromDateVal = this.fromDate.getValue();
+		LocalDate toDateVal = this.toDate.getValue();
+		List<SalesTransaction> tableData = schoolService.fetchTransactions(school, fromDateVal, toDateVal);
+		JasperPrint jPrint = prepareJasperPrint(this.school, tableData, fromDateVal, toDateVal);
+		this.loadWebInvoice(jPrint);
+	}
+
+
+	@FXML
+	public void exportAndSave(ActionEvent ev)
+	{
+		try
+		{
+
+			String selection = saveType.getSelectionModel().getSelectedItem();
+			String filterStr = "*.*";
+			if(selection.equals(PDF))
+			{
+				filterStr = "*.pdf";
+			}
+			else if(selection.equals(Excel))
+			{
+				filterStr = "*.xls";
+			}
+			FileChooser fileChooser = new FileChooser();
+			fileChooser.setTitle("Save File");
+			fileChooser.getExtensionFilters().addAll(
+					new FileChooser.ExtensionFilter(selection, filterStr)
+			);
+
+			File file = fileChooser.showSaveDialog(((Node) ev.getSource()).getScene().getWindow());
+			if(file == null)
+			{
+				return;
+			}
+			if(selection.equals(PDF))
+			{
+				JasperExportManager.exportReportToPdfFile(print, file.getAbsolutePath());
+			}
+			else if(selection.equals(Excel))
+			{
+				JRXlsxExporter exporter = new JRXlsxExporter();
+				exporter.setExporterInput(new SimpleExporterInput(print));
+				exporter.setExporterOutput(new SimpleOutputStreamExporterOutput(file));
+
+				exporter.exportReport();
+			}
+			else if(selection.equals(Docx))
+			{
+				JRDocxExporter exporter = new JRDocxExporter();
+				exporter.setExporterInput(new SimpleExporterInput(print));
+				exporter.setExporterOutput(new SimpleOutputStreamExporterOutput(file));
+
+				exporter.exportReport();
+			}
+
+		}
+		catch (Throwable e)
+		{
+			e.printStackTrace();
+		}
+	}
+
+	@FXML
+	public void printStmt(ActionEvent ev)
+	{
+		try
+		{
+			printJasper(print);
+		}
+		catch (Exception e)
+		{
+			e.printStackTrace();
+		}
+	}
+
+	private void loadWebInvoice(JasperPrint printIn)
+	{
+		try
+		{
+			ByteArrayOutputStream outputStream = new ByteArrayOutputStream();
+			HtmlExporter exporter = new HtmlExporter();
+			exporter.setExporterOutput(new SimpleHtmlExporterOutput(outputStream));
+			exporter.setExporterInput(new SimpleExporterInput(printIn));
+			exporter.exportReport();
+
+			String content = StringUtils.toEncodedString(outputStream.toByteArray(), Charset.defaultCharset());
+			this.invoiceData.getEngine().loadContent(content);
+
+		}
+		catch (Exception e)
+		{
+			e.printStackTrace();
+		}
+
+	}
+
 }

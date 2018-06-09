@@ -14,11 +14,15 @@ import javax.persistence.ManyToOne;
 import javax.persistence.OneToMany;
 import javax.persistence.Table;
 
+import org.hibernate.annotations.Cascade;
 import org.hibernate.annotations.GenericGenerator;
 
 import com.matha.util.Converters;
 
 import javafx.util.StringConverter;
+
+import static org.hibernate.annotations.CascadeType.DELETE;
+import static org.hibernate.annotations.CascadeType.SAVE_UPDATE;
 
 @Entity
 @Table(name = "SOrder")
@@ -44,7 +48,8 @@ public class Order implements Serializable, Comparable<Order>
 //	@JoinColumn(name = "SaleId")
 //	private Sales sale;
 
-	@OneToMany(fetch = FetchType.EAGER, mappedBy = "order")
+	@OneToMany(fetch = FetchType.EAGER, mappedBy = "order", orphanRemoval = true)
+	@Cascade({DELETE, SAVE_UPDATE})
 	private List<OrderItem> orderItem;
 
 	@Column(name = "TDate")

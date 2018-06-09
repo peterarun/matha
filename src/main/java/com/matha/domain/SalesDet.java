@@ -158,13 +158,13 @@ public class SalesDet implements InventoryData
 		if (o == null || getClass() != o.getClass()) return false;
 		SalesDet salesDet = (SalesDet) o;
 		Book thatBook = salesDet.getBook();
-		return Objects.equals(salesDetId, salesDet.salesDetId) && Objects.equals(book, thatBook) && Objects.equals(slNum, salesDet.getSlNum());
+		return Objects.equals(salesDetId, salesDet.salesDetId);
 	}
 
 	@Override
 	public int hashCode()
 	{
-		return Objects.hash(salesDetId, book, slNum);
+		return Objects.hash(salesDetId);
 	}
 
 	@Override

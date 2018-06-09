@@ -45,7 +45,7 @@ public class PurchaseReturn {
 	@JoinColumn(name = "PublisherId")
 	private Publisher publisher;
 
-	@OneToMany(fetch= FetchType.EAGER, mappedBy = "purchaseReturn")
+	@OneToMany(fetch= FetchType.EAGER, mappedBy = "purchaseReturn", orphanRemoval = true)
 	@Cascade({CascadeType.SAVE_UPDATE, CascadeType.DELETE})	
 	private Set<PurchaseReturnDet> purchaseReturnDetSet;
 	

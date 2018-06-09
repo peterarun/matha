@@ -20,6 +20,7 @@ import org.springframework.data.jpa.repository.config.EnableJpaRepositories;
 
 import java.time.LocalDate;
 import java.time.Month;
+import java.util.ArrayList;
 import java.util.List;
 
 @SpringBootApplication
@@ -69,7 +70,7 @@ public class SalesTxnMigration
 				pTrans.setSchool(sale.getSchool());
 				pTrans.setAmount(sale.getNetAmount());
 				pTrans.setTxnDate(sale.getInvoiceDate());
-				schoolService.saveSalesData(sale, sale.getSaleItems(), pTrans);
+				schoolService.saveSalesData(sale, new ArrayList<>(sale.getSaleItems()), pTrans);
 			}
 		}
 	}

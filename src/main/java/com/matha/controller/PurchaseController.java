@@ -30,6 +30,8 @@ import java.util.stream.Collectors;
 
 import com.matha.domain.*;
 import org.apache.commons.lang3.StringUtils;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.data.domain.Page;
@@ -85,6 +87,7 @@ public class PurchaseController
 {
 
 	private static final int ROWS_PER_PAGE = 10;
+	private static final Logger LOGGER = LogManager.getLogger(PurchaseController.class);
 
 	@Value("#{'${datedPurPaymentModes}'.split(',')}")
 	private List<String> datedSchoolPaymentModes;
@@ -249,6 +252,7 @@ public class PurchaseController
 		}
 		catch (Exception e)
 		{
+			LOGGER.error("Error...", e);
 			e.printStackTrace();
 		}
 	}
@@ -269,6 +273,7 @@ public class PurchaseController
 		}
 		catch (Exception e)
 		{
+			LOGGER.error("Error...", e);
 			e.printStackTrace();
 		}
 	}
@@ -292,7 +297,7 @@ public class PurchaseController
 		}
 		catch (IOException e)
 		{
-			// TODO Auto-generated catch block
+			LOGGER.error("Error...", e);
 			e.printStackTrace();
 		}
 	}
@@ -323,6 +328,7 @@ public class PurchaseController
 		}
 		catch (Exception e)
 		{
+			LOGGER.error("Error...", e);
 			e.printStackTrace();
 		}
 	}
@@ -346,6 +352,7 @@ public class PurchaseController
 		}
 		catch (Exception e)
 		{
+			LOGGER.error("Error...", e);
 			e.printStackTrace();
 		}
 
@@ -388,6 +395,7 @@ public class PurchaseController
 		}
 		catch (Exception e)
 		{
+			LOGGER.error("Error...", e);
 			e.printStackTrace();
 		}		
 	}
@@ -476,6 +484,7 @@ public class PurchaseController
 		}
 		catch (Exception e)
 		{
+			LOGGER.error("Error...", e);
 			e.printStackTrace();
 		}
 	}
@@ -497,6 +506,7 @@ public class PurchaseController
 		}
 		catch (Exception e)
 		{
+			LOGGER.error("Error...", e);
 			e.printStackTrace();
 		}
 
@@ -544,6 +554,7 @@ public class PurchaseController
 		}
 		catch (Exception e)
 		{
+			LOGGER.error("Error...", e);
 			e.printStackTrace();
 		}
 	}
@@ -565,6 +576,7 @@ public class PurchaseController
 		}
 		catch (Exception e)
 		{
+			LOGGER.error("Error...", e);
 			e.printStackTrace();
 		}
 
@@ -610,6 +622,7 @@ public class PurchaseController
 			}
 			catch (Exception e)
 			{
+				LOGGER.error("Error...", e);
 				e.printStackTrace();
 			}
 		}
@@ -637,6 +650,7 @@ public class PurchaseController
 		}
 		catch (Exception e)
 		{
+			LOGGER.error("Error...", e);
 			e.printStackTrace();
 		}
 
@@ -685,10 +699,12 @@ public class PurchaseController
 		}
 		catch (JRException e)
 		{
+			LOGGER.error("Error...", e);
 			e.printStackTrace();
 		}
 		catch (Exception e)
 		{
+			LOGGER.error("Error...", e);
 			e.printStackTrace();
 		}
 
@@ -709,6 +725,7 @@ public class PurchaseController
 		}
 		catch (Throwable e)
 		{
+			LOGGER.error("Error...", e);
 			e.printStackTrace();
 		}
 	}
@@ -729,6 +746,7 @@ public class PurchaseController
 		}
 		catch (Exception e)
 		{
+			LOGGER.error("Error...", e);
 			e.printStackTrace();
 		}		
 	}

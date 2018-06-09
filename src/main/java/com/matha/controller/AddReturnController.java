@@ -146,14 +146,14 @@ public class AddReturnController
 				this.subTotal.setText(subTotalDbl.toString());
 			}
 			this.netTotal.setText(getStringVal(returnIn.getNetAmount()));
-			if(returnIn.getDiscAmt() != null)
+			if(returnIn.getDiscPercent() != null)
 			{
-				this.rupeeRad.setSelected(true);
-				this.discText.setText(getStringVal(returnIn.getDiscAmt()));
+				this.discText.setText(getStringVal(returnIn.getDiscPercent()));
 			}
 			else
 			{
-				this.discText.setText(getStringVal(returnIn.getDiscPercent()));
+				this.rupeeRad.setSelected(true);
+				this.discText.setText(getStringVal(returnIn.getDiscAmt()));
 			}
 			this.calcDiscount.setText(getStringVal(returnIn.getDiscount()));
 		}
@@ -236,21 +236,18 @@ public class AddReturnController
 		if(percentRad.isSelected())
 		{
 			returnIn.setDiscPercent(getDoubleVal(this.discText));
+			returnIn.setDiscAmt(null);
 		}
 		else
 		{
 			returnIn.setDiscAmt(getDoubleVal(this.discText.getText()));
+			returnIn.setDiscPercent(null);
 		}
 		returnIn.setSubTotal(getDoubleVal(this.subTotal.getText()));
 		returnIn.setCreditNoteNum(this.creditNoteNum.getText());
 
-		Set<SalesReturnDet> orderItems = returnIn.getSalesReturnDetSet();
-		if(orderItems == null)
-		{
-			orderItems = new HashSet<>();
-		}
-			
-		orderItems.addAll(this.addedBooks.getItems());
+		List<SalesReturnDet> orderItems = new ArrayList<>(this.addedBooks.getItems());
+
 		salesTxn.setTxnDate(this.returnDate.getValue());
 		salesTxn.setNote(this.notes.getText());
 	
@@ -277,6 +274,7 @@ public class AddReturnController
 		SalesReturnDet itemIn = this.addedBooks.getSelectionModel().getSelectedItem();
 		this.addedBooks.getItems().remove(itemIn);
 		loadSubTotal();
+		calcNetAmount(this.discText.getText());
 	}
 
 	private void updateNetAmt()

@@ -28,13 +28,13 @@ public class OrderItem implements Serializable, Comparable<OrderItem>
 	@JoinColumn(name = "SerialId")
 	private Order order;
 
-	@OneToMany(fetch= FetchType.EAGER, mappedBy = "orderItem")
-	@Cascade({DELETE})
-	private Set<PurchaseDet> purchaseDet;
-
-	@OneToMany(fetch= FetchType.EAGER, mappedBy = "orderItem")
-	@Cascade({DELETE})
-	private Set<SalesDet> salesDet;
+//	@OneToMany(fetch= FetchType.EAGER, mappedBy = "orderItem")
+//	@Cascade({DELETE})
+//	private Set<PurchaseDet> purchaseDet;
+//
+//	@OneToMany(fetch= FetchType.EAGER, mappedBy = "orderItem")
+//	@Cascade({DELETE})
+//	private Set<SalesDet> salesDet;
 	
 	@ManyToOne()
 	@JoinColumn(name = "BkNo")
@@ -222,21 +222,21 @@ public class OrderItem implements Serializable, Comparable<OrderItem>
 		return this.order.getId();
 	}
 
-	public Set<SalesDet> getSalesDet() {
-		return salesDet;
-	}
-
-	public void setSalesDet(Set<SalesDet> salesDet) {
-		this.salesDet = salesDet;
-	}
-
-	public Set<PurchaseDet> getPurchaseDet() {
-		return purchaseDet;
-	}
-
-	public void setPurchaseDet(Set<PurchaseDet> purchaseDet) {
-		this.purchaseDet = purchaseDet;
-	}
+//	public Set<SalesDet> getSalesDet() {
+//		return salesDet;
+//	}
+//
+//	public void setSalesDet(Set<SalesDet> salesDet) {
+//		this.salesDet = salesDet;
+//	}
+//
+//	public Set<PurchaseDet> getPurchaseDet() {
+//		return purchaseDet;
+//	}
+//
+//	public void setPurchaseDet(Set<PurchaseDet> purchaseDet) {
+//		this.purchaseDet = purchaseDet;
+//	}
 
 	@Override
 	public String toString()

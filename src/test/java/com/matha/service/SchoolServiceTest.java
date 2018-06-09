@@ -243,10 +243,10 @@ public class SchoolServiceTest
 		salesTxn.setSchool(school);
 
 		returnIn.setCreditNoteNum("200");
-		Set<SalesReturnDet> orderItems = returnIn.getSalesReturnDetSet();
+		List<SalesReturnDet> orderItems = new ArrayList<>(returnIn.getSalesReturnDetSet());
 		if(orderItems == null)
 		{
-			orderItems = new HashSet<>();
+			orderItems = new ArrayList<>();
 		}
 
 		salesTxn.setTxnDate(LocalDate.now());
@@ -435,7 +435,8 @@ public class SchoolServiceTest
 		List<SchoolPayment> payments = schoolService.fetchPayments(sc);
 
 		List<Order> ordersIn = schoolService.fetchOrderForSchool(sc);
-		Set<PurchaseDet> purchasesIn = ordersIn.stream().map(o -> o.getOrderItem()).flatMap(List::stream).map(oi -> oi.getPurchaseDet()).flatMap(Set::stream).collect(toSet());
+		List<PurchaseDet> purchasesIn = schoolService.fetchPurDetForOrders(ordersIn);
+//				Set<PurchaseDet> purchasesIn = ordersIn.stream().map(o -> o.getOrderItem()).flatMap(List::stream).map(oi -> oi.getPurchaseDet()).flatMap(Set::stream).collect(toSet());
 
 		schoolService.deleteSchool(sc, ordersIn, bills, returns, payments, purchasesIn);
 	}

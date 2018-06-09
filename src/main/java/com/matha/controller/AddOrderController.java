@@ -161,8 +161,8 @@ public class AddOrderController
 			return;
 		}
 
-		Set<SalesDet> orderSales = new HashSet<>();
-		Set<PurchaseDet> orderPurchases = new HashSet<>();
+		List<SalesDet> orderSales = new ArrayList<>();
+		List<PurchaseDet> orderPurchases = new ArrayList<>();
 		Set<SalesTransaction> saleTxns = new HashSet<>();
 		Set<PurchaseTransaction> purTxns = new HashSet<>();
 
@@ -184,21 +184,15 @@ public class AddOrderController
 			origOrders.removeAll(this.addedBooks.getItems());
 			if (!origOrders.isEmpty())
 			{
-				orderSales = origOrders.stream().map(oi -> oi.getSalesDet()).flatMap(Set::stream).collect(toSet());
-				orderPurchases = origOrders.stream().map(oi -> oi.getPurchaseDet()).flatMap(Set::stream).collect(toSet());
+//				orderSales = origOrders.stream().map(oi -> oi.getSalesDet()).flatMap(Set::stream).collect(toSet());
+//				orderPurchases = origOrders.stream().map(oi -> oi.getPurchaseDet()).flatMap(Set::stream).collect(toSet());
+				orderPurchases = srvc.fetchPurDetForOrderItems(origOrders);
+				orderSales = srvc.fetchSalesDetForOrderItems(origOrders);
 				if ((orderSales != null && !orderSales.isEmpty()) || (orderPurchases != null && !orderPurchases.isEmpty()))
 				{
 					if (!showConfirmation("Purchase/Sale Bills available for the order", "There are Purchase/Sale already created for the items getting removed. Are you sure you want to remove?"))
 					{
 						return;
-					}
-					if (orderSales != null && !orderSales.isEmpty())
-					{
-						saleTxns = orderSales.stream().filter(sd -> sd.getSale() != null).map(sd -> sd.getSale().getSalesTxn()).collect(toSet());
-					}
-					if (orderPurchases != null && !orderPurchases.isEmpty())
-					{
-						purTxns = orderPurchases.stream().filter(sd -> sd.getPurchase() != null).map(sd -> sd.getPurchase().getSalesTxn()).collect(toSet());
 					}
 				}
 			}
@@ -214,7 +208,7 @@ public class AddOrderController
 		item.setFinancialYear(calcFinYear(LocalDate.now()));
 		item.setPrefix(item.getSerialNo() + " - " + item.getFinancialYear());
 
-		srvc.updateOrderData(item, items, origOrders, saleTxns, purTxns);
+		srvc.updateOrderData(item, items, origOrders);
 
 		((Stage) cancelBtn.getScene().getWindow()).close();
 	}

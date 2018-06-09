@@ -1,8 +1,11 @@
 package com.matha.domain;
 
+import org.hibernate.annotations.Cascade;
 import org.hibernate.annotations.GenericGenerator;
 
 import static com.matha.util.UtilConstants.DATE_CONV;
+import static org.hibernate.annotations.CascadeType.DELETE;
+import static org.hibernate.annotations.CascadeType.SAVE_UPDATE;
 
 import java.io.Serializable;
 import java.time.LocalDate;
@@ -62,11 +65,15 @@ public class Purchase implements Serializable
 	@Column(name = "TDate")
 	private LocalDate purchaseDate;
 
+	@Column(name = "NetAmt")
+	private Double deletedAmt;
+
 	@OneToOne	
 	@JoinColumn(name = "TxnId")
 	private PurchaseTransaction salesTxn;
 
-	@OneToMany(mappedBy = "purchase", fetch = FetchType.EAGER)
+	@OneToMany(mappedBy = "purchase", fetch = FetchType.EAGER, orphanRemoval = true)
+	@Cascade({DELETE, SAVE_UPDATE})
 	private Set<PurchaseDet> purchaseItems;
 
 	@ManyToOne
@@ -275,6 +282,14 @@ public class Purchase implements Serializable
 
 	public void setPublisher(Publisher publisher) {
 		this.publisher = publisher;
+	}
+
+	public Double getDeletedAmt() {
+		return deletedAmt;
+	}
+
+	public void setDeletedAmt(Double deletedAmt) {
+		this.deletedAmt = deletedAmt;
 	}
 
 	@Override

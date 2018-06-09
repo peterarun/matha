@@ -22,6 +22,7 @@ import org.springframework.data.domain.Sort.Direction;
 import org.springframework.stereotype.Service;
 
 import static com.matha.util.UtilConstants.*;
+import static java.util.Comparator.comparing;
 import static java.util.stream.Collectors.*;
 
 @Service
@@ -52,7 +53,7 @@ public class SchoolService
 	SalesDetRepository salesDetRepository;
 
 	@Autowired
-	PurDetRepository purDetRepository;
+	PurchaseDetRepository purDetRepository;
 
 	@Autowired
 	SalesReturnDetRepository salesReturnDetRepository;
@@ -233,6 +234,32 @@ public class SchoolService
 
 	public void deleteOrder(Order order)
 	{
+		List<OrderItem> removedItems = order.getOrderItem();
+
+		// Removing the link to Order Item from Sales Det
+		for (OrderItem removedItem : removedItems)
+		{
+//			Set<SalesDet> saleDets = removedItem.getSalesDet();
+			List<SalesDet> saleDets = salesDetRepository.findAllByOrderItem(removedItem);
+			for (SalesDet saleDet : saleDets)
+			{
+				saleDet.setOrderItem(null);
+			}
+			salesDetRepository.save(saleDets);
+		}
+
+		// Removing the link to Order Item from Purchase Det
+		for (OrderItem removedItem : removedItems)
+		{
+//			Set<PurchaseDet> purchaseDets = removedItem.getPurchaseDet();
+			List<PurchaseDet> purchaseDets = purDetRepository.findAllByOrderItem(removedItem);
+			for (PurchaseDet purchaseDet : purchaseDets)
+			{
+				purchaseDet.setOrderItem(null);
+			}
+			purDetRepository.save(purchaseDets);
+		}
+
 		orderRepository.delete(order);
 	}
 
@@ -252,7 +279,7 @@ public class SchoolService
 	}
 
 	@Transactional
-	public void updateOrderData(Order order,
+	public void updateOrderDataOld(Order order,
 								List<OrderItem> orderItem,
 								List<OrderItem> removedItems,
 								Set<SalesTransaction> saleTxns,
@@ -281,7 +308,50 @@ public class SchoolService
 		}
 	}
 
-	public void deleteSchool(School school, List<Order> ordersIn, List<Sales> bills, List<SchoolReturn> returns, List<SchoolPayment> payments, Set<PurchaseDet> purchasesIn)
+	@Transactional
+	public void updateOrderData(Order order,
+								List<OrderItem> orderItem,
+								List<OrderItem> removedItems)
+	{
+		if(order.getId() == null)
+		{
+			orderRepository.save(order);
+		}
+
+		for (OrderItem orderItemIn : orderItem)
+		{
+			orderItemIn.setOrder(order);
+		}
+		orderItemRepository.save(orderItem);
+
+		// Removing the link to Order Item from Sales Det
+		for (OrderItem removedItem : removedItems)
+		{
+//			Set<SalesDet> saleDets = removedItem.getSalesDet();
+			List<SalesDet> saleDets = salesDetRepository.findAllByOrderItem(removedItem);
+			for (SalesDet saleDet : saleDets)
+			{
+				saleDet.setOrderItem(null);
+			}
+			salesDetRepository.save(saleDets);
+		}
+
+		// Removing the link to Order Item from Purchase Det
+		for (OrderItem removedItem : removedItems)
+		{
+//			Set<PurchaseDet> purchaseDets = removedItem.getPurchaseDet();
+			List<PurchaseDet> purchaseDets = purDetRepository.findAllByOrderItem(removedItem);
+			for (PurchaseDet purchaseDet : purchaseDets)
+			{
+				purchaseDet.setOrderItem(null);
+			}
+			purDetRepository.save(purchaseDets);
+		}
+
+		orderItemRepository.delete(removedItems);
+	}
+
+	public void deleteSchool(School school, List<Order> ordersIn, List<Sales> bills, List<SchoolReturn> returns, List<SchoolPayment> payments, List<PurchaseDet> purchasesIn)
 	{
 		Set<SalesTransaction> billTxns = bills.stream().map(Sales::getSalesTxn).filter(st -> st != null).collect(toSet());
 		Set<SalesTransaction> returnTxns = returns.stream().map(SchoolReturn::getSalesTxn).filter(st -> st != null).collect(toSet());
@@ -740,6 +810,21 @@ public class SchoolService
 		updateBookInventory(ordersOrig, addedOrders, removedOrders, affectedOrders, bookNums, Integer.valueOf(1));
 	}
 
+	public List<PurchaseDet> fetchPurDetForOrders(List<Order> ordersIn)
+	{
+		return purDetRepository.findAllByOrderList(ordersIn);
+	}
+
+	public List<PurchaseDet> fetchPurDetForOrderItems(List<OrderItem> orderItems)
+	{
+		return purDetRepository.findAllByOrderItems(orderItems);
+	}
+
+	public List<SalesDet> fetchSalesDetForOrderItems(List<OrderItem> orderItems)
+	{
+		return salesDetRepository.findAllByOrderItems(orderItems);
+	}
+
 	public Page<Purchase> fetchPurchasesForPublisher(Publisher pub, int page, int size)
 	{
 		PageRequest pageable = new PageRequest(page, size, Direction.DESC, "purchaseDate");
@@ -757,15 +842,14 @@ public class SchoolService
 	@Transactional
 	public void deletePurchase(Purchase pur)
 	{
+		double netAmt = pur.getNetAmount();
+
 		PurchaseTransaction txn = pur.getSalesTxn();
-		Set<PurchaseDet> orderItems = pur.getPurchaseItems();
-		for (PurchaseDet orderItem : orderItems)
-		{
-			orderItem.setPurchase(null);
-		}
-		purDetRepository.save(orderItems);
-		purchaseRepoitory.delete(pur);
 		deletePurchaseTxn(txn);
+
+		pur.getPurchaseItems().retainAll(Collections.EMPTY_SET);
+		pur.setDeletedAmt(netAmt);
+		purchaseRepoitory.save(pur);
 
 	}
 
@@ -831,10 +915,9 @@ public class SchoolService
 	public void deletePurchaseReturn(PurchaseReturn purchase)
 	{
 		PurchaseTransaction txn = purchase.getSalesTxn();
-		purchaseReturnRepository.delete(purchase);
-
 		deletePurchaseTxn(txn);
 
+		purchaseReturnRepository.delete(purchase);
 	}
 
 	public List<PurchasePayment> fetchPurchasePayments(Publisher pub)
@@ -867,11 +950,9 @@ public class SchoolService
 
 	public void deletePurchasePayment(PurchasePayment pur)
 	{
-
 		PurchaseTransaction txn = pur.getSalesTxn();
-		purchasePayRepository.delete(pur);
 		deletePurchaseTxn(txn);
-
+		purchasePayRepository.delete(pur);
 	}
 
 	public void saveCashBook(CashBook item)
@@ -1088,7 +1169,7 @@ public class SchoolService
 	}
 
 	@Transactional
-	public Sales saveSalesData(Sales pur, Set<SalesDet> ordersIn, SalesTransaction txn)
+	public Sales saveSalesData(Sales pur, List<SalesDet> ordersIn, SalesTransaction txn)
 	{
 		// correct
 		txn.setSale(pur);
@@ -1128,7 +1209,7 @@ public class SchoolService
 		return pur;
 	}
 
-	private void saveSalesDetUpdates(List<SalesDet> ordersOrig, Set<SalesDet> ordersIn, Sales pur)
+	private void saveSalesDetUpdates(List<SalesDet> ordersOrig, List<SalesDet> ordersIn, Sales pur)
 	{
 		List<SalesDet> removedOrders = new ArrayList<>();
 		List<SalesDet> addedOrders = new ArrayList<>();
@@ -1160,6 +1241,7 @@ public class SchoolService
 			bookNums.addAll(bookSet);
 		}
 
+		Collections.sort(addedOrders, comparing(SalesDet::getSlNum));
 		for (SalesDet orderIn : addedOrders)
 		{
 			orderIn.setSalesDetId(null);
@@ -1301,16 +1383,11 @@ public class SchoolService
 	@Transactional
 	public void deleteBill(Sales selectedSale)
 	{
-		Set<SalesDet> orders = selectedSale.getSaleItems();
-		for (SalesDet order : orders)
-		{
-			order.setSale(null);
-		}
-		salesDetRepository.save(orders);
+		selectedSale.getSaleItems().retainAll(Collections.EMPTY_SET);
 		double netAmt = selectedSale.getNetAmount();
-		deleteSalesTxnSoft(selectedSale.getSalesTxn());
+		deleteSalesTxn(selectedSale.getSalesTxn());
 		selectedSale.setDeletedAmt(netAmt);
-//		salesRepository.delete(selectedSale);
+		salesRepository.save(selectedSale);
 	}
 
 	@Transactional
@@ -1344,7 +1421,7 @@ public class SchoolService
 	@Transactional
 	public void deletePayment(SchoolPayment selectedPayment)
 	{
-		salesTxnRepository.delete(selectedPayment.getSalesTxn());
+		deleteSalesTxn(selectedPayment.getSalesTxn());
 		schoolPayRepository.delete(selectedPayment);
 	}
 
@@ -1354,7 +1431,7 @@ public class SchoolService
 	}
 
 	@Transactional
-	public void saveSchoolReturn(SchoolReturn returnIn, SalesTransaction txn, Set<SalesReturnDet> orderItemsIn)
+	public void saveSchoolReturn(SchoolReturn returnIn, SalesTransaction txn, List<SalesReturnDet> orderItemsIn)
 	{
 		txn.setSalesReturn(returnIn);
 		if (txn.getId() == null)
@@ -1431,6 +1508,7 @@ public class SchoolService
 
 	public void deleteReturn(SchoolReturn selectedReturn)
 	{
+		deleteSalesTxn(selectedReturn.getSalesTxn());
 		schoolReturnRepository.delete(selectedReturn);
 	}
 

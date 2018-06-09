@@ -457,10 +457,10 @@ public class AddPurchaseBillController
 
 			((Stage) cancelBtn.getScene().getWindow()).close();
 		}
-		catch (Throwable t)
+		catch (Exception e)
 		{
-			t.printStackTrace();
-			loadMessage(t.getMessage());
+			LOGGER.error("Error...", e);
+			e.printStackTrace();
 		}
 	}
 
@@ -503,6 +503,7 @@ public class AddPurchaseBillController
 		sale.setDespatchPer(this.despatchedPer.getText());
 		sale.setGrNum(this.grNum.getText());
 		sale.setPackages(getIntegerVal(this.packageCount));
+		sale.setDeletedAmt(getDoubleVal(this.netAmt));
 	}
 
 	private void prepareTransaction(PurchaseTransaction txn)

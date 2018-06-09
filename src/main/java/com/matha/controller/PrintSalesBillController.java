@@ -1,16 +1,27 @@
 package com.matha.controller;
 
-import static com.matha.util.UtilConstants.Docx;
-import static com.matha.util.UtilConstants.Excel;
-import static com.matha.util.UtilConstants.PDF;
+import static com.matha.util.UtilConstants.*;
+import static com.matha.util.UtilConstants.COMMA_SIGN;
+import static com.matha.util.UtilConstants.HYPHEN_SPC_SIGN;
+import static com.matha.util.Utils.convertDouble;
+import static com.matha.util.Utils.getStringVal;
 import static com.matha.util.Utils.printJasper;
+import static java.util.Comparator.comparing;
+import static java.util.stream.Collectors.toList;
+import static java.util.stream.Collectors.toSet;
 
 import java.io.ByteArrayOutputStream;
 import java.io.File;
+import java.io.InputStream;
 import java.nio.charset.Charset;
 import java.util.Arrays;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Set;
 
+import com.matha.domain.*;
+import net.sf.jasperreports.engine.*;
+import net.sf.jasperreports.engine.data.JRBeanCollectionDataSource;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.stereotype.Component;
 
@@ -22,8 +33,6 @@ import javafx.scene.control.ChoiceBox;
 import javafx.scene.control.TextField;
 import javafx.scene.web.WebView;
 import javafx.stage.FileChooser;
-import net.sf.jasperreports.engine.JasperExportManager;
-import net.sf.jasperreports.engine.JasperPrint;
 import net.sf.jasperreports.engine.export.HtmlExporter;
 import net.sf.jasperreports.engine.export.ooxml.JRDocxExporter;
 import net.sf.jasperreports.engine.export.ooxml.JRXlsxExporter;

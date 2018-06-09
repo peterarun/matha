@@ -58,6 +58,7 @@ public interface UtilConstants {
 	public static final String createPurchaseFxmlFile = "/fxml/createPurchaseBill.fxml";
 	public static final String printPurchaseFxmlFile = "/fxml/printPurchase.fxml";
 	public static final String printSaleFxmlFile = "/fxml/printSales.fxml";
+	public static final String printCreditNoteFxmlFile = "/fxml/printCreditNote.fxml";
 	public static final String createPurchaseRetFxmlFile = "/fxml/createPurchaseReturn.fxml";
 	public static final String createPurchasePayFxmlFile = "/fxml/createPurchasePay.fxml";
 	
@@ -70,6 +71,7 @@ public interface UtilConstants {
 	public static final String salesStmtJrxml = "/jrxml/SalesStmt.jrxml";
 	public static final String invoiceJrxml = "/jrxml/Invoice.jrxml";
 	public static final String salesInvoiceJrxml = "/jrxml/SalesInvoice.jrxml";
+    public static final String creditNoteJrxml = "/jrxml/CreditNote.jrxml";
 	public static final String orderJrxml = "/jrxml/Order.jrxml";
 	public static final String masterPurStmtJrxml = "/jrxml/MasterPurchaseStmt.jrxml";
 	public static final String masterSaleStmtJrxml = "/jrxml/MasterSalesStmt.jrxml";

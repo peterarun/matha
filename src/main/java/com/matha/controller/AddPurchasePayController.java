@@ -8,6 +8,8 @@ import static com.matha.util.Utils.showErrorAlert;
 import javafx.collections.FXCollections;
 import javafx.scene.control.*;
 import org.apache.commons.lang.StringUtils;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
@@ -28,6 +30,8 @@ import java.util.List;
 @Component
 public class AddPurchasePayController
 {
+
+	private static final Logger LOGGER = LogManager.getLogger(AddPurchasePayController.class);
 
 	@Autowired
 	private SchoolService schoolService;
@@ -177,6 +181,7 @@ public class AddPurchasePayController
 		}
 		catch (Throwable e)
 		{
+			LOGGER.error("Error...", e);
 			e.printStackTrace();
 			showErrorAlert("Error in Saving Order", "An Unexpected Error has occurred", e.getMessage());
 		}

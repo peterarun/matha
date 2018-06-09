@@ -1,6 +1,8 @@
 package com.matha.domain;
 
 import static com.matha.util.UtilConstants.DATE_CONV;
+import static org.hibernate.annotations.CascadeType.DELETE;
+import static org.hibernate.annotations.CascadeType.SAVE_UPDATE;
 
 import java.time.LocalDate;
 import java.util.Date;
@@ -8,6 +10,7 @@ import java.util.Set;
 
 import javax.persistence.*;
 
+import org.hibernate.annotations.Cascade;
 import org.hibernate.annotations.GenericGenerator;
 
 /**
@@ -65,8 +68,8 @@ public class Sales
 //	@OneToMany(mappedBy = "sale", fetch = FetchType.EAGER)
 //	private Set<OrderItem> orderItems;
 
-	@OneToMany(fetch = FetchType.EAGER, mappedBy = "sale")
-//	@JoinColumn(name = "SerialId")
+	@OneToMany(fetch = FetchType.EAGER, mappedBy = "sale", orphanRemoval = true)
+	@Cascade({DELETE, SAVE_UPDATE})
 	private Set<SalesDet> saleItems;
 
 	@ManyToOne

@@ -7,7 +7,6 @@ import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.FetchType;
 import javax.persistence.GeneratedValue;
-import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.JoinColumn;
 import javax.persistence.OneToMany;
@@ -46,19 +45,35 @@ public class SchoolReturn {
 	@JoinColumn(name = "TxnId")
 	private SalesTransaction salesTxn;
 
-	@OneToMany(fetch= FetchType.EAGER, mappedBy = "schoolReturn")
-	@Cascade({CascadeType.SAVE_UPDATE, CascadeType.DELETE})	
+	@OneToMany(fetch= FetchType.EAGER, mappedBy = "schoolReturn", orphanRemoval = true)
+	@Cascade({CascadeType.SAVE_UPDATE, CascadeType.DELETE})
 	private Set<SalesReturnDet> salesReturnDetSet;
+
+	public School getSchool()
+	{
+		if(salesTxn != null)
+		{
+			return salesTxn.getSchool();
+		}
+		else
+		{
+			return null;
+		}
+	}
 
 	public Double getDiscount()
 	{
-		if(discAmt != null)
+		if (this.discPercent != null)
 		{
-			return discAmt;
+			if(this.subTotal == null)
+			{
+				this.subTotal = Double.valueOf(0.0);
+			}
+			return this.subTotal * this.discPercent / 100;
 		}
-		else if (discPercent != null && subTotal != null)
+		else if(this.discAmt != null)
 		{
-			return subTotal * discPercent / 100;
+			return this.discAmt;
 		}
 		else
 		{
