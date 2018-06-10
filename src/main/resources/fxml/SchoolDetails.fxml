@@ -82,6 +82,11 @@
 																<PropertyValueFactory property="netAmount" />
 															</cellValueFactory>
                                           				</TableColumn>
+													  <TableColumn prefWidth="122.0" text="Status" >
+														  <cellValueFactory>
+															  <PropertyValueFactory property="statusStr" />
+														  </cellValueFactory>
+													  </TableColumn>
 													</columns>
 												</TableView>
 												<Button layoutX="656.0" layoutY="25.0" mnemonicParsing="false" onAction="#addBill" prefHeight="26.0" prefWidth="120.0" text="Generate" />

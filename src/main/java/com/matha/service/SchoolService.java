@@ -685,6 +685,11 @@ public class SchoolService
 
 	private void deletePurchaseTxn(PurchaseTransaction txn)
 	{
+		if(txn == null)
+		{
+			return;
+		}
+
 		PurchaseTransaction prevTxn = txn.getPrevTxn();
 		PurchaseTransaction nextTxn = txn.getNextTxn();
 		PurchaseTransaction updateFromTxn = null;
@@ -843,13 +848,15 @@ public class SchoolService
 	public void deletePurchase(Purchase pur)
 	{
 		double netAmt = pur.getNetAmount();
-
 		PurchaseTransaction txn = pur.getSalesTxn();
-		deletePurchaseTxn(txn);
 
-		pur.getPurchaseItems().retainAll(Collections.EMPTY_SET);
+		pur.setSalesTxn(null);
+//		pur.setPurchaseItems(Collections.EMPTY_SET);
 		pur.setDeletedAmt(netAmt);
+		pur.setStatusInd(DELETED_IND);
 		purchaseRepoitory.save(pur);
+
+		deletePurchaseTxn(txn);
 
 	}
 
@@ -917,6 +924,7 @@ public class SchoolService
 		PurchaseTransaction txn = purchase.getSalesTxn();
 		deletePurchaseTxn(txn);
 
+		purchase.setStatusInd(Integer.valueOf(-2));
 		purchaseReturnRepository.delete(purchase);
 	}
 
@@ -1114,6 +1122,10 @@ public class SchoolService
 
 	private void deleteSalesTxn(SalesTransaction txn)
 	{
+		if(txn  == null)
+		{
+			return;
+		}
 		SalesTransaction prevTxn = txn.getPrevTxn();
 		SalesTransaction nextTxn = txn.getNextTxn();
 		SalesTransaction updateFromTxn = null;
@@ -1383,11 +1395,16 @@ public class SchoolService
 	@Transactional
 	public void deleteBill(Sales selectedSale)
 	{
-		selectedSale.getSaleItems().retainAll(Collections.EMPTY_SET);
+		SalesTransaction salesTransaction = selectedSale.getSalesTxn();
 		double netAmt = selectedSale.getNetAmount();
-		deleteSalesTxn(selectedSale.getSalesTxn());
+
+//		selectedSale.setSaleItems(Collections.EMPTY_SET);
+		selectedSale.setSalesTxn(null);
 		selectedSale.setDeletedAmt(netAmt);
+		selectedSale.setStatusInd(DELETED_IND);
 		salesRepository.save(selectedSale);
+
+		deleteSalesTxn(salesTransaction);
 	}
 
 	@Transactional
@@ -1509,6 +1526,8 @@ public class SchoolService
 	public void deleteReturn(SchoolReturn selectedReturn)
 	{
 		deleteSalesTxn(selectedReturn.getSalesTxn());
+
+		selectedReturn.setStatusInd(Integer.valueOf(-2));
 		schoolReturnRepository.delete(selectedReturn);
 	}
 

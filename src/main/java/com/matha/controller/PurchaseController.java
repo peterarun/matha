@@ -364,7 +364,7 @@ public class PurchaseController
 		Purchase purchase = this.purchaseData.getSelectionModel().getSelectedItem();
 		Alert alert = new Alert(AlertType.CONFIRMATION);
 		alert.setTitle("Delete Purchase Bill Confirmation");
-		alert.setHeaderText("Are you sure you want to delete the purchase: " + purchase.getId());
+		alert.setHeaderText("Are you sure you want to delete the purchase: " + purchase.getInvoiceNo());
 		alert.setContentText("Click Ok to Delete");
 
 		Optional<ButtonType> result = alert.showAndWait();
@@ -518,7 +518,7 @@ public class PurchaseController
 		PurchaseReturn purchase = this.returnsData.getSelectionModel().getSelectedItem();
 		Alert alert = new Alert(AlertType.CONFIRMATION);
 		alert.setTitle("Delete Purchase Return Confirmation");
-		alert.setHeaderText("Are you sure you want to delete the Credit Note: " + purchase.getId());
+		alert.setHeaderText("Are you sure you want to delete the Credit Note: " + purchase.getCreditNoteNum());
 		alert.setContentText("Click Ok to Delete");
 
 		Optional<ButtonType> result = alert.showAndWait();
@@ -588,7 +588,7 @@ public class PurchaseController
 		PurchasePayment purchase = this.paymentData.getSelectionModel().getSelectedItem();
 		Alert alert = new Alert(AlertType.CONFIRMATION);
 		alert.setTitle("Delete Purchase Payment Confirmation");
-		alert.setHeaderText("Are you sure you want to delete the Payment: " + purchase.getId());
+		alert.setHeaderText("Are you sure you want to delete the Payment: " + purchase.getReceiptNum());
 		alert.setContentText("Click Ok to Delete");
 
 		Optional<ButtonType> result = alert.showAndWait();

@@ -92,6 +92,7 @@ public class MasterStmtController
 		}
 		catch (Exception e)
 		{
+			LOGGER.error("Error...", e);
 			e.printStackTrace();
 		}
 	}
@@ -111,6 +112,7 @@ public class MasterStmtController
 		}
 		catch (Exception e)
 		{
+			LOGGER.error("Error...", e);
 			e.printStackTrace();
 		}
 	}
@@ -158,10 +160,12 @@ public class MasterStmtController
 		}
 		catch (JRException e)
 		{
+			LOGGER.error("Error...", e);
 			e.printStackTrace();
 		}
 		catch (Exception e)
 		{
+			LOGGER.error("Error...", e);
 			e.printStackTrace();
 		}
 
@@ -211,10 +215,12 @@ public class MasterStmtController
 		}
 		catch (JRException e)
 		{
+			LOGGER.error("Error...", e);
 			e.printStackTrace();
 		}
 		catch (Exception e)
 		{
+			LOGGER.error("Error...", e);
 			e.printStackTrace();
 		}
 

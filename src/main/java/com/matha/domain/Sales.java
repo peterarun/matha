@@ -1,6 +1,8 @@
 package com.matha.domain;
 
 import static com.matha.util.UtilConstants.DATE_CONV;
+import static com.matha.util.UtilConstants.EMPTY_STR;
+import static com.matha.util.UtilConstants.STATUS_MAP;
 import static org.hibernate.annotations.CascadeType.DELETE;
 import static org.hibernate.annotations.CascadeType.SAVE_UPDATE;
 
@@ -10,6 +12,7 @@ import java.util.Set;
 
 import javax.persistence.*;
 
+import com.matha.util.UtilConstants;
 import org.hibernate.annotations.Cascade;
 import org.hibernate.annotations.GenericGenerator;
 
@@ -79,6 +82,9 @@ public class Sales
 	@Column(name = "TDate")
 	private LocalDate txnDate;
 
+	@Column(name = "Status")
+	private Integer statusInd;
+
 	public String getSchoolName()
 	{
 		return school.getName();
@@ -127,6 +133,18 @@ public class Sales
 		return salesTxn.getAmount();
 	}
 
+	public String getStatusStr()
+	{
+		if(getStatusInd() != null && STATUS_MAP.containsKey(getStatusInd()))
+		{
+			return STATUS_MAP.get(getStatusInd());
+		}
+		else
+		{
+			return EMPTY_STR;
+		}
+	}
+
 	public SalesTransaction getSalesTxn()
 	{
 		return salesTxn;
@@ -136,16 +154,6 @@ public class Sales
 	{
 		this.salesTxn = salesTxn;
 	}
-	
-//	public Set<OrderItem> getPurchaseItems()
-//	{
-//		return orderItems;
-//	}
-//
-//	public void setPurchaseItems(Set<OrderItem> orderItems)
-//	{
-//		this.orderItems = orderItems;
-//	}
 
 	public Set<SalesDet> getSaleItems()
 	{
@@ -291,6 +299,14 @@ public class Sales
 
 	public void setTxnDate(LocalDate txnDate) {
 		this.txnDate = txnDate;
+	}
+
+	public Integer getStatusInd() {
+		return statusInd;
+	}
+
+	public void setStatusInd(Integer statusInd) {
+		this.statusInd = statusInd;
 	}
 
 	@Override

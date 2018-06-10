@@ -18,6 +18,7 @@ import org.hibernate.annotations.CascadeType;
 import org.hibernate.annotations.GenericGenerator;
 
 import static com.matha.util.UtilConstants.DATE_CONV;
+import static com.matha.util.UtilConstants.STATUS_MAP;
 
 @Entity
 @Table(name = "SReturn")
@@ -40,6 +41,9 @@ public class SchoolReturn {
 
 	@Column(name = "SubTotal")
 	private Double subTotal;
+
+	@Column(name = "Status")
+	private Integer statusInd;
 
 	@OneToOne
 	@JoinColumn(name = "TxnId")
@@ -79,6 +83,11 @@ public class SchoolReturn {
 		{
 			return Double.valueOf(0.0);
 		}
+	}
+
+	public String getStatusStr()
+	{
+		return STATUS_MAP.get(getStatusInd());
 	}
 
 	public Double getCalcNetTotal()
@@ -172,5 +181,13 @@ public class SchoolReturn {
 
 	public void setSubTotal(Double subTotal) {
 		this.subTotal = subTotal;
+	}
+
+	public Integer getStatusInd() {
+		return statusInd;
+	}
+
+	public void setStatusInd(Integer statusInd) {
+		this.statusInd = statusInd;
 	}
 }

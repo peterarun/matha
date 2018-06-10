@@ -11,6 +11,8 @@ import java.util.Arrays;
 import java.util.List;
 
 import org.apache.commons.lang3.StringUtils;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 import org.springframework.stereotype.Component;
 
 import com.matha.util.Utils;
@@ -36,6 +38,7 @@ import net.sf.jasperreports.export.SimpleOutputStreamExporterOutput;
 public class PrintPurchaseBillController
 {
 
+	private static final Logger LOGGER = LogManager.getLogger(PrintPurchaseBillController.class);
     @FXML
     private TextField publisherName;
 
@@ -71,6 +74,7 @@ public class PrintPurchaseBillController
 		}
 		catch (Exception e)
 		{
+			LOGGER.error("Error...", e);
 			e.printStackTrace();
 		}
 
@@ -123,6 +127,7 @@ public class PrintPurchaseBillController
 		}
 		catch (Throwable e)
 		{
+			LOGGER.error("Error...", e);
 			e.printStackTrace();
 		}
 	}
@@ -136,6 +141,7 @@ public class PrintPurchaseBillController
 		}
 		catch (Exception e)
 		{
+			LOGGER.error("Error...", e);
 			e.printStackTrace();
 		}
 	}

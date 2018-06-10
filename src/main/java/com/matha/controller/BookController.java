@@ -9,6 +9,8 @@ import java.util.List;
 import java.util.Optional;
 
 import org.apache.commons.lang3.StringUtils;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
@@ -36,6 +38,8 @@ import javafx.stage.WindowEvent;
 @Component
 public class BookController
 {
+
+	private static final Logger LOGGER = LogManager.getLogger(BookController.class);
 
 	@Autowired
 	SchoolService srvc;
@@ -100,6 +104,7 @@ public class BookController
 		}
 		catch (IOException e)
 		{
+			LOGGER.error("Error...", e);
 			e.printStackTrace();
 		}
 
@@ -177,6 +182,7 @@ public class BookController
 		}
 		catch (IOException e)
 		{
+			LOGGER.error("Error...", e);
 			e.printStackTrace();
 		}
 

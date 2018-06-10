@@ -1,6 +1,7 @@
 package com.matha.domain;
 
 import static com.matha.util.UtilConstants.DATE_CONV;
+import static com.matha.util.UtilConstants.STATUS_MAP;
 
 import java.time.LocalDate;
 
@@ -34,9 +35,17 @@ public class PurchasePayment {
 	@Column(name = "RefNum")
 	private String referenceNum;
 
+	@Column(name = "Status")
+	private Integer statusInd;
+
 	@OneToOne
 	@JoinColumn(name = "TxnId")
 	private PurchaseTransaction salesTxn;
+
+	public String getStatusStr()
+	{
+		return STATUS_MAP.get(getStatusInd());
+	}
 
 	public LocalDate getTxnDate()
 	{
@@ -99,5 +108,13 @@ public class PurchasePayment {
 
 	public void setReceiptNum(String receiptNum) {
 		this.receiptNum = receiptNum;
+	}
+
+	public Integer getStatusInd() {
+		return statusInd;
+	}
+
+	public void setStatusInd(Integer statusInd) {
+		this.statusInd = statusInd;
 	}
 }

@@ -190,6 +190,7 @@ public class Utils
 		}
 		catch (Exception e)
 		{
+			LOGGER.error("Error...", e);
 			e.printStackTrace();
 		}
 		return addOrderScene;
@@ -271,10 +272,12 @@ public class Utils
 		}
 		catch (JRException e)
 		{
+			LOGGER.error("Error...", e);
 			e.printStackTrace();
 		}
 		catch (Exception e)
 		{
+			LOGGER.error("Error...", e);
 			e.printStackTrace();
 		}
 
@@ -359,10 +362,12 @@ public class Utils
 		}
 		catch (JRException e)
 		{
+			LOGGER.error("Error...", e);
 			e.printStackTrace();
 		}
 		catch (Exception e)
 		{
+			LOGGER.error("Error...", e);
 			e.printStackTrace();
 		}
 
@@ -435,6 +440,7 @@ public class Utils
 		}
 		catch (Exception e)
 		{
+			LOGGER.error("Error...", e);
 			e.printStackTrace();
 		}
 
@@ -453,6 +459,7 @@ public class Utils
 		}
 		catch (Exception e)
 		{
+			LOGGER.error("Error...", e);
 			e.printStackTrace();
 		}
 		return addOrderScene;

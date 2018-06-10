@@ -5,6 +5,8 @@ import javafx.event.EventHandler;
 import javafx.scene.Scene;
 import javafx.stage.Stage;
 import javafx.stage.WindowEvent;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 import org.springframework.stereotype.Component;
 
 import com.matha.util.LoadUtils;
@@ -21,6 +23,8 @@ import static com.matha.util.UtilConstants.*;
 @Component
 public class LandingController
 {
+
+	private static final Logger LOGGER = LogManager.getLogger(LandingController.class);
 
 	@FXML
 	private Tab salesTab;
@@ -47,6 +51,7 @@ public class LandingController
 		}
 		catch (Exception e)
 		{
+			LOGGER.error("Error...", e);
 			e.printStackTrace();
 		}					
 	}
@@ -110,6 +115,7 @@ public class LandingController
 		}
 		catch (IOException e)
 		{
+			LOGGER.error("Error...", e);
 			e.printStackTrace();
 		}
 
@@ -131,6 +137,7 @@ public class LandingController
 		}
 		catch (IOException e)
 		{
+			LOGGER.error("Error...", e);
 			e.printStackTrace();
 		}
 
@@ -152,6 +159,7 @@ public class LandingController
 		}
 		catch (IOException e)
 		{
+			LOGGER.error("Error...", e);
 			e.printStackTrace();
 		}
 
@@ -173,6 +181,7 @@ public class LandingController
 		}
 		catch (IOException e)
 		{
+			LOGGER.error("Error...", e);
 			e.printStackTrace();
 		}
 

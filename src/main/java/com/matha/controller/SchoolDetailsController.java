@@ -185,9 +185,9 @@ public class SchoolDetailsController
 				{
 					super.updateItem(item, empty);
 					setStyle("");
-					if (item != null && !empty && item.getSalesTxn() != null && item.getSalesTxn().getTxnFlag() != null)
+					if (item != null && !empty && item.getStatusStr() != null)
 					{
-						if (item.getSalesTxn().getTxnFlag().equals(DELETED_STR))
+						if (item.getStatusStr().equals(DELETED_STR))
 						{
 							setStyle("-fx-background-color: pink");
 						}
@@ -372,7 +372,7 @@ public class SchoolDetailsController
 		try
 		{
 			Sales selectedSale = billData.getSelectionModel().getSelectedItem();
-			if (selectedSale.getSalesTxn() != null && selectedSale.getSalesTxn().getTxnFlag() != null)
+			if (selectedSale.getStatusInd() != null && selectedSale.getStatusInd().equals(DELETED_IND))
 			{
 				showAlert(selectedSale);
 				return;
@@ -538,6 +538,7 @@ public class SchoolDetailsController
 		catch (Exception e)
 		{
 			LOGGER.error("Error....", e);
+			e.printStackTrace();
 		}
 	}
 
@@ -827,10 +828,12 @@ public class SchoolDetailsController
 		}
 		catch (JRException e)
 		{
+			LOGGER.error("Error...", e);
 			e.printStackTrace();
 		}
 		catch (Exception e)
 		{
+			LOGGER.error("Error...", e);
 			e.printStackTrace();
 		}
 
@@ -899,6 +902,7 @@ public class SchoolDetailsController
 		}
 		catch (Throwable e)
 		{
+			LOGGER.error("Error...", e);
 			e.printStackTrace();
 		}
 	}
@@ -912,6 +916,7 @@ public class SchoolDetailsController
 		}
 		catch (Exception e)
 		{
+			LOGGER.error("Error...", e);
 			e.printStackTrace();
 		}
 	}
@@ -932,6 +937,7 @@ public class SchoolDetailsController
 		}
 		catch (Exception e)
 		{
+			LOGGER.error("Error...", e);
 			e.printStackTrace();
 		}
 

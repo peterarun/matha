@@ -1,6 +1,7 @@
 package com.matha.domain;
 
 import static com.matha.util.UtilConstants.DATE_CONV;
+import static com.matha.util.UtilConstants.STATUS_MAP;
 
 import java.time.LocalDate;
 import java.util.Set;
@@ -41,6 +42,9 @@ public class PurchaseReturn {
 	@Column(name = "TDate")
 	private LocalDate returnDate;
 
+	@Column(name = "Status")
+	private Integer statusInd;
+
 	@ManyToOne
 	@JoinColumn(name = "PublisherId")
 	private Publisher publisher;
@@ -74,6 +78,11 @@ public class PurchaseReturn {
 		{
 			return Double.valueOf(0.0);
 		}
+	}
+
+	public String getStatusStr()
+	{
+		return STATUS_MAP.get(getStatusInd());
 	}
 
 	public Double getCalcNetTotal()
@@ -176,5 +185,13 @@ public class PurchaseReturn {
 
 	public void setPublisher(Publisher publisher) {
 		this.publisher = publisher;
+	}
+
+	public Integer getStatusInd() {
+		return statusInd;
+	}
+
+	public void setStatusInd(Integer statusInd) {
+		this.statusInd = statusInd;
 	}
 }

@@ -4,6 +4,7 @@ import org.hibernate.annotations.Cascade;
 import org.hibernate.annotations.GenericGenerator;
 
 import static com.matha.util.UtilConstants.DATE_CONV;
+import static com.matha.util.UtilConstants.STATUS_MAP;
 import static org.hibernate.annotations.CascadeType.DELETE;
 import static org.hibernate.annotations.CascadeType.SAVE_UPDATE;
 
@@ -80,6 +81,9 @@ public class Purchase implements Serializable
 	@JoinColumn(name = "PublisherId")
 	private Publisher publisher;
 
+	@Column(name = "Status")
+	private Integer statusInd;
+
 	public String getPublisherName()
 	{
 		return publisher.getName();
@@ -131,7 +135,13 @@ public class Purchase implements Serializable
 		}
 		return salesTxn.getAmount();
 	}
-	
+
+	public String getStatusStr()
+	{
+		return STATUS_MAP.get(getStatusInd());
+	}
+
+
 	public String getId()
 	{
 		return id;
@@ -290,6 +300,14 @@ public class Purchase implements Serializable
 
 	public void setDeletedAmt(Double deletedAmt) {
 		this.deletedAmt = deletedAmt;
+	}
+
+	public Integer getStatusInd() {
+		return statusInd;
+	}
+
+	public void setStatusInd(Integer statusInd) {
+		this.statusInd = statusInd;
 	}
 
 	@Override

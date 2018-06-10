@@ -18,6 +18,8 @@ import java.util.List;
 import java.util.stream.Collectors;
 
 import org.apache.commons.lang3.StringUtils;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
 
@@ -50,7 +52,8 @@ import net.sf.jasperreports.export.SimpleOutputStreamExporterOutput;
 @Component
 public class PrintOrderController
 {
-	
+	private static final Logger LOGGER = LogManager.getLogger(PrintOrderController.class);
+
 	@Value("${agencyName}")
 	private String agencyName;
 	
@@ -108,10 +111,12 @@ public class PrintOrderController
 		}
 		catch (JRException e)
 		{
+			LOGGER.error("Error...", e);
 			e.printStackTrace();
 		}
 		catch (Exception e)
 		{
+			LOGGER.error("Error...", e);
 			e.printStackTrace();
 		}
 
@@ -136,6 +141,7 @@ public class PrintOrderController
 		}
 		catch (Exception e)
 		{
+			LOGGER.error("Error...", e);
 			e.printStackTrace();
 		}
 
@@ -188,6 +194,7 @@ public class PrintOrderController
 		}
 		catch (Throwable e)
 		{
+			LOGGER.error("Error...", e);
 			e.printStackTrace();
 		}
 	}
@@ -201,6 +208,7 @@ public class PrintOrderController
 		}
 		catch (Exception e)
 		{
+			LOGGER.error("Error...", e);
 			e.printStackTrace();
 		}
 	}

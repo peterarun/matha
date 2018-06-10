@@ -13,6 +13,8 @@ import javafx.scene.Scene;
 import javafx.scene.control.*;
 import javafx.stage.Stage;
 import net.sf.jasperreports.engine.JasperPrint;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
@@ -29,6 +31,7 @@ import static java.util.stream.Collectors.toMap;
 @Component
 public class SearchController
 {
+	private static final Logger LOGGER = LogManager.getLogger(SearchController.class);
 	@Autowired
 	private SchoolService schoolService;
 
@@ -95,8 +98,10 @@ public class SearchController
 			Scene addOrderScene = new Scene(addOrderRoot);
 			prepareAndShowStage(event, addOrderScene);
 
-		}catch (IOException e)
+		}
+		catch (IOException e)
 		{
+			LOGGER.error("Error...", e);
 			e.printStackTrace();
 		}
 	}
@@ -118,6 +123,7 @@ public class SearchController
 		}
 		catch (IOException e)
 		{
+			LOGGER.error("Error...", e);
 			e.printStackTrace();
 		}
 	}
@@ -159,6 +165,7 @@ public class SearchController
 		}
 		catch (IOException e)
 		{
+			LOGGER.error("Error...", e);
 			e.printStackTrace();
 		}
 	}
@@ -185,6 +192,7 @@ public class SearchController
 		}
 		catch (IOException e)
 		{
+			LOGGER.error("Error...", e);
 			e.printStackTrace();
 		}
 	}
@@ -226,6 +234,7 @@ public class SearchController
 		}
 		catch (IOException e)
 		{
+			LOGGER.error("Error...", e);
 			e.printStackTrace();
 		}
 	}
@@ -250,6 +259,7 @@ public class SearchController
 		}
 		catch (IOException e)
 		{
+			LOGGER.error("Error...", e);
 			e.printStackTrace();
 		}
 	}
@@ -271,6 +281,7 @@ public class SearchController
 		}
 		catch (IOException e)
 		{
+			LOGGER.error("Error...", e);
 			e.printStackTrace();
 		}
 	}

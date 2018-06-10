@@ -3,6 +3,8 @@ package com.matha.controller;
 import java.util.List;
 import java.util.Optional;
 
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
@@ -33,6 +35,8 @@ import javafx.stage.WindowEvent;
 
 @Component
 public class CashBookController {
+
+	private static final Logger LOGGER = LogManager.getLogger(CashBookController.class);
 
 	@Autowired
 	private SchoolService srvc;
@@ -71,6 +75,7 @@ public class CashBookController {
 			Scene addOrderScene = new Scene(addOrderRoot);
 			prepareAndShowStage(event, addOrderScene);
 		} catch (Exception e) {
+			LOGGER.error("Error...", e);
 			e.printStackTrace();
 		}
 	}
@@ -104,6 +109,7 @@ public class CashBookController {
 			Scene addOrderScene = new Scene(addOrderRoot);
 			prepareAndShowStage(event, addOrderScene);
 		} catch (Exception e) {
+			LOGGER.error("Error...", e);
 			e.printStackTrace();
 		}
 		

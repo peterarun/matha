@@ -293,14 +293,6 @@ public class AddBillController
 				SalesDet salesDet = new SalesDet(null, null, ++idx,orderItem);
 				addedBooks.getItems().add(salesDet);
 			}
-//			List<SalesDet> bookItems = newItems.stream()
-//					.map(oi -> new SalesDet(null,
-//							null,
-//							index.incrementAndGet(),
-//							oi))
-//					.collect(toList());
-
-//			addedBooks.getItems().addAll(bookItems);
 		}
 		else
 		{

@@ -1,5 +1,7 @@
 package com.matha.sales;
 
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.EnableAutoConfiguration;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
@@ -25,6 +27,8 @@ import javafx.stage.Stage;
 @EnableAutoConfiguration
 public class SalesApplication extends Application
 {
+
+	private static final Logger LOGGER = LogManager.getLogger(SalesApplication.class);
 
 	private Parent root;
 
@@ -60,6 +64,7 @@ public class SalesApplication extends Application
 		}
 		catch (Exception e)
 		{
+			LOGGER.error("Error...", e);
 			e.printStackTrace();
 			throw e;
 		}

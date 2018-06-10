@@ -4,8 +4,11 @@ import static com.matha.util.UtilConstants.DATE_CONV;
 import static com.matha.util.UtilConstants.RUPEE_SIGN;
 import static com.matha.util.Utils.*;
 import static com.matha.util.Utils.loadDiscSymbol;
+import static java.util.Comparator.comparing;
+import static java.util.stream.Collectors.toList;
 
 import java.util.ArrayList;
+import java.util.Comparator;
 import java.util.List;
 import java.util.Set;
 import java.util.stream.Collectors;
@@ -105,7 +108,7 @@ public class ViewBillController
 	
 		if (this.orders != null)
 		{
-			List<String> orderStrings = this.orders.stream().map(o -> o.getSerialNo()).collect(Collectors.toList());
+			List<String> orderStrings = this.orders.stream().map(o -> o.getSerialNo()).collect(toList());
 			this.orderList.setItems(FXCollections.observableList(orderStrings));
 		}
 
@@ -129,7 +132,8 @@ public class ViewBillController
 					.map(oi -> oi.getOrder())
 					.collect(Collectors.toSet());
 			this.orders = FXCollections.observableList(new ArrayList<Order>(orderSet));
-			this.addedBooks.setItems(FXCollections.observableArrayList(sale.getSaleItems()));
+			List<SalesDet> saleItems = sale.getSaleItems().stream().sorted(comparing(sd -> sd.getSlNum())).collect(toList());
+			this.addedBooks.setItems(FXCollections.observableArrayList(saleItems));
 			this.billDate.setValue(sale.getInvoiceDate());
 			this.subTotal.setText(getStringVal(sale.getSubTotal()));
 			this.discAmt.setText(getStringVal(sale.getDiscAmt()));

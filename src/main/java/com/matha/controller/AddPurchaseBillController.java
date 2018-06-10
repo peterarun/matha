@@ -5,17 +5,13 @@ import static com.matha.util.UtilConstants.NEW_LINE;
 import static com.matha.util.UtilConstants.PERCENT_SIGN;
 import static com.matha.util.UtilConstants.RUPEE_SIGN;
 import static com.matha.util.Utils.*;
+import static java.util.Comparator.comparing;
 import static java.util.stream.Collectors.summingDouble;
 import static java.util.stream.Collectors.toList;
 import static java.util.stream.Collectors.toMap;
 
 import java.time.LocalDate;
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.HashSet;
-import java.util.List;
-import java.util.Map;
-import java.util.Set;
+import java.util.*;
 import java.util.concurrent.atomic.AtomicInteger;
 import java.util.stream.Collector;
 import java.util.stream.Collectors;
@@ -223,7 +219,7 @@ public class AddPurchaseBillController
 
 				if (purchaseIn.getPurchaseItems() != null)
 				{
-					bookItems.addAll(purchaseIn.getPurchaseItems());
+					bookItems = purchaseIn.getPurchaseItems().stream().sorted(comparing(pi -> pi.getSlNum())).collect(toList());
 				}
 				this.addedBooks.setItems(FXCollections.observableList(bookItems));
 				this.calculateTotalQty();
@@ -297,16 +293,19 @@ public class AddPurchaseBillController
 		{
 			addedBooks.setItems(FXCollections.observableList(new ArrayList<>()));
 		}
-		ObservableList<PurchaseDet> itemsIn = addedBooks.getItems();
-		itemsIn.addAll(bookItems);
+		List<PurchaseDet> currBooks = new ArrayList<>(addedBooks.getItems());
+		currBooks.addAll(bookItems);
+		ObservableList<PurchaseDet> itemsIn = FXCollections.observableList(currBooks.stream().sorted(comparing(PurchaseDet::getSlNum)).collect(toList()));
+		addedBooks.getItems().addAll(itemsIn);
 		addedBooks.getSelectionModel().clearSelection();
 	}
 
 	@FXML
 	void addBookData(ActionEvent event)
 	{
+		int idx = this.addedBooks.getItems().size();
 		String bookStr = this.bookName.getText();
-		PurchaseDet itemIn = new PurchaseDet(index.incrementAndGet(),
+		PurchaseDet itemIn = new PurchaseDet(++idx,
 				Integer.parseInt(this.quantity.getText()),
 				Double.parseDouble(this.price.getText()),
 				this.bookMap.get(bookStr));
@@ -325,20 +324,38 @@ public class AddPurchaseBillController
 	{
 		if (ordersIn != null)
 		{
-			List<PurchaseDet> bookItems = ordersIn.stream()
+			List<OrderItem> newItems = ordersIn.stream()
 					.map(Order::getOrderItem)
 					.flatMap(List::stream)
-					.map(oi -> new PurchaseDet(null,
-							null,
-							index.incrementAndGet(),
-							oi))
+					.sorted(comparing(OrderItem::getOrderId).thenComparing(OrderItem::getSerialNum))
 					.collect(toList());
-			addItems(bookItems);
+			newItems.removeAll(addedBooks.getItems().stream().map(sd -> sd.getOrderItem()).collect(toList()));
+
+			int idx = addedBooks.getItems().size();
+			for (OrderItem orderItem : newItems)
+			{
+				PurchaseDet salesDet = new PurchaseDet(null, null, ++idx,orderItem);
+				addedBooks.getItems().add(salesDet);
+			}
 		}
+		else
+		{
+			reArrangeItems(addedBooks.getItems());
+		}
+
 		loadSubTotal();
 		calcNetAmount(discAmt.getText());
 		clearBookFields();
 		this.bookName.requestFocus();
+	}
+
+	private void reArrangeItems(ObservableList<PurchaseDet> items)
+	{
+		int idx = 0;
+		for (PurchaseDet orderItem : items)
+		{
+			orderItem.setSlNum(++idx);
+		}
 	}
 
 	private void loadSubTotal()

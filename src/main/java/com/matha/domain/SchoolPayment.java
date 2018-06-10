@@ -12,6 +12,7 @@ import javax.persistence.OneToOne;
 import javax.persistence.Table;
 
 import static com.matha.util.UtilConstants.EMPTY_STR;
+import static com.matha.util.UtilConstants.STATUS_MAP;
 
 @Entity
 @Table(name = "SPayment")
@@ -34,6 +35,9 @@ public class SchoolPayment {
 	@Column(name = "RefNum")
 	private String referenceNum;
 
+	@Column(name = "Status")
+	private Integer statusInd;
+
 	@OneToOne
 	@JoinColumn(name = "TxnId")
 	private SalesTransaction salesTxn;
@@ -48,6 +52,11 @@ public class SchoolPayment {
 		{
 			return EMPTY_STR;
 		}
+	}
+
+	public String getStatusStr()
+	{
+		return STATUS_MAP.get(getStatusInd());
 	}
 
 	public String getReceiptNum() {
@@ -108,4 +117,11 @@ public class SchoolPayment {
 		this.salesTxn = salesTxn;
 	}
 
+	public Integer getStatusInd() {
+		return statusInd;
+	}
+
+	public void setStatusInd(Integer statusInd) {
+		this.statusInd = statusInd;
+	}
 }

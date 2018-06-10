@@ -23,6 +23,8 @@ import com.matha.domain.*;
 import net.sf.jasperreports.engine.*;
 import net.sf.jasperreports.engine.data.JRBeanCollectionDataSource;
 import org.apache.commons.lang3.StringUtils;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 import org.springframework.stereotype.Component;
 
 import javafx.collections.FXCollections;
@@ -43,6 +45,8 @@ import net.sf.jasperreports.export.SimpleOutputStreamExporterOutput;
 @Component
 public class PrintSalesBillController
 {
+
+	private static final Logger LOGGER = LogManager.getLogger(PrintSalesBillController.class);
 
     @FXML
     private TextField schoolName;
@@ -82,6 +86,7 @@ public class PrintSalesBillController
 		}
 		catch (Exception e)
 		{
+			LOGGER.error("Error...", e);
 			e.printStackTrace();
 		}
 
@@ -134,6 +139,7 @@ public class PrintSalesBillController
 		}
 		catch (Throwable e)
 		{
+			LOGGER.error("Error...", e);
 			e.printStackTrace();
 		}
 	}
@@ -147,6 +153,7 @@ public class PrintSalesBillController
 		}
 		catch (Exception e)
 		{
+			LOGGER.error("Error...", e);
 			e.printStackTrace();
 		}
 	}

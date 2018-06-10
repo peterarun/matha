@@ -2,11 +2,17 @@ package com.matha.util;
 
 import java.time.LocalDate;
 import java.time.LocalDateTime;
+import java.util.AbstractMap;
+import java.util.Collections;
 import java.util.HashMap;
+import java.util.Map;
+import java.util.stream.Stream;
 
 import javafx.scene.control.ButtonType;
 import javafx.scene.control.ButtonBar.ButtonData;
 import javafx.util.StringConverter;
+
+import static java.util.stream.Collectors.toMap;
 
 public interface UtilConstants {
 
@@ -25,6 +31,8 @@ public interface UtilConstants {
 	public static final String DATE_FORMAT = "dd/MM/yyyy";
 	public static final String SALES_NOTE = "Sales Bill Note";
 	public static final String DELETED_STR = "DELETED";
+	public static final String ACTIVE_STR = "ACTIVE";
+	public static final String ARCHIVED_STR = "ARCHIVED";
 	public static final String PURCHASE_STR = "Purchase";
 	public static final String PAYMENT_STR = "Payment";
 	public static final String RETURN_STR = "Return";
@@ -33,6 +41,14 @@ public interface UtilConstants {
 	public static final String ORDER_SEARCH_STR = "Order Search";
 	public static final String PUR_BILL_SEARCH_STR = "Purchase Search";
 	public static final String SALE_BILL_SEARCH_STR = "Sale Search";
+	public static final Integer DELETED_IND = Integer.valueOf(-2);
+	public static final Integer ARCHIVED_IND = Integer.valueOf(-1);
+	public static final Integer ACTIVE_IND = Integer.valueOf(0);
+	public static Map<Integer, String> STATUS_MAP = Collections.unmodifiableMap(Stream.of(
+			new AbstractMap.SimpleEntry<>(DELETED_IND, DELETED_STR),
+			new AbstractMap.SimpleEntry<>(ARCHIVED_IND, ARCHIVED_STR),
+			new AbstractMap.SimpleEntry<>(ACTIVE_IND, ACTIVE_STR))
+			.collect(toMap((e) -> e.getKey(), (e) -> e.getValue())));
 
 	public static final StringConverter<LocalDate> DATE_CONV = Converters.getLocalDateConverter();
 	public static final StringConverter<LocalDateTime> DATE_TIME_CONV = Converters.getLocalDateTimeConverter();
@@ -79,34 +95,4 @@ public interface UtilConstants {
 	public static final ButtonType buttonTypeOne = new ButtonType("Yes", ButtonData.YES);
 	public static final ButtonType buttonTypeCancel = new ButtonType("Cancel", ButtonData.CANCEL_CLOSE);
 
-	public static enum CRDR_ENUM{
-		
-		CREDIT(1, "CR");
-		
-		private Integer multiplier;
-		private String repStr;
-		private HashMap<Integer, String> crdrMap = new HashMap<>();
-		
-		CRDR_ENUM(Integer multiplierIn, String repStrIn)
-		{
-			this.multiplier = multiplierIn;
-			this.repStr = repStrIn;
-			crdrMap.put(multiplierIn, repStrIn);
-		}
-		
-		public Integer getMultiplier()
-		{
-			return multiplier;
-		}
-		
-		public String getType()
-		{
-			return repStr;
-		}
-		
-		public HashMap<Integer,String> getCrDrMap()
-		{
-			return crdrMap;
-		}
-	}
 }

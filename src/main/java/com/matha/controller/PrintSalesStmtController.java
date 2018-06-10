@@ -152,10 +152,12 @@ public class PrintSalesStmtController
 		}
 		catch (JRException e)
 		{
+			LOGGER.error("Error...", e);
 			e.printStackTrace();
 		}
 		catch (Exception e)
 		{
+			LOGGER.error("Error...", e);
 			e.printStackTrace();
 		}
 
@@ -211,10 +213,12 @@ public class PrintSalesStmtController
 		}
 		catch (JRException e)
 		{
+			LOGGER.error("Error...", e);
 			e.printStackTrace();
 		}
 		catch (Exception e)
 		{
+			LOGGER.error("Error...", e);
 			e.printStackTrace();
 		}
 
@@ -237,6 +241,7 @@ public class PrintSalesStmtController
 		}
 		catch (Exception e)
 		{
+			LOGGER.error("Error...", e);
 			e.printStackTrace();
 		}
 
@@ -304,6 +309,7 @@ public class PrintSalesStmtController
 		}
 		catch (Throwable e)
 		{
+			LOGGER.error("Error...", e);
 			e.printStackTrace();
 		}
 	}
@@ -317,6 +323,7 @@ public class PrintSalesStmtController
 		}
 		catch (Exception e)
 		{
+			LOGGER.error("Error...", e);
 			e.printStackTrace();
 		}
 	}

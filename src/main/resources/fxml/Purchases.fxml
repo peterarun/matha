@@ -108,6 +108,11 @@
 														<PropertyValueFactory property="netAmount" />
 													</cellValueFactory>
 												</TableColumn>
+											<TableColumn prefWidth="110.0" text="Status">
+											   <cellValueFactory>
+												  <PropertyValueFactory property="statusStr" />
+											   </cellValueFactory>
+											</TableColumn>
 											</columns>
 										</TableView>
 										<Button layoutX="908.0" layoutY="96.0" mnemonicParsing="false" onAction="#editPurchase" prefHeight="25.0" prefWidth="70.0" text="Edit" />
