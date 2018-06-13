@@ -229,9 +229,17 @@ public class AddPurchaseRetController
 	void addBookData(ActionEvent event)
 	{
 		String bookStr = this.bookName.getText();
+		Book book = this.bookMap.get(bookStr);
+		if(book == null)
+		{
+			showErrorAlert("Invalid Book", "Invalid Book Entry", bookStr + " is not corresponding to a valid Book Entry");
+			return;
+		}
+
 		PurchaseReturnDet itemIn = new PurchaseReturnDet(index.incrementAndGet(),
 				Integer.parseInt(this.quantity.getText()),
-				Double.parseDouble(this.price.getText()),this.bookMap.get(bookStr));
+				Double.parseDouble(this.price.getText()),
+				book);
 		
 		this.addedBooks.getItems().add(itemIn);
 		LOGGER.debug("Added Item: " + itemIn);
@@ -333,8 +341,9 @@ public class AddPurchaseRetController
 	@FXML
 	void removeOperation(ActionEvent event)
 	{
-		PurchaseReturnDet itemIn = this.addedBooks.getSelectionModel().getSelectedItem();
-		this.addedBooks.getItems().remove(itemIn);
+		int orderNumSel = this.addedBooks.getSelectionModel().getSelectedIndex();
+		this.addedBooks.getItems().remove(orderNumSel);
+
 		loadSubTotal();
 		String discAmtStr = StringUtils.defaultString(discText.getText());
 		calcNetAmount(discAmtStr);

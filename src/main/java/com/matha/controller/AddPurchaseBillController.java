@@ -303,12 +303,19 @@ public class AddPurchaseBillController
 	@FXML
 	void addBookData(ActionEvent event)
 	{
-		int idx = this.addedBooks.getItems().size();
 		String bookStr = this.bookName.getText();
+		Book book = this.bookMap.get(bookStr);
+		if(book == null)
+		{
+			showErrorAlert("Invalid Book", "Invalid Book Entry", bookStr + " does not correspond to a valid Book Entry");
+			return;
+		}
+
+		int idx = this.addedBooks.getItems().size();
 		PurchaseDet itemIn = new PurchaseDet(++idx,
 				Integer.parseInt(this.quantity.getText()),
 				Double.parseDouble(this.price.getText()),
-				this.bookMap.get(bookStr));
+				book);
 
 		this.addedBooks.getItems().add(itemIn);
 		LOGGER.debug("Added Item: " + itemIn);

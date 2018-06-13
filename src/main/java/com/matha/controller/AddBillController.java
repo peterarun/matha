@@ -503,9 +503,15 @@ public class AddBillController
 	@FXML
 	void addBookData(ActionEvent e)
 	{
+		Book book = bookMap.get(bookText.getText());
+		if(book == null)
+		{
+			showErrorAlert("Invalid Book", "Invalid Book Entry", bookText.getText() + " does not correspond to a valid Book Entry");
+			return;
+		}
 		int idx = addedBooks.getItems().size();
 		Double bookPriceIn = getDoubleVal(bookPrice);
-		SalesDet item = new SalesDet(++idx, getIntegerVal(bookCnt), bookPriceIn, bookMap.get(bookText.getText()));
+		SalesDet item = new SalesDet(++idx, getIntegerVal(bookCnt), bookPriceIn, book);
 		if(bookPriceIn == null)
 		{
 			item.setRate(item.getBookPrice());

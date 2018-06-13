@@ -4,6 +4,8 @@ import static com.matha.util.UtilConstants.NEW_LINE;
 import static com.matha.util.UtilConstants.PERCENT_SIGN;
 import static com.matha.util.UtilConstants.RUPEE_SIGN;
 import static com.matha.util.Utils.*;
+import static java.util.Comparator.comparing;
+import static java.util.stream.Collectors.toList;
 
 import java.util.*;
 import java.util.concurrent.atomic.AtomicInteger;
@@ -173,9 +175,15 @@ public class AddReturnController
 	@FXML
 	void addBookData(ActionEvent event)
 	{
-		SalesReturnDet itemIn = new SalesReturnDet(this.addedBooks.getItems().size(), getIntegerVal(this.quantity), Double.parseDouble(this.price.getText()), null);
 		String bookStr = this.bookName.getText();
-		itemIn.setBook(this.bookMap.get(bookStr));
+		Book book = this.bookMap.get(bookStr);
+		if(book == null)
+		{
+			showErrorAlert("Invalid Book", "Invalid Book Entry", bookStr + " is not corresponding to a valid Book Entry");
+			return;
+		}
+		SalesReturnDet itemIn = new SalesReturnDet(this.addedBooks.getItems().size(), getIntegerVal(this.quantity), Double.parseDouble(this.price.getText()), null);
+		itemIn.setBook(book);
 		this.addedBooks.getItems().add(itemIn);
 		LOGGER.debug("Added" + itemIn);
 		loadSubTotal();
@@ -271,8 +279,9 @@ public class AddReturnController
 	@FXML
 	void removeOperation(ActionEvent event)
 	{
-		SalesReturnDet itemIn = this.addedBooks.getSelectionModel().getSelectedItem();
-		this.addedBooks.getItems().remove(itemIn);
+		int orderNumSel = this.addedBooks.getSelectionModel().getSelectedIndex();
+		this.addedBooks.getItems().remove(orderNumSel);
+
 		loadSubTotal();
 		calcNetAmount(this.discText.getText());
 	}
