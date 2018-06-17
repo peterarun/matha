@@ -51,7 +51,7 @@ public class SalesTxnMigration
 //			finYear = Integer.parseInt(args[0]);
 		}
 		Configurator.setLevel("com.matha", Level.DEBUG);
-		LocalDate ld = LocalDate.of(2018, Month.FEBRUARY, 1);
+		LocalDate ld = LocalDate.of(2017, Month.OCTOBER, 1);
 		LOGGER.debug("Running Sales Transaction Creation for FY: " + ld);
 		mig.doMigration(ld);
 	}
