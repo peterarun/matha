@@ -134,7 +134,7 @@ public class SchoolController
 		{
 			char charVal = event.getCharacter().charAt(0);
 			int intVal = event.getCharacter().codePointAt(0);
-			if(Character.isAlphabetic(intVal))
+			if(charVal > 31 && charVal < 127)
 			{
 				schoolNamePart = schText + charVal;
 			}
