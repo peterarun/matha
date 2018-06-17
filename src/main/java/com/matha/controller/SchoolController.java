@@ -3,6 +3,7 @@ package com.matha.controller;
 import static com.matha.util.UtilConstants.*;
 import static com.matha.util.Utils.showConfirmation;
 import static java.util.stream.Collectors.toSet;
+import static org.apache.commons.lang3.StringUtils.isBlank;
 
 import java.io.IOException;
 import java.util.*;
@@ -108,9 +109,10 @@ public class SchoolController
 					LOGGER.error("Error...", e);
 					e.printStackTrace();
 				}
-
 			}
 		});
+
+		states.getSelectionModel().selectFirst();
 	}
 
 	private void initData()
@@ -126,8 +128,26 @@ public class SchoolController
 	@FXML
 	void nameSearch(KeyEvent event)
 	{
+		String schoolNamePart = EMPTY_STR;
+		String schText = this.schoolName.getText();
+		if(event.getCharacter() != null && !event.getCharacter().isEmpty())
+		{
+			char charVal = event.getCharacter().charAt(0);
+			int intVal = event.getCharacter().codePointAt(0);
+			if(Character.isAlphabetic(intVal))
+			{
+				schoolNamePart = schText + charVal;
+			}
+			else
+			{
+				schoolNamePart = schText;
+			}
+//			else if(charVal == '\b' && schText.length() > 0)
+//			{
+//				schoolNamePart = schText.substring(0, schText.length() - 1);
+//			}
+		}
 
-		String schoolNamePart = this.schoolName.getText() + event.getCharacter();
 		String pin = this.pin.getText();
 
 		loadSchools(schoolNamePart, pin);

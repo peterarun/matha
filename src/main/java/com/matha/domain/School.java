@@ -1,5 +1,6 @@
 package com.matha.domain;
 
+import static com.matha.util.UtilConstants.EMPTY_STR;
 import static com.matha.util.UtilConstants.NEW_LINE;
 
 import java.io.Serializable;
@@ -63,6 +64,18 @@ public class School implements Serializable {
 
 	private String principal;
 	private String email;
+
+	public String getDistrictStr()
+	{
+		if(this.district == null)
+		{
+			return EMPTY_STR;
+		}
+		else
+		{
+			return this.district.getId();
+		}
+	}
 
 	public Integer getId() {
 		return id;

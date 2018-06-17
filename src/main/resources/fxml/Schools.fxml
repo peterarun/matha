@@ -38,26 +38,31 @@
 			<children>
 				<TableView fx:id="tableView" layoutY="1.0" prefHeight="435.0" prefWidth="1022.0">
 					<columns>
-						<TableColumn prefWidth="372.0" text="Name">
+						<TableColumn prefWidth="273.0" text="Name">
 							<cellValueFactory>
 								<PropertyValueFactory property="name" />
 							</cellValueFactory>
 						</TableColumn>
-						<TableColumn minWidth="5.0" prefWidth="177.0" text="City">
+						<TableColumn minWidth="5.0" prefWidth="231.0" text="Address2">
 							<cellValueFactory>
-								<PropertyValueFactory property="city" />
+								<PropertyValueFactory property="address2" />
 							</cellValueFactory>
 						</TableColumn>
-						<TableColumn prefWidth="281.0" text="Address3">
+						<TableColumn prefWidth="237.0" text="Address3">
 							<cellValueFactory>
 								<PropertyValueFactory property="address3" />
 							</cellValueFactory>
 						</TableColumn>
-						<TableColumn prefWidth="191.0" text="Phone">
+						<TableColumn prefWidth="142.0" text="City">
 							<cellValueFactory>
-								<PropertyValueFactory property="phone1" />
+								<PropertyValueFactory property="city" />
 							</cellValueFactory>
 						</TableColumn>
+					  <TableColumn prefWidth="138.0" text="District">
+						 <cellValueFactory>
+							<PropertyValueFactory property="districtStr" />
+						 </cellValueFactory>
+					  </TableColumn>
 					</columns>
 				</TableView>
 			</children>
