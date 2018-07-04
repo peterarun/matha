@@ -1,16 +1,8 @@
 package com.matha.controller;
 
-import static com.matha.util.UtilConstants.addPublisherFxml;
-import static com.matha.util.UtilConstants.createOrderFxmlFile;
-import static com.matha.util.UtilConstants.createPurchaseFxmlFile;
-import static com.matha.util.UtilConstants.createPurchasePayFxmlFile;
-import static com.matha.util.UtilConstants.createPurchaseRetFxmlFile;
-import static com.matha.util.UtilConstants.invoiceJrxml;
-import static com.matha.util.UtilConstants.printOrderFxmlFile;
-import static com.matha.util.UtilConstants.printPurchaseFxmlFile;
-import static com.matha.util.UtilConstants.statementJrxml;
-import static com.matha.util.Utils.getStringVal;
-import static com.matha.util.Utils.prepareJasperPrint;
+import static com.matha.util.UtilConstants.*;
+import static com.matha.util.Utils.*;
+import static java.util.Comparator.comparing;
 import static java.util.stream.Collectors.toMap;
 
 import java.io.ByteArrayOutputStream;
@@ -19,16 +11,15 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.nio.charset.Charset;
 import java.time.LocalDate;
-import java.util.HashMap;
-import java.util.HashSet;
-import java.util.List;
-import java.util.Map;
-import java.util.Optional;
-import java.util.Set;
+import java.util.*;
 import java.util.stream.Collector;
 import java.util.stream.Collectors;
 
 import com.matha.domain.*;
+import javafx.event.Event;
+import net.sf.jasperreports.engine.export.ooxml.JRDocxExporter;
+import net.sf.jasperreports.engine.export.ooxml.JRXlsxExporter;
+import net.sf.jasperreports.export.SimpleOutputStreamExporterOutput;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
@@ -92,6 +83,9 @@ public class PurchaseController
 	@Value("#{'${datedPurPaymentModes}'.split(',')}")
 	private List<String> datedSchoolPaymentModes;
 
+	@Value("${defaultPublisher}")
+	private String defaultPublisher;
+
 	@Autowired
 	private SchoolService schoolService;
 
@@ -153,10 +147,13 @@ public class PurchaseController
 	private DatePicker toDate;
 
 	@FXML
+	private ChoiceBox<String> saveType;
+
+	@FXML
 	private WebView reportData;
 
 	private JasperPrint print;
-	private Map<String, Publisher> pubMap;
+//	private Map<String, Publisher> pubMap;
 	private Map<String, Book> bookMap;
 	private Collector<Book, ?, Map<String, Book>> bookMapCollector = toMap(o -> o.getShortName() + ": " + o.getName() + " - " + o.getPublisherName(), o -> o);
 
@@ -168,11 +165,10 @@ public class PurchaseController
 		List<Publisher> allPublishers = schoolService.fetchAllPublishers();
 		publishers.setConverter(Converters.getPublisherConverter());
 		publishers.setItems(FXCollections.observableList(allPublishers));
-//		publishers.getSelectionModel().selectFirst();
-		
-		pubMap = allPublishers.stream().collect(Collectors.toMap(Publisher::getName, pub -> pub ));
 
-		Optional<String> pubSel = selectPublisher();
+		Map<String, Publisher> pubMap = allPublishers.stream().collect(toMap(Publisher::getName, pub -> pub));
+
+		Optional<String> pubSel = selectPublisher(pubMap);
 		if(pubSel.isPresent())
 		{
 			publishers.getSelectionModel().select(pubMap.get(pubSel.get()));
@@ -190,6 +186,10 @@ public class PurchaseController
 
 		orderPaginator.setPageFactory(this::createPage);
 		billPaginator.setPageFactory(this::createBillPage);
+
+		List<String> saveTypes = Arrays.asList(PDF,Excel,Docx);
+		this.saveType.setItems(FXCollections.observableList(saveTypes));
+		this.saveType.getSelectionModel().selectFirst();
 	}
 
 	private Node createPage(int pageIndex)
@@ -279,7 +279,7 @@ public class PurchaseController
 	}
 	
 	@FXML
-	void editOrder(ActionEvent event)
+	void editOrder(Event event)
 	{
 		try
 		{
@@ -322,7 +322,7 @@ public class PurchaseController
 			AddPurchaseBillController ctrl = createOrderLoader.getController();
 			ctrl.initData(orderSet, this.publishers.getSelectionModel().getSelectedItem(), null, this.bookMap);
 			Scene addOrderScene = new Scene(addOrderRoot);
-			prepareAndShowStage(event, addOrderScene, purchaseEventHandler);
+			prepareAndShowStage(event, addOrderScene, ev -> loadPurchases(this.billPaginator.getCurrentPageIndex()));
 			
 			purTabs.getSelectionModel().select(purchaseBillTab);
 		}
@@ -334,12 +334,10 @@ public class PurchaseController
 	}
 
 	@FXML
-	void editPurchase(ActionEvent event)
+	void editPurchase(Event event)
 	{
-
 		try
 		{
-
 			Purchase purchase = this.purchaseData.getSelectionModel().getSelectedItem();
 
 			FXMLLoader createOrderLoader = LoadUtils.loadFxml(this, createPurchaseFxmlFile);
@@ -347,7 +345,7 @@ public class PurchaseController
 			AddPurchaseBillController ctrl = createOrderLoader.getController();
 			ctrl.initData(null, this.publishers.getSelectionModel().getSelectedItem(), purchase, this.bookMap);
 			Scene addOrderScene = new Scene(addOrderRoot);
-			prepareAndShowStage(event, addOrderScene, purchaseEventHandler);
+			prepareAndShowStage(event, addOrderScene, ev -> loadPurchases(this.billPaginator.getCurrentPageIndex()));
 
 		}
 		catch (Exception e)
@@ -410,7 +408,11 @@ public class PurchaseController
 		Page<Order> orderPages = schoolService.fetchOrders(pub, idx, ROWS_PER_PAGE, billedToggle.isSelected());
 		List<Order> orderList = orderPages.getContent();
 		this.orderPaginator.setPageCount(orderPages.getTotalPages());
-		orderTable.setItems(FXCollections.observableList(orderList));
+		this.orderTable.setItems(FXCollections.observableList(orderList));
+
+		this.orderTable.setOnMouseClicked(ev -> {
+			if(verifyDblClick(ev)) editOrder(ev);
+		});
 	}
 
 	private void loadOrderSearchTable(int idx)
@@ -455,18 +457,28 @@ public class PurchaseController
 			Page<Purchase> purchasePages = schoolService.fetchPurchasesForPublisher(pub, pageNum, ROWS_PER_PAGE);
 			List<Purchase> purchaseList	= purchasePages.getContent();
 			this.billPaginator.setPageCount(purchasePages.getTotalPages());
-			purchaseData.setItems(FXCollections.observableList(purchaseList));
+			this.purchaseData.setItems(FXCollections.observableList(purchaseList));
+
+			this.purchaseData.setOnMouseClicked(ev -> {
+				if(verifyDblClick(ev)) editPurchase(ev);
+			});
 		}
+
+
 	}
     
 	@FXML
 	public void loadReturns()
 	{
-		if (returnsTab.isSelected())
+		if (this.returnsTab.isSelected())
 		{
-			Publisher pub = publishers.getSelectionModel().getSelectedItem();
-			List<PurchaseReturn> returnDataList = schoolService.fetchPurchaseReturns(pub);
-			returnsData.setItems(FXCollections.observableList(returnDataList));
+			Publisher pub = this.publishers.getSelectionModel().getSelectedItem();
+			List<PurchaseReturn> returnDataList = this.schoolService.fetchPurchaseReturns(pub);
+			this.returnsData.setItems(FXCollections.observableList(returnDataList));
+
+			this.returnsData.setOnMouseClicked(ev -> {
+				if(verifyDblClick(ev)) editReturn(ev);
+			});
 		}
 	}
 
@@ -480,7 +492,7 @@ public class PurchaseController
 			AddPurchaseRetController ctrl = createOrderLoader.getController();
 			ctrl.initData(this.publishers.getSelectionModel().getSelectedItem(), null);
 			Scene addOrderScene = new Scene(addOrderRoot);
-			prepareAndShowStage(event, addOrderScene, purchaseRetEventHandler);
+			prepareAndShowStage(event, addOrderScene, ev -> loadReturns());
 		}
 		catch (Exception e)
 		{
@@ -490,7 +502,7 @@ public class PurchaseController
 	}
 
 	@FXML
-	void editReturn(ActionEvent event)
+	void editReturn(Event event)
 	{
 		try
 		{
@@ -501,7 +513,7 @@ public class PurchaseController
 			AddPurchaseRetController ctrl = createOrderLoader.getController();
 			ctrl.initData(this.publishers.getSelectionModel().getSelectedItem(), purchase);
 			Scene addOrderScene = new Scene(addOrderRoot);
-			prepareAndShowStage(event, addOrderScene, purchaseRetEventHandler);
+			prepareAndShowStage(event, addOrderScene, ev -> loadReturns());
 
 		}
 		catch (Exception e)
@@ -532,11 +544,15 @@ public class PurchaseController
 	@FXML
 	public void loadPayments()
 	{
-		if (paymentTab.isSelected())
+		if (this.paymentTab.isSelected())
 		{
-			Publisher pub = publishers.getSelectionModel().getSelectedItem();
-			List<PurchasePayment> returnDataList = schoolService.fetchPurchasePayments(pub);
-			paymentData.setItems(FXCollections.observableList(returnDataList));
+			Publisher pub = this.publishers.getSelectionModel().getSelectedItem();
+			List<PurchasePayment> returnDataList = this.schoolService.fetchPurchasePayments(pub);
+			this.paymentData.setItems(FXCollections.observableList(returnDataList));
+
+			this.paymentData.setOnMouseClicked(ev -> {
+				if(verifyDblClick(ev)) editPayment(ev);
+			});
 		}
 	}
 
@@ -550,7 +566,7 @@ public class PurchaseController
 			AddPurchasePayController ctrl = createOrderLoader.getController();
 			ctrl.initData(this.publishers.getSelectionModel().getSelectedItem(), null);
 			Scene addOrderScene = new Scene(addOrderRoot);
-			prepareAndShowStage(event, addOrderScene, purchasePayEventHandler);
+			prepareAndShowStage(event, addOrderScene, ev -> loadPayments());
 		}
 		catch (Exception e)
 		{
@@ -560,7 +576,7 @@ public class PurchaseController
 	}
 
 	@FXML
-	void editPayment(ActionEvent event)
+	void editPayment(Event event)
 	{
 		try
 		{
@@ -571,7 +587,7 @@ public class PurchaseController
 			AddPurchasePayController ctrl = createOrderLoader.getController();
 			ctrl.initData(this.publishers.getSelectionModel().getSelectedItem(), purchase);
 			Scene addOrderScene = new Scene(addOrderRoot);
-			prepareAndShowStage(event, addOrderScene, purchasePayEventHandler);
+			prepareAndShowStage(event, addOrderScene, ev -> loadPayments());
 
 		}
 		catch (Exception e)
@@ -599,14 +615,14 @@ public class PurchaseController
 		}
 	}
 
-	@FXML
-	public void loadStatement()
-	{
-		if (statementTab.isSelected())
-		{
-
-		}
-	}
+//	@FXML
+//	public void loadStatement()
+//	{
+//		if (statementTab.isSelected())
+//		{
+//
+//		}
+//	}
 
 	@FXML
 	public void loadStatementHtml()
@@ -615,7 +631,7 @@ public class PurchaseController
 		{
 			try
 			{
-				if(print == null)
+//				if(print == null)
 				{
 					loadWebStmt();
 				}
@@ -716,14 +732,65 @@ public class PurchaseController
 	{
 		try
 		{
-
+			String selection = saveType.getSelectionModel().getSelectedItem();
+			String filterStr = "*.*";
+			if(selection.equals(PDF))
+			{
+				filterStr = "*.pdf";
+			}
+			else if(selection.equals(Excel))
+			{
+				filterStr = "*.xls";
+			}
 			FileChooser fileChooser = new FileChooser();
 			fileChooser.setTitle("Save File");
+			fileChooser.setInitialFileName(this.publishers.getSelectionModel().getSelectedItem().getName() + "_statement");
+			fileChooser.getExtensionFilters().addAll(
+					new FileChooser.ExtensionFilter(selection, filterStr)
+			);
 
 			File file = fileChooser.showSaveDialog(((Node) ev.getSource()).getScene().getWindow());
-			JasperExportManager.exportReportToPdfFile(print, file.getAbsolutePath());
+			if(file == null)
+			{
+				return;
+			}
+			if(selection.equals(PDF))
+			{
+				JasperExportManager.exportReportToPdfFile(print, file.getAbsolutePath());
+			}
+			else if(selection.equals(Excel))
+			{
+				JRXlsxExporter exporter = new JRXlsxExporter();
+				exporter.setExporterInput(new SimpleExporterInput(print));
+				exporter.setExporterOutput(new SimpleOutputStreamExporterOutput(file));
+
+				exporter.exportReport();
+			}
+			else if(selection.equals(Docx))
+			{
+				JRDocxExporter exporter = new JRDocxExporter();
+				exporter.setExporterInput(new SimpleExporterInput(print));
+				exporter.setExporterOutput(new SimpleOutputStreamExporterOutput(file));
+
+				exporter.exportReport();
+			}
+
 		}
 		catch (Throwable e)
+		{
+			LOGGER.error("Error...", e);
+			e.printStackTrace();
+		}
+	}
+
+	@FXML
+	public void printStmt(ActionEvent ev)
+	{
+		try
+		{
+			printJasper(print);
+		}
+		catch (Exception e)
 		{
 			LOGGER.error("Error...", e);
 			e.printStackTrace();
@@ -751,9 +818,10 @@ public class PurchaseController
 		}		
 	}
 
-	public Optional<String> selectPublisher()
+	public Optional<String> selectPublisher(Map<String, Publisher> pubMap)
 	{
-		ChoiceDialog<String> dialog = new ChoiceDialog<>(null, pubMap.keySet());
+		Set<String> pubNames = new TreeSet<>(pubMap.keySet());
+		ChoiceDialog<String> dialog = new ChoiceDialog<>(this.defaultPublisher, pubNames);
 		
 		dialog.setTitle("Publisher Selection");
 		dialog.setHeaderText("Publisher Selection");
@@ -763,41 +831,41 @@ public class PurchaseController
 		return result;
 	}
 	
-	private void prepareAndShowStage(ActionEvent e, Scene childScene)
+	private void prepareAndShowStage(Event e, Scene childScene)
 	{
 		Stage stage = LoadUtils.loadChildStage(e, childScene);
 		stage.show();
 	}
 
-	private void prepareAndShowStage(ActionEvent e, Scene childScene, EventHandler<WindowEvent> eventHandler)
+	private void prepareAndShowStage(Event e, Scene childScene, EventHandler<WindowEvent> eventHandler)
 	{
 		Stage stage = LoadUtils.loadChildStage(e, childScene);
 		stage.setOnHiding(eventHandler);
 		stage.show();
 	}
 
-	private EventHandler<WindowEvent> purchaseEventHandler = new EventHandler<WindowEvent>() {
-		@Override
-		public void handle(final WindowEvent event)
-		{
-			int pageIdx = billPaginator.getCurrentPageIndex();
-			loadPurchases(pageIdx);
-		}
-	};
-
-	private EventHandler<WindowEvent> purchaseRetEventHandler = new EventHandler<WindowEvent>() {
-		@Override
-		public void handle(final WindowEvent event)
-		{
-			loadReturns();
-		}
-	};
-
-	private EventHandler<WindowEvent> purchasePayEventHandler = new EventHandler<WindowEvent>() {
-		@Override
-		public void handle(final WindowEvent event)
-		{
-			loadPayments();
-		}
-	};
+//	private EventHandler<WindowEvent> purchaseEventHandler = new EventHandler<WindowEvent>() {
+//		@Override
+//		public void handle(final WindowEvent event)
+//		{
+//			int pageIdx = billPaginator.getCurrentPageIndex();
+//			loadPurchases(pageIdx);
+//		}
+//	};
+//
+//	private EventHandler<WindowEvent> purchaseRetEventHandler = new EventHandler<WindowEvent>() {
+//		@Override
+//		public void handle(final WindowEvent event)
+//		{
+//			loadReturns();
+//		}
+//	};
+//
+//	private EventHandler<WindowEvent> purchasePayEventHandler = new EventHandler<WindowEvent>() {
+//		@Override
+//		public void handle(final WindowEvent event)
+//		{
+//			loadPayments();
+//		}
+//	};
 }

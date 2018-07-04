@@ -1,5 +1,6 @@
 package com.matha.controller;
 
+import javafx.application.Platform;
 import javafx.event.Event;
 import javafx.event.EventHandler;
 import javafx.scene.Scene;
@@ -19,6 +20,7 @@ import javafx.scene.control.Tab;
 import java.io.IOException;
 
 import static com.matha.util.UtilConstants.*;
+import static com.matha.util.Utils.showConfirmation;
 
 @Component
 public class LandingController
@@ -187,4 +189,15 @@ public class LandingController
 
 	}
 
+	@FXML
+	public void exitApp()
+	{
+		if (!showConfirmation("Closing Application!",
+				"Are you sure you want to exit?",
+				"Click Ok to Exit"))
+		{
+			return;
+		}
+		Platform.exit();
+	}
 }

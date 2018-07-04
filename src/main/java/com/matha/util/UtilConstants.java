@@ -25,6 +25,7 @@ public interface UtilConstants {
 	public static final String SPACE_SIGN = " ";
 	public static final String SEMI_COLON_SIGN = ";";
 	public static final String NEW_LINE = System.getProperty("line.separator");
+	public static final String USUAL_DISC_TXT = "15";
 	public static final String PDF = "PDF";
 	public static final String Excel = "Excel";	
 	public static final String Docx = "Word";

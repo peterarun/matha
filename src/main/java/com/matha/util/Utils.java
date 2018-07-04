@@ -19,6 +19,8 @@ import javax.print.attribute.standard.PrinterName;
 import com.matha.domain.*;
 import javafx.event.ActionEvent;
 import javafx.scene.control.*;
+import javafx.scene.input.MouseButton;
+import javafx.scene.input.MouseEvent;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
@@ -91,6 +93,16 @@ public class Utils
 	{
 		Integer dblVal = null;
 		String txtStr = txt.getText();
+		if (StringUtils.isNotBlank(txtStr))
+		{
+			dblVal = Integer.parseInt(txtStr);
+		}
+		return dblVal;
+	}
+
+	public static Integer getIntegerVal(String txtStr)
+	{
+		Integer dblVal = null;
 		if (StringUtils.isNotBlank(txtStr))
 		{
 			dblVal = Integer.parseInt(txtStr);
@@ -611,12 +623,13 @@ public class Utils
 		alert.showAndWait();
 	}
 
-	public static boolean showConfirmation(String title, String message)
+	public static boolean showConfirmation(String title, String message, String contentText)
 	{
 		Alert alert = new Alert(AlertType.CONFIRMATION);
 		alert.setTitle(title);
 		alert.setHeaderText(message);
-		alert.setContentText("Click Ok to Delete");
+		alert.setContentText(contentText);
+//		alert.setContentText("Click Ok to Delete");
 
 		Optional<ButtonType> result = alert.showAndWait();
 		if (result.get() == ButtonType.OK)
@@ -627,6 +640,19 @@ public class Utils
 		{
 			return false;
 		}
+	}
+
+	public static boolean verifyDblClick(MouseEvent mouseEvent)
+	{
+		boolean dblClick = false;
+		if (mouseEvent.getButton().equals(MouseButton.PRIMARY))
+		{
+			if (mouseEvent.getClickCount() == 2)
+			{
+				return true;
+			}
+		}
+		return dblClick;
 	}
 
 	public static String convertDouble(double dbl)

@@ -1,5 +1,7 @@
 package com.matha.sales;
 
+import javafx.event.EventHandler;
+import javafx.stage.WindowEvent;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.springframework.boot.SpringApplication;
@@ -19,6 +21,8 @@ import javafx.fxml.FXMLLoader;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
 import javafx.stage.Stage;
+
+import static com.matha.util.Utils.showConfirmation;
 
 @SpringBootApplication
 @EnableJpaRepositories(basePackages = "com.matha.repository")
@@ -61,6 +65,8 @@ public class SalesApplication extends Application
 			primaryStage.setScene(scene);
 			primaryStage.show();
 
+			primaryStage.setOnCloseRequest(confirmCloseEventHandler);
+
 		}
 		catch (Exception e)
 		{
@@ -80,4 +86,15 @@ public class SalesApplication extends Application
 		fxmlLoader.setControllerFactory(SalesApplication.ctx::getBean);
 		return fxmlLoader;
 	}
+
+	private EventHandler<WindowEvent> confirmCloseEventHandler = event ->
+	{
+		if (!showConfirmation("Closing Application!",
+				"Are you sure you want to exit?",
+				"Click Ok to Exit"))
+		{
+			event.consume();
+			return;
+		}
+	};
 }

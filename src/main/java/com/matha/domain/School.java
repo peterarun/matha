@@ -2,6 +2,8 @@ package com.matha.domain;
 
 import static com.matha.util.UtilConstants.EMPTY_STR;
 import static com.matha.util.UtilConstants.NEW_LINE;
+import static org.apache.commons.lang3.StringUtils.isBlank;
+import static org.apache.commons.lang3.StringUtils.isNotBlank;
 
 import java.io.Serializable;
 
@@ -226,29 +228,30 @@ public class School implements Serializable {
 
 	public String addressText() {
 		StringBuilder builder = new StringBuilder();
-		if (address1 != null) {
+		if (isNotBlank(address1)) {
 			builder.append(address1);
 			builder.append(NEW_LINE);
 		}
-		if (address2 != null) {
+		if (isNotBlank(address2)) {
 			builder.append(address2);
 			builder.append(NEW_LINE);
 		}
-		if (city != null) {
+		if (isNotBlank(city)) {
 			builder.append(city);
 			builder.append(NEW_LINE);
 		}
-		if (pin != null) {
+		if (isNotBlank(pin)) {
 			builder.append(pin);
 			builder.append(NEW_LINE);
 		}
-		if (state != null) {
-			builder.append(state.getId());
+		if (district != null && isNotBlank(district.getId())) {
+			builder.append(district.getId());
 			builder.append(NEW_LINE);
 		}
-		if (district != null) {
-			builder.append(district.getId());
+		if (state != null && isNotBlank(state.getId())) {
+			builder.append(state.getId());
 		}
+
 		return builder.toString();
 	}
 

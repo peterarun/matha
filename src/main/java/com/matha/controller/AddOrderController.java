@@ -190,7 +190,9 @@ public class AddOrderController
 				orderSales = srvc.fetchSalesDetForOrderItems(origOrders);
 				if ((orderSales != null && !orderSales.isEmpty()) || (orderPurchases != null && !orderPurchases.isEmpty()))
 				{
-					if (!showConfirmation("Purchase/Sale Bills available for the order", "There are Purchase/Sale already created for the items getting removed. Are you sure you want to remove?"))
+					if (!showConfirmation("Purchase/Sale Bills available for the order",
+							"There are Purchase/Sale already created for the items getting removed. Are you sure you want to remove?",
+							"Click Ok to Delete"))
 					{
 						return;
 					}

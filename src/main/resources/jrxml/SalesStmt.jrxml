@@ -91,7 +91,7 @@
 	<background>
 		<band height="802">
 			<staticText>
-				<reportElement positionType="FixRelativeToBottom" stretchType="ContainerBottom" x="0" y="160" width="70" height="590" uuid="61e4b35f-1e44-4354-8a63-f6446fcdff6a"/>
+				<reportElement positionType="FixRelativeToBottom" stretchType="ContainerBottom" x="0" y="160" width="70" height="542" uuid="61e4b35f-1e44-4354-8a63-f6446fcdff6a"/>
 				<box>
 					<topPen lineWidth="1.0" lineStyle="Solid" lineColor="#000000"/>
 					<leftPen lineWidth="1.25" lineStyle="Solid" lineColor="#000000"/>
@@ -101,7 +101,7 @@
 				<text><![CDATA[]]></text>
 			</staticText>
 			<staticText>
-				<reportElement positionType="FixRelativeToBottom" stretchType="ContainerBottom" x="70" y="160" width="100" height="590" uuid="7b605904-ae43-498d-97b6-9a791ff49b35"/>
+				<reportElement positionType="FixRelativeToBottom" stretchType="ContainerBottom" x="70" y="160" width="100" height="542" uuid="7b605904-ae43-498d-97b6-9a791ff49b35"/>
 				<box>
 					<topPen lineWidth="1.0" lineStyle="Solid" lineColor="#000000"/>
 					<leftPen lineWidth="1.0" lineStyle="Solid" lineColor="#000000"/>
@@ -111,7 +111,7 @@
 				<text><![CDATA[]]></text>
 			</staticText>
 			<staticText>
-				<reportElement positionType="FixRelativeToBottom" stretchType="ContainerBottom" x="170" y="160" width="160" height="590" uuid="5f299516-6962-4f81-b470-0e7f928497c3"/>
+				<reportElement positionType="FixRelativeToBottom" stretchType="ContainerBottom" x="170" y="160" width="160" height="542" uuid="5f299516-6962-4f81-b470-0e7f928497c3"/>
 				<box>
 					<topPen lineWidth="1.0" lineStyle="Solid" lineColor="#000000"/>
 					<leftPen lineWidth="1.0" lineStyle="Solid" lineColor="#000000"/>
@@ -121,7 +121,7 @@
 				<text><![CDATA[]]></text>
 			</staticText>
 			<staticText>
-				<reportElement positionType="FixRelativeToBottom" stretchType="ContainerBottom" x="330" y="160" width="75" height="590" uuid="dc89672b-7cbd-4e1b-a376-de43f5fb3581"/>
+				<reportElement positionType="FixRelativeToBottom" stretchType="ContainerBottom" x="330" y="160" width="75" height="542" uuid="dc89672b-7cbd-4e1b-a376-de43f5fb3581"/>
 				<box>
 					<topPen lineWidth="1.0" lineStyle="Solid" lineColor="#000000"/>
 					<leftPen lineWidth="1.0" lineStyle="Solid" lineColor="#000000"/>
@@ -131,7 +131,7 @@
 				<text><![CDATA[]]></text>
 			</staticText>
 			<staticText>
-				<reportElement positionType="FixRelativeToBottom" stretchType="ContainerBottom" x="405" y="160" width="75" height="590" uuid="67df1912-f648-462b-80eb-c4037b7d4bd3"/>
+				<reportElement positionType="FixRelativeToBottom" stretchType="ContainerBottom" x="405" y="160" width="75" height="542" uuid="67df1912-f648-462b-80eb-c4037b7d4bd3"/>
 				<box>
 					<topPen lineWidth="1.0" lineStyle="Solid" lineColor="#000000"/>
 					<leftPen lineWidth="1.0" lineStyle="Solid" lineColor="#000000"/>
@@ -141,7 +141,7 @@
 				<text><![CDATA[]]></text>
 			</staticText>
 			<staticText>
-				<reportElement positionType="FixRelativeToBottom" stretchType="ContainerBottom" x="480" y="160" width="75" height="590" uuid="e770783b-ef63-482e-8048-ad6912b33a95"/>
+				<reportElement positionType="FixRelativeToBottom" stretchType="ContainerBottom" x="480" y="160" width="75" height="542" uuid="e770783b-ef63-482e-8048-ad6912b33a95"/>
 				<box>
 					<topPen lineWidth="1.0" lineStyle="Solid" lineColor="#000000"/>
 					<leftPen lineWidth="1.0" lineStyle="Solid" lineColor="#000000"/>
@@ -218,8 +218,8 @@
 					<bottomPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
 					<rightPen lineWidth="1.0" lineStyle="Solid" lineColor="#000000"/>
 				</box>
-				<textElement textAlignment="Center" verticalAlignment="Bottom">
-					<font size="22" isBold="true"/>
+				<textElement textAlignment="Center" verticalAlignment="Middle">
+					<font size="16" isBold="true"/>
 				</textElement>
 				<textFieldExpression><![CDATA[$P{agencyName}]]></textFieldExpression>
 			</textField>
@@ -483,7 +483,7 @@
 		</band>
 	</pageFooter>
 	<lastPageFooter>
-		<band height="50">
+		<band height="100">
 			<staticText>
 				<reportElement x="0" y="0" width="330" height="20" uuid="920cd447-d20e-4e36-a0a5-b11cf4f6cf56"/>
 				<box rightPadding="2">
@@ -534,6 +534,14 @@
 				</textElement>
 				<textFieldExpression><![CDATA[String.format("%.2f", $P{closingBalance}) + ($P{closingBalance} > 0 ? " CR" : " DR")]]></textFieldExpression>
 			</textField>
+			<staticText>
+				<reportElement x="417" y="75" width="138" height="15" uuid="21c4be9d-5b0b-4a99-9b15-4a56309b50c6"/>
+				<box rightPadding="2"/>
+				<textElement textAlignment="Right" verticalAlignment="Middle">
+					<font isBold="true"/>
+				</textElement>
+				<text><![CDATA[For Matha Agencies]]></text>
+			</staticText>
 		</band>
 	</lastPageFooter>
 </jasperReport>

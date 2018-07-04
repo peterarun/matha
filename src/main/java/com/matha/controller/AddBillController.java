@@ -1,34 +1,7 @@
 package com.matha.controller;
 
-import static com.matha.util.UtilConstants.DATE_CONV;
-import static com.matha.util.UtilConstants.NEW_LINE;
-import static com.matha.util.UtilConstants.RUPEE_SIGN;
-import static com.matha.util.UtilConstants.SALES_NOTE;
-import static com.matha.util.Utils.*;
-import static java.util.Comparator.comparing;
-import static java.util.stream.Collectors.toList;
-import static java.util.stream.Collectors.toMap;
-import static java.util.stream.Collectors.toSet;
-
-import java.time.LocalDate;
-import java.util.*;
-import java.util.concurrent.atomic.AtomicInteger;
-import java.util.stream.Collector;
-import java.util.stream.Collectors;
-
 import com.matha.domain.*;
-import javafx.collections.ObservableSet;
-import javafx.collections.transformation.SortedList;
-import org.apache.commons.lang.StringUtils;
-import org.apache.logging.log4j.LogManager;
-import org.apache.logging.log4j.Logger;
-import org.controlsfx.control.textfield.TextFields;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.beans.factory.annotation.Value;
-import org.springframework.stereotype.Component;
-
 import com.matha.service.SchoolService;
-
 import javafx.beans.binding.Bindings;
 import javafx.beans.value.ChangeListener;
 import javafx.beans.value.ObservableValue;
@@ -37,20 +10,28 @@ import javafx.collections.ObservableList;
 import javafx.event.ActionEvent;
 import javafx.event.EventHandler;
 import javafx.fxml.FXML;
-import javafx.scene.control.Button;
-import javafx.scene.control.DatePicker;
-import javafx.scene.control.Label;
-import javafx.scene.control.ListView;
-import javafx.scene.control.RadioButton;
-import javafx.scene.control.TableColumn;
+import javafx.scene.control.*;
 import javafx.scene.control.TableColumn.CellEditEvent;
-import javafx.scene.control.TableView;
-import javafx.scene.control.TextArea;
-import javafx.scene.control.TextField;
-import javafx.scene.control.Toggle;
-import javafx.scene.control.ToggleGroup;
 import javafx.scene.control.cell.TextFieldTableCell;
 import javafx.stage.Stage;
+import org.apache.commons.lang.StringUtils;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
+import org.controlsfx.control.textfield.TextFields;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
+import org.springframework.stereotype.Component;
+
+import java.time.LocalDate;
+import java.util.*;
+import java.util.stream.Collector;
+import java.util.stream.Collectors;
+
+import static com.matha.util.UtilConstants.*;
+import static com.matha.util.Utils.*;
+import static java.util.Comparator.comparing;
+import static java.util.stream.Collectors.toList;
+import static java.util.stream.Collectors.toSet;
 
 @Component
 public class AddBillController
@@ -191,7 +172,7 @@ public class AddBillController
 		{
 			this.billDate.setValue(LocalDate.now());
 		}
-		this.schoolDetails.setText(this.school.fetchDetails());
+		this.schoolDetails.setText(this.school.addressText());
 		this.addedBooks.getSelectionModel().cellSelectionEnabledProperty().set(true);
 		this.priceColumn.setCellFactory(TextFieldTableCell.forTableColumn());
 		this.priceColumn.setCellValueFactory(fetchSalesPrcColFactory());
@@ -268,6 +249,10 @@ public class AddBillController
 				this.rupeeRad.setSelected(true);
 				this.discTypeInd.setText(RUPEE_SIGN);
 			}
+		}
+		else
+		{
+			this.discAmt.setText(USUAL_DISC_TXT);
 		}
 	}
 

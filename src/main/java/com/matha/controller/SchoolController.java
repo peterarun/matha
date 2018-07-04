@@ -271,7 +271,9 @@ public class SchoolController
 					(payments != null && !payments.isEmpty()) ||
 					(purchasesIn != null && !purchasesIn.isEmpty()))
 			{
-				if(!showConfirmation("Bill/Return/Payment transactions available", "There are Bill/Return/Payment transactions already created for the school getting removed. Are you sure you want to remove?"))
+				if(!showConfirmation("Bill/Return/Payment transactions available",
+						"There are Bill/Return/Payment transactions already created for the school getting removed. Are you sure you want to remove?",
+						"Click Ok to Delete"))
 				{
 					return;
 				}

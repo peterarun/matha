@@ -227,7 +227,10 @@
 										<DatePicker fx:id="fromDate" layoutX="14.0" layoutY="43.0" />
 										<DatePicker fx:id="toDate" layoutX="228.0" layoutY="43.0" />
 										<Button layoutX="419.0" layoutY="43.0" mnemonicParsing="false" onAction="#updateStatement" text="Generate" />
-										<Button layoutX="506.0" layoutY="43.0" mnemonicParsing="false" onAction="#exportAndSave" text="Save as PDF" />
+                              <Button layoutX="503.0" layoutY="43.0" mnemonicParsing="false" onAction="#printStmt" prefHeight="25.0" prefWidth="65.0" text="Print" />
+                              <Label layoutX="645.0" layoutY="47.0" text="Save As" />
+                              <ChoiceBox fx:id="saveType" layoutX="695.0" layoutY="43.0" prefHeight="25.0" prefWidth="69.0" />
+                              <Button layoutX="779.0" layoutY="43.0" mnemonicParsing="false" onAction="#exportAndSave" prefHeight="25.0" prefWidth="65.0" text="Save" />
 									</children>
 								</AnchorPane>
 							</content>
