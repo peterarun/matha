@@ -9,54 +9,53 @@
 <?import javafx.scene.layout.AnchorPane?>
 <?import javafx.scene.control.cell.PropertyValueFactory?>
 
-<Pane prefHeight="600.0" prefWidth="800.0" xmlns="http://javafx.com/javafx/8" xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.matha.controller.SchoolDetailsController">
-	<children>
-		<SplitPane dividerPositions="0.2525083612040134" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" orientation="VERTICAL" prefHeight="600.0" prefWidth="800.0">
+
+		<SplitPane dividerPositions="0.23" orientation="VERTICAL" prefHeight="600.0" prefWidth="800.0" xmlns="http://javafx.com/javafx/8" xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.matha.controller.SchoolDetailsController">
 			<items>
-				<AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="100.0" prefWidth="160.0">
+				<AnchorPane minHeight="0.0" minWidth="0.0" SplitPane.resizableWithParent="false">
 					<children>
-						<TextArea fx:id="address" editable="false" layoutX="42.0" layoutY="56.0" prefHeight="60.0" prefWidth="370.0" />
+						<TextArea fx:id="address" editable="false" layoutX="42.0" layoutY="56.0" prefHeight="73.0" prefWidth="370.0" />
 						<Label fx:id="schoolName" layoutX="42.0" layoutY="14.0" prefHeight="35.0" prefWidth="477.0">
 							<font>
 								<Font size="24.0" />
 							</font>
 						</Label>
-                  <Label layoutX="440.0" layoutY="57.0" prefHeight="35.0" prefWidth="73.0" text="Outstanding Balance" wrapText="true" />
-                  <TextField fx:id="outBalance" layoutX="513.0" layoutY="57.0" prefHeight="35.0" prefWidth="120.0" />
+            <Label layoutX="440.0" layoutY="57.0" prefHeight="35.0" prefWidth="73.0" text="Outstanding Balance" wrapText="true" />
+            <TextField fx:id="outBalance" layoutX="513.0" layoutY="57.0" prefHeight="35.0" prefWidth="120.0" />
 					</children>
 				</AnchorPane>
-				<AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="100.0" prefWidth="160.0">
+				<AnchorPane minHeight="0.0" minWidth="0.0">
 					<children>
-						<TabPane fx:id="saleTabs" prefHeight="444.0" prefWidth="798.0" tabClosingPolicy="UNAVAILABLE">
+						<TabPane fx:id="saleTabs" prefHeight="457.0" prefWidth="798.0" tabClosingPolicy="UNAVAILABLE" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
 							<tabs>
 								<Tab fx:id="ordersTab" closable="false" onSelectionChanged="#loadOrders" text="Orders">
 									<content>
 										<AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="180.0" prefWidth="200.0">
 											<children>
-												<TableView fx:id="txnData" prefHeight="417.0" prefWidth="625.0">
+												<TableView fx:id="txnData" prefHeight="415.0" prefWidth="625.0" AnchorPane.bottomAnchor="-0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="173.0" AnchorPane.topAnchor="0.0">
 													<columns>
-														<TableColumn minWidth="0.0" prefWidth="83.0" text="Date">
+														<TableColumn minWidth="0.0" prefWidth="120.0" text="Date">
 															<cellValueFactory>
 																<PropertyValueFactory property="orderDateStr" />
 															</cellValueFactory>
 														</TableColumn>
-														<TableColumn prefWidth="99.0" text="Order No.">
+														<TableColumn prefWidth="100.0" text="Order No.">
 															<cellValueFactory>
 																<PropertyValueFactory property="serialNo" />
 															</cellValueFactory>
 														</TableColumn>
-														<TableColumn prefWidth="235.0" text="Book Count">
+														<TableColumn prefWidth="100.0" text="Book Count">
 															<cellValueFactory>
 																<PropertyValueFactory property="orderCount" />
 															</cellValueFactory>
 														</TableColumn>
 													</columns>
 												</TableView>
-												<Button layoutX="649.0" layoutY="70.0" mnemonicParsing="false" onAction="#editOrder" prefHeight="25.0" prefWidth="120.0" text="Edit" />
-                                    <Button layoutX="649.0" layoutY="199.0" mnemonicParsing="false" onAction="#createBill" prefHeight="52.0" prefWidth="120.0" text="Generate Bill" textAlignment="CENTER" wrapText="true" />
-                                    <Button layoutX="649.0" layoutY="26.0" mnemonicParsing="false" onAction="#addOrder" prefHeight="26.0" prefWidth="120.0" text="Generate" />
-                                    <Button focusTraversable="false" layoutX="649.0" layoutY="112.0" mnemonicParsing="false" onAction="#deleteOrder" prefHeight="25.0" prefWidth="120.0" text="Delete" />
-                                    <Button layoutX="649.0" layoutY="155.0" mnemonicParsing="false" onAction="#printOrder" prefHeight="26.0" prefWidth="120.0" text="Print" />
+												<Button layoutX="650.0" layoutY="70.0" mnemonicParsing="false" onAction="#editOrder" prefHeight="25.0" prefWidth="120.0" text="Edit" AnchorPane.rightAnchor="28.0" />
+                              <Button layoutX="650.0" layoutY="205.0" mnemonicParsing="false" onAction="#createBill" prefHeight="52.0" prefWidth="120.0" text="Generate Bill" textAlignment="CENTER" wrapText="true" AnchorPane.rightAnchor="28.0" />
+                              <Button layoutX="650.0" layoutY="25.0" mnemonicParsing="false" onAction="#addOrder" prefHeight="25.0" prefWidth="120.0" text="Generate" AnchorPane.rightAnchor="28.0" />
+                              <Button focusTraversable="false" layoutX="650.0" layoutY="115.0" mnemonicParsing="false" onAction="#deleteOrder" prefHeight="25.0" prefWidth="120.0" text="Delete" AnchorPane.rightAnchor="28.0" />
+                              <Button layoutX="650.0" layoutY="160.0" mnemonicParsing="false" onAction="#printOrder" prefHeight="26.0" prefWidth="120.0" text="Print" AnchorPane.rightAnchor="28.0" />
 											</children>
 										</AnchorPane>
 									</content>
@@ -65,35 +64,35 @@
 									<content>
 										<AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="384.0" prefWidth="798.0">
 											<children>
-												<TableView fx:id="billData" prefHeight="415.0" prefWidth="625.0">
+												<TableView fx:id="billData" prefHeight="415.0" prefWidth="625.0" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="173.0" AnchorPane.topAnchor="0.0">
 													<columns>
-														<TableColumn prefWidth="132.0" text="Date">
+														<TableColumn prefWidth="120.0" text="Date">
 															<cellValueFactory>
 																<PropertyValueFactory property="invoiceDateStr" />
 															</cellValueFactory>														
 														</TableColumn>
-														<TableColumn prefWidth="101.0" text="Invoice No.">
+														<TableColumn prefWidth="100.0" text="Invoice No.">
 															<cellValueFactory>
 																<PropertyValueFactory property="serialNo" />
 															</cellValueFactory>														
 														</TableColumn>
-                                          				<TableColumn fx:id="amountColumn" prefWidth="121.0" text="Amount">
+                                    				<TableColumn fx:id="amountColumn" prefWidth="120.0" text="Amount">
 															<cellValueFactory>
 																<PropertyValueFactory property="netAmount" />
 															</cellValueFactory>
-                                          				</TableColumn>
-													  <TableColumn prefWidth="122.0" text="Status" >
+                                    				</TableColumn>
+													  <TableColumn prefWidth="150.0" text="Status">
 														  <cellValueFactory>
 															  <PropertyValueFactory property="statusStr" />
 														  </cellValueFactory>
 													  </TableColumn>
 													</columns>
 												</TableView>
-												<Button layoutX="656.0" layoutY="25.0" mnemonicParsing="false" onAction="#addBill" prefHeight="26.0" prefWidth="120.0" text="Generate" />
-												<Button layoutX="656.0" layoutY="66.0" mnemonicParsing="false" onAction="#editBill" prefHeight="25.0" prefWidth="120.0" text="Edit" />
-												<Button focusTraversable="false" layoutX="656.0" layoutY="105.0" mnemonicParsing="false" onAction="#deleteBill" prefHeight="25.0" prefWidth="120.0" text="Delete" />
-                                    			<Button layoutX="656.0" layoutY="144.0" mnemonicParsing="false" onAction="#printPurchaseBill" prefHeight="25.0" prefWidth="120.0" text="Print" />
-                                    <Button layoutX="656.0" layoutY="183.0" mnemonicParsing="false" onAction="#viewBill" prefHeight="25.0" prefWidth="120.0" text="View" />
+												<Button layoutX="650.0" layoutY="25.0" mnemonicParsing="false" onAction="#addBill" prefHeight="25.0" prefWidth="120.0" text="Generate" AnchorPane.rightAnchor="28.0" />
+												<Button layoutX="650.0" layoutY="70.0" mnemonicParsing="false" onAction="#editBill" prefHeight="25.0" prefWidth="120.0" text="Edit" AnchorPane.rightAnchor="28.0" />
+												<Button focusTraversable="false" layoutX="650.0" layoutY="115.0" mnemonicParsing="false" onAction="#deleteBill" prefHeight="25.0" prefWidth="120.0" text="Delete" AnchorPane.rightAnchor="28.0" />
+                              			<Button layoutX="650.0" layoutY="160.0" mnemonicParsing="false" onAction="#printPurchaseBill" prefHeight="25.0" prefWidth="120.0" text="Print" AnchorPane.rightAnchor="28.0" />
+                              <Button layoutX="650.0" layoutY="205.0" mnemonicParsing="false" onAction="#viewBill" prefHeight="25.0" prefWidth="120.0" text="View" AnchorPane.rightAnchor="28.0" />
 											</children>
 										</AnchorPane>
 									</content>
@@ -102,29 +101,29 @@
 									<content>
 										<AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="180.0" prefWidth="200.0">
 											<children>
-												<TableView fx:id="creditNoteData" prefHeight="415.0" prefWidth="625.0">
+												<TableView fx:id="creditNoteData" prefHeight="415.0" prefWidth="625.0" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="173.0" AnchorPane.topAnchor="0.0">
 													<columns>
-														<TableColumn prefWidth="119.0" text="Date">
+														<TableColumn prefWidth="120.0" text="Date">
 															<cellValueFactory>
 																<PropertyValueFactory property="txnDateStr" />
 															</cellValueFactory>														
 														</TableColumn>
-														<TableColumn prefWidth="116.0" text="Credit Note No.">
+														<TableColumn prefWidth="120.0" text="Credit Note No.">
 															<cellValueFactory>
 																<PropertyValueFactory property="creditNoteNum" />
 															</cellValueFactory>														
 														</TableColumn>
-														<TableColumn prefWidth="117.0" text="Amount">
+														<TableColumn prefWidth="120.0" text="Amount">
 															<cellValueFactory>
 																<PropertyValueFactory property="netAmount" />
 															</cellValueFactory>														
 														</TableColumn>
 													</columns>
 												</TableView>
-												<Button layoutX="653.0" layoutY="37.0" mnemonicParsing="false" onAction="#addCredit" prefHeight="25.0" prefWidth="120.0" text="Generate" />
-												<Button layoutX="653.0" layoutY="74.0" mnemonicParsing="false" onAction="#editCredit" prefHeight="25.0" prefWidth="120.0" text="Edit" />
-												<Button layoutX="653.0" layoutY="149.0" mnemonicParsing="false" onAction="#deleteCredit" prefHeight="25.0" prefWidth="120.0" text="Delete" />
-                                    <Button layoutX="653.0" layoutY="113.0" mnemonicParsing="false" onAction="#printCreditNote" prefHeight="25.0" prefWidth="120.0" text="Print" />
+												<Button layoutX="650.0" layoutY="25.0" mnemonicParsing="false" onAction="#addCredit" prefHeight="25.0" prefWidth="120.0" text="Generate" AnchorPane.rightAnchor="28.0" />
+												<Button layoutX="650.0" layoutY="70.0" mnemonicParsing="false" onAction="#editCredit" prefHeight="25.0" prefWidth="120.0" text="Edit" AnchorPane.rightAnchor="28.0" />
+												<Button layoutX="650.0" layoutY="160.0" mnemonicParsing="false" onAction="#deleteCredit" prefHeight="25.0" prefWidth="120.0" text="Delete" AnchorPane.rightAnchor="28.0" />
+                              <Button layoutX="650.0" layoutY="115.0" mnemonicParsing="false" onAction="#printCreditNote" prefHeight="25.0" prefWidth="120.0" text="Print" AnchorPane.rightAnchor="28.0" />
 											</children>
 										</AnchorPane>
 									</content>
@@ -133,58 +132,56 @@
 									<content>
 										<AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="180.0" prefWidth="200.0">
 											<children>
-												<TableView fx:id="paymentData" prefHeight="415.0" prefWidth="625.0">
+												<TableView fx:id="paymentData" prefHeight="415.0" prefWidth="625.0" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="173.0" AnchorPane.topAnchor="0.0">
 													<columns>
-														<TableColumn prefWidth="131.0" text="Date">
+														<TableColumn prefWidth="120.0" text="Date">
 															<cellValueFactory>
 																<PropertyValueFactory property="txnDateStr" />
 															</cellValueFactory>  														
 														</TableColumn>
-														<TableColumn prefWidth="110.0" text="Receipt No.">
+														<TableColumn prefWidth="120.0" text="Receipt No.">
 															<cellValueFactory>
 																<PropertyValueFactory property="receiptNum" />
 															</cellValueFactory>
 														</TableColumn>
-														<TableColumn prefWidth="164.0" text="Mode">
+														<TableColumn prefWidth="170.0" text="Mode">
 															<cellValueFactory>
 																<PropertyValueFactory property="paymentMode" />
 															</cellValueFactory>														
 														</TableColumn>
-														<TableColumn prefWidth="130.0" text="Amount">
+														<TableColumn prefWidth="120.0" text="Amount">
 															<cellValueFactory>
 																<PropertyValueFactory property="amount" />
 															</cellValueFactory>														
 														</TableColumn>
 													</columns>
 												</TableView>
-												<Button layoutX="656.0" layoutY="33.0" mnemonicParsing="false" onAction="#addPayment" prefHeight="25.0" prefWidth="120.0" text="Generate" />
-												<Button layoutX="656.0" layoutY="73.0" mnemonicParsing="false" onAction="#editPayment" prefHeight="25.0" prefWidth="120.0" text="Edit" />
-												<Button layoutX="656.0" layoutY="111.0" mnemonicParsing="false" onAction="#deletePayment" prefHeight="25.0" prefWidth="120.0" text="Delete" />
+												<Button layoutX="650.0" layoutY="25.0" mnemonicParsing="false" onAction="#addPayment" prefHeight="25.0" prefWidth="120.0" text="Generate" AnchorPane.rightAnchor="28.0" />
+												<Button layoutX="650.0" layoutY="70.0" mnemonicParsing="false" onAction="#editPayment" prefHeight="25.0" prefWidth="120.0" text="Edit" AnchorPane.rightAnchor="28.0" />
+												<Button layoutX="650.0" layoutY="115.0" mnemonicParsing="false" onAction="#deletePayment" prefHeight="25.0" prefWidth="120.0" text="Delete" AnchorPane.rightAnchor="28.0" />
 											</children>
 										</AnchorPane>
 									</content>
 								</Tab>
-                        <Tab fx:id="statementTab" onSelectionChanged="#loadStatement" text="Statement">
-                          <content>
-                            <AnchorPane minHeight="0.0" minWidth="0.0" prefWidth="200.0">
-                                 <children>
-                                    <DatePicker fx:id="fromDate" layoutX="44.0" layoutY="31.0" prefHeight="25.0" prefWidth="121.0" promptText="From Date" />
-                                    <DatePicker fx:id="toDate" layoutX="193.0" layoutY="31.0" prefHeight="25.0" prefWidth="121.0" promptText="To Date" />
-                                    <Button layoutX="430.0" layoutY="31.0" mnemonicParsing="false" onAction="#printStmt" prefHeight="25.0" prefWidth="65.0" text="Print" />
-                                    <Button layoutX="341.0" layoutY="31.0" mnemonicParsing="false" onAction="#generateStmt" text="Generate" />
-                                    <Label layoutX="533.0" layoutY="35.0" text="Save As" />
-                                    <ChoiceBox fx:id="saveType" layoutX="582.0" layoutY="31.0" prefHeight="25.0" prefWidth="69.0" />
-                                    <Button layoutX="673.0" layoutY="31.0" mnemonicParsing="false" onAction="#exportAndSave" prefHeight="25.0" prefWidth="65.0" text="Save" />
-                                    <WebView fx:id="invoiceData" layoutX="14.0" layoutY="66.0" prefHeight="335.0" prefWidth="771.0" />
-                                 </children>
-                              </AnchorPane>
-                          </content>
-                        </Tab>
+                  <Tab fx:id="statementTab" onSelectionChanged="#loadStatement" text="Statement">
+                    <content>
+                      <AnchorPane minHeight="0.0" minWidth="0.0" prefWidth="200.0">
+                           <children>
+                              <DatePicker fx:id="fromDate" layoutX="44.0" layoutY="31.0" prefHeight="25.0" prefWidth="121.0" promptText="From Date" />
+                              <DatePicker fx:id="toDate" layoutX="193.0" layoutY="31.0" prefHeight="25.0" prefWidth="121.0" promptText="To Date" />
+                              <Button layoutX="430.0" layoutY="31.0" mnemonicParsing="false" onAction="#printStmt" prefHeight="25.0" prefWidth="65.0" text="Print" />
+                              <Button layoutX="341.0" layoutY="31.0" mnemonicParsing="false" onAction="#generateStmt" text="Generate" />
+                              <Label layoutX="533.0" layoutY="35.0" text="Save As" />
+                              <ChoiceBox fx:id="saveType" layoutX="582.0" layoutY="31.0" prefHeight="25.0" prefWidth="69.0" />
+                              <Button layoutX="673.0" layoutY="31.0" mnemonicParsing="false" onAction="#exportAndSave" prefHeight="25.0" prefWidth="65.0" text="Save" />
+                              <WebView fx:id="invoiceData" layoutX="14.0" layoutY="66.0" prefHeight="335.0" prefWidth="770.0" AnchorPane.bottomAnchor="14.0" AnchorPane.leftAnchor="14.0" AnchorPane.rightAnchor="14.0" AnchorPane.topAnchor="66.0" />
+                           </children>
+                        </AnchorPane>
+                    </content>
+                  </Tab>
 							</tabs>
 						</TabPane>
 					</children>
 				</AnchorPane>
 			</items>
 		</SplitPane>
-	</children>
-</Pane>

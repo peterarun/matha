@@ -9,9 +9,9 @@
 <?import javafx.scene.layout.AnchorPane?>
 <?import javafx.collections.*?>
 
-<SplitPane dividerPositions="0.17391304347826086" maxHeight="1.7976931348623157E308" maxWidth="1.7976931348623157E308" minHeight="-Infinity" minWidth="-Infinity" orientation="VERTICAL" prefHeight="600.0" prefWidth="800.0" xmlns="http://javafx.com/javafx/8" xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.matha.controller.BookController">
+<SplitPane dividerPositions="0.18" maxHeight="1.7976931348623157E308" maxWidth="1.7976931348623157E308" minHeight="-Infinity" minWidth="-Infinity" orientation="VERTICAL" prefHeight="600.0" prefWidth="800.0" xmlns="http://javafx.com/javafx/8" xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.matha.controller.BookController">
 	<items>
-		<AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="100.0" prefWidth="160.0">
+		<AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="100.0" prefWidth="160.0" SplitPane.resizableWithParent="false">
 			<children>
 				<Label layoutX="282.0" layoutY="10.0" text="Book Manager">
 					<font>
@@ -28,34 +28,34 @@
 		</AnchorPane>
 		<AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="100.0" prefWidth="160.0">
 			<children>
-				<TableView fx:id="tableView" layoutY="1.0" prefHeight="435.0" prefWidth="798.0">
+				<TableView fx:id="tableView" layoutY="1.0" prefHeight="487.0" prefWidth="798.0" AnchorPane.bottomAnchor="-1.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="1.0">
 					<columns>
-					  <TableColumn prefWidth="92.0" text="Short Name" >
+					  <TableColumn fx:id="shortNameCol" prefWidth="92.0" text="Short Name">
 						  <cellValueFactory>
 							  <PropertyValueFactory property="shortName" />
 						  </cellValueFactory>
 					  </TableColumn>
-						<TableColumn prefWidth="264.0" text="Name">
+						<TableColumn fx:id="bkNameCol" prefWidth="264.0" text="Name">
 							<cellValueFactory>
 								<PropertyValueFactory property="name" />
 							</cellValueFactory>
 						</TableColumn>
-						<TableColumn minWidth="5.0" prefWidth="153.0" text="Publisher">
+						<TableColumn fx:id="pubCol" minWidth="5.0" prefWidth="153.0" text="Publisher">
 							<cellValueFactory>
 								<PropertyValueFactory property="publisherName" />
 							</cellValueFactory>
 						</TableColumn>
-						<TableColumn prefWidth="75.0" text="Inventory">
+						<TableColumn fx:id="invCol" prefWidth="75.0" text="Inventory">
 							<cellValueFactory>
 								<PropertyValueFactory property="inventory" />
 							</cellValueFactory>						
 						</TableColumn>
-						<TableColumn prefWidth="128.0" text="Category">
+						<TableColumn fx:id="catCol" prefWidth="128.0" text="Category">
 							<cellValueFactory>
 								<PropertyValueFactory property="categoryName" />
 							</cellValueFactory>
 						</TableColumn>
-						<TableColumn prefWidth="85.0" text="Price">
+						<TableColumn fx:id="prcCol" prefWidth="85.0" style="-fx-alignment: CENTER-RIGHT;" text="Price">
 							<cellValueFactory>
 								<PropertyValueFactory property="price" />
 							</cellValueFactory>

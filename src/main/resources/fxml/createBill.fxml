@@ -25,35 +25,35 @@
 		<AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="493.0" prefWidth="704.0">
 			<children>
 			
-				<Label layoutX="556.0" layoutY="23.0" text="Invoice No: " />
-				<TextField fx:id="invoiceNum" focusTraversable="false" layoutX="556.0" layoutY="40.0" prefHeight="25.0" prefWidth="129.0">
+				<Label layoutX="556.0" layoutY="23.0" text="Invoice No: " AnchorPane.rightAnchor="88.0" />
+				<TextField fx:id="invoiceNum" focusTraversable="false" layoutX="556.0" layoutY="40.0" prefHeight="25.0" prefWidth="129.0" AnchorPane.rightAnchor="22.0">
                <effect>
                   <Blend />
                </effect></TextField>
 
-				<Label layoutX="557.0" layoutY="73.0" text="Date" />
-				<DatePicker fx:id="billDate" layoutX="557.0" layoutY="90.0" prefHeight="25.0" prefWidth="129.0" />
+				<Label layoutX="556.0" layoutY="73.0" text="Date" AnchorPane.rightAnchor="126.0" />
+				<DatePicker fx:id="billDate" layoutX="557.0" layoutY="90.0" prefHeight="25.0" prefWidth="129.0" AnchorPane.rightAnchor="22.0" />
 
-				<Label layoutX="557.0" layoutY="122.0" text="Despatched Per:" />
-				<TextField fx:id="despatchPer" layoutX="556.0" layoutY="139.0" prefHeight="25.0" prefWidth="129.0" />
+				<Label layoutX="557.0" layoutY="122.0" text="Despatched Per:" AnchorPane.rightAnchor="64.0" />
+				<TextField fx:id="despatchPer" layoutX="556.0" layoutY="139.0" prefHeight="25.0" prefWidth="129.0" AnchorPane.rightAnchor="22.0" />
 
-				<Label layoutX="557.0" layoutY="173.0" text="Documents Through" />
-				<TextField fx:id="docsThru" layoutX="557.0" layoutY="190.0" prefHeight="25.0" prefWidth="129.0" />
+				<Label layoutX="557.0" layoutY="173.0" text="Documents Through" AnchorPane.rightAnchor="41.0" />
+				<TextField fx:id="docsThru" layoutX="557.0" layoutY="190.0" prefHeight="25.0" prefWidth="129.0" AnchorPane.rightAnchor="22.0" />
 
-				<Label layoutX="557.0" layoutY="222.0" text="GR No." />
-				<TextField fx:id="grNum" layoutX="557.0" layoutY="240.0" prefHeight="25.0" prefWidth="129.0" />
+				<Label layoutX="557.0" layoutY="222.0" text="GR No." AnchorPane.rightAnchor="112.0" />
+				<TextField fx:id="grNum" layoutX="557.0" layoutY="240.0" prefHeight="25.0" prefWidth="129.0" AnchorPane.rightAnchor="22.0" />
 
-				<Label layoutX="558.0" layoutY="274.0" text="No. of packages" />
-				<TextField fx:id="packageCnt" layoutX="558.0" layoutY="291.0" prefHeight="25.0" prefWidth="129.0" />
+				<Label layoutX="558.0" layoutY="274.0" text="No. of packages" AnchorPane.rightAnchor="64.0" />
+				<TextField fx:id="packageCnt" layoutX="558.0" layoutY="291.0" prefHeight="25.0" prefWidth="129.0" AnchorPane.rightAnchor="22.0" />
 																											
-				<TableView fx:id="addedBooks" editable="true" layoutX="23.0" layoutY="23.0" prefHeight="318.0" AnchorPane.bottomAnchor="152.0" AnchorPane.topAnchor="23.0">
+				<TableView fx:id="addedBooks" editable="true" layoutX="23.0" layoutY="23.0" prefHeight="318.0" AnchorPane.bottomAnchor="152.0" AnchorPane.leftAnchor="23.0" AnchorPane.rightAnchor="172.0" AnchorPane.topAnchor="23.0">
 					<columns>
-					  <TableColumn prefWidth="45.0" text="Sl. No.">
+					  <TableColumn fx:id="slNoCol" prefWidth="45.0" text="Sl. No.">
 						  <cellValueFactory>
 							  <PropertyValueFactory property="slNum" />
 						  </cellValueFactory>
 					  </TableColumn>
-						<TableColumn prefWidth="254.0" text="Book Name">
+						<TableColumn fx:id="bkNameCol" prefWidth="254.0" text="Book Name">
 							<cellValueFactory>
 								<PropertyValueFactory property="bookName" />
 							</cellValueFactory>
@@ -77,10 +77,10 @@
 				</TableView>
 				<Button focusTraversable="false" layoutX="23.0" layoutY="341.0" mnemonicParsing="false" onAction="#removeOrderItem" prefHeight="25.0" prefWidth="109.0" text="Remove Item" AnchorPane.bottomAnchor="127.0" />
 				
-				<Label layoutX="560.0" layoutY="325.0" text="Added Orders:" />
-				<ListView fx:id="orderList" focusTraversable="false" layoutX="559.0" layoutY="342.0" prefHeight="69.0" prefWidth="129.0" />
-				<TextField fx:id="orderNum" focusTraversable="false" layoutX="559.0" layoutY="415.0" onAction="#addOrderNum" prefHeight="25.0" prefWidth="129.0" promptText="Search Order" />
-				<Button focusTraversable="false" layoutX="559.0" layoutY="449.0" mnemonicParsing="false" onAction="#removeOperation" prefHeight="25.0" prefWidth="129.0" text="Remove Order" />
+				<Label layoutX="560.0" layoutY="325.0" text="Added Orders:" AnchorPane.rightAnchor="73.0" />
+				<ListView fx:id="orderList" focusTraversable="false" layoutX="559.0" layoutY="342.0" prefHeight="69.0" prefWidth="129.0" AnchorPane.rightAnchor="22.0" />
+				<TextField fx:id="orderNum" focusTraversable="false" layoutX="559.0" layoutY="415.0" onAction="#addOrderNum" prefHeight="25.0" prefWidth="129.0" promptText="Search Order" AnchorPane.rightAnchor="22.0" />
+				<Button focusTraversable="false" layoutX="559.0" layoutY="449.0" mnemonicParsing="false" onAction="#removeOperation" prefHeight="25.0" prefWidth="129.0" text="Remove Order" AnchorPane.rightAnchor="22.0" />
 
 
 				<Label layoutX="368.0" layoutY="382.0" text="Sub Total" AnchorPane.bottomAnchor="94.0" />
@@ -111,10 +111,10 @@
                   <Blend />
                </effect>
             </TextField>
-            <TextField fx:id="bookCnt" layoutX="445.0" layoutY="341.0" onAction="#addBookData" prefHeight="25.0" prefWidth="36.0" promptText="Qty." AnchorPane.bottomAnchor="127.0" />
+            <TextField fx:id="bookCnt" layoutX="445.0" layoutY="341.0" onAction="#addBookData" prefHeight="25.0" prefWidth="36.0" promptText="Qty." AnchorPane.bottomAnchor="127.0" AnchorPane.rightAnchor="225.0" />
             <Label layoutX="375.0" layoutY="419.0" text="Discount" AnchorPane.bottomAnchor="57.0" />
             <TextField fx:id="calculatedDisc" editable="false" focusTraversable="false" layoutX="426.0" layoutY="415.0" prefHeight="25.0" prefWidth="109.0" style="-fx-background-color: beige;" AnchorPane.bottomAnchor="19.0" />
-            <TextField fx:id="bookPrice" layoutX="487.0" layoutY="341.0" onAction="#addBookData" prefHeight="25.0" prefWidth="47.0" promptText="Price" AnchorPane.bottomAnchor="127.0" />
+            <TextField fx:id="bookPrice" layoutX="487.0" layoutY="341.0" onAction="#addBookData" prefHeight="25.0" prefWidth="47.0" promptText="Price" AnchorPane.bottomAnchor="127.0" AnchorPane.rightAnchor="173.0" />
 				
 			</children>
 		</AnchorPane>

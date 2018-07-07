@@ -1,44 +1,31 @@
 package com.matha.controller;
 
-import static com.matha.util.Converters.getIntegerConverter;
-import static com.matha.util.Utils.calcFinYear;
-import static com.matha.util.Utils.showConfirmation;
-import static com.matha.util.Utils.showErrorAlert;
-import static com.matha.util.UtilConstants.*;
-import static java.util.Comparator.comparing;
-import static java.util.stream.Collectors.toList;
-import static java.util.stream.Collectors.toSet;
-
-import java.time.LocalDate;
-import java.util.*;
-import java.util.stream.Collectors;
-
 import com.matha.domain.*;
+import com.matha.service.SchoolService;
+import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
-import javafx.collections.transformation.SortedList;
+import javafx.event.ActionEvent;
+import javafx.event.EventHandler;
+import javafx.fxml.FXML;
+import javafx.scene.control.*;
+import javafx.scene.control.TableColumn.CellEditEvent;
+import javafx.scene.control.cell.TextFieldTableCell;
+import javafx.stage.Stage;
 import org.apache.commons.lang.StringUtils;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.controlsfx.control.textfield.TextFields;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.cglib.core.Local;
 import org.springframework.stereotype.Component;
 
-import com.matha.service.SchoolService;
+import java.time.LocalDate;
+import java.util.*;
 
-import javafx.collections.FXCollections;
-import javafx.event.ActionEvent;
-import javafx.event.EventHandler;
-import javafx.fxml.FXML;
-import javafx.scene.control.Button;
-import javafx.scene.control.DatePicker;
-import javafx.scene.control.Label;
-import javafx.scene.control.TableColumn;
-import javafx.scene.control.TableColumn.CellEditEvent;
-import javafx.scene.control.TableView;
-import javafx.scene.control.TextField;
-import javafx.scene.control.cell.TextFieldTableCell;
-import javafx.stage.Stage;
+import static com.matha.util.Converters.getIntegerConverter;
+import static com.matha.util.UtilConstants.NEW_LINE;
+import static com.matha.util.Utils.*;
+import static java.util.Comparator.comparing;
+import static java.util.stream.Collectors.toList;
 
 @Component
 public class AddOrderController
@@ -75,6 +62,9 @@ public class AddOrderController
 
 	@FXML
 	private TableColumn<OrderItem, Integer> slNumColumn;
+
+	@FXML
+	private TableColumn<OrderItem, String> bookName;
 
 	@FXML
 	private TableColumn<OrderItem, Integer> qtyCol;
@@ -119,6 +109,12 @@ public class AddOrderController
 				}				
 			}
 		});
+
+		this.slNumColumn.prefWidthProperty().bind(this.addedBooks.widthProperty().multiply(0.1));
+		this.bookName.prefWidthProperty().bind(this.addedBooks.widthProperty().multiply(0.75));
+		this.qtyCol.prefWidthProperty().bind(this.addedBooks.widthProperty().multiply(0.15));
+		this.bookText.prefWidthProperty().bind(this.addedBooks.widthProperty().multiply(0.71));
+		this.bookCount.prefWidthProperty().bind(this.addedBooks.widthProperty().multiply(0.1));
 	}
 
 	@FXML

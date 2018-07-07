@@ -7,7 +7,7 @@
 
 <VBox maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="680.0" prefWidth="1024.0" xmlns="http://javafx.com/javafx/8" xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.matha.controller.LandingController">
 	<children>
-		<MenuBar>
+		<MenuBar VBox.vgrow="NEVER">
 			<menus>
 				<Menu mnemonicParsing="false" onAction="#exitApp" text="File">
 					<items>
@@ -28,7 +28,7 @@
 				</Menu>
 			</menus>
 		</MenuBar>
-		<TabPane prefHeight="646.0" prefWidth="1024.0" tabClosingPolicy="UNAVAILABLE" tabMaxWidth="200.0" tabMinWidth="100.0">
+		<TabPane prefHeight="646.0" prefWidth="1024.0" tabClosingPolicy="UNAVAILABLE" tabMaxWidth="200.0" tabMinWidth="100.0" VBox.vgrow="ALWAYS">
 			<tabs>
 				<Tab fx:id="salesTab" onSelectionChanged="#loadSalesPage" text="Sales">
 					<content>
@@ -64,7 +64,7 @@
             </Tab>
 			</tabs>
 		</TabPane>
-		<Label alignment="CENTER" contentDisplay="CENTER" maxHeight="-Infinity" prefHeight="30.0" prefWidth="1024.0" text="All Rights Reserved - Matha Agencies" textAlignment="CENTER" VBox.vgrow="NEVER" />
+		<Label alignment="CENTER" contentDisplay="CENTER" maxHeight="30.0" prefHeight="30.0" prefWidth="1024.0" text="All Rights Reserved - Matha Agencies" textAlignment="CENTER" VBox.vgrow="NEVER" />
 	</children>
 	<effect>
 		<DropShadow />

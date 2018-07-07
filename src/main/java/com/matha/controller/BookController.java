@@ -8,6 +8,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 
+import javafx.scene.control.*;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
@@ -25,12 +26,7 @@ import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
-import javafx.scene.control.Alert;
 import javafx.scene.control.Alert.AlertType;
-import javafx.scene.control.ButtonType;
-import javafx.scene.control.TableView;
-import javafx.scene.control.TextField;
-import javafx.scene.control.TextInputDialog;
 import javafx.scene.input.KeyEvent;
 import javafx.stage.Stage;
 import javafx.stage.WindowEvent;
@@ -48,6 +44,24 @@ public class BookController
 	private TableView<Book> tableView;
 
 	@FXML
+	private TableColumn<Book, String> shortNameCol;
+
+	@FXML
+	private TableColumn<Book, String> catCol;
+
+	@FXML
+	private TableColumn<Book, String> bkNameCol;
+
+	@FXML
+	private TableColumn<Book, Double> prcCol;
+
+	@FXML
+	private TableColumn<Book, String> pubCol;
+
+	@FXML
+	private TableColumn<Book, Integer> invCol;
+
+	@FXML
 	private TextField bookName;
 
 	@FXML
@@ -55,6 +69,13 @@ public class BookController
 	{
 		List<Book> bookList = srvc.fetchAllBooks();
 		tableView.setItems(FXCollections.observableList(bookList));
+
+		this.shortNameCol.prefWidthProperty().bind(this.tableView.widthProperty().multiply(0.09));
+		this.bkNameCol.prefWidthProperty().bind(this.tableView.widthProperty().multiply(0.5));
+		this.pubCol.prefWidthProperty().bind(this.tableView.widthProperty().multiply(0.1));
+		this.invCol.prefWidthProperty().bind(this.tableView.widthProperty().multiply(0.09));
+		this.catCol.prefWidthProperty().bind(this.tableView.widthProperty().multiply(0.1));
+		this.prcCol.prefWidthProperty().bind(this.tableView.widthProperty().multiply(0.1));
 	}
 
 	private void loadData(String text)

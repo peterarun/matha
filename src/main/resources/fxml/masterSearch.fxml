@@ -29,7 +29,7 @@
 									<content>
 										<AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="180.0" prefWidth="200.0">
 											<children>
-                        												<TableView fx:id="orderData" layoutX="5.0" layoutY="89.0" prefHeight="424.0" prefWidth="620.0">
+                        												<TableView fx:id="orderData" layoutX="5.0" layoutY="89.0" prefHeight="424.0" prefWidth="620.0" AnchorPane.bottomAnchor="5.0" AnchorPane.leftAnchor="5.0" AnchorPane.rightAnchor="170.0" AnchorPane.topAnchor="70.0">
                         													<columns>
                         														<TableColumn prefWidth="99.0" text="Order No.">
                         															<cellValueFactory>
@@ -48,10 +48,10 @@
                         														</TableColumn>
                         													</columns>
                         												</TableView>
-                        												<Button layoutX="650.0" layoutY="202.0" mnemonicParsing="false" onAction="#editOrder" prefHeight="25.0" prefWidth="120.0" text="Edit" />
-                                    <Button layoutX="650.0" layoutY="243.0" mnemonicParsing="false" onAction="#printOrder" prefHeight="26.0" prefWidth="120.0" text="Print" />
-                                    <TextField fx:id="orderIdStr" layoutX="54.0" layoutY="38.0" onAction="#searchOrder" promptText="Order Id" />
-                                    <Button layoutX="231.0" layoutY="38.0" mnemonicParsing="false" onAction="#searchOrder" text="Search" />
+                        												<Button layoutX="650.0" layoutY="100.0" mnemonicParsing="false" onAction="#editOrder" prefHeight="25.0" prefWidth="120.0" text="Edit" AnchorPane.rightAnchor="28.0" />
+                                    <Button layoutX="650.0" layoutY="140.0" mnemonicParsing="false" onAction="#printOrder" prefHeight="26.0" prefWidth="120.0" text="Print" AnchorPane.rightAnchor="28.0" />
+                                    <TextField fx:id="orderIdStr" layoutX="54.0" layoutY="38.0" onAction="#searchOrder" promptText="Order Id" AnchorPane.leftAnchor="50.0" AnchorPane.topAnchor="30.0" />
+                                    <Button layoutX="231.0" layoutY="38.0" mnemonicParsing="false" onAction="#searchOrder" text="Search" AnchorPane.leftAnchor="210.0" AnchorPane.topAnchor="30.0" />
 											</children>
 										</AnchorPane>
 									</content>
@@ -60,29 +60,29 @@
 									<content>
 										<AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="180.0" prefWidth="200.0">
 											<children>
-												<Button layoutX="648.0" layoutY="209.0" mnemonicParsing="false" onAction="#printPurBill" prefHeight="25.0" prefWidth="120.0" text="Print" />
-												<Button layoutX="648.0" layoutY="169.0" mnemonicParsing="false" onAction="#editPurBill" prefHeight="25.0" prefWidth="120.0" text="Edit" />
-                                    <TableView fx:id="purBillData" layoutX="6.0" layoutY="87.0" prefHeight="425.0" prefWidth="615.0">
+												<Button layoutX="648.0" layoutY="140.0" mnemonicParsing="false" onAction="#printPurBill" prefHeight="25.0" prefWidth="120.0" text="Print" AnchorPane.rightAnchor="28.0" />
+												<Button layoutX="648.0" layoutY="100.0" mnemonicParsing="false" onAction="#editPurBill" prefHeight="25.0" prefWidth="120.0" text="Edit" AnchorPane.rightAnchor="28.0" />
+                                    <TableView fx:id="purBillData" layoutX="6.0" layoutY="87.0" prefHeight="425.0" prefWidth="615.0" AnchorPane.bottomAnchor="5.0" AnchorPane.leftAnchor="5.0" AnchorPane.rightAnchor="170.0" AnchorPane.topAnchor="70.0">
                                       <columns>
-                                        <TableColumn prefWidth="123.0" text="Invoice No" >
+                                        <TableColumn prefWidth="123.0" text="Invoice No">
 										  <cellValueFactory>
 											  <PropertyValueFactory property="invoiceNo" />
 										  </cellValueFactory>
 										</TableColumn>
-                                        <TableColumn prefWidth="129.0" text="Date" >
+                                        <TableColumn prefWidth="129.0" text="Date">
 										  <cellValueFactory>
 											  <PropertyValueFactory property="purchaseDate" />
 										  </cellValueFactory>
 										</TableColumn>
-										  <TableColumn prefWidth="362.0" text="Publisher" >
+										  <TableColumn prefWidth="362.0" text="Publisher">
 										  <cellValueFactory>
 											  <PropertyValueFactory property="publisherName" />
 										  </cellValueFactory>
 										  </TableColumn>
                                       </columns>
                                     </TableView>
-                                    <TextField fx:id="purBillNumStr" layoutX="54.0" layoutY="34.0" onAction="#searchPurchaseBill" promptText="Purchase Bill" />
-                                    <Button layoutX="232.0" layoutY="34.0" mnemonicParsing="false" onAction="#searchPurchaseBill" text="Search" />
+                                    <TextField fx:id="purBillNumStr" layoutX="54.0" layoutY="34.0" onAction="#searchPurchaseBill" promptText="Purchase Bill" AnchorPane.leftAnchor="50.0" AnchorPane.topAnchor="30.0" />
+                                    <Button layoutX="232.0" layoutY="34.0" mnemonicParsing="false" onAction="#searchPurchaseBill" text="Search" AnchorPane.leftAnchor="210.0" AnchorPane.topAnchor="30.0" />
 											</children>
 										</AnchorPane>
 									</content>
@@ -91,7 +91,7 @@
 									<content>
 										<AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="384.0" prefWidth="798.0">
 											<children>
-												<TableView fx:id="billData" layoutX="6.0" layoutY="96.0" prefHeight="416.0" prefWidth="619.0">
+												<TableView fx:id="billData" layoutX="6.0" layoutY="96.0" prefHeight="416.0" prefWidth="619.0" AnchorPane.bottomAnchor="5.0" AnchorPane.leftAnchor="5.0" AnchorPane.rightAnchor="170.0" AnchorPane.topAnchor="70.0">
 													<columns>
 														<TableColumn prefWidth="101.0" text="Receipt No.">
 															<cellValueFactory>
@@ -103,7 +103,7 @@
 																<PropertyValueFactory property="invoiceDateStr" />
 															</cellValueFactory>														
 														</TableColumn>
-                                          <TableColumn prefWidth="286.0" text="School" >
+                                          <TableColumn prefWidth="286.0" text="School">
 														<cellValueFactory>
 															<PropertyValueFactory property="schoolName" />
 														</cellValueFactory>
@@ -115,11 +115,11 @@
                                           				</TableColumn>
 													</columns>
 												</TableView>
-												<Button layoutX="656.0" layoutY="223.0" mnemonicParsing="false" onAction="#editBill" prefHeight="25.0" prefWidth="120.0" text="Edit" />
-                                    			<Button layoutX="656.0" layoutY="265.0" mnemonicParsing="false" onAction="#printSalesBill" prefHeight="25.0" prefWidth="120.0" text="Print" />
-                                    <Button layoutX="656.0" layoutY="183.0" mnemonicParsing="false" onAction="#viewBill" prefHeight="25.0" prefWidth="120.0" text="View" />
-                                    <TextField fx:id="salesBillNumStr" layoutX="55.0" layoutY="39.0" onAction="#searchBill" promptText="Search Bill" />
-                                    <Button layoutX="233.0" layoutY="39.0" mnemonicParsing="false" onAction="#searchBill" text="Search" />
+												<Button layoutX="656.0" layoutY="140.0" mnemonicParsing="false" onAction="#editBill" prefHeight="25.0" prefWidth="120.0" text="Edit" AnchorPane.rightAnchor="28.0" />
+                                    			<Button layoutX="656.0" layoutY="180.0" mnemonicParsing="false" onAction="#printSalesBill" prefHeight="25.0" prefWidth="120.0" text="Print" AnchorPane.rightAnchor="28.0" />
+                                    <Button layoutX="656.0" layoutY="100.0" mnemonicParsing="false" onAction="#viewBill" prefHeight="25.0" prefWidth="120.0" text="View" AnchorPane.rightAnchor="28.0" />
+                                    <TextField fx:id="salesBillNumStr" layoutX="55.0" layoutY="39.0" onAction="#searchBill" promptText="Search Bill" AnchorPane.leftAnchor="50.0" AnchorPane.topAnchor="30.0" />
+                                    <Button layoutX="233.0" layoutY="39.0" mnemonicParsing="false" onAction="#searchBill" text="Search" AnchorPane.leftAnchor="210.0" AnchorPane.topAnchor="30.0" />
 											</children>
 										</AnchorPane>
 									</content>

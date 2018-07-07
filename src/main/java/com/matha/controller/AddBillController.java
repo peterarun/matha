@@ -103,6 +103,12 @@ public class AddBillController
 	private TableView<SalesDet> addedBooks;
 
 	@FXML
+	private TableColumn<SalesDet, String> slNoCol;
+
+	@FXML
+	private TableColumn<SalesDet, String> bkNameCol;
+
+	@FXML
 	private TableColumn<SalesDet, String> priceColumn;
 
 	@FXML
@@ -163,6 +169,15 @@ public class AddBillController
 
 		loadNewBooksAndSubTotal(ordersIn);
 		loadDiscSymbol(percentRad, rupeeRad, discTypeInd);
+
+		this.slNoCol.prefWidthProperty().bind(this.addedBooks.widthProperty().multiply(0.1));
+		this.bkNameCol.prefWidthProperty().bind(this.addedBooks.widthProperty().multiply(0.5));
+		this.qtyColumn.prefWidthProperty().bind(this.addedBooks.widthProperty().multiply(0.12));
+		this.priceColumn.prefWidthProperty().bind(this.addedBooks.widthProperty().multiply(0.12));
+		this.totalColumn.prefWidthProperty().bind(this.addedBooks.widthProperty().multiply(0.16));
+		this.bookText.prefWidthProperty().bind(this.addedBooks.widthProperty().multiply(0.71));
+		this.bookCnt.prefWidthProperty().bind(this.addedBooks.widthProperty().multiply(0.1));
+
 	}
 
 	private void loadAddDefaults()

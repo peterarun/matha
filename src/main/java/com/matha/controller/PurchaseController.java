@@ -17,6 +17,7 @@ import java.util.stream.Collectors;
 
 import com.matha.domain.*;
 import javafx.event.Event;
+import javafx.scene.layout.AnchorPane;
 import net.sf.jasperreports.engine.export.ooxml.JRDocxExporter;
 import net.sf.jasperreports.engine.export.ooxml.JRXlsxExporter;
 import net.sf.jasperreports.export.SimpleOutputStreamExporterOutput;
@@ -100,6 +101,9 @@ public class PurchaseController
     
 	@FXML
 	private Tab ordersTab;
+
+	@FXML
+	private AnchorPane ordersPane;
 
 	@FXML
 	private TableView<Order> orderTable;
@@ -190,6 +194,8 @@ public class PurchaseController
 		List<String> saveTypes = Arrays.asList(PDF,Excel,Docx);
 		this.saveType.setItems(FXCollections.observableList(saveTypes));
 		this.saveType.getSelectionModel().selectFirst();
+
+		this.ordersPane.prefHeightProperty().bind(this.purTabs.heightProperty());
 	}
 
 	private Node createPage(int pageIndex)
