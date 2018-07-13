@@ -58,6 +58,8 @@ public class SalesCopier
 		ctx = SpringApplication.run(SalesCopier.class, args);
 		SalesCopier mig = ctx.getBean(SalesCopier.class);
 
+		SalesApplication.ctx = ctx;
+
 		String fileName = args[0];
 		mig.doMigration(fileName);
 	}
@@ -70,18 +72,21 @@ public class SalesCopier
 		Map<String, Book> bookMap = books.stream().collect(toMap(Book::getBookNum, b -> b));
 		List<SalesDet> orderItems = new ArrayList<>();
 		String currLine = fis.readLine();
-		String currSerialId = null;
+		String[] prevLineCont = null;
+		String prevSerialId = null;
 		do
 		{
 			String[] lineCont = currLine.split(SEMI_COLON_SIGN);
-			if(currSerialId != null && !currSerialId.equals(lineCont[0]))
+			LOGGER.info(lineCont);
+			if(prevSerialId != null && !prevSerialId.equals(lineCont[0]))
 			{
-				Sales sale = prepareSale(lineCont, schoolHashMap);
+				Sales sale = prepareSale(prevLineCont, schoolHashMap);
 				saveSale(sale, orderItems);
 
-				currSerialId = lineCont[0];
 				orderItems = new ArrayList<>();
 			}
+			prevSerialId = lineCont[0];
+			prevLineCont = lineCont;
 
 			SalesDet sd = prepareSalesDet(lineCont, bookMap);
 			orderItems.add(sd);
@@ -158,7 +163,7 @@ public class SalesCopier
 	public SalesDet prepareSalesDet(String[] lineCont, Map<String, Book> bookHashMap)
 	{
 		String bookNum = lineCont[15];
-		Integer qty = getIntegerVal(lineCont[16]);
+		Integer qty = getDoubleVal(lineCont[16]).intValue();
 		Double rate = getDoubleVal(lineCont[17]);
 		Integer slNo = getIntegerVal(lineCont[21]);
 

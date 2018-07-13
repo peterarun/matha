@@ -113,7 +113,7 @@
             </TextField>
             <TextField fx:id="bookCnt" layoutX="445.0" layoutY="341.0" onAction="#addBookData" prefHeight="25.0" prefWidth="36.0" promptText="Qty." AnchorPane.bottomAnchor="127.0" AnchorPane.rightAnchor="225.0" />
             <Label layoutX="375.0" layoutY="419.0" text="Discount" AnchorPane.bottomAnchor="57.0" />
-            <TextField fx:id="calculatedDisc" editable="false" focusTraversable="false" layoutX="426.0" layoutY="415.0" prefHeight="25.0" prefWidth="109.0" style="-fx-background-color: beige;" AnchorPane.bottomAnchor="19.0" />
+            <TextField fx:id="calculatedDisc" editable="false" focusTraversable="false" layoutX="428.0" layoutY="415.0" prefHeight="25.0" prefWidth="109.0" style="-fx-background-color: beige;" AnchorPane.bottomAnchor="53.0" />
             <TextField fx:id="bookPrice" layoutX="487.0" layoutY="341.0" onAction="#addBookData" prefHeight="25.0" prefWidth="47.0" promptText="Price" AnchorPane.bottomAnchor="127.0" AnchorPane.rightAnchor="173.0" />
 				
 			</children>

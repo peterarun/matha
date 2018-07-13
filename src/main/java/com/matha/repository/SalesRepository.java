@@ -37,4 +37,7 @@ public interface SalesRepository extends JpaRepository<Sales, String> {
 
 	public List<Sales> findAllBySchoolAndTxnDateAfter(School sc, LocalDate txnDt, Sort sortIn);
 
+	public List<Sales> findAllBySalesTxnIsNull();
+
+	Sales findById(String salesId);
 }

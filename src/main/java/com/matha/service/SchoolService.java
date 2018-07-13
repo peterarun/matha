@@ -1270,72 +1270,6 @@ public class SchoolService
 		updateBookInventory(ordersOrig, addedOrders, removedOrders, affectedOrders, bookNums, Integer.valueOf(-1));
 	}
 
-	private void updateBookInventoryOld(List<? extends InventoryData> ordersOrig,
-										  List<? extends InventoryData> addedOrders,
-										  List<? extends InventoryData> removedOrders,
-										  List<? extends InventoryData> affectedOrders,
-										  Set<String> bookNums,
-									      Integer multiplier)
-	{
-		Map<String, Integer> bookCounts = new HashMap<>();
-		for (InventoryData orderItem : addedOrders)
-		{
-			if (bookCounts.containsKey(orderItem.getBook().getBookNum()))
-			{
-				int bookCnt = bookCounts.get(orderItem.getBook().getBookNum());
-				bookCounts.put(orderItem.getBook().getBookNum(), bookCnt + orderItem.getQuantity());
-			}
-			else
-			{
-				int chgCnt = orderItem.getQuantity();
-				bookCounts.put(orderItem.getBook().getBookNum(), chgCnt);
-			}
-		}
-
-		for (InventoryData orderItem : removedOrders)
-		{
-			if (bookCounts.containsKey(orderItem.getBook().getBookNum()))
-			{
-				int bookCnt = bookCounts.get(orderItem.getBook().getBookNum());
-				bookCounts.put(orderItem.getBook().getBookNum(), bookCnt - orderItem.getQuantity());
-			}
-			else
-			{
-				bookCounts.put(orderItem.getBook().getBookNum(), -orderItem.getQuantity());
-			}
-		}
-
-		for (InventoryData orderItem : affectedOrders)
-		{
-			int origItemIdx = ordersOrig.indexOf(orderItem);
-			if (origItemIdx > -1)
-			{
-				InventoryData origItem = ordersOrig.get(origItemIdx);
-				int diff = origItem.getQuantity() - orderItem.getQuantity();
-				if (bookCounts.containsKey(orderItem.getBook().getBookNum()))
-				{
-					int bookCnt = bookCounts.get(orderItem.getBook().getBookNum());
-					bookCounts.put(orderItem.getBook().getBookNum(), bookCnt + diff);
-				}
-				else
-				{
-					bookCounts.put(orderItem.getBook().getBookNum(), diff);
-				}
-			}
-		}
-
-		List<Book> origBooks = bookRepository.findAll(bookNums);
-		for (Book book : origBooks)
-		{
-			if (bookCounts.containsKey(book.getBookNum()))
-			{
-				int diff = bookCounts.get(book.getBookNum());
-				book.addInventory(diff * multiplier);
-			}
-		}
-		bookRepository.save(origBooks);
-	}
-
 	private void updateBookInventory(List<? extends InventoryData> ordersOrig,
 									 List<? extends InventoryData> addedOrders,
 									 List<? extends InventoryData> removedOrders,
@@ -1395,14 +1329,34 @@ public class SchoolService
 	@Transactional
 	public void deleteBill(Sales selectedSale)
 	{
+
+		Set<SalesDet> ordersOrig = selectedSale.getSaleItems();
+		List<SalesDet> ordersIn = new ArrayList<>();
+		Set<String> bookSet = ordersIn.stream().map(SalesDet::getBook).map(Book::getBookNum).collect(toSet());
+		updateBookInventory(new ArrayList<>(ordersOrig), ordersIn, new ArrayList<>(), new ArrayList<>(), bookSet, Integer.valueOf(1));
+
 		SalesTransaction salesTransaction = selectedSale.getSalesTxn();
 		double netAmt = selectedSale.getNetAmount();
 
-//		selectedSale.setSaleItems(Collections.EMPTY_SET);
 		selectedSale.setSalesTxn(null);
 		selectedSale.setDeletedAmt(netAmt);
 		selectedSale.setStatusInd(DELETED_IND);
 		salesRepository.save(selectedSale);
+
+		deleteSalesTxn(salesTransaction);
+	}
+
+	@Transactional
+	public void deleteBillPerm(Sales selectedSale)
+	{
+		Set<SalesDet> ordersOrig = selectedSale.getSaleItems();
+		List<SalesDet> ordersIn = new ArrayList<>();
+		Set<String> bookSet = ordersIn.stream().map(SalesDet::getBook).map(Book::getBookNum).collect(toSet());
+		updateBookInventory(new ArrayList<>(ordersOrig), ordersIn, new ArrayList<>(), new ArrayList<>(), bookSet, Integer.valueOf(1));
+
+		SalesTransaction salesTransaction = selectedSale.getSalesTxn();
+		selectedSale.setSalesTxn(null);
+		salesRepository.delete(selectedSale);
 
 		deleteSalesTxn(salesTransaction);
 	}

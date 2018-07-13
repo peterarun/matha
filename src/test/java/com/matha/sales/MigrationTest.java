@@ -330,22 +330,27 @@ public class MigrationTest
 	@Test
 	public void testMigration5()
 	{
-		LocalDate ld = LocalDate.of(2017, Month.NOVEMBER, 1);
+		LocalDate ld = LocalDate.of(2018, Month.JUNE, 17);
 		Sort idSort = new Sort(new Sort.Order(Sort.Direction.ASC, "id"));
-//		List<Sales> purchases = salesRepository.findAllByFinancialYear( FIN_YEAR, idSort);
 		List<Sales> purchases = salesRepository.findAllByTxnDateAfter( ld, idSort);
 		for (Sales sale : purchases)
 		{
 			LOGGER.debug(sale);
-			if(sale.getSalesTxn() == null)
-			{
-				LOGGER.info("Processing Sales Item: " + sale.getId());
-//				SalesTransaction pTrans = new SalesTransaction();
-//				pTrans.setSchool(sale.getSchool());
-//				pTrans.setAmount(sale.getNetAmount());
-//				pTrans.setTxnDate(sale.getInvoiceDate());
-//				schoolService.saveSalesData(sale, sale.getSaleItems(), pTrans);
-			}
+			schoolService.deleteBillPerm(sale);
 		}
 	}
+
+	@Test
+	public void testMigration6()
+	{
+		String[] salesIds = {"S-2941"};
+		for (String salesId : salesIds)
+		{
+			LOGGER.debug(salesId);
+			Sales sale = salesRepository.findById(salesId);
+			LOGGER.debug(sale);
+			schoolService.deleteBillPerm(sale);
+		}
+	}
+
 }

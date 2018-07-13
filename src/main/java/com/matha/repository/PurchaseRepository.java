@@ -39,4 +39,5 @@ public interface PurchaseRepository extends JpaRepository<Purchase, String> {
 
 	List<Purchase> findAllByFinancialYear(Integer fy, Sort sortIn);
 
+	List<Purchase> findAllBySalesTxnIsNull();
 }
