@@ -175,7 +175,7 @@ public class AddBillController
 		this.qtyColumn.prefWidthProperty().bind(this.addedBooks.widthProperty().multiply(0.12));
 		this.priceColumn.prefWidthProperty().bind(this.addedBooks.widthProperty().multiply(0.12));
 		this.totalColumn.prefWidthProperty().bind(this.addedBooks.widthProperty().multiply(0.16));
-		this.bookText.prefWidthProperty().bind(this.addedBooks.widthProperty().multiply(0.71));
+		this.bookText.prefWidthProperty().bind(this.addedBooks.widthProperty().multiply(0.42));
 		this.bookCnt.prefWidthProperty().bind(this.addedBooks.widthProperty().multiply(0.1));
 
 	}

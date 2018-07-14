@@ -984,6 +984,12 @@ public class SchoolService
 		return purchaseTxnRepository.findByFromToDate(pub, fromDateVal, toDateVal, sort);
 	}
 
+
+	public List<CashHead> fetchCashHeads()
+	{
+		return cashHeadRepository.findAll();
+	}
+
 	public void saveCashHead(String cashHeadStr)
 	{
 		CashHead cashHead = new CashHead();
@@ -994,7 +1000,7 @@ public class SchoolService
 	public List<CashBook> searchTransactions(LocalDate fromDate, LocalDate toDate, String entryId, String entryDesc, CashHead cashHead)
 	{
 		// TODO Auto-generated method stub
-		return null;
+		return cashBookRepository.findAllByOrderByTxnDateDesc();
 	}
 
 	public Page<Order> fetchOrders(Publisher pub, int page, int size, boolean billed)

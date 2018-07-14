@@ -6,10 +6,7 @@ import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 
-import com.matha.domain.BookCategory;
-import com.matha.domain.District;
-import com.matha.domain.Publisher;
-import com.matha.domain.State;
+import com.matha.domain.*;
 
 import javafx.util.StringConverter;
 import javafx.util.converter.LocalDateStringConverter;
@@ -94,6 +91,27 @@ public class Converters
 
 			@Override
 			public Publisher fromString(String string)
+			{
+				// TODO Auto-generated method stub
+				return null;
+			}
+		};
+		return c;
+	}
+
+	public static StringConverter<CashHead> getCashHeadConverter()
+	{
+		StringConverter<CashHead> c = new StringConverter<CashHead>() {
+
+			@Override
+			public String toString(CashHead state)
+			{
+
+				return state.getCashHeadName();
+			}
+
+			@Override
+			public CashHead fromString(String string)
 			{
 				// TODO Auto-generated method stub
 				return null;

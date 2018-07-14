@@ -3,6 +3,7 @@ package com.matha.controller;
 import java.util.List;
 import java.util.Optional;
 
+import javafx.scene.control.*;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -21,17 +22,13 @@ import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
-import javafx.scene.control.Alert;
 import javafx.scene.control.Alert.AlertType;
-import javafx.scene.control.ButtonType;
-import javafx.scene.control.ComboBox;
-import javafx.scene.control.DatePicker;
-import javafx.scene.control.TableView;
-import javafx.scene.control.TextField;
-import javafx.scene.control.TextInputDialog;
 import javafx.scene.input.KeyEvent;
 import javafx.stage.Stage;
 import javafx.stage.WindowEvent;
+
+import static com.matha.util.Converters.getCashHeadConverter;
+import static javafx.collections.FXCollections.observableList;
 
 @Component
 public class CashBookController {
@@ -57,13 +54,17 @@ public class CashBookController {
 	private TextField transactionDesc;
 	
 	@FXML 
-	private ComboBox<CashHead> type; 
+	private ChoiceBox<CashHead> cashHead;
 	
 	@FXML
 	protected void initialize()
 	{
 		List<CashBook> transactions = srvc.getAllTransactions();
 		this.txnData.setItems(FXCollections.observableList(transactions));
+
+		List<CashHead> cashHeads = srvc.fetchCashHeads();
+		this.cashHead.setConverter(getCashHeadConverter());
+		this.cashHead.setItems(observableList(cashHeads));
 	}
 
 	@FXML
@@ -149,9 +150,8 @@ public class CashBookController {
 	@FXML
 	void search(ActionEvent event)
 	{
-		List<CashBook> transactions = srvc.searchTransactions(fromDate.getValue(), toDate.getValue(), this.transactionId.getText(), this.transactionDesc.getText(), this.type.getSelectionModel().getSelectedItem());
+		List<CashBook> transactions = srvc.searchTransactions(fromDate.getValue(), toDate.getValue(), this.transactionId.getText(), this.transactionDesc.getText(), this.cashHead.getSelectionModel().getSelectedItem());
 		this.txnData.setItems(FXCollections.observableList(transactions));
-		
 	}
 
 	private void prepareAndShowStage(ActionEvent e, Scene childScene) {

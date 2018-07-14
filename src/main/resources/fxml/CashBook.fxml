@@ -31,7 +31,7 @@
             <Button layoutX="691.0" layoutY="52.0" mnemonicParsing="false" onAction="#addCashHead" prefHeight="25.0" prefWidth="84.0" text="Add Head" />
             <Button layoutX="691.0" layoutY="94.0" mnemonicParsing="false" onAction="#addMode" prefHeight="25.0" prefWidth="84.0" text="Add Mode" />
             <Button layoutX="386.0" layoutY="137.0" mnemonicParsing="false" onAction="#search" text="Search" />
-            <ChoiceBox layoutX="63.0" layoutY="137.0" prefWidth="150.0" />
+            <ChoiceBox fx:id="cashHead" layoutX="63.0" layoutY="137.0" prefWidth="150.0" />
             <Label layoutX="28.0" layoutY="141.0" text="Head" />
 			</children>
 		</AnchorPane>

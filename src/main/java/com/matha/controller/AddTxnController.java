@@ -1,7 +1,10 @@
 package com.matha.controller;
 
 import java.time.LocalDate;
+import java.util.List;
 
+import com.matha.util.Converters;
+import javafx.scene.control.*;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
@@ -12,12 +15,10 @@ import com.matha.util.Utils;
 
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
-import javafx.scene.control.Button;
-import javafx.scene.control.ComboBox;
-import javafx.scene.control.DatePicker;
-import javafx.scene.control.Label;
-import javafx.scene.control.TextField;
 import javafx.stage.Stage;
+
+import static com.matha.util.Converters.getCashHeadConverter;
+import static javafx.collections.FXCollections.observableList;
 
 @Component
 public class AddTxnController {
@@ -44,7 +45,7 @@ public class AddTxnController {
     private DatePicker txnDate;
 
 	@FXML
-	private ComboBox<CashHead> cashHead;
+	private ChoiceBox<CashHead> cashHead;
 	
 	@FXML
 	private TextField representative;
@@ -56,6 +57,9 @@ public class AddTxnController {
 	@FXML
 	protected void initialize() {
 		this.txnDate.setValue(LocalDate.now());
+		List<CashHead> cashHeads = srvc.fetchCashHeads();
+		this.cashHead.setConverter(getCashHeadConverter());
+		this.cashHead.setItems(observableList(cashHeads));
 	}
 
 	@FXML
