@@ -10,8 +10,11 @@ import javafx.fxml.FXML;
 import javafx.scene.control.*;
 import javafx.stage.Stage;
 import org.apache.commons.lang.StringUtils;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.stereotype.Component;
 
 import java.io.IOException;
@@ -24,6 +27,8 @@ import static com.matha.util.Utils.showErrorAlert;
 @Component
 public class AddPaymentController
 {
+
+	private static final Logger LOGGER = LogManager.getLogger("AddPaymentController");
 
 	@Autowired
 	private SchoolService schoolService;
@@ -119,37 +124,50 @@ public class AddPaymentController
 	@FXML
 	void saveData(ActionEvent event)
 	{
-		if(!validateData())
+		try
 		{
-			return;
+			if(!validateData())
+			{
+				return;
+			}
+			SchoolPayment sPayment = schoolPayment;
+			if (schoolPayment == null)
+			{
+				sPayment = new SchoolPayment();
+				SalesTransaction sTransaction = new SalesTransaction();
+				sTransaction.setSchool(school);
+				sPayment.setSalesTxn(sTransaction);
+			}
+
+			sPayment.setReceiptNum(receiptNum.getText());
+			sPayment.setPaymentMode(mode.getValue());
+			sPayment.setDated(dated.getValue());
+			sPayment.setReferenceNum(refNum.getText());
+
+			SalesTransaction sTxn = sPayment.getSalesTxn();
+			String amountStr = amount.getText();
+			double amountVal = 0.0;
+			if (StringUtils.isNotBlank(amountStr))
+			{
+				amountVal = Double.parseDouble(amountStr);
+			}
+			sTxn.setAmount(amountVal);
+			sTxn.setNote(notes.getText());
+			sTxn.setTxnDate(payDate.getValue());
+
+			schoolService.savePayment(sPayment);
+			((Stage) cancelBtn.getScene().getWindow()).close();
 		}
-		SchoolPayment sPayment = schoolPayment;
-		if (schoolPayment == null)
+		catch (DataIntegrityViolationException e)
 		{
-			sPayment = new SchoolPayment();
-			SalesTransaction sTransaction = new SalesTransaction();
-			sTransaction.setSchool(school);
-			sPayment.setSalesTxn(sTransaction);
+			LOGGER.error("Error...", e);
+			showErrorAlert("Error in Saving Payment", "Please correct the following errors", "Duplicate Entry Found");
 		}
-
-		sPayment.setReceiptNum(receiptNum.getText());
-		sPayment.setPaymentMode(mode.getValue());
-		sPayment.setDated(dated.getValue());
-		sPayment.setReferenceNum(refNum.getText());
-
-		SalesTransaction sTxn = sPayment.getSalesTxn();
-		String amountStr = amount.getText();
-		double amountVal = 0.0;
-		if (StringUtils.isNotBlank(amountStr))
+		catch (Exception e)
 		{
-			amountVal = Double.parseDouble(amountStr);
+			LOGGER.error("Error...", e);
+			showErrorAlert("Error in Saving Payment", "Please correct the following errors", e.getMessage());
 		}
-		sTxn.setAmount(amountVal);
-		sTxn.setNote(notes.getText());
-		sTxn.setTxnDate(payDate.getValue());
-
-		schoolService.savePayment(sPayment);
-		((Stage) cancelBtn.getScene().getWindow()).close();
 	}
 
 	@FXML

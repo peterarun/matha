@@ -16,6 +16,7 @@ import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.controlsfx.control.textfield.TextFields;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.stereotype.Component;
 
 import java.time.LocalDate;
@@ -122,7 +123,9 @@ public class AddOrderController
 	{
 		int idx = addedBooks.getItems().size() + 1;
 		OrderItem item = new OrderItem();
-		item.setBook(bookMap.get(bookText.getText()));
+		Book bookIn = bookMap.get(bookText.getText());
+		item.setBook(bookIn);
+		item.setBookName(bookIn.getName());
 		item.setCount(Integer.parseInt(bookCount.getText()));
 		item.setSerialNum(idx);
 		addedBooks.getItems().add(item);
@@ -152,6 +155,8 @@ public class AddOrderController
 	void saveData(ActionEvent e)
 	{
 
+		try
+		{
 		if(!validateData())
 		{
 			return;
@@ -209,6 +214,17 @@ public class AddOrderController
 		srvc.updateOrderData(item, items, origOrders);
 
 		((Stage) cancelBtn.getScene().getWindow()).close();
+		}
+		catch (DataIntegrityViolationException ex)
+		{
+			LOGGER.error("Error...", ex);
+			showErrorAlert("Error in Saving Order", "Please correct the following errors", "Duplicate Entry Found");
+		}
+		catch (Exception ex)
+		{
+			LOGGER.error("Error...", ex);
+			showErrorAlert("Error in Saving Order", "Please correct the following errors", ex.getMessage());
+		}
 	}
 
 	@FXML

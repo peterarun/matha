@@ -32,30 +32,25 @@
 					<columns>
 					  <TableColumn fx:id="shortNameCol" prefWidth="92.0" text="Short Name">
 						  <cellValueFactory>
-							  <PropertyValueFactory property="shortName" />
+							  <PropertyValueFactory property="bookNum" />
 						  </cellValueFactory>
 					  </TableColumn>
-						<TableColumn fx:id="bkNameCol" prefWidth="264.0" text="Name">
+						<TableColumn fx:id="bkNameCol" prefWidth="302.0" text="Name">
 							<cellValueFactory>
 								<PropertyValueFactory property="name" />
 							</cellValueFactory>
 						</TableColumn>
-						<TableColumn fx:id="pubCol" minWidth="5.0" prefWidth="153.0" text="Publisher">
+						<TableColumn fx:id="pubCol" minWidth="5.0" prefWidth="169.0" text="Publisher">
 							<cellValueFactory>
 								<PropertyValueFactory property="publisherName" />
 							</cellValueFactory>
 						</TableColumn>
-						<TableColumn fx:id="invCol" prefWidth="75.0" text="Inventory">
+						<TableColumn fx:id="invCol" prefWidth="120.0" text="Inventory">
 							<cellValueFactory>
 								<PropertyValueFactory property="inventory" />
 							</cellValueFactory>						
 						</TableColumn>
-						<TableColumn fx:id="catCol" prefWidth="128.0" text="Category">
-							<cellValueFactory>
-								<PropertyValueFactory property="categoryName" />
-							</cellValueFactory>
-						</TableColumn>
-						<TableColumn fx:id="prcCol" prefWidth="85.0" style="-fx-alignment: CENTER-RIGHT;" text="Price">
+						<TableColumn fx:id="prcCol" prefWidth="113.0" style="-fx-alignment: CENTER-RIGHT;" text="Price">
 							<cellValueFactory>
 								<PropertyValueFactory property="price" />
 							</cellValueFactory>

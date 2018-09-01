@@ -3,11 +3,10 @@ package com.matha.controller;
 import static com.matha.util.UtilConstants.NEW_LINE;
 import static com.matha.util.UtilConstants.PERCENT_SIGN;
 import static com.matha.util.UtilConstants.RUPEE_SIGN;
-import static com.matha.util.Utils.getDoubleVal;
-import static com.matha.util.Utils.getStringVal;
-import static com.matha.util.Utils.showErrorAlert;
+import static com.matha.util.Utils.*;
 import static java.util.Comparator.comparing;
 
+import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
@@ -26,6 +25,7 @@ import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.controlsfx.control.textfield.TextFields;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.stereotype.Component;
 
 import com.matha.service.SchoolService;
@@ -101,7 +101,7 @@ public class AddPurchaseRetController
 	private Map<String, Book> bookMap;
 	private AtomicInteger index = new AtomicInteger();
 	private Collector<PurchaseReturnDet, ?, Double> summingDblCollector = Collectors.summingDouble(PurchaseReturnDet::getTotalBought);
-	private Collector<Book, ?, Map<String, Book>> bookMapCollector = Collectors.toMap(o -> o.getShortName() + ": " + o.getName() + " - " + o.getPublisherName(), o -> o);	
+	private Collector<Book, ?, Map<String, Book>> bookMapCollector = Collectors.toMap(o -> o.getBookNum() + ": " + o.getName() + " - " + o.getPublisherName(), o -> o);
 	
 	void initData(Publisher publisherIn, PurchaseReturn purchaseReturnIn)
 	{
@@ -148,15 +148,11 @@ public class AddPurchaseRetController
 			this.notes.setText(purchaseReturn.getSalesTxn().getNote());
 			this.creditNoteNum.setText(purchaseReturn.getCreditNoteNum());
 			this.subTotal.setText(getStringVal(purchaseReturn.getSubTotal()));
-			if(purchaseReturn.getDiscAmt() != null)
+			if(purchaseReturn.getDiscType() == null || !purchaseReturn.getDiscType())
 			{
 				this.rupeeRad.setSelected(true);
-				this.discText.setText(getStringVal(purchaseReturn.getDiscAmt()));
 			}
-			else
-			{
-				this.discText.setText(getStringVal(purchaseReturn.getDiscPerc()));
-			}
+			this.discText.setText(getStringVal(purchaseReturn.getDiscAmt()));
 			this.calcDiscount.setText(getStringVal(purchaseReturn.getDiscount()));
 			
 			if (purchaseReturn.getSalesTxn() != null)
@@ -263,20 +259,36 @@ public class AddPurchaseRetController
 	{
 		boolean valid = true;
 		StringBuilder errorMsg = new StringBuilder();
+
 		if(this.subTotal.getText() == null)
 		{
 			errorMsg.append("Please provide an Amount");
 			errorMsg.append(NEW_LINE);
 			valid = false;
 		}
-		if (this.returnDate.getValue() == null)
+		LocalDate retDt = this.returnDate.getValue();
+		if (retDt == null)
 		{
 			errorMsg.append("Please provide a Return Date");
 			valid = false;
 		}
+		String creditNoteNum = this.creditNoteNum.getText();
+		if (creditNoteNum == null)
+		{
+			errorMsg.append("Please provide a Credit Note Number");
+			valid = false;
+		}
+		Integer fy = calcFinYear(retDt);
+		PurchaseReturn existingRet = schoolService.fetchPurchaseReturn(creditNoteNum, fy);
+		if(existingRet != null)
+		{
+			errorMsg.append("Credit Note Number provided already exists for the Financial Year");
+			valid = false;
+		}
+
 		if(!valid)
 		{
-			showErrorAlert("Error in Saving Order", "Please correct the following errors", errorMsg.toString());
+			showErrorAlert("Error in Saving Purchase Bill", "Please correct the following errors", errorMsg.toString());
 		}
 		return valid;
 	}
@@ -284,43 +296,61 @@ public class AddPurchaseRetController
 	@FXML
 	void saveData(ActionEvent event)
 	{
-		if(!validateData())
+		try
 		{
-			return;
-		}
-		
-		PurchaseReturn returnIn = this.purchaseReturn;		
-		if(returnIn == null)
-		{
-			returnIn = new PurchaseReturn();						
-		}
-		if(percentRad.isSelected())
-		{
-			returnIn.setDiscPerc(getDoubleVal(this.discText.getText()));
-		}
-		else
-		{
+			if(!validateData())
+			{
+				return;
+			}
+
+			LocalDate returnDate = this.returnDate.getValue();
+
+			PurchaseReturn returnIn = this.purchaseReturn;
+			if(returnIn == null)
+			{
+				returnIn = new PurchaseReturn();
+			}
+			PurchaseTransaction salesTxn = returnIn.getSalesTxn();
+			if(salesTxn == null)
+			{
+				salesTxn = new PurchaseTransaction();
+				salesTxn.setPublisher(publisher);
+			}
+			salesTxn.setTxnDate(returnDate);
+			salesTxn.setNote(this.notes.getText());
+			salesTxn.setAmount(getDoubleVal(this.netTotal));
+
+			if(percentRad.isSelected())
+			{
+				returnIn.setDiscType(true);
+			}
+			else
+			{
+				returnIn.setDiscType(false);
+			}
 			returnIn.setDiscAmt(getDoubleVal(this.discText.getText()));
+			returnIn.setSubTotal(getDoubleVal(this.subTotal.getText()));
+			returnIn.setCreditNoteNum(this.creditNoteNum.getText());
+			returnIn.setReturnDate(returnDate);
+			returnIn.setFy(calcFinYear(returnDate));
+
+			TreeSet<PurchaseReturnDet> orderItems = new TreeSet<>(comparing(PurchaseReturnDet::getSlNum));
+			orderItems.addAll(this.addedBooks.getItems());
+
+
+			schoolService.savePurchaseReturn(returnIn, salesTxn, orderItems);
+			((Stage) cancelBtn.getScene().getWindow()).close();
 		}
-		returnIn.setSubTotal(getDoubleVal(this.subTotal.getText()));
-		returnIn.setCreditNoteNum(this.creditNoteNum.getText());
-		
-		PurchaseTransaction salesTxn = returnIn.getSalesTxn();
-		if(salesTxn == null)
+		catch (DataIntegrityViolationException e)
 		{
-			salesTxn = new PurchaseTransaction();
-			salesTxn.setPublisher(publisher);
+			LOGGER.error("Error...", e);
+			showErrorAlert("Error in Saving Purchase Bill", "Please correct the following errors", "Duplicate Entry Found");
 		}
-		
-		TreeSet<PurchaseReturnDet> orderItems = new TreeSet<>(comparing(PurchaseReturnDet::getSlNum));
-		orderItems.addAll(this.addedBooks.getItems());
-		
-		salesTxn.setTxnDate(this.returnDate.getValue());
-		salesTxn.setNote(this.notes.getText());
-		salesTxn.setAmount(getDoubleVal(this.netTotal));
-		
-		schoolService.savePurchaseReturn(returnIn, salesTxn, orderItems);
-		((Stage) cancelBtn.getScene().getWindow()).close();
+		catch (Exception e)
+		{
+			LOGGER.error("Error...", e);
+			showErrorAlert("Error in Saving Purchase Bill", "Please correct the following errors", e.getMessage());
+		}
 	}
 
 	private void updateNetAmt()

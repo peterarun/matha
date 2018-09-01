@@ -1,16 +1,7 @@
 package com.matha.domain;
 
-import java.io.Serializable;
-import java.util.List;
-import java.util.Set;
-
 import javax.persistence.*;
-
-import org.hibernate.annotations.Cascade;
-import org.hibernate.annotations.GenericGenerator;
-
-import static org.hibernate.annotations.CascadeType.DELETE;
-import static org.hibernate.annotations.CascadeType.SAVE_UPDATE;
+import java.io.Serializable;
 
 @Entity
 @Table(name = "SOrderDet")
@@ -28,26 +19,16 @@ public class OrderItem implements Serializable, Comparable<OrderItem>
 	@JoinColumn(name = "SerialId")
 	private Order order;
 
-//	@OneToMany(fetch= FetchType.EAGER, mappedBy = "orderItem")
-//	@Cascade({DELETE})
-//	private Set<PurchaseDet> purchaseDet;
-//
-//	@OneToMany(fetch= FetchType.EAGER, mappedBy = "orderItem")
-//	@Cascade({DELETE})
-//	private Set<SalesDet> salesDet;
-	
-	@ManyToOne()
-	@JoinColumn(name = "BkNo")
+	@OneToOne
+	@JoinColumn(name = "BookId")
+//	private Integer bookId;
 	private Book book;
+
+	@Column(name="BookName")
+	private String bookName;
 
 	@Column(name = "Qty")
 	private Integer count;
-
-//	@Column(name = "fullfilledCnt")
-//	private Integer fullFilledCnt;
-
-//	@Column(name = "soldCnt")
-//	private Integer soldCnt;
 
 	@Column(name = "SlNo")
 	private Integer serialNum;
@@ -55,71 +36,21 @@ public class OrderItem implements Serializable, Comparable<OrderItem>
 	@Column(name = "BookPrice")
 	private Double bookPrice;
 
-//	@ManyToOne()
-//	@JoinColumn(name = "ReturnId")
-//	private SchoolReturn bookReturn;
-//
-//	@ManyToOne()
-//	@JoinColumn(name = "PurReturnId")
-//	private PurchaseReturn purchReturn;
-
 	public double getTotal()
 	{
 		return getBookPrice() * count;
 	}
 
-//	public double getTotalBought()
-//	{
-//		return getBookPrice() * fullFilledCnt;
-//	}
-//
-//	public double getTotalSold()
-//	{
-//		return getBookPrice() * soldCnt;
-//	}
-//
-	public Double getBookPrice()
+	public String getOrderId()
 	{
-		if (bookPrice == null)
+		if(order != null)
 		{
-			return book.getPrice();
+			return order.getId();
 		}
-		return bookPrice;
-	}
-
-	public void setBookPrice(Double bookPrice)
-	{
-		this.bookPrice = bookPrice;
-	}
-
-//	public SchoolReturn getBookReturn()
-//	{
-//		return bookReturn;
-//	}
-//
-//	public void setBookReturn(SchoolReturn bookReturn)
-//	{
-//		this.bookReturn = bookReturn;
-//	}
-//
-//	public PurchaseReturn getPurchReturn()
-//	{
-//		return purchReturn;
-//	}
-//
-//	public void setPurchReturn(PurchaseReturn purchReturn)
-//	{
-//		this.purchReturn = purchReturn;
-//	}
-
-	public String getBookName()
-	{
-		return book.getName();
-	}
-
-	public String getPublisherName()
-	{
-		return book.getPublisher().getName();
+		else
+		{
+			return null;
+		}
 	}
 
 	public String getSchoolName()
@@ -127,148 +58,83 @@ public class OrderItem implements Serializable, Comparable<OrderItem>
 		return this.order.getSchool().getName();
 	}
 
-	public Integer getId()
-	{
+	public Integer getId() {
 		return id;
 	}
 
-	public void setId(Integer id)
-	{
+	public void setId(Integer id) {
 		this.id = id;
 	}
 
-	public Order getOrder()
-	{
+	public Order getOrder() {
 		return order;
 	}
 
-	public void setOrder(Order order)
-	{
+	public void setOrder(Order order) {
 		this.order = order;
 	}
-
-//	public Purchase getSchoolReturn()
-//	{
-//		return purchase;
+//
+//	public Integer getBookId() {
+//		return bookId;
 //	}
 //
-//	public void setSchoolReturn(Purchase purchase)
-//	{
-//		this.purchase = purchase;
-//	}
-//
-//	public Sales getSchoolReturn()
-//	{
-//		return sale;
-//	}
-//
-//	public void setSchoolReturn(Sales sale)
-//	{
-//		this.sale = sale;
+//	public void setBookId(Integer bookId) {
+//		this.bookId = bookId;
 //	}
 
-	public Book getBook()
-	{
+
+	public Book getBook() {
 		return book;
 	}
 
-	public void setBook(Book book)
-	{
+	public void setBook(Book book) {
 		this.book = book;
 	}
 
-	public Integer getCount()
-	{
+	public String getBookName() {
+		return bookName;
+	}
+
+	public void setBookName(String bookName) {
+		this.bookName = bookName;
+	}
+
+	public Integer getCount() {
 		return count;
 	}
 
-	public void setCount(Integer count)
-	{
+	public void setCount(Integer count) {
 		this.count = count;
 	}
-	
-//	public Integer getFullFilledCnt()
-//	{
-//		return fullFilledCnt;
-//	}
-//
-//	public void setFullFilledCnt(Integer fullFilledCnt)
-//	{
-//		this.fullFilledCnt = fullFilledCnt;
-//	}
-//
-//	public Integer getSoldCnt()
-//	{
-//		return soldCnt;
-//	}
-//
-//	public void setSoldCnt(Integer soldCnt)
-//	{
-//		this.soldCnt = soldCnt;
-//	}
 
-	public Integer getSerialNum()
-	{
+	public Integer getSerialNum() {
 		return serialNum;
 	}
 
-	public void setSerialNum(Integer serialNum)
-	{
+	public void setSerialNum(Integer serialNum) {
 		this.serialNum = serialNum;
 	}
 
-	public String getOrderId()
-	{
-		return this.order.getId();
+	public Double getBookPrice() {
+		return bookPrice;
 	}
 
-//	public Set<SalesDet> getSalesDet() {
-//		return salesDet;
-//	}
-//
-//	public void setSalesDet(Set<SalesDet> salesDet) {
-//		this.salesDet = salesDet;
-//	}
-//
-//	public Set<PurchaseDet> getPurchaseDet() {
-//		return purchaseDet;
-//	}
-//
-//	public void setPurchaseDet(Set<PurchaseDet> purchaseDet) {
-//		this.purchaseDet = purchaseDet;
-//	}
+	public void setBookPrice(Double bookPrice) {
+		this.bookPrice = bookPrice;
+	}
 
 	@Override
-	public String toString()
-	{
-		StringBuilder builder = new StringBuilder();
-		builder.append("OrderItem [id=");
-		builder.append(id);
-		builder.append(", serialId=");
-		builder.append(order);
-		builder.append(", book=");
-		builder.append(book);
-		// builder.append(", bookId=");
-		// builder.append(bookId);
-		builder.append(", count=");
-		builder.append(count);
-		builder.append(", serialNum=");
-		builder.append(serialNum);
-		builder.append("]");
-		return builder.toString();
-	}
-
-	public String toStringMig()
-	{
-		StringBuilder builder = new StringBuilder();
-		builder.append("OrderItem [id=");
-		builder.append(id);
-		builder.append(", orderId=");
-		builder.append(order.getId());
-		builder.append(", bookNum=");
-		builder.append(book.getBookNum());
-		builder.append("]");
-		return builder.toString();
+	public String toString() {
+		final StringBuilder sb = new StringBuilder("OrderItem{");
+		sb.append("id=").append(id);
+		sb.append(", order=").append(order);
+//		sb.append(", bookId=").append(bookId);
+		sb.append(", bookName='").append(bookName).append('\'');
+		sb.append(", count=").append(count);
+		sb.append(", serialNum=").append(serialNum);
+		sb.append(", bookPrice=").append(bookPrice);
+		sb.append('}');
+		return sb.toString();
 	}
 
 	@Override
@@ -314,5 +180,5 @@ public class OrderItem implements Serializable, Comparable<OrderItem>
 		return true;
 	}
 
-	
+
 }

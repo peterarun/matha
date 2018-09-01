@@ -71,9 +71,6 @@ public class SchoolService
 	private PublisherRepository publisherRepository;
 
 	@Autowired
-	private CategoryRepository categoryRepository;
-
-	@Autowired
 	private PurchaseRepository purchaseRepoitory;
 
 	@Autowired
@@ -117,11 +114,6 @@ public class SchoolService
 	public void savePublisher(Publisher publisher)
 	{
 		publisherRepository.save(publisher);
-	}
-
-	public List<BookCategory> fetchAllBookCategories()
-	{
-		return categoryRepository.findAll();
 	}
 
 	public List<School> fetchSchoolsLike(String schoolPart)
@@ -744,7 +736,7 @@ public class SchoolService
 				orderIn.setPurchase(pur);
 			}
 			purDetRepository.save(orderItems);
-			Set<String> bookSet = orderItems.stream().map(PurchaseDet::getBook).map(Book::getBookNum).collect(toSet());
+			Set<Integer> bookSet = orderItems.stream().map(PurchaseDet::getBook).map(Book::getId).collect(toSet());
 			updateBookInventory(orderItemsOrig, new ArrayList<>(orderItems), new ArrayList<>(), new ArrayList<>(), bookSet, Integer.valueOf(1));
 
 		}
@@ -772,7 +764,7 @@ public class SchoolService
 		List<PurchaseDet> removedOrders = new ArrayList<>();
 		List<PurchaseDet> addedOrders = new ArrayList<>();
 		List<PurchaseDet> affectedOrders = new ArrayList<>();
-		Set<String> bookNums = new HashSet<>();
+		Set<Integer> bookNums = new HashSet<>();
 
 		if (ordersOrig != null && !ordersOrig.isEmpty())
 		{
@@ -783,7 +775,7 @@ public class SchoolService
 				removedOrders.removeAll(ordersIn);
 				affectedOrders.removeAll(removedOrders);
 			}
-			Set<String> bookSet = ordersOrig.stream().map(InventoryData::getBook).map(Book::getBookNum).collect(toSet());
+			Set<Integer> bookSet = ordersOrig.stream().map(InventoryData::getBook).map(Book::getId).collect(toSet());
 			bookNums.addAll(bookSet);
 		}
 
@@ -795,7 +787,7 @@ public class SchoolService
 				addedOrders.removeAll(ordersOrig);
 				affectedOrders.removeAll(addedOrders);
 			}
-			Set<String> bookSet = ordersIn.stream().map(InventoryData::getBook).map(Book::getBookNum).collect(toSet());
+			Set<Integer> bookSet = ordersIn.stream().map(InventoryData::getBook).map(Book::getId).collect(toSet());
 			bookNums.addAll(bookSet);
 		}
 
@@ -877,7 +869,7 @@ public class SchoolService
 		purchaseTxnRepository.save(txn);
 
 
-		Set<String> bookNums = new HashSet<>();
+		Set<Integer> bookNums = new HashSet<>();
 		List<PurchaseReturnDet> origBooks = new ArrayList<>();
 		if(returnIn.getId() != null)
 		{
@@ -893,8 +885,8 @@ public class SchoolService
 		List<PurchaseReturnDet> affectedBooks = new ArrayList<>(origBooks);
 		affectedBooks.retainAll(orderItems);
 
-		Set<String> bookSet = origBooks.stream().map(PurchaseReturnDet::getBook).map(Book::getBookNum).collect(toSet());
-		bookSet.addAll(addedBooks.stream().map(PurchaseReturnDet::getBook).map(Book::getBookNum).collect(toSet()));
+		Set<Integer> bookSet = origBooks.stream().map(PurchaseReturnDet::getBook).map(Book::getId).collect(toSet());
+		bookSet.addAll(addedBooks.stream().map(PurchaseReturnDet::getBook).map(Book::getId).collect(toSet()));
 
 		updateBookInventory(origBooks, addedBooks, removedBooks, affectedBooks, bookSet, Integer.valueOf(-1));
 
@@ -916,6 +908,11 @@ public class SchoolService
 	{
 		Sort dateSort = new Sort(new Sort.Order(Direction.DESC, "salesTxn.txnDate"));
 		return purchaseReturnRepository.findAllByPublisher(pub, dateSort);
+	}
+
+	public PurchaseReturn fetchPurchaseReturn(String creditNoteNum, Integer fy)
+	{
+		return purchaseReturnRepository.findByCreditNoteNumAndFy(creditNoteNum, fy);
 	}
 
 	@Transactional
@@ -1156,21 +1153,21 @@ public class SchoolService
 		}
 		updateBalance(updateFromTxn);
 	}
-
-	private void deleteSalesTxnSoft(SalesTransaction txn)
-	{
-		if(txn == null)
-		{
-			LOGGER.info("Null STxn passed in for updating balance");
-			return;
-		}
-		txn.setAmount(0.0);
-		txn.setTxnFlag(DELETED_STR);
-		salesTxnRepository.save(txn);
-
-		updateBalance(txn);
-	}
-	
+//
+//	private void deleteSalesTxnSoft(SalesTransaction txn)
+//	{
+//		if(txn == null)
+//		{
+//			LOGGER.info("Null STxn passed in for updating balance");
+//			return;
+//		}
+//		txn.setAmount(0.0);
+//		txn.setTxnFlag(DELETED_STR);
+//		salesTxnRepository.save(txn);
+//
+//		updateBalance(txn);
+//	}
+//
 	public Integer fetchNextSalesInvoiceNum(Integer fy)
 	{
 		return salesRepository.fetchNextSerialSeqVal(fy);
@@ -1207,7 +1204,7 @@ public class SchoolService
 				orderIn.setSale(pur);
 			}
 			salesDetRepository.save(ordersIn);
-			Set<String> bookSet = ordersIn.stream().map(SalesDet::getBook).map(Book::getBookNum).collect(toSet());
+			Set<Integer> bookSet = ordersIn.stream().map(SalesDet::getBook).map(Book::getId).collect(toSet());
 			updateBookInventory(ordersOrig, new ArrayList<>(ordersIn), new ArrayList<>(), new ArrayList<>(), bookSet, Integer.valueOf(-1));
 		}
 		else
@@ -1232,7 +1229,7 @@ public class SchoolService
 		List<SalesDet> removedOrders = new ArrayList<>();
 		List<SalesDet> addedOrders = new ArrayList<>();
 		List<SalesDet> affectedOrders = new ArrayList<>();
-		Set<String> bookNums = new HashSet<>();
+		Set<Integer> bookNums = new HashSet<>();
 
 		if (ordersOrig != null && !ordersOrig.isEmpty())
 		{
@@ -1243,7 +1240,7 @@ public class SchoolService
 				removedOrders.removeAll(ordersIn);
 				affectedOrders.removeAll(removedOrders);
 			}
-			Set<String> bookSet = ordersOrig.stream().map(SalesDet::getBook).map(Book::getBookNum).collect(toSet());
+			Set<Integer> bookSet = ordersOrig.stream().map(SalesDet::getBook).map(Book::getId).collect(toSet());
 			bookNums.addAll(bookSet);
 		}
 
@@ -1255,7 +1252,7 @@ public class SchoolService
 				addedOrders.removeAll(ordersOrig);
 				affectedOrders.removeAll(addedOrders);
 			}
-			Set<String> bookSet = ordersIn.stream().map(SalesDet::getBook).map(Book::getBookNum).collect(toSet());
+			Set<Integer> bookSet = ordersIn.stream().map(SalesDet::getBook).map(Book::getId).collect(toSet());
 			bookNums.addAll(bookSet);
 		}
 
@@ -1280,7 +1277,7 @@ public class SchoolService
 									 List<? extends InventoryData> addedOrders,
 									 List<? extends InventoryData> removedOrders,
 									 List<? extends InventoryData> affectedOrders,
-									 Set<String> bookNums,
+									 Set<Integer> bookNums,
 									 Integer multiplier)
 	{
 		Map<String, Integer> addedCount = addedOrders.stream().collect(groupingBy(id -> id.getBook().getBookNum(), summingInt(InventoryData :: getQuantity)));
@@ -1338,7 +1335,7 @@ public class SchoolService
 
 		Set<SalesDet> ordersOrig = selectedSale.getSaleItems();
 		List<SalesDet> ordersIn = new ArrayList<>();
-		Set<String> bookSet = ordersIn.stream().map(SalesDet::getBook).map(Book::getBookNum).collect(toSet());
+		Set<Integer> bookSet = ordersIn.stream().map(SalesDet::getBook).map(Book::getId).collect(toSet());
 		updateBookInventory(new ArrayList<>(ordersOrig), ordersIn, new ArrayList<>(), new ArrayList<>(), bookSet, Integer.valueOf(1));
 
 		SalesTransaction salesTransaction = selectedSale.getSalesTxn();
@@ -1357,7 +1354,7 @@ public class SchoolService
 	{
 		Set<SalesDet> ordersOrig = selectedSale.getSaleItems();
 		List<SalesDet> ordersIn = new ArrayList<>();
-		Set<String> bookSet = ordersIn.stream().map(SalesDet::getBook).map(Book::getBookNum).collect(toSet());
+		Set<Integer> bookSet = ordersIn.stream().map(SalesDet::getBook).map(Book::getId).collect(toSet());
 		updateBookInventory(new ArrayList<>(ordersOrig), ordersIn, new ArrayList<>(), new ArrayList<>(), bookSet, Integer.valueOf(1));
 
 		SalesTransaction salesTransaction = selectedSale.getSalesTxn();
@@ -1399,6 +1396,7 @@ public class SchoolService
 	public void deletePayment(SchoolPayment selectedPayment)
 	{
 		deleteSalesTxn(selectedPayment.getSalesTxn());
+		selectedPayment.setSalesTxn(null);
 		schoolPayRepository.delete(selectedPayment);
 	}
 
@@ -1424,11 +1422,11 @@ public class SchoolService
 		List<SalesReturnDet> addedBooks = new ArrayList<>();
 		List<SalesReturnDet> affectedBooks = new ArrayList<>();
 		List<SalesReturnDet> removedBooks = new ArrayList<>();
-		Set<String> bookSet = new HashSet<>();
+		Set<Integer> bookSet = new HashSet<>();
 		if(returnIn.getId() == null)
 		{
 			addedBooks = new ArrayList<>(orderItemsIn);
-			Set<String> bookNums = addedBooks.stream().map(SalesReturnDet::getBook).map(Book::getBookNum).collect(toSet());
+			Set<Integer> bookNums = addedBooks.stream().map(SalesReturnDet::getBook).map(Book::getId).collect(toSet());
 			bookSet.addAll(bookNums);
 		}
 		else
@@ -1443,9 +1441,9 @@ public class SchoolService
 			affectedBooks = new ArrayList<>(origBooks);
 			affectedBooks.retainAll(orderItemsIn);
 
-			Set<String> bookNums = origBooks.stream().map(SalesReturnDet::getBook).map(Book::getBookNum).collect(toSet());
+			Set<Integer> bookNums = origBooks.stream().map(SalesReturnDet::getBook).map(Book::getId).collect(toSet());
 			bookSet.addAll(bookNums);
-			bookNums = addedBooks.stream().map(SalesReturnDet::getBook).map(Book::getBookNum).collect(toSet());
+			bookNums = addedBooks.stream().map(SalesReturnDet::getBook).map(Book::getId).collect(toSet());
 			bookSet.addAll(bookNums);
 		}
 

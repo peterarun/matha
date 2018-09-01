@@ -3,15 +3,7 @@ package com.matha.domain;
 import java.time.LocalDate;
 import java.util.Set;
 
-import javax.persistence.Column;
-import javax.persistence.Entity;
-import javax.persistence.FetchType;
-import javax.persistence.GeneratedValue;
-import javax.persistence.Id;
-import javax.persistence.JoinColumn;
-import javax.persistence.OneToMany;
-import javax.persistence.OneToOne;
-import javax.persistence.Table;
+import javax.persistence.*;
 
 import org.hibernate.annotations.Cascade;
 import org.hibernate.annotations.CascadeType;
@@ -33,11 +25,11 @@ public class SchoolReturn {
 	@Column(name = "CreditNoteNum")
 	private String creditNoteNum;
 
-	@Column(name = "DPer")
-	private Double discPercent;
-
 	@Column(name = "DAmt")
 	private Double discAmt;
+
+	@Column(name = "discType")
+	private Boolean discType;
 
 	@Column(name = "SubTotal")
 	private Double subTotal;
@@ -49,40 +41,25 @@ public class SchoolReturn {
 	@JoinColumn(name = "TxnId")
 	private SalesTransaction salesTxn;
 
+	@ManyToOne
+	@JoinColumn(name = "CustId")
+	private School school;
+
 	@OneToMany(fetch= FetchType.EAGER, mappedBy = "schoolReturn", orphanRemoval = true)
 	@Cascade({CascadeType.SAVE_UPDATE, CascadeType.DELETE})
 	private Set<SalesReturnDet> salesReturnDetSet;
 
-	public School getSchool()
-	{
-		if(salesTxn != null)
-		{
-			return salesTxn.getSchool();
-		}
-		else
-		{
-			return null;
-		}
-	}
-
 	public Double getDiscount()
 	{
-		if (this.discPercent != null)
+		if(subTotal == null || discAmt == null)
 		{
-			if(this.subTotal == null)
-			{
-				this.subTotal = Double.valueOf(0.0);
-			}
-			return this.subTotal * this.discPercent / 100;
+			return 0.0;
 		}
-		else if(this.discAmt != null)
+		if (discType != null && discType)
 		{
-			return this.discAmt;
+			return subTotal * discAmt / 100;
 		}
-		else
-		{
-			return Double.valueOf(0.0);
-		}
+		return discAmt;
 	}
 
 	public String getStatusStr()
@@ -146,6 +123,14 @@ public class SchoolReturn {
 		this.salesTxn = salesTxn;
 	}
 
+	public School getSchool() {
+		return school;
+	}
+
+	public void setSchool(School school) {
+		this.school = school;
+	}
+
 	public Set<SalesReturnDet> getSalesReturnDetSet() {
 		return salesReturnDetSet;
 	}
@@ -159,20 +144,20 @@ public class SchoolReturn {
 		return this.getSalesTxn().getAmount();
 	}
 
-	public Double getDiscPercent() {
-		return discPercent;
-	}
-
-	public void setDiscPercent(Double discPercent) {
-		this.discPercent = discPercent;
-	}
-
 	public Double getDiscAmt() {
 		return discAmt;
 	}
 
 	public void setDiscAmt(Double discAmt) {
 		this.discAmt = discAmt;
+	}
+
+	public Boolean getDiscType() {
+		return discType;
+	}
+
+	public void setDiscType(Boolean discType) {
+		this.discType = discType;
 	}
 
 	public Double getSubTotal() {

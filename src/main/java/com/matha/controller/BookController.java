@@ -2,6 +2,7 @@ package com.matha.controller;
 
 import static com.matha.util.UtilConstants.NEW_LINE;
 import static com.matha.util.UtilConstants.addBookFxmlFile;
+import static com.matha.util.Utils.showErrorAlert;
 
 import java.io.IOException;
 import java.util.ArrayList;
@@ -13,6 +14,7 @@ import org.apache.commons.lang3.StringUtils;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.stereotype.Component;
 
 import com.matha.domain.Book;
@@ -47,9 +49,6 @@ public class BookController
 	private TableColumn<Book, String> shortNameCol;
 
 	@FXML
-	private TableColumn<Book, String> catCol;
-
-	@FXML
 	private TableColumn<Book, String> bkNameCol;
 
 	@FXML
@@ -71,11 +70,10 @@ public class BookController
 		tableView.setItems(FXCollections.observableList(bookList));
 
 		this.shortNameCol.prefWidthProperty().bind(this.tableView.widthProperty().multiply(0.09));
-		this.bkNameCol.prefWidthProperty().bind(this.tableView.widthProperty().multiply(0.5));
-		this.pubCol.prefWidthProperty().bind(this.tableView.widthProperty().multiply(0.1));
-		this.invCol.prefWidthProperty().bind(this.tableView.widthProperty().multiply(0.09));
-		this.catCol.prefWidthProperty().bind(this.tableView.widthProperty().multiply(0.1));
-		this.prcCol.prefWidthProperty().bind(this.tableView.widthProperty().multiply(0.1));
+		this.bkNameCol.prefWidthProperty().bind(this.tableView.widthProperty().multiply(0.55));
+		this.pubCol.prefWidthProperty().bind(this.tableView.widthProperty().multiply(0.12));
+		this.invCol.prefWidthProperty().bind(this.tableView.widthProperty().multiply(0.11));
+		this.prcCol.prefWidthProperty().bind(this.tableView.widthProperty().multiply(0.12));
 	}
 
 	private void loadData(String text)
@@ -170,7 +168,15 @@ public class BookController
 		Optional<ButtonType> result = alert.showAndWait();
 		if (result.get() == ButtonType.OK)
 		{
-			srvc.deleteBook(selectedOrder);
+			try
+			{
+				srvc.deleteBook(selectedOrder);
+			}
+			catch (DataIntegrityViolationException dive)
+			{
+				LOGGER.error("A Constraint Violated", dive);
+				showErrorAlert("Error in Deleting Book", "Please correct the following errors", "Book Used in Orders");
+			}
 			String bookNameAll = this.bookName.getText();
 			loadData(bookNameAll);
 		}

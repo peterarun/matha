@@ -2,14 +2,7 @@ package com.matha.domain;
 
 import java.time.LocalDate;
 
-import javax.persistence.Column;
-import javax.persistence.Entity;
-import javax.persistence.GeneratedValue;
-import javax.persistence.GenerationType;
-import javax.persistence.Id;
-import javax.persistence.JoinColumn;
-import javax.persistence.OneToOne;
-import javax.persistence.Table;
+import javax.persistence.*;
 
 import static com.matha.util.UtilConstants.EMPTY_STR;
 import static com.matha.util.UtilConstants.STATUS_MAP;
@@ -37,6 +30,10 @@ public class SchoolPayment {
 
 	@Column(name = "Status")
 	private Integer statusInd;
+
+	@ManyToOne
+	@JoinColumn(name = "CustId")
+	private School school;
 
 	@OneToOne
 	@JoinColumn(name = "TxnId")
@@ -123,5 +120,13 @@ public class SchoolPayment {
 
 	public void setStatusInd(Integer statusInd) {
 		this.statusInd = statusInd;
+	}
+
+	public School getSchool() {
+		return school;
+	}
+
+	public void setSchool(School school) {
+		this.school = school;
 	}
 }

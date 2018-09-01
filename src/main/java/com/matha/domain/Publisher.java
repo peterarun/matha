@@ -1,16 +1,11 @@
 package com.matha.domain;
 
-import javax.persistence.Column;
-import javax.persistence.Entity;
-import javax.persistence.GeneratedValue;
-import javax.persistence.Id;
-import javax.persistence.Table;
-
-import com.matha.util.Utils;
 import org.apache.commons.lang.StringUtils;
 import org.hibernate.annotations.GenericGenerator;
 
-import static com.matha.util.UtilConstants.*;
+import javax.persistence.*;
+
+import static com.matha.util.UtilConstants.NEW_LINE;
 
 @Entity
 @Table(name = "Supplier")
@@ -50,12 +45,6 @@ public class Publisher
 	@Column(name = "GSTIN")
 	private String gstIn;
 
-	@Column(name = "logoName")
-	private String logoFileName;
-	
-	@Column(name = "Outstanding")
-	private Double outstanding;
-	
 	public Integer getId()
 	{
 		return id;
@@ -154,26 +143,6 @@ public class Publisher
 	public void setGstIn(String gstIn)
 	{
 		this.gstIn = gstIn;
-	}
-
-	public String getLogoFileName()
-	{
-		return logoFileName;
-	}
-
-	public void setLogoFileName(String logoFileName)
-	{
-		this.logoFileName = logoFileName;
-	}
-	
-	public Double getOutstanding()
-	{
-		return outstanding;
-	}
-
-	public void setOutstanding(Double outstanding)
-	{
-		this.outstanding = outstanding;
 	}
 
 	@Override

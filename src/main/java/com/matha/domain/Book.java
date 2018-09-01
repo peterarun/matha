@@ -1,47 +1,28 @@
 package com.matha.domain;
 
-import javax.persistence.Column;
-import javax.persistence.Entity;
-import javax.persistence.GeneratedValue;
-import javax.persistence.Id;
-import javax.persistence.JoinColumn;
-import javax.persistence.ManyToOne;
-import javax.persistence.Table;
-
-import org.hibernate.annotations.GenericGenerator;
+import javax.persistence.*;
 
 @Entity
 @Table(name = "Book")
 public class Book implements Comparable<Book>
 {
 
-	// @Id
-	// @Column(name = "SerialId")
-	// @GenericGenerator(name = "kaugen", strategy = "increment")
-	// @GeneratedValue(generator = "kaugen")
-	// private Integer id;
+	@Id
+	@Column(name = "BookId")
+	@GeneratedValue(strategy = GenerationType.IDENTITY)
+	private Integer id;
 
 	@Column(name = "Bname")
 	private String name;
 
-	@Id
-	@GenericGenerator(name = "kaugen", strategy = "guid")
-	@GeneratedValue(generator = "kaugen")
 	@Column(name = "BookNo")
 	private String bookNum;
-
-	@Column(name = "Short")
-	private String shortName;
 
 	@Column(name = "Price")
 	private Double price;
 
 	@Column(name = "Inventory")
 	private Integer inventory;
-
-	@ManyToOne
-	@JoinColumn(name = "Catid")
-	private BookCategory category;
 
 	@ManyToOne
 	@JoinColumn(name = "Pubid")
@@ -52,20 +33,13 @@ public class Book implements Comparable<Book>
 		return publisher.getName();
 	}
 
-	public String getCategoryName()
-	{
-		return category.getName();
+	public Integer getId() {
+		return id;
 	}
 
-	// public Integer getId()
-	// {
-	// return id;
-	// }
-	//
-	// public void setId(Integer id)
-	// {
-	// this.id = id;
-	// }
+	public void setId(Integer id) {
+		this.id = id;
+	}
 
 	public String getName()
 	{
@@ -85,16 +59,6 @@ public class Book implements Comparable<Book>
 	public void setBookNum(String bookNum)
 	{
 		this.bookNum = bookNum;
-	}
-
-	public String getShortName()
-	{
-		return shortName;
-	}
-
-	public void setShortName(String shortName)
-	{
-		this.shortName = shortName;
 	}
 
 	public Double getPrice()
@@ -117,16 +81,6 @@ public class Book implements Comparable<Book>
 		this.inventory = inventory;
 	}
 
-	public BookCategory getCategory()
-	{
-		return category;
-	}
-
-	public void setCategory(BookCategory category)
-	{
-		this.category = category;
-	}
-
 	public Publisher getPublisher()
 	{
 		return publisher;
@@ -142,15 +96,11 @@ public class Book implements Comparable<Book>
 	{
 		StringBuilder builder = new StringBuilder();
 		builder.append("Book [");
-		// builder.append(id);
+		builder.append(id);
 		builder.append("name=");
 		builder.append(name);
 		builder.append(", bookNum=");
 		builder.append(bookNum);
-		builder.append(", shortName=");
-		builder.append(shortName);
-		builder.append(", category=");
-		builder.append(category);
 		builder.append(", publisher=");
 		builder.append(publisher);
 		builder.append("]");

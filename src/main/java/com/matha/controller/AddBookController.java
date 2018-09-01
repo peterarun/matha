@@ -34,9 +34,6 @@ public class AddBookController
 	private TextField name;
 
 	@FXML
-	private TextField bookNo;
-
-	@FXML
 	private TextField shortName;
 
 	@FXML
@@ -45,18 +42,11 @@ public class AddBookController
 	@FXML
 	private ChoiceBox<Publisher> publishers;
 
-	@FXML
-	private ChoiceBox<BookCategory> categories;
-
 	private Book book;
 
 	@FXML
 	protected void initialize()
 	{
-		List<BookCategory> bookCategories = srvc.fetchAllBookCategories();
-		categories.setConverter(Converters.getCategoryConverter());
-		categories.setItems(FXCollections.observableList(bookCategories));
-
 		List<Publisher> bookPublishers = srvc.fetchAllPublishers();
 		publishers.setConverter(Converters.getPublisherConverter());
 		publishers.setItems(FXCollections.observableList(bookPublishers));
@@ -66,13 +56,11 @@ public class AddBookController
 	{
 		this.book = selectedItem;
 		this.name.setText(selectedItem.getName());
-		this.bookNo.setText(selectedItem.getBookNum());
-		this.shortName.setText(selectedItem.getShortName());
+		this.shortName.setText(selectedItem.getBookNum());
 		if (selectedItem.getInventory() != null)
 		{
 			this.inventory.setText(StringUtils.defaultString(selectedItem.getInventory().toString()));
 		}
-		this.categories.getSelectionModel().select(selectedItem.getCategory());
 		this.publishers.getSelectionModel().select(selectedItem.getPublisher());
 	}
 
@@ -91,10 +79,8 @@ public class AddBookController
 			bookObj = new Book();
 		}
 		bookObj.setName(name.getText());
-		bookObj.setBookNum(bookNo.getText());
-		bookObj.setShortName(shortName.getText());
+		bookObj.setBookNum(shortName.getText());
 		bookObj.setPublisher(publishers.getSelectionModel().getSelectedItem());
-		bookObj.setCategory(categories.getSelectionModel().getSelectedItem());
 		srvc.saveBook(bookObj);
 
 		((Stage) cancelBtn.getScene().getWindow()).close();

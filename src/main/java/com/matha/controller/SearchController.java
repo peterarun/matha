@@ -69,7 +69,7 @@ public class SearchController
 	private TextField salesBillNumStr;
 
 	private Map<String, Book> bookMap;
-	private Collector<Book, ?, Map<String, Book>> bookMapCollector = toMap(o -> o.getShortName() + ": " + o.getName() + " - " + o.getPublisherName(), o -> o);
+	private Collector<Book, ?, Map<String, Book>> bookMapCollector = toMap(o -> o.getBookNum() + ": " + o.getName() + " - " + o.getPublisherName(), o -> o);
 
 	@FXML
 	void loadOrders()

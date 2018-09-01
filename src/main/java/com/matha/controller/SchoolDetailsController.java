@@ -164,7 +164,7 @@ public class SchoolDetailsController
 	private DatePicker toDate;
 
 	private Map<String, Book> bookMap;
-	private Collector<Book, ?, Map<String, Book>> bookMapCollector = toMap(o -> o.getShortName() + ": " + o.getName() + " - " + o.getPublisherName(), o -> o);
+	private Collector<Book, ?, Map<String, Book>> bookMapCollector = toMap(o -> o.getBookNum() + ": " + o.getName() + " - " + o.getPublisherName(), o -> o);
 	private JasperPrint print;
 
 	// private JasperPrint jasperPrint;
@@ -279,7 +279,7 @@ public class SchoolDetailsController
 		Order selectedOrder = txnData.getSelectionModel().getSelectedItem();
 		Alert alert = new Alert(AlertType.CONFIRMATION);
 		alert.setTitle("Delete Order Confirmation");
-		alert.setHeaderText("Are you sure you want to delete the order: " + selectedOrder.getId());
+		alert.setHeaderText("Are you sure you want to delete the order: " + selectedOrder.getSerialNo());
 		alert.setContentText("Click Ok to Delete");
 
 		Optional<ButtonType> result = alert.showAndWait();

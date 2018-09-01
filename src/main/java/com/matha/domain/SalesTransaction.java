@@ -80,10 +80,6 @@ public class SalesTransaction
 	@JoinColumn(name = "NextTxnId")
 	private SalesTransaction nextTxn;
 
-	// If null, active. Else deleted
-	@Column(name = "TxnId")
-	private String txnFlag;
-
 	public String getSchoolName()
 	{
 		if(school != null)
@@ -311,16 +307,6 @@ public class SalesTransaction
 	public void setNextTxn(SalesTransaction nextTxn)
 	{
 		this.nextTxn = nextTxn;
-	}
-	
-    public String getTxnFlag()
-	{
-		return txnFlag;
-	}
-
-	public void setTxnFlag(String txnFlag)
-	{
-		this.txnFlag = txnFlag;
 	}
 
 	@PrePersist

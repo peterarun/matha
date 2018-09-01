@@ -31,8 +31,12 @@ public class SalesDet implements InventoryData
 	private Double rate;
 
 	@OneToOne
-	@JoinColumn(name = "BkNo")
+	@JoinColumn(name = "BookId")
+//	private Integer bookId;
 	private Book book;
+
+	@Column(name="BookName")
+	private String bookName;
 
 	@OneToOne
 	@JoinColumn(name = "OrderItemId")
@@ -40,7 +44,6 @@ public class SalesDet implements InventoryData
 
 	public SalesDet()
 	{
-
 	}
 
 	public SalesDet(Integer salesDetId, Sales sale, Integer slNum, OrderItem orderItem)
@@ -51,6 +54,7 @@ public class SalesDet implements InventoryData
 		this.qty = orderItem.getCount();
 		this.rate = orderItem.getBookPrice();
 		this.book = orderItem.getBook();
+		this.bookName = orderItem.getBookName();
 		this.orderItem = orderItem;
 	}
 
@@ -60,6 +64,7 @@ public class SalesDet implements InventoryData
 		this.qty = qty;
 		this.rate = rate;
 		this.book = book;
+		this.bookName = book.getName();
 	}
 
 	public double getTotalSold()
@@ -67,18 +72,9 @@ public class SalesDet implements InventoryData
 		return getBookPrice() * this.qty;
 	}
 
-	public String getBookName()
-	{
-		return book.getName();
-	}
-
 	public Double getBookPrice()
 	{
-		if (rate == null)
-		{
-			return book.getPrice();
-		}
-		return rate;
+		return rate == null ? (book == null ? 0 : (book.getPrice() == null ? 0 : book.getPrice())) : rate;
 	}
 
 	public Integer getSalesDetId() {
@@ -120,13 +116,32 @@ public class SalesDet implements InventoryData
 	public void setRate(Double rate) {
 		this.rate = rate;
 	}
+//
+//	@Override
+//	public Integer getBookId() {
+//		return bookId;
+//	}
+//
+//	public void setBookId(Integer bookId) {
+//		this.bookId = bookId;
+//	}
 
+
+	@Override
 	public Book getBook() {
 		return book;
 	}
 
 	public void setBook(Book book) {
 		this.book = book;
+	}
+
+	public String getBookName() {
+		return bookName;
+	}
+
+	public void setBookName(String bookName) {
+		this.bookName = bookName;
 	}
 
 	public OrderItem getOrderItem() {
@@ -138,15 +153,16 @@ public class SalesDet implements InventoryData
 	}
 
 	@Override
-	public String toString()
-	{
+	public String toString() {
 		final StringBuilder sb = new StringBuilder("SalesDet{");
-		sb.append("salesDetId='").append(salesDetId).append('\'');
-		sb.append(", sale=").append(sale == null ? "" : sale.getId());
-		sb.append(", slNum='").append(slNum).append('\'');
-		sb.append(", qty='").append(qty).append('\'');
+		sb.append("salesDetId=").append(salesDetId);
+		sb.append(", sale=").append(sale);
+		sb.append(", slNum=").append(slNum);
+		sb.append(", qty=").append(qty);
 		sb.append(", rate=").append(rate);
-		sb.append(", book=").append(book);
+//		sb.append(", bookId=").append(bookId);
+		sb.append(", bookName='").append(bookName).append('\'');
+		sb.append(", orderItem=").append(orderItem);
 		sb.append('}');
 		return sb.toString();
 	}
@@ -157,7 +173,6 @@ public class SalesDet implements InventoryData
 		if (this == o) return true;
 		if (o == null || getClass() != o.getClass()) return false;
 		SalesDet salesDet = (SalesDet) o;
-		Book thatBook = salesDet.getBook();
 		return Objects.equals(salesDetId, salesDet.salesDetId);
 	}
 

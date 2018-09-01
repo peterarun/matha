@@ -159,7 +159,7 @@ public class PurchaseController
 	private JasperPrint print;
 //	private Map<String, Publisher> pubMap;
 	private Map<String, Book> bookMap;
-	private Collector<Book, ?, Map<String, Book>> bookMapCollector = toMap(o -> o.getShortName() + ": " + o.getName() + " - " + o.getPublisherName(), o -> o);
+	private Collector<Book, ?, Map<String, Book>> bookMapCollector = toMap(o -> o.getBookNum() + ": " + o.getName() + " - " + o.getPublisherName(), o -> o);
 
 	@FXML
 	protected void initialize()

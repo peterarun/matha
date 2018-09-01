@@ -33,8 +33,8 @@ public class PurchaseReturn {
 	@Column(name = "Discount")
 	private Double discAmt;
 
-	@Column(name = "discPerc")
-	private Double discPerc;
+	@Column(name = "discType")
+	private Boolean discType;
 
 	@Column(name = "SubTotal")
 	private Double subTotal;
@@ -44,6 +44,9 @@ public class PurchaseReturn {
 
 	@Column(name = "Status")
 	private Integer statusInd;
+
+	@Column(name = "Fy")
+	private Integer fy;
 
 	@ManyToOne
 	@JoinColumn(name = "PublisherId")
@@ -66,18 +69,15 @@ public class PurchaseReturn {
 
 	public Double getDiscount()
 	{
-		if(discAmt != null)
+		if(subTotal == null || discAmt == null)
 		{
-			return discAmt;
+			return 0.0;
 		}
-		else if (discPerc != null && subTotal != null)
+		if (discType != null && discType)
 		{
-			return subTotal * discPerc / 100;
+			return subTotal * discAmt / 100;
 		}
-		else
-		{
-			return Double.valueOf(0.0);
-		}
+		return discAmt;
 	}
 
 	public String getStatusStr()
@@ -147,12 +147,12 @@ public class PurchaseReturn {
 		this.discAmt = discAmt;
 	}
 
-	public Double getDiscPerc() {
-		return discPerc;
+	public Boolean getDiscType() {
+		return discType;
 	}
 
-	public void setDiscPerc(Double discPerc) {
-		this.discPerc = discPerc;
+	public void setDiscType(Boolean discType) {
+		this.discType = discType;
 	}
 
 	public Double getSubTotal() {
@@ -193,5 +193,13 @@ public class PurchaseReturn {
 
 	public void setStatusInd(Integer statusInd) {
 		this.statusInd = statusInd;
+	}
+
+	public Integer getFy() {
+		return fy;
+	}
+
+	public void setFy(Integer fy) {
+		this.fy = fy;
 	}
 }

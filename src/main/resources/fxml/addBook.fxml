@@ -6,9 +6,9 @@
 <?import javafx.scene.layout.*?>
 <?import javafx.scene.layout.AnchorPane?>
 
-<AnchorPane prefHeight="361.0" prefWidth="450.0" xmlns="http://javafx.com/javafx/8" xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.matha.controller.AddBookController">
+<AnchorPane prefHeight="303.0" prefWidth="450.0" xmlns="http://javafx.com/javafx/8" xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.matha.controller.AddBookController">
    <children>
-      <SplitPane dividerPositions="0.19498607242339833" orientation="VERTICAL" prefHeight="361.0" prefWidth="450.0">
+      <SplitPane dividerPositions="0.24834437086092714" orientation="VERTICAL" prefHeight="318.0" prefWidth="450.0">
         <items>
           <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="100.0" prefWidth="160.0">
                <children>
@@ -19,22 +19,18 @@
                   </Label>
                </children>
             </AnchorPane>
-          <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="240.0" prefWidth="448.0">
+          <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="246.0" prefWidth="448.0">
                <children>
                   <Label layoutX="21.0" layoutY="29.0" text="Name" />
                   <TextField fx:id="name" layoutX="72.0" layoutY="25.0" prefHeight="25.0" prefWidth="358.0" />
-                  <ChoiceBox fx:id="publishers" layoutX="240.0" layoutY="126.0" prefHeight="25.0" prefWidth="190.0" />
-                  <Label layoutX="240.0" layoutY="111.0" text="Publisher" />
-                  <Label layoutX="241.0" layoutY="62.0" text="Category" />
-                  <ChoiceBox fx:id="categories" layoutX="240.0" layoutY="77.0" prefHeight="25.0" prefWidth="190.0" />
-                  <Button fx:id="cancelBtn" layoutX="21.0" layoutY="226.0" mnemonicParsing="false" onAction="#handleCancel" prefHeight="25.0" prefWidth="190.0" text="Cancel" />
-                  <Button layoutX="240.0" layoutY="177.0" mnemonicParsing="false" onAction="#handleSave" prefHeight="73.0" prefWidth="190.0" text="Save" />
-                  <TextField fx:id="bookNo" layoutX="20.0" layoutY="77.0" prefHeight="25.0" prefWidth="190.0" />
-                  <Label layoutX="21.0" layoutY="62.0" text="Book No" />
-                  <Label layoutX="20.0" layoutY="111.0" text="ShortName" />
-                  <TextField fx:id="shortName" layoutX="20.0" layoutY="126.0" prefHeight="25.0" prefWidth="190.0" />
-                  <Label layoutX="20.0" layoutY="162.0" text="Inventory" />
-                  <TextField fx:id="inventory" layoutX="20.0" layoutY="177.0" prefHeight="25.0" prefWidth="190.0" />
+                   <Label layoutX="19.0" layoutY="64.0" text="ShortName" />
+                   <TextField fx:id="shortName" layoutX="19.0" layoutY="79.0" prefHeight="25.0" prefWidth="190.0" />
+                  <ChoiceBox fx:id="publishers" layoutX="239.0" layoutY="79.0" prefHeight="25.0" prefWidth="190.0" />
+                  <Label layoutX="239.0" layoutY="64.0" text="Publisher" />
+                   <Label layoutX="19.0" layoutY="115.0" text="Inventory" />
+                   <TextField fx:id="inventory" layoutX="19.0" layoutY="130.0" prefHeight="25.0" prefWidth="190.0" />
+                  <Button fx:id="cancelBtn" layoutX="20.0" layoutY="179.0" mnemonicParsing="false" onAction="#handleCancel" prefHeight="25.0" prefWidth="190.0" text="Cancel" />
+                  <Button layoutX="239.0" layoutY="130.0" mnemonicParsing="false" onAction="#handleSave" prefHeight="73.0" prefWidth="190.0" text="Save" />
                </children>
             </AnchorPane>
         </items>

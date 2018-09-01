@@ -20,6 +20,7 @@ import org.apache.logging.log4j.Logger;
 import org.controlsfx.control.textfield.TextFields;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.stereotype.Component;
 
 import java.time.LocalDate;
@@ -392,74 +393,87 @@ public class AddBillController
 	@FXML
 	void saveData(ActionEvent event)
 	{
-		if(!validateData())
+		try
 		{
-			return;
+			if(!validateData())
+			{
+				return;
+			}
+			SalesTransaction salesTxn = null;
+			Sales sale = this.selectedSale;
+			if (selectedSale == null)
+			{
+				sale = new Sales();
+				sale.setTxnDate(LocalDate.now());
+				sale.setFinancialYear(calcFinYear(sale.getTxnDate()));
+				sale.setSchool(school);
+				salesTxn = new SalesTransaction();
+				salesTxn.setSchool(school);
+			}
+
+			if(sale.getSalesTxn() == null)
+			{
+				salesTxn = new SalesTransaction();
+				salesTxn.setSchool(school);
+			}
+			else
+			{
+				salesTxn = sale.getSalesTxn();
+			}
+
+			if (!StringUtils.isEmpty(discAmt.getText()))
+			{
+				Double discAmtVal = Double.parseDouble(discAmt.getText());
+				sale.setDiscAmt(discAmtVal);
+			}
+
+			if (percentRad.isSelected())
+			{
+				sale.setDiscType(true);
+			}
+			else if (rupeeRad.isSelected())
+			{
+				sale.setDiscType(false);
+			}
+
+			List<SalesDet> orderItems = new ArrayList<>(this.addedBooks.getItems());
+
+			if (!StringUtils.isEmpty(subTotal.getText()))
+			{
+				Double subTotalVal = Double.parseDouble(subTotal.getText());
+				sale.setSubTotal(subTotalVal);
+			}
+
+			Double netAmtVal = getDoubleVal(netAmt);
+			salesTxn.setAmount(netAmtVal);
+			sale.setDeletedAmt(netAmtVal);
+
+			salesTxn.setNote(SALES_NOTE);
+			salesTxn.setTxnDate(billDate.getValue());
+
+			sale.setDespatch(this.despatchPer.getText());
+			sale.setDocsThru(this.docsThru.getText());
+			sale.setGrNum(this.grNum.getText());
+			sale.setSerialNo(getIntegerVal(this.invoiceNum));
+			sale.setPackages(this.packageCnt.getText());
+			sale.setOtherAmount(getDoubleVal(this.otherCharges));
+			sale.setFinancialYear(calcFinYear(salesTxn.getTxnDate()));
+
+			Sales saleOut = schoolService.saveSalesData(sale, orderItems, salesTxn);
+			this.selectedSale = saleOut;
+
+			((Stage) cancelBtn.getScene().getWindow()).close();
 		}
-		SalesTransaction salesTxn = null;
-		Sales sale = this.selectedSale;
-		if (selectedSale == null)
+		catch (DataIntegrityViolationException e)
 		{
-			sale = new Sales();
-			sale.setTxnDate(LocalDate.now());
-			sale.setFinancialYear(calcFinYear(sale.getTxnDate()));
-			sale.setSchool(school);
-			salesTxn = new SalesTransaction();
-			salesTxn.setSchool(school);
+			LOGGER.error("Error...", e);
+			showErrorAlert("Error in Saving Order", "Please correct the following errors", "Duplicate Entry Found");
 		}
-
-		if(sale.getSalesTxn() == null)
+		catch (Exception e)
 		{
-			salesTxn = new SalesTransaction();
-			salesTxn.setSchool(school);
+			LOGGER.error("Error...", e);
+			showErrorAlert("Error in Saving Order", "Please correct the following errors", e.getMessage());
 		}
-		else
-		{
-			salesTxn = sale.getSalesTxn();
-		}
-
-		if (!StringUtils.isEmpty(discAmt.getText()))
-		{
-			Double discAmtVal = Double.parseDouble(discAmt.getText());
-			sale.setDiscAmt(discAmtVal);
-		}
-
-		if (percentRad.isSelected())
-		{
-			sale.setDiscType(true);
-		}
-		else if (rupeeRad.isSelected())
-		{
-			sale.setDiscType(false);
-		}
-
-		List<SalesDet> orderItems = new ArrayList<>(this.addedBooks.getItems());
-
-		if (!StringUtils.isEmpty(subTotal.getText()))
-		{
-			Double subTotalVal = Double.parseDouble(subTotal.getText());
-			sale.setSubTotal(subTotalVal);
-		}
-
-		Double netAmtVal = getDoubleVal(netAmt);
-		salesTxn.setAmount(netAmtVal);
-		sale.setDeletedAmt(netAmtVal);
-		
-		salesTxn.setNote(SALES_NOTE);
-		salesTxn.setTxnDate(billDate.getValue());
-
-		sale.setDespatch(this.despatchPer.getText());
-		sale.setDocsThru(this.docsThru.getText());
-		sale.setGrNum(this.grNum.getText());
-		sale.setSerialNo(getIntegerVal(this.invoiceNum));
-		sale.setPackages(this.packageCnt.getText());
-		sale.setOtherAmount(getDoubleVal(this.otherCharges));
-		sale.setFinancialYear(calcFinYear(salesTxn.getTxnDate()));
-		
-		Sales saleOut = schoolService.saveSalesData(sale, orderItems, salesTxn);
-		this.selectedSale = saleOut;
-
-		((Stage) cancelBtn.getScene().getWindow()).close();
 	}
 
 	@FXML

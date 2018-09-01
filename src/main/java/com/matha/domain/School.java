@@ -60,9 +60,6 @@ public class School implements Serializable {
 
 	@Column(name = "PhNo2")
 	private String phone2;
-	
-	@Column(name = "OutStanding")
-	private Double outstanding;	
 
 	private String principal;
 	private String email;
@@ -165,16 +162,6 @@ public class School implements Serializable {
 
 	public void setPhone2(String phone2) {
 		this.phone2 = phone2;
-	}
-	
-	public Double getOutstanding()
-	{
-		return outstanding;
-	}
-
-	public void setOutstanding(Double outstanding)
-	{
-		this.outstanding = outstanding;
 	}
 
 	public String getPrincipal() {

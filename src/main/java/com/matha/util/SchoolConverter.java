@@ -31,16 +31,5 @@ public class SchoolConverter {
 
 		return school;
 	}
-
-	public static Book createBookObj(TextField name, TextField bookNo, TextField shortName, ChoiceBox<BookCategory> categories,
-			ChoiceBox<Publisher> publisherSel) {
-		Book school = new Book();
-		school.setName(name.getText());
-		school.setBookNum(bookNo.getText());
-		school.setShortName(shortName.getText());
-		school.setPublisher(publisherSel.getSelectionModel().getSelectedItem());
-		school.setCategory(categories.getSelectionModel().getSelectedItem());
-		return school;
-	}
 }
 

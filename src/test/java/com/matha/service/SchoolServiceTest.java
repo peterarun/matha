@@ -276,7 +276,7 @@ public class SchoolServiceTest
 				purchaseIn = new Purchase();
 				purchaseIn.setPurchaseDate(LocalDate.now());
 				purchaseIn.setFinancialYear(calcFinYear(purchaseIn.getTxnDate()));
-				purchaseIn.setSerialNo(this.schoolService.fetchNextPurchaseSerialNum(purchaseIn.getFinancialYear()));
+//				purchaseIn.setSerialNo(this.schoolService.fetchNextPurchaseSerialNum(purchaseIn.getFinancialYear()));
 				purchaseIn.setPublisher(publisher);
 				purchaseIn.setInvoiceNo("540D");
 			}
@@ -463,6 +463,12 @@ public class SchoolServiceTest
 
 	@Test
 	public void fetchPurchaseReturns() {
+	}
+
+	@Test
+	public void fetchPurchaseReturn1()
+	{
+		schoolService.fetchPurchaseReturn("120", 11);
 	}
 
 	@Test

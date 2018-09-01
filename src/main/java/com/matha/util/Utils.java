@@ -276,7 +276,6 @@ public class Utils
 			hm.put("discount", discAmt);
 			hm.put("grandTotal", purchase.getNetAmount());
 			hm.put("grandTotalInWords", convertDouble(purchase.getNetAmount()));
-			hm.put("imageFileName",pub.getLogoFileName());
 
 			JasperReport compiledFile = JasperCompileManager.compileReport(jasperStream);
 
@@ -722,6 +721,10 @@ public class Utils
 	
 	public static Integer calcFinYear(LocalDate dt)
 	{
+		if(dt == null)
+		{
+			return null;
+		}
 		return dt.minusMonths(3).getYear() - 2007;
 	}
 }

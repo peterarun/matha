@@ -12,6 +12,7 @@ import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.stereotype.Component;
 
 import com.matha.domain.Publisher;
@@ -179,11 +180,15 @@ public class AddPurchasePayController
 			schoolService.savePurchasePay(sPayment, sTxn);
 			((Stage) cancelBtn.getScene().getWindow()).close();
 		}
-		catch (Throwable e)
+		catch (DataIntegrityViolationException e)
 		{
 			LOGGER.error("Error...", e);
-			e.printStackTrace();
-			showErrorAlert("Error in Saving Order", "An Unexpected Error has occurred", e.getMessage());
+			showErrorAlert("Error in Saving Payment", "Please correct the following errors", "Duplicate Entry Found");
+		}
+		catch (Exception e)
+		{
+			LOGGER.error("Error...", e);
+			showErrorAlert("Error in Saving Payment", "Please correct the following errors", e.getMessage());
 		}
 	}
 

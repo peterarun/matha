@@ -21,6 +21,7 @@ import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.controlsfx.control.textfield.TextFields;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.stereotype.Component;
 
 import com.matha.service.SchoolService;
@@ -148,15 +149,13 @@ public class AddReturnController
 				this.subTotal.setText(subTotalDbl.toString());
 			}
 			this.netTotal.setText(getStringVal(returnIn.getNetAmount()));
-			if(returnIn.getDiscPercent() != null)
-			{
-				this.discText.setText(getStringVal(returnIn.getDiscPercent()));
-			}
-			else
+
+			if (returnIn.getDiscType() == null || !returnIn.getDiscType())
 			{
 				this.rupeeRad.setSelected(true);
-				this.discText.setText(getStringVal(returnIn.getDiscAmt()));
+				this.discTypeInd.setText(RUPEE_SIGN);
 			}
+			this.discText.setText(getStringVal(returnIn.getDiscAmt()));
 			this.calcDiscount.setText(getStringVal(returnIn.getDiscount()));
 		}
 		else
@@ -224,50 +223,57 @@ public class AddReturnController
 	@FXML
 	void saveData(ActionEvent event)
 	{
-		if(!validateData())
+		try
 		{
-			return;
-		}
-		SchoolReturn returnIn = this.schoolReturn;
-		SalesTransaction salesTxn = null;
-		if(returnIn == null)
-		{
-			returnIn = new SchoolReturn();
-			salesTxn = new SalesTransaction();
-			salesTxn.setSchool(school);			
-		}
-		else
-		{
-			salesTxn = returnIn.getSalesTxn();
-		}
+			if (!validateData()) {
+				return;
+			}
+			SchoolReturn returnIn = this.schoolReturn;
+			SalesTransaction salesTxn = null;
+			if (returnIn == null) {
+				returnIn = new SchoolReturn();
+				salesTxn = new SalesTransaction();
+				salesTxn.setSchool(school);
+			} else {
+				salesTxn = returnIn.getSalesTxn();
+			}
 
-		if(percentRad.isSelected())
-		{
-			returnIn.setDiscPercent(getDoubleVal(this.discText));
-			returnIn.setDiscAmt(null);
-		}
-		else
-		{
+			if (percentRad.isSelected())
+			{
+				returnIn.setDiscType(true);
+			}
+			else
+			{
+				returnIn.setDiscType(false);
+			}
 			returnIn.setDiscAmt(getDoubleVal(this.discText.getText()));
-			returnIn.setDiscPercent(null);
+			returnIn.setSubTotal(getDoubleVal(this.subTotal.getText()));
+			returnIn.setCreditNoteNum(this.creditNoteNum.getText());
+
+			List<SalesReturnDet> orderItems = new ArrayList<>(this.addedBooks.getItems());
+
+			salesTxn.setTxnDate(this.returnDate.getValue());
+			salesTxn.setNote(this.notes.getText());
+
+			String subTotalStr = this.netTotal.getText();
+			if (StringUtils.isNotBlank(subTotalStr)) {
+				salesTxn.setAmount(Double.parseDouble(subTotalStr));
+			}
+
+			schoolService.saveSchoolReturn(returnIn, salesTxn, orderItems);
+
+			((Stage) cancelBtn.getScene().getWindow()).close();
 		}
-		returnIn.setSubTotal(getDoubleVal(this.subTotal.getText()));
-		returnIn.setCreditNoteNum(this.creditNoteNum.getText());
-
-		List<SalesReturnDet> orderItems = new ArrayList<>(this.addedBooks.getItems());
-
-		salesTxn.setTxnDate(this.returnDate.getValue());
-		salesTxn.setNote(this.notes.getText());
-	
-		String subTotalStr = this.netTotal.getText();
-		if (StringUtils.isNotBlank(subTotalStr))
+		catch (DataIntegrityViolationException e)
 		{
-			salesTxn.setAmount(Double.parseDouble(subTotalStr));
-		}		
-		
-		schoolService.saveSchoolReturn(returnIn, salesTxn, orderItems);
-		
-		((Stage) cancelBtn.getScene().getWindow()).close();
+			LOGGER.error("Error...", e);
+			showErrorAlert("Error in Saving Credit Note", "Please correct the following errors", "Duplicate Entry Found");
+		}
+		catch (Exception e)
+		{
+			LOGGER.error("Error...", e);
+			showErrorAlert("Error in Saving Credit Note", "Please correct the following errors", e.getMessage());
+		}
 	}
 
 	@FXML

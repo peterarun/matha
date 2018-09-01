@@ -1,0 +1,100 @@
+The execution was successful
+
+- Initializing Data Flow Task (Success)
+
+- Initializing Connections (Success)
+
+- Setting SQL Command (Success)
+
+- Setting Source Connection (Success)
+
+- Setting Destination Connection (Success)
+
+- Validating (Warning)
+	Messages
+	* Warning 0x802092a7: Data Flow Task 1: Truncation may occur due to inserting data from data flow column "CName" with a length of 255 to database column "CName" with a length of 120.
+	 (SQL Server Import and Export Wizard)
+	
+	* Warning 0x802092a7: Data Flow Task 1: Truncation may occur due to inserting data from data flow column "Address1" with a length of 255 to database column "Address1" with a length of 120.
+	 (SQL Server Import and Export Wizard)
+	
+	* Warning 0x802092a7: Data Flow Task 1: Truncation may occur due to inserting data from data flow column "Address2" with a length of 255 to database column "Address2" with a length of 120.
+	 (SQL Server Import and Export Wizard)
+	
+	* Warning 0x802092a7: Data Flow Task 1: Truncation may occur due to inserting data from data flow column "Address3" with a length of 255 to database column "Address3" with a length of 120.
+	 (SQL Server Import and Export Wizard)
+	
+	* Warning 0x802092a7: Data Flow Task 1: Truncation may occur due to inserting data from data flow column "Add4" with a length of 255 to database column "Add4" with a length of 120.
+	 (SQL Server Import and Export Wizard)
+	
+	* Warning 0x802092a7: Data Flow Task 1: Truncation may occur due to inserting data from data flow column "Add5" with a length of 255 to database column "Add5" with a length of 120.
+	 (SQL Server Import and Export Wizard)
+	
+	* Warning 0x802092a7: Data Flow Task 1: Truncation may occur due to inserting data from data flow column "PhNo1" with a length of 255 to database column "PhNo1" with a length of 50.
+	 (SQL Server Import and Export Wizard)
+	
+	* Warning 0x802092a7: Data Flow Task 1: Truncation may occur due to inserting data from data flow column "Remarks" with a length of 255 to database column "Remarks" with a length of 120.
+	 (SQL Server Import and Export Wizard)
+	
+	* Warning 0x802092a7: Data Flow Task 1: Truncation may occur due to inserting data from data flow column "Email" with a length of 255 to database column "email" with a length of 120.
+	 (SQL Server Import and Export Wizard)
+	
+	* Warning 0x802092a7: Data Flow Task 1: Truncation may occur due to inserting data from data flow column "Principal" with a length of 255 to database column "principal" with a length of 120.
+	 (SQL Server Import and Export Wizard)
+	
+	* Warning 0x802092a7: Data Flow Task 1: Truncation may occur due to inserting data from data flow column "CName" with a length of 255 to database column "CName" with a length of 120.
+	 (SQL Server Import and Export Wizard)
+	
+	* Warning 0x802092a7: Data Flow Task 1: Truncation may occur due to inserting data from data flow column "Address1" with a length of 255 to database column "Address1" with a length of 120.
+	 (SQL Server Import and Export Wizard)
+	
+	* Warning 0x802092a7: Data Flow Task 1: Truncation may occur due to inserting data from data flow column "Address2" with a length of 255 to database column "Address2" with a length of 120.
+	 (SQL Server Import and Export Wizard)
+	
+	* Warning 0x802092a7: Data Flow Task 1: Truncation may occur due to inserting data from data flow column "Address3" with a length of 255 to database column "Address3" with a length of 120.
+	 (SQL Server Import and Export Wizard)
+	
+	* Warning 0x802092a7: Data Flow Task 1: Truncation may occur due to inserting data from data flow column "Add4" with a length of 255 to database column "Add4" with a length of 120.
+	 (SQL Server Import and Export Wizard)
+	
+	* Warning 0x802092a7: Data Flow Task 1: Truncation may occur due to inserting data from data flow column "Add5" with a length of 255 to database column "Add5" with a length of 120.
+	 (SQL Server Import and Export Wizard)
+	
+	* Warning 0x802092a7: Data Flow Task 1: Truncation may occur due to inserting data from data flow column "PhNo1" with a length of 255 to database column "PhNo1" with a length of 50.
+	 (SQL Server Import and Export Wizard)
+	
+	* Warning 0x802092a7: Data Flow Task 1: Truncation may occur due to inserting data from data flow column "Remarks" with a length of 255 to database column "Remarks" with a length of 120.
+	 (SQL Server Import and Export Wizard)
+	
+	* Warning 0x802092a7: Data Flow Task 1: Truncation may occur due to inserting data from data flow column "Email" with a length of 255 to database column "email" with a length of 120.
+	 (SQL Server Import and Export Wizard)
+	
+	* Warning 0x802092a7: Data Flow Task 1: Truncation may occur due to inserting data from data flow column "Principal" with a length of 255 to database column "principal" with a length of 120.
+	 (SQL Server Import and Export Wizard)
+	
+
+- Prepare for Execute (Success)
+
+- Pre-execute (Success)
+
+- Executing (Success)
+
+- Copying to [dbo].[Customer] (Success)
+	* 264 rows transferred
+
+	Messages
+	* Information 0x402090df: Data Flow Task 1: The final commit for the data insertion in "Destination - Customer" has started.
+	 (SQL Server Import and Export Wizard)
+	
+	* Information 0x402090e0: Data Flow Task 1: The final commit for the data insertion  in "Destination - Customer" has ended.
+	 (SQL Server Import and Export Wizard)
+	
+
+- Post-execute (Success)
+	Messages
+	* Information 0x4004300b: Data Flow Task 1: "Destination - Customer" wrote 264 rows.
+	 (SQL Server Import and Export Wizard)
+	
+
+
+

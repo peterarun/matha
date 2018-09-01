@@ -33,9 +33,6 @@ public class Purchase implements Serializable
 	@Column(name = "InvNo")
 	private String invoiceNo;
 
-	@Column(name = "serialNo")
-	private Integer serialNo;
-
 	@Column(name = "DespatchedTo")
 	private String despatchedTo;
 
@@ -278,14 +275,6 @@ public class Purchase implements Serializable
 		this.invoiceNo = invoiceNo;
 	}
 
-	public Integer getSerialNo() {
-		return serialNo;
-	}
-
-	public void setSerialNo(Integer serialNo) {
-		this.serialNo = serialNo;
-	}
-
 	public Publisher getPublisher() {
 		return publisher;
 	}
@@ -315,7 +304,6 @@ public class Purchase implements Serializable
 		final StringBuilder sb = new StringBuilder("Purchase{");
 		sb.append("id='").append(id).append('\'');
 		sb.append(", invoiceNo='").append(invoiceNo).append('\'');
-		sb.append(", serialNo=").append(serialNo);
 		sb.append(", despatchedTo='").append(despatchedTo).append('\'');
 		sb.append(", docsThrough='").append(docsThrough).append('\'');
 		sb.append(", despatchPer='").append(despatchPer).append('\'');

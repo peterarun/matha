@@ -9,7 +9,7 @@ import com.matha.domain.Book;
 import com.matha.domain.Publisher;
 
 @Repository
-public interface BookRepository extends JpaRepository<Book, String> {
+public interface BookRepository extends JpaRepository<Book, Integer> {
 
 	List<Book> findAllByNameStartingWith(String bookName);
 

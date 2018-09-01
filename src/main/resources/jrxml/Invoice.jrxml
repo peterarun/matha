@@ -60,7 +60,6 @@
 	<parameter name="grandTotal" class="java.lang.Double"/>
 	<parameter name="total" class="java.lang.Double"/>
 	<parameter name="discount" class="java.lang.Double"/>
-	<parameter name="imageFileName" class="java.lang.String"/>
 	<parameter name="grandTotalInWords" class="java.lang.String"/>
 	<queryString>
 		<![CDATA[]]>

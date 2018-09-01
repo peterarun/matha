@@ -22,4 +22,6 @@ public interface PurchaseReturnRepository extends JpaRepository<PurchaseReturn, 
 	Long fetchNextSeqVal();
 
     List<PurchaseReturn> findAllByReturnDateAfter(LocalDate ld, Sort idSort);
+
+	PurchaseReturn findByCreditNoteNumAndFy(String creditNoteNum, Integer fy);
 }

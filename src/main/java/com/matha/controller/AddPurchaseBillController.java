@@ -17,11 +17,13 @@ import java.util.stream.Collector;
 import java.util.stream.Collectors;
 
 import com.matha.domain.*;
+import com.microsoft.sqlserver.jdbc.SQLServerException;
 import org.apache.commons.lang.StringUtils;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.controlsfx.control.textfield.TextFields;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.stereotype.Component;
 
 import com.matha.service.SchoolService;
@@ -335,6 +337,7 @@ public class AddPurchaseBillController
 					.map(Order::getOrderItem)
 					.flatMap(List::stream)
 					.sorted(comparing(OrderItem::getOrderId).thenComparing(OrderItem::getSerialNum))
+					.filter(oi -> oi.getBook() != null && oi.getBook().getPublisher() != null && this.publisher.getId().equals(oi.getBook().getPublisher().getId()))
 					.collect(toList());
 			newItems.removeAll(addedBooks.getItems().stream().map(sd -> sd.getOrderItem()).collect(toList()));
 
@@ -464,7 +467,7 @@ public class AddPurchaseBillController
 				purchaseIn = new Purchase();
 				purchaseIn.setPurchaseDate(LocalDate.now());
 				purchaseIn.setFinancialYear(calcFinYear(purchaseIn.getTxnDate()));
-				purchaseIn.setSerialNo(this.schoolService.fetchNextPurchaseSerialNum(purchaseIn.getFinancialYear()));
+//				purchaseIn.setSerialNo(this.schoolService.fetchNextPurchaseSerialNum(purchaseIn.getFinancialYear()));
 				purchaseIn.setPublisher(this.publisher);
 				purchaseIn.setInvoiceNo(this.invoiceNum.getText());
 			}
@@ -481,10 +484,16 @@ public class AddPurchaseBillController
 
 			((Stage) cancelBtn.getScene().getWindow()).close();
 		}
+		catch (DataIntegrityViolationException dive)
+		{
+			LOGGER.error("Error...", dive);
+			showErrorAlert("Error in Saving Purchase Bill", "Please correct the following errors", "Duplicate Entry Found");
+		}
 		catch (Exception e)
 		{
 			LOGGER.error("Error...", e);
-			e.printStackTrace();
+//			e.printStackTrace();
+			showErrorAlert("Error in Saving Purchase Bill", "Please correct the following errors", e.getMessage());
 		}
 	}
 
