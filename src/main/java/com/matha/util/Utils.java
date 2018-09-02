@@ -573,16 +573,16 @@ public class Utils
 			if (subTotalDbl > 0)
 			{
 				double discAmtDbl = StringUtils.isBlank(discAmtStr) ? 0 : Double.parseDouble(discAmtStr);
-				if (discAmtDbl > 0)
+//				if (discAmtDbl > 0)
 				{
 					double discAmt = calculateDisc(subTotalDbl, discAmtDbl, rupeeRad.isSelected(), percentRad.isSelected());
 					calcDisc.setText(getStringVal(discAmt));
 					netTotalDbl = subTotalDbl - discAmt; 
 				}
-				else
-				{
-					netTotalDbl = subTotalDbl;
-				}
+//				else
+//				{
+//					netTotalDbl = subTotalDbl;
+//				}
 			}
 		}
 		if(otherCharges != null)

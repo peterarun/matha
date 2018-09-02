@@ -31,3 +31,4 @@ sqlcmd -S .\SQLEXPRESS2014 /d Matha /E /i insert_Supplier.sql
 sqlcmd -S .\SQLEXPRESS2014 /d Matha /E /i insert_States.sql
 sqlcmd -S .\SQLEXPRESS2014 /d Matha /E /i insert_Districts.sql
 sqlcmd -S .\SQLEXPRESS2014 /d Matha /E /i insert_BankAccounts.sql
+sqlcmd -S .\SQLEXPRESS2014 /d Matha /E /i insert_Addresses.sql

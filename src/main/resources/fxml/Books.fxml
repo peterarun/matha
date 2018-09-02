@@ -9,7 +9,7 @@
 <?import javafx.scene.layout.AnchorPane?>
 <?import javafx.collections.*?>
 
-<SplitPane dividerPositions="0.18" maxHeight="1.7976931348623157E308" maxWidth="1.7976931348623157E308" minHeight="-Infinity" minWidth="-Infinity" orientation="VERTICAL" prefHeight="600.0" prefWidth="800.0" xmlns="http://javafx.com/javafx/8" xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.matha.controller.BookController">
+<SplitPane dividerPositions="0.17725752508361203" maxHeight="1.7976931348623157E308" maxWidth="1.7976931348623157E308" minHeight="-Infinity" minWidth="-Infinity" orientation="VERTICAL" prefHeight="600.0" prefWidth="800.0" xmlns="http://javafx.com/javafx/8" xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.matha.controller.BookController">
 	<items>
 		<AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="100.0" prefWidth="160.0" SplitPane.resizableWithParent="false">
 			<children>
@@ -18,12 +18,14 @@
 						<Font size="24.0" />
 					</font>
 				</Label>
-				<Label layoutX="28.0" layoutY="56.0" text="Name" />
-				<TextField fx:id="bookName" layoutX="71.0" layoutY="52.0" onKeyTyped="#nameSearch" promptText="Type part of book name" />
-				<Button layoutX="564.0" layoutY="52.0" mnemonicParsing="false" onAction="#addBook" prefHeight="25.0" prefWidth="85.0" text="Add Book" />
-				<Button layoutX="460.0" layoutY="52.0" mnemonicParsing="false" onAction="#deleteBook" prefHeight="25.0" prefWidth="90.0" style="-fx-background-color: lightcoral;" text="Delete Book" />
-				<Button layoutX="249.0" layoutY="52.0" mnemonicParsing="false" onAction="#editBook" prefHeight="25.0" prefWidth="90.0" text="Edit Book" />
-				<Button layoutX="663.0" layoutY="52.0" mnemonicParsing="false" onAction="#addInventory" prefHeight="25.0" prefWidth="100.0" text="Add Inventory" />
+				<Label layoutX="28.0" layoutY="63.0" text="Name" />
+				<TextField fx:id="bookName" layoutX="71.0" layoutY="59.0" onKeyTyped="#nameSearch" promptText="Type part of book name" />
+				<Button layoutX="549.0" layoutY="28.0" mnemonicParsing="false" onAction="#addBook" prefHeight="25.0" prefWidth="100.0" text="Add Book" />
+				<Button layoutX="663.0" layoutY="59.0" mnemonicParsing="false" onAction="#deleteBook" prefHeight="25.0" prefWidth="100.0" style="-fx-background-color: lightcoral;" text="Delete Book" />
+				<Button layoutX="549.0" layoutY="59.0" mnemonicParsing="false" onAction="#editBook" prefHeight="25.0" prefWidth="100.0" text="Edit Book" />
+				<Button layoutX="663.0" layoutY="28.0" mnemonicParsing="false" onAction="#addInventory" prefHeight="25.0" prefWidth="100.0" text="Add Inventory" />
+            <TextField fx:id="bookNum" layoutX="325.0" layoutY="59.0" onKeyTyped="#numSearch" prefHeight="25.0" prefWidth="119.0" promptText="Type part of short name" />
+            <Label layoutX="252.0" layoutY="63.0" text="Short Name" />
 			</children>
 		</AnchorPane>
 		<AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="100.0" prefWidth="160.0">

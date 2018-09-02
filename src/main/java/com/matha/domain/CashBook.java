@@ -1,5 +1,8 @@
 package com.matha.domain;
 
+import com.matha.util.Converters;
+import javafx.util.StringConverter;
+
 import java.time.LocalDate;
 
 import javax.persistence.Column;
@@ -16,7 +19,7 @@ import javax.persistence.Table;
 public class CashBook {
 
 	@Id
-	@GeneratedValue(strategy = GenerationType.IDENTITY)
+//	@GeneratedValue(strategy = GenerationType.IDENTITY)
 	private Integer id;
 
 	@Column(name="TDate")
@@ -31,6 +34,26 @@ public class CashBook {
 	private CashHead type;
 
 	private String mode;
+
+	private String representative;
+
+	public String getTypeVal()
+	{
+		if(this.type != null)
+		{
+			return type.getCashHeadName();
+		}
+		else
+		{
+			return "None";
+		}
+	}
+
+	public String getTxnDateStr()
+	{
+		StringConverter<LocalDate> conv = Converters.getLocalDateConverter();
+		return conv.toString(txnDate);
+	}
 
 	public Integer getId() {
 		return id;
@@ -79,7 +102,12 @@ public class CashBook {
 	public void setMode(String mode) {
 		this.mode = mode;
 	}
-	
-	
-	
+
+	public String getRepresentative() {
+		return representative;
+	}
+
+	public void setRepresentative(String representative) {
+		this.representative = representative;
+	}
 }

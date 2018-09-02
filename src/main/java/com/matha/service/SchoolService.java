@@ -166,6 +166,11 @@ public class SchoolService
 		return bookRepository.findAllByNameStartingWith(bookName);
 	}
 
+	public List<Book> fetchBooksByNum(String bookNum)
+	{
+		return bookRepository.findAllByBookNumStartingWith(bookNum);
+	}
+
 	public void saveBook(Book bookObj)
 	{
 		bookRepository.save(bookObj);
@@ -173,6 +178,39 @@ public class SchoolService
 
 	public void deleteBook(Book selectedOrder)
 	{
+		List<OrderItem> orderItems = orderItemRepository.findAllByBook(selectedOrder);
+		List<SalesDet> billItems = salesDetRepository.findAllByBook(selectedOrder);
+		List<SalesReturnDet> billRetItems = salesReturnDetRepository.findAllByBook(selectedOrder);
+		List<PurchaseDet> purItems = purDetRepository.findAllByBook(selectedOrder);
+		List<PurchaseReturnDet> purRetItems = purchaseReturnDetRepository.findAllByBook(selectedOrder);
+
+		for (OrderItem orderItem : orderItems)
+		{
+			orderItem.setBook(null);
+		}
+		for (SalesDet orderItem : billItems)
+		{
+			orderItem.setBook(null);
+		}
+		for (SalesReturnDet orderItem : billRetItems)
+		{
+			orderItem.setBook(null);
+		}
+		for (PurchaseDet orderItem : purItems)
+		{
+			orderItem.setBook(null);
+		}
+		for (PurchaseReturnDet orderItem : purRetItems)
+		{
+			orderItem.setBook(null);
+		}
+
+		orderItemRepository.save(orderItems);
+		salesDetRepository.save(billItems);
+		salesReturnDetRepository.save(billRetItems);
+		purDetRepository.save(purItems);
+		purchaseReturnDetRepository.save(purRetItems);
+
 		bookRepository.delete(selectedOrder);
 	}
 
@@ -343,6 +381,7 @@ public class SchoolService
 		orderItemRepository.delete(removedItems);
 	}
 
+	@Transactional
 	public void deleteSchool(School school, List<Order> ordersIn, List<Sales> bills, List<SchoolReturn> returns, List<SchoolPayment> payments, List<PurchaseDet> purchasesIn)
 	{
 		Set<SalesTransaction> billTxns = bills.stream().map(Sales::getSalesTxn).filter(st -> st != null).collect(toSet());
@@ -352,20 +391,16 @@ public class SchoolService
 		allTxns.addAll(returnTxns);
 		allTxns.addAll(paymentTxns);
 
-		for (SalesTransaction txn : allTxns)
-		{
-			deleteSalesTxn(txn);
-		}
 		salesRepository.delete(bills);
 		schoolReturnRepository.delete(returns);
 		schoolPayRepository.delete(payments);
+		salesTxnRepository.delete(allTxns);
 
-		Set<PurchaseTransaction> purchases = purchasesIn.stream().map(pd -> pd.getPurchase().getSalesTxn()).collect(toSet());
-		purDetRepository.delete(purchasesIn);
-		for (PurchaseTransaction purTransaction : purchases)
+		for (PurchaseDet purDet : purchasesIn)
 		{
-			updatePurchaseTxn(purTransaction);
+			purDet.setOrderItem(null);
 		}
+		purDetRepository.save(purchasesIn);
 
 		orderRepository.delete(ordersIn);
 		schoolRepoitory.delete(school);
@@ -966,6 +1001,11 @@ public class SchoolService
 
 	}
 
+	public Integer fetchNextTxnVal()
+	{
+		return cashBookRepository.fetchNextSerialSeqVal();
+	}
+
 	public List<CashBook> getAllTransactions()
 	{
 		return cashBookRepository.findAllByOrderByTxnDateDesc();
@@ -994,10 +1034,40 @@ public class SchoolService
 		cashHeadRepository.save(cashHead);
 	}
 
-	public List<CashBook> searchTransactions(LocalDate fromDate, LocalDate toDate, String entryId, String entryDesc, CashHead cashHead)
+	public List<CashBook> searchTransactions(LocalDate fromDate, LocalDate toDate, String entryDesc, CashHead cashHead)
 	{
-		// TODO Auto-generated method stub
-		return cashBookRepository.findAllByOrderByTxnDateDesc();
+		List<CashBook> recs = new ArrayList<>();
+		if(fromDate != null && toDate != null && entryDesc != null)
+		{
+			recs = cashBookRepository.fetchCashBookRecords(fromDate, toDate, entryDesc);
+		}
+		else if(fromDate != null && entryDesc != null)
+		{
+			recs = cashBookRepository.fetchCashBookRecordsFr(fromDate, entryDesc);
+		}
+		else if(toDate != null && entryDesc != null)
+		{
+			recs = cashBookRepository.fetchCashBookRecordsTo(toDate, entryDesc);
+		}
+		else if(entryDesc != null)
+		{
+			recs = cashBookRepository.fetchCashBookRecords(entryDesc);
+		}
+		else if(fromDate != null && toDate != null)
+		{
+			recs = cashBookRepository.findAllByTxnDateBetweenOrderByIdDesc(fromDate, toDate);
+		}
+		else
+		{
+			recs = cashBookRepository.findAllByOrderByTxnDateDesc();
+		}
+
+		if(cashHead != null)
+		{
+			recs = recs.stream().filter(cb -> cb.getTypeVal().equals(cashHead.getCashHeadName())).collect(toList());
+		}
+
+		return recs;
 	}
 
 	public Page<Order> fetchOrders(Publisher pub, int page, int size, boolean billed)

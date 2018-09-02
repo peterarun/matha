@@ -35,11 +35,10 @@
 				<DatePicker fx:id="invoiceDate" layoutX="605.0" layoutY="75.0" prefHeight="25.0" prefWidth="150.0" AnchorPane.rightAnchor="25.0" />
 				<Label layoutX="605.0" layoutY="105.0" text="Despatched To" AnchorPane.rightAnchor="94.0" />
 				<TextField fx:id="despatchedTo" layoutX="605.0" layoutY="120.0" prefWidth="150.0" AnchorPane.rightAnchor="25.0" />
-				<TextField fx:id="docsThrough" layoutX="605.0" layoutY="210.0" prefWidth="150.0" AnchorPane.rightAnchor="25.0" />
-				<Label layoutX="605.0" layoutY="195.0" text="Documents Through" AnchorPane.rightAnchor="65.0" />
-				
 				<TextField fx:id="despatchedPer" layoutX="605.0" layoutY="165.0" prefWidth="150.0" AnchorPane.rightAnchor="25.0" />
 				<Label layoutX="605.0" layoutY="150.0" text="Despatched Per" AnchorPane.rightAnchor="90.0" />
+				<TextField fx:id="docsThrough" layoutX="605.0" layoutY="210.0" prefWidth="150.0" AnchorPane.rightAnchor="25.0" />
+				<Label layoutX="605.0" layoutY="195.0" text="Documents Through" AnchorPane.rightAnchor="65.0" />
 				<Label layoutX="605.0" layoutY="240.0" text="GR No." AnchorPane.rightAnchor="136.0" />
 				<TextField fx:id="grNum" layoutX="605.0" layoutY="255.0" prefWidth="150.0" AnchorPane.rightAnchor="25.0" />
 				<TextField fx:id="packageCount" layoutX="605.0" layoutY="300.0" prefWidth="150.0" AnchorPane.rightAnchor="25.0" />

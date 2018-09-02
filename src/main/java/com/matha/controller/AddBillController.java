@@ -385,7 +385,7 @@ public class AddBillController
 		}
 		if(!valid)
 		{
-			showErrorAlert("Error in Saving Order", "Please correct the following errors", errorMsg.toString());
+			showErrorAlert("Error in Saving Bill", "Please correct the following errors", errorMsg.toString());
 		}
 		return valid;
 	}

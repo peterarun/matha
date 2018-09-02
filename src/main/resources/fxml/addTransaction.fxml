@@ -1,13 +1,8 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
-<?import javafx.scene.control.cell.*?>
-<?import javafx.scene.text.*?>
-<?import java.lang.*?>
 <?import javafx.scene.control.*?>
-<?import javafx.scene.layout.*?>
 <?import javafx.scene.layout.AnchorPane?>
-<?import javafx.scene.control.cell.PropertyValueFactory?>
-
+<?import javafx.scene.text.Font?>
 <SplitPane dividerPositions="0.24727272727272728" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" orientation="VERTICAL" prefHeight="345.0" prefWidth="400.0" xmlns="http://javafx.com/javafx/8" xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.matha.controller.AddTxnController">
   <items>
     <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="89.0" prefWidth="398.0">
@@ -22,16 +17,16 @@
     <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="266.0" prefWidth="398.0">
          <children>
             <Label layoutX="28.0" layoutY="23.0" text="Transaction No." />
+             <TextField fx:id="orderNum" layoutX="28.0" layoutY="40.0" prefHeight="25.0" prefWidth="151.0" />
             <Label layoutX="201.0" layoutY="23.0" text="Date" />
             <DatePicker fx:id="txnDate" layoutX="199.0" layoutY="40.0" />
             <TextField fx:id="description" layoutX="28.0" layoutY="77.0" prefHeight="25.0" prefWidth="346.0" promptText="Description" />
-            <TextField fx:id="orderNum" editable="false" layoutX="28.0" layoutY="40.0" prefHeight="25.0" prefWidth="151.0" />
             <TextField fx:id="amount" layoutX="28.0" layoutY="116.0" prefHeight="25.0" prefWidth="151.0" promptText="Amount" />
+             <ChoiceBox fx:id="cashHead" layoutX="29.0" layoutY="159.0" prefWidth="150.0" />
+             <TextField fx:id="mode" layoutX="201.0" layoutY="159.0" prefHeight="25.0" prefWidth="172.0" promptText="Mode" />
+             <TextField fx:id="representative" layoutX="27.0" layoutY="197.0" prefHeight="25.0" prefWidth="346.0" promptText="Representative" />
             <Button layoutX="199.0" layoutY="116.0" mnemonicParsing="false" onAction="#saveData" prefHeight="25.0" prefWidth="83.0" text="Save" />
             <Button fx:id="cancelBtn" layoutX="300.0" layoutY="116.0" mnemonicParsing="false" onAction="#cancelOperation" prefHeight="25.0" prefWidth="73.0" text="Cancel" />
-            <TextField fx:id="mode" layoutX="201.0" layoutY="159.0" prefHeight="25.0" prefWidth="172.0" promptText="Mode" />
-            <ChoiceBox fx:id="cashHead" layoutX="29.0" layoutY="159.0" prefWidth="150.0" />
-            <TextField fx:id="representative" layoutX="27.0" layoutY="197.0" prefHeight="25.0" prefWidth="346.0" promptText="Representative" />
          </children></AnchorPane>
   </items>
 </SplitPane>

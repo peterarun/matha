@@ -1,5 +1,6 @@
 package com.matha.controller;
 
+import static com.matha.util.UtilConstants.EMPTY_STR;
 import static com.matha.util.UtilConstants.NEW_LINE;
 import static com.matha.util.UtilConstants.addBookFxmlFile;
 import static com.matha.util.Utils.showErrorAlert;
@@ -64,19 +65,22 @@ public class BookController
 	private TextField bookName;
 
 	@FXML
+	private TextField bookNum;
+
+	@FXML
 	protected void initialize()
 	{
 		List<Book> bookList = srvc.fetchAllBooks();
 		tableView.setItems(FXCollections.observableList(bookList));
 
 		this.shortNameCol.prefWidthProperty().bind(this.tableView.widthProperty().multiply(0.09));
-		this.bkNameCol.prefWidthProperty().bind(this.tableView.widthProperty().multiply(0.55));
-		this.pubCol.prefWidthProperty().bind(this.tableView.widthProperty().multiply(0.12));
+		this.bkNameCol.prefWidthProperty().bind(this.tableView.widthProperty().multiply(0.45));
+		this.pubCol.prefWidthProperty().bind(this.tableView.widthProperty().multiply(0.22));
 		this.invCol.prefWidthProperty().bind(this.tableView.widthProperty().multiply(0.11));
 		this.prcCol.prefWidthProperty().bind(this.tableView.widthProperty().multiply(0.12));
 	}
 
-	private void loadData(String text)
+	private void loadDataName(String text)
 	{
 
 		List<Book> bookList = new ArrayList<>();
@@ -92,21 +96,54 @@ public class BookController
 		tableView.setItems(FXCollections.observableList(bookList));
 	}
 
+	private void loadDataFromNum(String text)
+	{
+		List<Book> bookList = new ArrayList<>();
+		if (StringUtils.isEmpty(text))
+		{
+			bookList = srvc.fetchAllBooks();
+		}
+		else
+		{
+			bookList = srvc.fetchBooksByNum(text);
+		}
+		tableView.setItems(FXCollections.observableList(bookList));
+	}
+
+	private void loadBooks()
+	{
+		if(StringUtils.isNotBlank(this.bookNum.getText()))
+		{
+			this.loadDataFromNum(this.bookNum.getText());
+		}
+		else
+		{
+			this.loadDataName(this.bookName.getText());
+		}
+	}
+
 	@FXML
 	void nameSearch(KeyEvent event)
 	{
-
+		this.bookNum.setText(EMPTY_STR);
 		String bookNameAll = this.bookName.getText() + event.getCharacter();
-		loadData(bookNameAll);
+		loadDataName(bookNameAll);
+	}
+
+
+	@FXML
+	void numSearch(KeyEvent event)
+	{
+		this.bookName.setText(EMPTY_STR);
+		String bookNameAll = this.bookNum.getText() + event.getCharacter();
+		loadDataFromNum(bookNameAll);
 	}
 
 	@FXML
 	void addBook(ActionEvent event)
 	{
-
 		try
 		{
-			String bookNameAll = this.bookName.getText();
 			FXMLLoader fxmlLoader = LoadUtils.loadFxml(this, addBookFxmlFile);
 			Parent root = fxmlLoader.load();
 			Scene scene = new Scene(root);
@@ -116,7 +153,7 @@ public class BookController
 				@Override
 				public void handle(final WindowEvent event)
 				{
-					loadData(bookNameAll);
+					loadBooks();
 				}
 			});
 			stage.show();
@@ -151,8 +188,7 @@ public class BookController
 				srvc.saveBook(selBook);
 			}
 		}
-		loadData(this.bookName.getText());
-
+		loadBooks();
 	}
 
 	@FXML
@@ -175,20 +211,18 @@ public class BookController
 			catch (DataIntegrityViolationException dive)
 			{
 				LOGGER.error("A Constraint Violated", dive);
-				showErrorAlert("Error in Deleting Book", "Please correct the following errors", "Book Used in Orders");
+				showErrorAlert("Error in Deleting Book", "Please correct the following errors", "Book is used in Orders/Bills/Credit Notes");
 			}
 			String bookNameAll = this.bookName.getText();
-			loadData(bookNameAll);
+			loadBooks();
 		}
 	}
 
 	@FXML
 	void editBook(ActionEvent event)
 	{
-
 		try
 		{
-			String bookNameAll = this.bookName.getText();
 			FXMLLoader fxmlLoader = LoadUtils.loadFxml(this, addBookFxmlFile);
 			Parent root = fxmlLoader.load();
 
@@ -202,7 +236,7 @@ public class BookController
 				@Override
 				public void handle(final WindowEvent event)
 				{
-					loadData(bookNameAll);
+					loadBooks();
 				}
 			});
 			stage.show();
@@ -212,7 +246,5 @@ public class BookController
 			LOGGER.error("Error...", e);
 			e.printStackTrace();
 		}
-
 	}
-
 }

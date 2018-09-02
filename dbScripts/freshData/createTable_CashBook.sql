@@ -9,12 +9,13 @@ SET QUOTED_IDENTIFIER ON
 GO
 
 CREATE TABLE [dbo].[CashBook](
-	[Id] [int] IDENTITY(1,1) NOT NULL,
+	[Id] [int] NOT NULL,
 	[TDate] [datetime] NULL,
 	[Description] [nvarchar](100) NULL,
 	[Amount] [decimal](12, 2) NOT NULL,
 	[Type] [nvarchar](100) NULL,
 	[Mode] [nvarchar](100) NULL,
+	[Representative] [nvarchar](100) NULL,
 PRIMARY KEY CLUSTERED 
 (
 	[Id] ASC

@@ -18,53 +18,55 @@
 						<Font size="24.0" />
 					</font>
 				</Label>
-				<Label layoutX="28.0" layoutY="56.0" text="Search By" />
-				<TextField fx:id="transactionId" layoutX="93.0" layoutY="52.0" onKeyTyped="#idSearch" prefHeight="25.0" prefWidth="143.0" promptText="Transaction Id" />
-				<Button layoutX="588.0" layoutY="52.0" mnemonicParsing="false" onAction="#addTransaction" prefHeight="68.0" prefWidth="84.0" text="Add Transaction" textAlignment="CENTER" wrapText="true" />
-				<Button layoutX="463.0" layoutY="94.0" mnemonicParsing="false" onAction="#deleteTransaction" prefHeight="25.0" prefWidth="105.0" style="-fx-background-color: lightcoral;" text="Delete Transaction" />
-				<Button layoutX="463.0" layoutY="52.0" mnemonicParsing="false" onAction="#editTransaction" prefHeight="25.0" prefWidth="105.0" text="Edit Transaction" />
-            <TextField fx:id="transactionDesc" layoutX="265.0" layoutY="52.0" onKeyTyped="#descSearch" prefHeight="25.0" prefWidth="174.0" promptText="Description" />
+				<Button layoutX="463.0" layoutY="60.0" mnemonicParsing="false" onAction="#addTransaction" prefHeight="68.0" prefWidth="84.0" text="Add Transaction" textAlignment="CENTER" wrapText="true" />
+				<Button layoutX="565.0" layoutY="103.0" mnemonicParsing="false" onAction="#deleteTransaction" prefHeight="25.0" prefWidth="105.0" style="-fx-background-color: lightcoral;" text="Delete Transaction" />
+				<Button layoutX="565.0" layoutY="60.0" mnemonicParsing="false" onAction="#editTransaction" prefHeight="25.0" prefWidth="105.0" text="Edit Transaction" />
+            <TextField fx:id="transactionDesc" layoutX="265.0" layoutY="137.0" prefHeight="25.0" prefWidth="150.0" promptText="Description" />
             <Label layoutX="28.0" layoutY="98.0" text="From" />
-            <DatePicker fx:id="fromDate" layoutX="63.0" layoutY="94.0" />
-            <DatePicker fx:id="toDate" layoutX="265.0" layoutY="94.0" />
+            <DatePicker fx:id="fromDate" layoutX="63.0" layoutY="94.0" prefHeight="25.0" prefWidth="150.0" />
+            <DatePicker fx:id="toDate" layoutX="265.0" layoutY="94.0" prefHeight="25.0" prefWidth="150.0" />
             <Label layoutX="244.0" layoutY="98.0" text="To" />
-            <Button layoutX="691.0" layoutY="52.0" mnemonicParsing="false" onAction="#addCashHead" prefHeight="25.0" prefWidth="84.0" text="Add Head" />
-            <Button layoutX="691.0" layoutY="94.0" mnemonicParsing="false" onAction="#addMode" prefHeight="25.0" prefWidth="84.0" text="Add Mode" />
-            <Button layoutX="386.0" layoutY="137.0" mnemonicParsing="false" onAction="#search" text="Search" />
+            <Button layoutX="691.0" layoutY="60.0" mnemonicParsing="false" onAction="#addCashHead" prefHeight="68.0" prefWidth="84.0" text="Add Head" />
+            <Button layoutX="463.0" layoutY="137.0" mnemonicParsing="false" onAction="#search" prefHeight="25.0" prefWidth="84.0" text="Search" />
             <ChoiceBox fx:id="cashHead" layoutX="63.0" layoutY="137.0" prefWidth="150.0" />
             <Label layoutX="28.0" layoutY="141.0" text="Head" />
+            <Label layoutX="218.0" layoutY="51.0" text="Search">
+               <font>
+                  <Font size="18.0" />
+               </font>
+            </Label>
 			</children>
 		</AnchorPane>
 		<AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="100.0" prefWidth="160.0">
 			<children>
-				<TableView fx:id="txnData" layoutY="1.0" prefHeight="435.0" prefWidth="798.0">
+				<TableView fx:id="txnData" layoutY="1.0" prefHeight="418.0" prefWidth="798.0" AnchorPane.bottomAnchor="-1.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="1.0">
 					<columns>
-						<TableColumn prefWidth="70.0" text="Id">
+						<TableColumn fx:id="id" prefWidth="70.0" text="Id">
 							<cellValueFactory>
-								<PropertyValueFactory property="idd" />
+								<PropertyValueFactory property="id" />
 							</cellValueFactory>
 						</TableColumn>
-						<TableColumn minWidth="5.0" prefWidth="308.0" text="Description">
+						<TableColumn fx:id="description" minWidth="5.0" prefWidth="308.0" text="Description">
 							<cellValueFactory>
 								<PropertyValueFactory property="description" />
 							</cellValueFactory>
 						</TableColumn>
-						<TableColumn prefWidth="156.0" text="Date">
+						<TableColumn fx:id="txnDateStr" prefWidth="156.0" text="Date">
 							<cellValueFactory>
-								<PropertyValueFactory property="txnDate" />
+								<PropertyValueFactory property="txnDateStr" />
 							</cellValueFactory>
 						</TableColumn>
-						<TableColumn prefWidth="88.0" text="Amount">
+						<TableColumn fx:id="amount" prefWidth="88.0" text="Amount">
 							<cellValueFactory>
 								<PropertyValueFactory property="amount" />
 							</cellValueFactory>
 						</TableColumn>
-                  		<TableColumn prefWidth="92.0" text="Type">
+                  		<TableColumn fx:id="typeVal" prefWidth="92.0" text="Type">
 							<cellValueFactory>
-								<PropertyValueFactory property="type" />
+								<PropertyValueFactory property="typeVal" />
 							</cellValueFactory>                  
                   		</TableColumn>
-		                  <TableColumn prefWidth="83.0" text="Mode">
+		                  <TableColumn fx:id="mode" prefWidth="83.0" text="Mode">
 							<cellValueFactory>
 								<PropertyValueFactory property="mode" />
 							</cellValueFactory>		                  

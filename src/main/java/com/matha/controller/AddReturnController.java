@@ -181,7 +181,7 @@ public class AddReturnController
 			showErrorAlert("Invalid Book", "Invalid Book Entry", bookStr + " is not corresponding to a valid Book Entry");
 			return;
 		}
-		SalesReturnDet itemIn = new SalesReturnDet(this.addedBooks.getItems().size(), getIntegerVal(this.quantity), Double.parseDouble(this.price.getText()), null);
+		SalesReturnDet itemIn = new SalesReturnDet(this.addedBooks.getItems().size(), getIntegerVal(this.quantity), Double.parseDouble(this.price.getText()), book);
 		itemIn.setBook(book);
 		this.addedBooks.getItems().add(itemIn);
 		LOGGER.debug("Added" + itemIn);
