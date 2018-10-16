@@ -1,9 +1,8 @@
 package com.matha.repository;
 
-import java.time.LocalDate;
-import java.util.List;
-
-import com.matha.domain.OrderItem;
+import com.matha.domain.Order;
+import com.matha.domain.Publisher;
+import com.matha.domain.School;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
@@ -11,9 +10,8 @@ import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.stereotype.Repository;
 
-import com.matha.domain.Order;
-import com.matha.domain.Publisher;
-import com.matha.domain.School;
+import java.time.LocalDate;
+import java.util.List;
 
 @Repository
 public interface OrderRepository extends JpaRepository<Order, String> {
@@ -62,7 +60,7 @@ public interface OrderRepository extends JpaRepository<Order, String> {
 	@Query("select distinct oDet.order from PurchaseDet pDet right join pDet.orderItem oDet join oDet.order ord join oDet.book book where book.publisher=?1 and ord.serialNo like ?2% and pDet is null")
 	public Page<Order> fetchUnBilledOrdersForPubAndSearchStr(Publisher pub, String searchText, Pageable pageable);
 
-	@Query("select distinct ord from Order ord where ord.serialNo like ?1%")
-	public Page<Order> fetchOrdersForSearchStr(String searchText, Pageable pageable);
+//	@Query("select distinct ord from Order ord where ord.serialNo like ?1% order by serialNo")
+	public Page<Order> findOrdersBySerialNoStartingWith(String searchText, Pageable pageable);
 
 }

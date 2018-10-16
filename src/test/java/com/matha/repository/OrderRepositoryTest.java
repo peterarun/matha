@@ -4,7 +4,6 @@ import java.time.LocalDate;
 import java.time.Month;
 import java.util.List;
 
-import com.matha.domain.OrderItem;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -18,6 +17,8 @@ import com.matha.domain.Order;
 import com.matha.domain.Publisher;
 import com.matha.domain.School;
 import com.matha.sales.SalesApplication;
+
+import static org.springframework.data.domain.Sort.Direction.ASC;
 
 @SpringBootTest(classes = SalesApplication.class)
 @RunWith(SpringRunner.class)
@@ -85,9 +86,9 @@ public class OrderRepositoryTest {
 
 	@Test
 	public void testOrderFetch() {
-		PageRequest pageable = new PageRequest(0, 5, Sort.Direction.DESC, "orderDate");
+		PageRequest pageable = new PageRequest(0, 15, ASC, "calcSerialNum");
 
-		List<Order> orderList = orderService.fetchOrdersForSearchStr("19", pageable).getContent();
+		List<Order> orderList = orderService.findOrdersBySerialNoStartingWith("", pageable).getContent();
 		for(Order o: orderList)
 		{
 			System.out.println(o);

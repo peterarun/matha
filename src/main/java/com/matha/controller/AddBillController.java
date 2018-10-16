@@ -17,6 +17,7 @@ import javafx.stage.Stage;
 import org.apache.commons.lang.StringUtils;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
+import org.controlsfx.control.textfield.AutoCompletionBinding;
 import org.controlsfx.control.textfield.TextFields;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
@@ -152,6 +153,7 @@ public class AddBillController
 
 		List<String> items = new ArrayList<>(this.orderMap.keySet());
 		TextFields.bindAutoCompletion(this.orderNum, items);
+
 		
 		LOGGER.debug("despatcherArray: " + despatcherArray);
 		TextFields.bindAutoCompletion(this.despatchPer, Arrays.asList(despatcherArray));
@@ -221,8 +223,9 @@ public class AddBillController
 		}
 		
 		List<String> items = new ArrayList<>(bookMap.keySet());
-		TextFields.bindAutoCompletion(bookText, items);
-		
+		AutoCompletionBinding<String> bookNameBinding = TextFields.bindAutoCompletion(bookText, items);
+		bookNameBinding.prefWidthProperty().bind(this.bookText.widthProperty().multiply(1.4));
+
 		this.discAmt.textProperty().addListener((observable, oldValue, newValue) -> {		    
 		    updateNetAmtAfter();
 		});

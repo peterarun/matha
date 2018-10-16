@@ -14,6 +14,7 @@ import javafx.stage.Stage;
 import org.apache.commons.lang.StringUtils;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
+import org.controlsfx.control.textfield.AutoCompletionBinding;
 import org.controlsfx.control.textfield.TextFields;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.dao.DataIntegrityViolationException;
@@ -87,7 +88,9 @@ public class AddOrderController
 		updateFormData(selectedOrder);
 
 		List<String> items = new ArrayList<>(bookMap.keySet());
-		TextFields.bindAutoCompletion(bookText, items);
+//		TextFields.bindAutoCompletion(bookText, items);
+		AutoCompletionBinding<String> bookNameBinding = TextFields.bindAutoCompletion(bookText, items);
+		bookNameBinding.prefWidthProperty().bind(this.bookText.widthProperty().multiply(1.3));
 
 		this.addedBooks.getSelectionModel().cellSelectionEnabledProperty().set(true);
 		this.qtyCol.setCellFactory(TextFieldTableCell.forTableColumn(getIntegerConverter()));

@@ -3,6 +3,7 @@ package com.matha.controller;
 import static com.matha.util.UtilConstants.*;
 import static com.matha.util.Utils.*;
 import static java.util.Comparator.comparing;
+import static java.util.stream.Collectors.toList;
 import static java.util.stream.Collectors.toMap;
 
 import java.io.ByteArrayOutputStream;
@@ -24,6 +25,7 @@ import net.sf.jasperreports.export.SimpleOutputStreamExporterOutput;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
+import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.data.domain.Page;
@@ -822,6 +824,34 @@ public class PurchaseController
 			LOGGER.error("Error...", e);
 			e.printStackTrace();
 		}		
+	}
+
+	@FXML
+	public void printOrderForPub(ActionEvent ev)
+	{
+		try
+		{
+			FXMLLoader createOrderLoader = LoadUtils.loadFxml(this, printOrderFxmlFile);
+			Parent addOrderRoot = createOrderLoader.load();
+			PrintOrderController ctrl = createOrderLoader.getController();
+			Order purchase = orderTable.getSelectionModel().getSelectedItem();
+
+			Publisher pub = publishers.getSelectionModel().getSelectedItem();
+			List<OrderItem> pubOrdItems = purchase.getOrderItem().stream().filter(oi -> oi.getBook().getPublisher().getId().equals(pub.getId())).collect(toList());
+			Order ordClone = new Order();
+			BeanUtils.copyProperties(purchase, ordClone);
+			ordClone.setOrderItem(pubOrdItems);
+
+			JasperPrint jasperPrint = ctrl.prepareJasperPrint(ordClone);
+			ctrl.initData(jasperPrint);
+			Scene addOrderScene = new Scene(addOrderRoot);
+			prepareAndShowStage(ev, addOrderScene);
+		}
+		catch (Exception e)
+		{
+			LOGGER.error("Error...", e);
+			e.printStackTrace();
+		}
 	}
 
 	public Optional<String> selectPublisher(Map<String, Publisher> pubMap)

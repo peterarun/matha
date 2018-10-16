@@ -103,7 +103,7 @@
                   <Blend />
                </effect>
             </TextField>
-            <TextField fx:id="quantity" layoutX="474.0" layoutY="397.0" prefHeight="25.0" prefWidth="43.0" promptText="Qty." AnchorPane.bottomAnchor="125.0" AnchorPane.rightAnchor="265.0" />
+            <TextField fx:id="quantity" layoutX="474.0" layoutY="397.0" onAction="#addBookData" prefHeight="25.0" prefWidth="43.0" promptText="Qty." AnchorPane.bottomAnchor="125.0" AnchorPane.rightAnchor="265.0" />
             <TextField fx:id="price" layoutX="521.0" layoutY="397.0" onAction="#addBookData" prefHeight="25.0" prefWidth="60.0" promptText="Price" AnchorPane.bottomAnchor="125.0" AnchorPane.rightAnchor="200.0" />
             <Label layoutX="227.0" layoutY="512.0" text="Disc Amt:" AnchorPane.bottomAnchor="25.0" />
 			</children>

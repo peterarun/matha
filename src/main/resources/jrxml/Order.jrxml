@@ -99,14 +99,6 @@
 				<textElement verticalAlignment="Top"/>
 				<textFieldExpression><![CDATA[$P{partyAddress}]]></textFieldExpression>
 			</textField>
-			<textField>
-				<reportElement x="50" y="145" width="230" height="15" uuid="048f987b-cc64-4b99-aa28-d3f50ea9eec9"/>
-				<box leftPadding="2">
-					<bottomPen lineWidth="1.0"/>
-				</box>
-				<textElement verticalAlignment="Middle"/>
-				<textFieldExpression><![CDATA[$P{partyPhone}]]></textFieldExpression>
-			</textField>
 			<staticText>
 				<reportElement x="280" y="100" width="100" height="15" uuid="eede9bde-935f-4604-9830-d24423280f54"/>
 				<box leftPadding="2"/>
@@ -148,15 +140,6 @@
 				<textFieldExpression><![CDATA[$P{orderNumber}]]></textFieldExpression>
 			</textField>
 			<staticText>
-				<reportElement x="0" y="145" width="36" height="15" uuid="2bfab7e3-d28d-437f-8849-260be222a215"/>
-				<box leftPadding="2">
-					<leftPen lineWidth="1.0"/>
-					<bottomPen lineWidth="1.0"/>
-				</box>
-				<textElement verticalAlignment="Middle"/>
-				<text><![CDATA[Phone]]></text>
-			</staticText>
-			<staticText>
 				<reportElement x="0" y="85" width="37" height="15" uuid="adc51e32-7d59-4f7c-88db-f31b4d0ee5fe"/>
 				<box topPadding="2" leftPadding="2">
 					<topPen lineWidth="1.0"/>
@@ -171,14 +154,6 @@
 				<reportElement x="37" y="85" width="13" height="15" uuid="4ea6e482-cc02-4a68-875c-ec75449dcbec"/>
 				<box topPadding="2">
 					<topPen lineWidth="1.0"/>
-				</box>
-				<textElement textAlignment="Center" verticalAlignment="Middle"/>
-				<text><![CDATA[:]]></text>
-			</staticText>
-			<staticText>
-				<reportElement x="36" y="145" width="13" height="15" uuid="89b99f44-58b6-458a-9aab-ba91ba652e3e"/>
-				<box>
-					<bottomPen lineWidth="1.0"/>
 				</box>
 				<textElement textAlignment="Center" verticalAlignment="Middle"/>
 				<text><![CDATA[:]]></text>
@@ -199,17 +174,9 @@
 				<textFieldExpression><![CDATA[$P{agencyAddress2}]]></textFieldExpression>
 			</textField>
 			<staticText>
-				<reportElement x="0" y="100" width="50" height="45" uuid="61105ff7-5f09-4916-91e5-e6f99da1e7f3"/>
+				<reportElement stretchType="RelativeToTallestObject" x="0" y="100" width="50" height="45" uuid="61105ff7-5f09-4916-91e5-e6f99da1e7f3"/>
 				<box>
 					<leftPen lineWidth="1.0"/>
-				</box>
-				<text><![CDATA[]]></text>
-			</staticText>
-			<staticText>
-				<reportElement x="280" y="145" width="275" height="15" uuid="c63532d3-e25f-46ef-994c-b1101e19882c"/>
-				<box>
-					<bottomPen lineWidth="1.0"/>
-					<rightPen lineWidth="1.0"/>
 				</box>
 				<text><![CDATA[]]></text>
 			</staticText>
@@ -261,7 +228,7 @@
 				<textFieldExpression><![CDATA[$P{deliveryDate}]]></textFieldExpression>
 			</textField>
 			<textField>
-				<reportElement x="393" y="130" width="162" height="15" uuid="b4dac72f-fb7a-4994-8da6-cd833fb2f1dc"/>
+				<reportElement stretchType="RelativeToTallestObject" x="393" y="130" width="162" height="15" uuid="b4dac72f-fb7a-4994-8da6-cd833fb2f1dc"/>
 				<box>
 					<pen lineWidth="1.0"/>
 					<topPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
@@ -272,17 +239,53 @@
 				<textElement verticalAlignment="Middle"/>
 				<textFieldExpression><![CDATA[$P{desLocation}]]></textFieldExpression>
 			</textField>
+			<frame>
+				<reportElement positionType="Float" x="0" y="145" width="555" height="15" uuid="38e34f1d-5cc0-479d-9a7b-49a31332d04f"/>
+				<textField>
+					<reportElement x="50" y="0" width="230" height="15" uuid="048f987b-cc64-4b99-aa28-d3f50ea9eec9"/>
+					<box leftPadding="2">
+						<bottomPen lineWidth="1.0"/>
+					</box>
+					<textElement verticalAlignment="Middle"/>
+					<textFieldExpression><![CDATA[$P{partyPhone}]]></textFieldExpression>
+				</textField>
+				<staticText>
+					<reportElement x="0" y="0" width="36" height="15" uuid="2bfab7e3-d28d-437f-8849-260be222a215"/>
+					<box leftPadding="2">
+						<leftPen lineWidth="1.0"/>
+						<bottomPen lineWidth="1.0"/>
+					</box>
+					<textElement verticalAlignment="Middle"/>
+					<text><![CDATA[Phone]]></text>
+				</staticText>
+				<staticText>
+					<reportElement x="36" y="0" width="13" height="15" uuid="89b99f44-58b6-458a-9aab-ba91ba652e3e"/>
+					<box>
+						<bottomPen lineWidth="1.0"/>
+					</box>
+					<textElement textAlignment="Center" verticalAlignment="Middle"/>
+					<text><![CDATA[:]]></text>
+				</staticText>
+				<staticText>
+					<reportElement x="280" y="0" width="275" height="15" uuid="c63532d3-e25f-46ef-994c-b1101e19882c"/>
+					<box>
+						<bottomPen lineWidth="1.0"/>
+						<rightPen lineWidth="1.0"/>
+					</box>
+					<text><![CDATA[]]></text>
+				</staticText>
+			</frame>
 		</band>
 	</title>
 	<columnHeader>
 		<band height="15">
 			<staticText>
-				<reportElement x="0" y="0" width="50" height="15" uuid="dd8144e7-a465-4169-8d1e-d553644b2685"/>
+				<reportElement positionType="Float" x="0" y="0" width="50" height="15" uuid="dd8144e7-a465-4169-8d1e-d553644b2685"/>
 				<box leftPadding="2" rightPadding="2">
 					<topPen lineWidth="1.0"/>
 					<leftPen lineWidth="1.0"/>
 					<bottomPen lineWidth="1.0"/>
-					<rightPen lineWidth="1.0"/>
+					<rightPen lineWidth="0.0"/>
 				</box>
 				<textElement textAlignment="Center" verticalAlignment="Middle">
 					<font isBold="true"/>
@@ -290,10 +293,10 @@
 				<text><![CDATA[Sl.No.]]></text>
 			</staticText>
 			<staticText>
-				<reportElement x="50" y="0" width="450" height="15" uuid="99def2ce-03d7-4617-831f-c57a0276a177"/>
+				<reportElement positionType="Float" x="50" y="0" width="450" height="15" uuid="99def2ce-03d7-4617-831f-c57a0276a177"/>
 				<box leftPadding="2" rightPadding="2">
 					<topPen lineWidth="1.0"/>
-					<leftPen lineWidth="1.0"/>
+					<leftPen lineWidth="0.0"/>
 					<bottomPen lineWidth="1.0"/>
 					<rightPen lineWidth="1.0"/>
 				</box>
@@ -303,7 +306,7 @@
 				<text><![CDATA[Description]]></text>
 			</staticText>
 			<staticText>
-				<reportElement x="500" y="0" width="55" height="15" uuid="f4ba1547-90d0-4969-9849-cd2eca634fa0"/>
+				<reportElement positionType="Float" x="500" y="0" width="55" height="15" uuid="f4ba1547-90d0-4969-9849-cd2eca634fa0"/>
 				<box leftPadding="2" rightPadding="2">
 					<topPen lineWidth="1.0"/>
 					<leftPen lineWidth="1.0"/>

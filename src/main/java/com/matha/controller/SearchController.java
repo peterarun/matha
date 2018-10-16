@@ -4,18 +4,20 @@ import com.matha.domain.*;
 import com.matha.service.SchoolService;
 import com.matha.util.LoadUtils;
 import javafx.collections.FXCollections;
-import javafx.event.ActionEvent;
 import javafx.event.Event;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
+import javafx.scene.Node;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
 import javafx.scene.control.*;
+import javafx.scene.layout.BorderPane;
 import javafx.stage.Stage;
 import net.sf.jasperreports.engine.JasperPrint;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
 import org.springframework.stereotype.Component;
 
 import java.io.IOException;
@@ -26,12 +28,15 @@ import java.util.stream.Collector;
 import static com.matha.util.UtilConstants.*;
 import static com.matha.util.Utils.prepareJasperPrint;
 import static com.matha.util.Utils.prepareSaleBillPrint;
+import static com.matha.util.Utils.verifyDblClick;
 import static java.util.stream.Collectors.toMap;
 
 @Component
 public class SearchController
 {
+	private static final int ROWS_PER_PAGE = 10;
 	private static final Logger LOGGER = LogManager.getLogger(SearchController.class);
+
 	@Autowired
 	private SchoolService schoolService;
 
@@ -45,16 +50,16 @@ public class SearchController
 	private Tab ordersTab;
 
 	@FXML
-	private TextField purBillNumStr;
+	private TableView<Order> orderTable;
 
 	@FXML
-	private Tab purBillsTab;
-
-	@FXML
-	private TableView<Order> orderData;
+	private Pagination orderPaginator;
 
 	@FXML
 	private Label schoolName;
+
+	@FXML
+	private TextField salesBillNumStr;
 
 	@FXML
 	private Tab billsTab;
@@ -63,34 +68,41 @@ public class SearchController
 	private TableView<Sales> billData;
 
 	@FXML
+	private Pagination billPaginator;
+
+	@FXML
+	private TextField purBillNumStr;
+
+	@FXML
+	private Tab purBillsTab;
+
+	@FXML
 	private TableView<Purchase> purBillData;
 
 	@FXML
-	private TextField salesBillNumStr;
+	private Pagination purBillPaginator;
 
 	private Map<String, Book> bookMap;
 	private Collector<Book, ?, Map<String, Book>> bookMapCollector = toMap(o -> o.getBookNum() + ": " + o.getName() + " - " + o.getPublisherName(), o -> o);
 
 	@FXML
-	void loadOrders()
+	protected void initialize()
 	{
-		if(this.ordersTab.isSelected())
-		{
-			String searchVal = orderIdStr.getText();
-			List<Order> orderList = schoolService.fetchOrdersForSearchStr(searchVal);
-			orderData.setItems(FXCollections.observableList(orderList));
-		}
+		orderPaginator.setPageFactory(this::createOrderPage);
+//		billPaginator.setPageFactory(this::createBillPage);
+		billPaginator.setPageFactory((Integer pageIndex) -> createBillPage(pageIndex));
+		purBillPaginator.setPageFactory(this::createPurBillPage);
 	}
 
 	@FXML
-	void editOrder(ActionEvent event)
+	void editOrder(Event event)
 	{
 		try
 		{
 			FXMLLoader createOrderLoader = LoadUtils.loadFxml(this, createOrderFxmlFile);
 			Parent addOrderRoot = createOrderLoader.load();
 			AddOrderController ctrl = createOrderLoader.getController();
-			Order selectedOrder = orderData.getSelectionModel().getSelectedItem();
+			Order selectedOrder = orderTable.getSelectionModel().getSelectedItem();
 			List<Book> schools = schoolService.fetchAllBooks();
 			this.bookMap = this.schoolService.fetchAllBooks().stream().collect(this.bookMapCollector);
 
@@ -114,7 +126,7 @@ public class SearchController
 			FXMLLoader createOrderLoader = LoadUtils.loadFxml(this, printOrderFxmlFile);
 			Parent addOrderRoot = createOrderLoader.load();
 			PrintOrderController ctrl = createOrderLoader.getController();
-			Order selectedOrder = orderData.getSelectionModel().getSelectedItem();
+			Order selectedOrder = orderTable.getSelectionModel().getSelectedItem();
 			JasperPrint jasperPrint = ctrl.prepareJasperPrint(selectedOrder);
 			ctrl.initData(jasperPrint);
 			Scene addOrderScene = new Scene(addOrderRoot);
@@ -131,18 +143,8 @@ public class SearchController
 	@FXML
 	void searchOrder(Event event)
 	{
-		loadOrders();
-	}
-
-	@FXML
-	void loadPurchaseBills()
-	{
-		if(this.purBillsTab.isSelected())
-		{
-			String searchVal = purBillNumStr.getText();
-			List<Purchase> purBillList = schoolService.fetchPurchasesForSearchStr(searchVal).getContent();
-			purBillData.setItems(FXCollections.observableList(purBillList));
-		}
+//		loadOrders();
+		orderPaginator.setPageFactory((Integer pageIndex) -> createOrderPage(pageIndex));
 	}
 
 	@FXML
@@ -194,23 +196,6 @@ public class SearchController
 		{
 			LOGGER.error("Error...", e);
 			e.printStackTrace();
-		}
-	}
-
-	@FXML
-	void searchPurchaseBill(Event event)
-	{
-		loadPurchaseBills();
-	}
-
-	@FXML
-	void loadSalesBillsTab()
-	{
-		if(this.billsTab.isSelected())
-		{
-			String searchVal = salesBillNumStr.getText();
-			List<Sales> purBillList = schoolService.fetchBillsForSearchStr(searchVal).getContent();
-			billData.setItems(FXCollections.observableList(purBillList));
 		}
 	}
 
@@ -289,14 +274,16 @@ public class SearchController
 	@FXML
 	void searchBill(Event event)
 	{
-		loadSalesBillsTab();
+//		loadSalesBillsTab();
+		billPaginator.setPageFactory((Integer pageIndex) -> createBillPage(pageIndex));
 	}
 
-//	@FXML
-//	protected void initialize()
-//	{
-//		System.out.println("Initialized");
-//	}
+	@FXML
+	void searchPurchaseBill(Event event)
+	{
+//		loadPurchaseBills();
+		purBillPaginator.setPageFactory((Integer pageIndex) -> createPurBillPage(pageIndex));
+	}
 
 	public void initData(String orderSearchStrIn)
 	{
@@ -321,5 +308,124 @@ public class SearchController
 	{
 		Stage stage = LoadUtils.loadChildStage(e, childScene);
 		stage.showAndWait();
+	}
+
+	private Node createOrderPage(int pageIndex)
+	{
+		loadOrderTable(pageIndex);
+
+		if(orderTable.getItems() != null && !orderTable.getItems().isEmpty())
+		{
+			orderTable.prefHeightProperty().set(ROWS_PER_PAGE * orderTable.getFixedCellSize() + 30);
+		}
+		return new BorderPane(orderTable);
+	}
+
+	private Node createBillPage(int pageIndex)
+	{
+		loadSalesBillsTab(pageIndex);
+
+		if(billData.getItems() != null && !billData.getItems().isEmpty())
+		{
+			billData.prefHeightProperty().set(ROWS_PER_PAGE * billData.getFixedCellSize() + 30);
+		}
+		return new BorderPane(billData);
+	}
+
+	private Node createPurBillPage(int pageIndex)
+	{
+		loadPurchaseBills(pageIndex);
+
+		if(purBillData.getItems() != null && !purBillData.getItems().isEmpty())
+		{
+			purBillData.prefHeightProperty().set(ROWS_PER_PAGE * purBillData.getFixedCellSize() + 30);
+		}
+		return new BorderPane(purBillData);
+	}
+
+	@FXML
+	public void loadOrderTable(int idx)
+	{
+		if(this.ordersTab.isSelected())
+		{
+			String searchVal = orderIdStr.getText();
+			Page<Order> orderPages = schoolService.fetchOrdersForSearchStr(searchVal, idx, ROWS_PER_PAGE);
+			List<Order> orderList = orderPages.getContent();
+			this.orderPaginator.setPageCount(orderPages.getTotalPages());
+			this.orderTable.setItems(FXCollections.observableList(orderList));
+
+			this.orderTable.setOnMouseClicked(ev -> {
+				if(verifyDblClick(ev)) editOrder(ev);
+			});
+
+//			orderData.setItems(FXCollections.observableList(orderList));
+		}
+//		Page<Order> orderPages = schoolService.fetchOrders(pub, idx, ROWS_PER_PAGE, billedToggle.isSelected());
+	}
+
+	@FXML
+	void loadSalesBillsTab(int idx)
+	{
+		if(this.billsTab.isSelected())
+		{
+			String searchVal = salesBillNumStr.getText();
+			Page<Sales> purBillList = schoolService.fetchBillsForSearchStr(searchVal, idx, ROWS_PER_PAGE);
+//			billData.setItems(FXCollections.observableList(purBillList));
+
+			List<Sales> orderList = purBillList.getContent();
+			this.billPaginator.setPageCount(purBillList.getTotalPages());
+			this.billData.setItems(FXCollections.observableList(orderList));
+
+			this.billData.setOnMouseClicked(ev -> {
+				if(verifyDblClick(ev)) editBill(ev);
+			});
+		}
+	}
+
+	@FXML
+	void loadPurchaseBills(int idx)
+	{
+		if (this.purBillsTab.isSelected()) {
+			String searchVal = purBillNumStr.getText();
+//			List<Purchase> purBillList = schoolService.fetchPurchasesForSearchStr(searchVal).getContent();
+//			purBillData.setItems(FXCollections.observableList(purBillList));
+
+			Page<Purchase> purBillList = schoolService.fetchPurchasesForSearchStr(searchVal, idx, ROWS_PER_PAGE);
+//			billData.setItems(FXCollections.observableList(purBillList));
+
+			List<Purchase> orderList = purBillList.getContent();
+			this.purBillPaginator.setPageCount(purBillList.getTotalPages());
+			this.purBillData.setItems(FXCollections.observableList(orderList));
+
+			this.billData.setOnMouseClicked(ev -> {
+				if (verifyDblClick(ev)) editPurBill(ev);
+			});
+		}
+	}
+
+	@FXML
+	public void loadOrderTable()
+	{
+		int pageNum = 0;
+		loadOrderTable(pageNum);
+	}
+
+	@FXML
+	void loadPurchaseBills() {
+		int pageNum = 0;
+//		loadPurchaseBills(pageNum);
+		if (this.purBillsTab.isSelected()) {
+			purBillPaginator.setPageFactory(this::createPurBillPage);
+		}
+	}
+
+	@FXML
+	void loadSalesBillsTab()
+	{
+		int pageNum = 0;
+//		loadSalesBillsTab(pageNum);
+		if (this.billsTab.isSelected()) {
+			billPaginator.setPageFactory((Integer pageIndex) -> createBillPage(pageIndex));
+		}
 	}
 }

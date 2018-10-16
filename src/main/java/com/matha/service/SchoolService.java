@@ -224,12 +224,14 @@ public class SchoolService
 		return orderItemRepository.findAll();
 	}
 
-	public List<Order> fetchOrdersForSearchStr(String searchStr)
+	public Page<Order> fetchOrdersForSearchStr(String searchStr, int page, int size)
 	{
-		int page = 0;
-		int size = 10;
+//		int page = 0;
+//		int size = 10;
+//		PageRequest pageable = new PageRequest(page, size, Direction.ASC, "calcSerialNum");
 		PageRequest pageable = new PageRequest(page, size, Direction.DESC, "orderDate");
-		return orderRepository.fetchOrdersForSearchStr(searchStr, pageable).getContent();
+
+		return orderRepository.findOrdersBySerialNoStartingWith(searchStr, pageable);
 	}
 
 	public List<OrderItem> fetchOrderItemsForPublisher(Publisher pub)
@@ -863,10 +865,10 @@ public class SchoolService
 		return purchaseRepoitory.findAllByPublisher(pub, pageable);
 	}
 
-	public Page<Purchase> fetchPurchasesForSearchStr(String searchStr)
+	public Page<Purchase> fetchPurchasesForSearchStr(String searchStr, int page, int size)
 	{
-		int page = 0;
-		int size = 10;
+//		int page = 0;
+//		int size = 10;
 		PageRequest pageable = new PageRequest(page, size, Direction.DESC, "purchaseDate");
 		return purchaseRepoitory.findByInvoiceNoLike(searchStr + "%", pageable);
 	}
@@ -1391,10 +1393,10 @@ public class SchoolService
 		return salesRepository.findAllBySchool(school);
 	}
 
-	public Page<Sales> fetchBillsForSearchStr(String searchStr)
+	public Page<Sales> fetchBillsForSearchStr(String searchStr, int page, int size)
 	{
-		int page = 0;
-		int size = 10;
+//		int page = 0;
+//		int size = 10;
 		PageRequest pageable = new PageRequest(page, size, Direction.DESC, "txnDate");
 		return salesRepository.findAllByIdLike(searchStr + "%", pageable);
 	}

@@ -21,6 +21,7 @@ import com.microsoft.sqlserver.jdbc.SQLServerException;
 import org.apache.commons.lang.StringUtils;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
+import org.controlsfx.control.textfield.AutoCompletionBinding;
 import org.controlsfx.control.textfield.TextFields;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.dao.DataIntegrityViolationException;
@@ -274,7 +275,10 @@ public class AddPurchaseBillController
 		bookMap = bookMapIn;
 
 		List<String> items = new ArrayList<>(bookMap.keySet());
-		TextFields.bindAutoCompletion(bookName, items);
+//		TextFields.bindAutoCompletion(bookName, items);
+		AutoCompletionBinding<String> bookNameBinding = TextFields.bindAutoCompletion(bookName, items);
+		bookNameBinding.prefWidthProperty().bind(this.bookName.widthProperty().multiply(1.4));
+
 
 		discType.selectedToggleProperty().addListener(new ChangeListener<Toggle>() {
 			public void changed(ObservableValue<? extends Toggle> ov, Toggle old_toggle, Toggle new_toggle)
@@ -305,28 +309,35 @@ public class AddPurchaseBillController
 	@FXML
 	void addBookData(ActionEvent event)
 	{
-		String bookStr = this.bookName.getText();
-		Book book = this.bookMap.get(bookStr);
-		if(book == null)
+		try
 		{
-			showErrorAlert("Invalid Book", "Invalid Book Entry", bookStr + " does not correspond to a valid Book Entry");
-			return;
+			String bookStr = this.bookName.getText();
+			Book book = this.bookMap.get(bookStr);
+			if (book == null) {
+				showErrorAlert("Invalid Book", "Invalid Book Entry", bookStr + " does not correspond to a valid Book Entry");
+				return;
+			}
+
+			int idx = this.addedBooks.getItems().size();
+			PurchaseDet itemIn = new PurchaseDet(++idx,
+					getIntegerVal(this.quantity),
+					getDoubleVal(this.price),
+					book);
+
+			this.addedBooks.getItems().add(itemIn);
+			LOGGER.debug("Added Item: " + itemIn);
+
+			loadSubTotal();
+			String discAmtStr = StringUtils.defaultString(discAmt.getText());
+			calcNetAmount(discAmtStr);
+			clearBookFields();
+			this.bookName.requestFocus();
 		}
-
-		int idx = this.addedBooks.getItems().size();
-		PurchaseDet itemIn = new PurchaseDet(++idx,
-				Integer.parseInt(this.quantity.getText()),
-				Double.parseDouble(this.price.getText()),
-				book);
-
-		this.addedBooks.getItems().add(itemIn);
-		LOGGER.debug("Added Item: " + itemIn);
-
-		loadSubTotal();
-		String discAmtStr = StringUtils.defaultString(discAmt.getText());
-		calcNetAmount(discAmtStr);
-		clearBookFields();
-		this.bookName.requestFocus();
+		catch (Exception e)
+		{
+			LOGGER.error("An Error Occurred", e);
+			showErrorAlert("Error", "UnExpected Error", e.getMessage());
+		}
 	}
 
 	private void loadBooksAndSubTotal(Set<Order> ordersIn)
