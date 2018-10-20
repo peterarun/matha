@@ -43,7 +43,7 @@
 	<background>
 		<band height="802">
 			<staticText>
-				<reportElement x="0" y="164" width="50" height="562" uuid="d2b17155-b299-483e-b2a8-fb5cb6abd559"/>
+				<reportElement x="0" y="177" width="50" height="540" uuid="d2b17155-b299-483e-b2a8-fb5cb6abd559"/>
 				<box>
 					<topPen lineWidth="1.0"/>
 					<leftPen lineWidth="1.0"/>
@@ -53,7 +53,7 @@
 				<text><![CDATA[]]></text>
 			</staticText>
 			<staticText>
-				<reportElement x="50" y="164" width="450" height="562" uuid="68b62f7c-b082-42ac-81c9-ada0b9c782f2"/>
+				<reportElement x="50" y="177" width="450" height="540" uuid="68b62f7c-b082-42ac-81c9-ada0b9c782f2"/>
 				<box>
 					<topPen lineWidth="1.0"/>
 					<leftPen lineWidth="1.0"/>
@@ -63,7 +63,7 @@
 				<text><![CDATA[]]></text>
 			</staticText>
 			<staticText>
-				<reportElement x="500" y="164" width="55" height="562" uuid="c2d5771d-d7b2-4b44-9a47-afdedb64771f"/>
+				<reportElement x="500" y="177" width="55" height="540" uuid="c2d5771d-d7b2-4b44-9a47-afdedb64771f"/>
 				<box>
 					<topPen lineWidth="1.0"/>
 					<leftPen lineWidth="1.0"/>
@@ -118,7 +118,7 @@
 				<textElement textAlignment="Center" verticalAlignment="Middle"/>
 				<text><![CDATA[:]]></text>
 			</staticText>
-			<textField>
+			<textField isBlankWhenNull="true">
 				<reportElement x="393" y="100" width="162" height="15" uuid="76427c8f-57e6-44bc-96db-37ea65cd6621"/>
 				<box>
 					<pen lineWidth="1.0"/>
@@ -130,7 +130,7 @@
 				<textElement verticalAlignment="Middle"/>
 				<textFieldExpression><![CDATA[$P{txnDate}]]></textFieldExpression>
 			</textField>
-			<textField>
+			<textField isBlankWhenNull="true">
 				<reportElement x="393" y="85" width="162" height="15" uuid="f64ffee2-4213-42fe-ad39-a9a5416bb5e4"/>
 				<box topPadding="2">
 					<topPen lineWidth="1.0"/>
@@ -215,7 +215,7 @@
 				<textElement textAlignment="Center" verticalAlignment="Middle"/>
 				<text><![CDATA[:]]></text>
 			</staticText>
-			<textField>
+			<textField isBlankWhenNull="true">
 				<reportElement x="393" y="115" width="162" height="15" uuid="8d3309cb-e6ce-4ecc-9409-61fbd2af398f"/>
 				<box>
 					<pen lineWidth="1.0"/>
@@ -227,7 +227,7 @@
 				<textElement verticalAlignment="Middle"/>
 				<textFieldExpression><![CDATA[$P{deliveryDate}]]></textFieldExpression>
 			</textField>
-			<textField>
+			<textField isBlankWhenNull="true">
 				<reportElement stretchType="RelativeToTallestObject" x="393" y="130" width="162" height="15" uuid="b4dac72f-fb7a-4994-8da6-cd833fb2f1dc"/>
 				<box>
 					<pen lineWidth="1.0"/>
@@ -241,7 +241,7 @@
 			</textField>
 			<frame>
 				<reportElement positionType="Float" x="0" y="145" width="555" height="15" uuid="38e34f1d-5cc0-479d-9a7b-49a31332d04f"/>
-				<textField>
+				<textField isBlankWhenNull="true">
 					<reportElement x="50" y="0" width="230" height="15" uuid="048f987b-cc64-4b99-aa28-d3f50ea9eec9"/>
 					<box leftPadding="2">
 						<bottomPen lineWidth="1.0"/>
@@ -285,7 +285,7 @@
 					<topPen lineWidth="1.0"/>
 					<leftPen lineWidth="1.0"/>
 					<bottomPen lineWidth="1.0"/>
-					<rightPen lineWidth="0.0"/>
+					<rightPen lineWidth="0.25"/>
 				</box>
 				<textElement textAlignment="Center" verticalAlignment="Middle">
 					<font isBold="true"/>
@@ -296,7 +296,7 @@
 				<reportElement positionType="Float" x="50" y="0" width="450" height="15" uuid="99def2ce-03d7-4617-831f-c57a0276a177"/>
 				<box leftPadding="2" rightPadding="2">
 					<topPen lineWidth="1.0"/>
-					<leftPen lineWidth="0.0"/>
+					<leftPen lineWidth="1.0"/>
 					<bottomPen lineWidth="1.0"/>
 					<rightPen lineWidth="1.0"/>
 				</box>

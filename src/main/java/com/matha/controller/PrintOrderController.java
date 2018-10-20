@@ -10,6 +10,7 @@ import static java.util.stream.Collectors.toList;
 
 import java.io.ByteArrayOutputStream;
 import java.io.File;
+import java.io.IOException;
 import java.io.InputStream;
 import java.nio.charset.Charset;
 import java.util.Arrays;
@@ -119,7 +120,20 @@ public class PrintOrderController
 			LOGGER.error("Error...", e);
 			e.printStackTrace();
 		}
-
+		finally
+		{
+			if(jasperStream != null)
+			{
+				try
+				{
+					jasperStream.close();
+				}
+				catch (IOException e)
+				{
+					e.printStackTrace();
+				}
+			}
+		}
 		return jasperPrint;
 	}
 	
