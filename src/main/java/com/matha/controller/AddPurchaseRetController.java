@@ -5,6 +5,8 @@ import static com.matha.util.UtilConstants.PERCENT_SIGN;
 import static com.matha.util.UtilConstants.RUPEE_SIGN;
 import static com.matha.util.Utils.*;
 import static java.util.Comparator.comparing;
+import static org.apache.commons.lang3.StringUtils.isBlank;
+import static org.apache.commons.lang3.StringUtils.isEmpty;
 
 import java.time.LocalDate;
 import java.util.ArrayList;
@@ -20,11 +22,13 @@ import com.matha.util.Utils;
 import javafx.beans.value.ChangeListener;
 import javafx.beans.value.ObservableValue;
 import javafx.scene.control.*;
-import org.apache.commons.lang.StringUtils;
+import org.apache.commons.lang3.StringUtils;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.controlsfx.control.textfield.TextFields;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.config.ConfigurableBeanFactory;
+import org.springframework.context.annotation.Scope;
 import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.stereotype.Component;
 
@@ -37,6 +41,7 @@ import javafx.fxml.FXML;
 import javafx.stage.Stage;
 
 @Component
+@Scope(value = ConfigurableBeanFactory.SCOPE_PROTOTYPE)
 public class AddPurchaseRetController
 {
 
@@ -176,7 +181,7 @@ public class AddPurchaseRetController
 	private void calcNetAmount(String discAmtStr)
 	{
 		String netTotalStr = netTotal.getText();
-		Double netTotalDbl = StringUtils.isEmpty(netTotalStr) ? 0.0 : Double.parseDouble(netTotalStr);
+		Double netTotalDbl = isEmpty(netTotalStr) ? 0.0 : Double.parseDouble(netTotalStr);
 
 		String subTotalStr = this.subTotal.getText();
 		double discVal = 0;
@@ -185,7 +190,7 @@ public class AddPurchaseRetController
 			double subTotalDbl = Double.parseDouble(subTotalStr);
 			if (subTotalDbl > 0)
 			{
-				double discAmtDbl = StringUtils.isEmpty(discAmtStr) ? 0 : Double.parseDouble(discAmtStr);
+				double discAmtDbl = isEmpty(discAmtStr) ? 0 : Double.parseDouble(discAmtStr);
 				if (discAmtDbl > 0)
 				{
 					if (rupeeRad.isSelected())
@@ -260,7 +265,7 @@ public class AddPurchaseRetController
 		boolean valid = true;
 		StringBuilder errorMsg = new StringBuilder();
 
-		if(this.subTotal.getText() == null)
+		if(isBlank(this.subTotal.getText()))
 		{
 			errorMsg.append("Please provide an Amount");
 			errorMsg.append(NEW_LINE);
@@ -273,7 +278,7 @@ public class AddPurchaseRetController
 			valid = false;
 		}
 		String creditNoteNum = this.creditNoteNum.getText();
-		if (creditNoteNum == null)
+		if (isBlank(creditNoteNum))
 		{
 			errorMsg.append("Please provide a Credit Note Number");
 			valid = false;
@@ -356,7 +361,7 @@ public class AddPurchaseRetController
 	private void updateNetAmt()
 	{
 		String discAmtStr = StringUtils.defaultString(discText.getText());
-		if (!StringUtils.isEmpty(discAmtStr))
+		if (!isEmpty(discAmtStr))
 		{
 			calcNetAmount(discAmtStr);
 		}

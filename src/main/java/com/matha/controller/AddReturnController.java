@@ -1,38 +1,36 @@
 package com.matha.controller;
 
-import static com.matha.util.UtilConstants.NEW_LINE;
-import static com.matha.util.UtilConstants.PERCENT_SIGN;
-import static com.matha.util.UtilConstants.RUPEE_SIGN;
-import static com.matha.util.Utils.*;
-import static java.util.Comparator.comparing;
-import static java.util.stream.Collectors.toList;
-
-import java.util.*;
-import java.util.concurrent.atomic.AtomicInteger;
-import java.util.stream.Collector;
-import java.util.stream.Collectors;
-
 import com.matha.domain.*;
+import com.matha.service.SchoolService;
 import javafx.beans.value.ChangeListener;
 import javafx.beans.value.ObservableValue;
-import javafx.scene.control.*;
-import org.apache.commons.lang.StringUtils;
-import org.apache.logging.log4j.LogManager;
-import org.apache.logging.log4j.Logger;
-import org.controlsfx.control.textfield.TextFields;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.dao.DataIntegrityViolationException;
-import org.springframework.stereotype.Component;
-
-import com.matha.service.SchoolService;
-
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
+import javafx.scene.control.*;
 import javafx.stage.Stage;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
+import org.controlsfx.control.textfield.TextFields;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.config.ConfigurableBeanFactory;
+import org.springframework.context.annotation.Scope;
+import org.springframework.dao.DataIntegrityViolationException;
+import org.springframework.stereotype.Component;
+
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Map;
+import java.util.stream.Collector;
+import java.util.stream.Collectors;
+
+import static com.matha.util.UtilConstants.*;
+import static com.matha.util.Utils.*;
+import static org.apache.commons.lang3.StringUtils.*;
 
 @Component
+@Scope(value = ConfigurableBeanFactory.SCOPE_PROTOTYPE)
 public class AddReturnController
 {
 
@@ -202,7 +200,7 @@ public class AddReturnController
 	{
 		boolean valid = true;
 		StringBuilder errorMsg = new StringBuilder();
-		if (this.creditNoteNum.getText() == null)
+		if (isBlank(this.creditNoteNum.getText()))
 		{
 			errorMsg.append("Please provide a Credit Note Number");
 			errorMsg.append(NEW_LINE);
@@ -256,7 +254,7 @@ public class AddReturnController
 			salesTxn.setNote(this.notes.getText());
 
 			String subTotalStr = this.netTotal.getText();
-			if (StringUtils.isNotBlank(subTotalStr)) {
+			if (isNotBlank(subTotalStr)) {
 				salesTxn.setAmount(Double.parseDouble(subTotalStr));
 			}
 
@@ -294,8 +292,8 @@ public class AddReturnController
 
 	private void updateNetAmt()
 	{
-		String discAmtStr = StringUtils.defaultString(discText.getText());
-		if (!StringUtils.isEmpty(discAmtStr))
+		String discAmtStr = defaultString(discText.getText());
+		if (!isEmpty(discAmtStr))
 		{
 			calcNetAmount(discAmtStr);
 		}
@@ -304,7 +302,7 @@ public class AddReturnController
 	private void calcNetAmount(String discAmtStr)
 	{
 		String netTotalStr = netTotal.getText();
-		Double netTotalDbl = StringUtils.isEmpty(netTotalStr) ? 0.0 : Double.parseDouble(netTotalStr);
+		Double netTotalDbl = isEmpty(netTotalStr) ? 0.0 : Double.parseDouble(netTotalStr);
 
 		String subTotalStr = this.subTotal.getText();
 		double discVal = 0;
@@ -313,7 +311,7 @@ public class AddReturnController
 			double subTotalDbl = Double.parseDouble(subTotalStr);
 			if (subTotalDbl > 0)
 			{
-				double discAmtDbl = StringUtils.isEmpty(discAmtStr) ? 0 : Double.parseDouble(discAmtStr);
+				double discAmtDbl = isEmpty(discAmtStr) ? 0 : Double.parseDouble(discAmtStr);
 				if (rupeeRad.isSelected())
 				{
 					discVal = discAmtDbl;

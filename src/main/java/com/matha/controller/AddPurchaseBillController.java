@@ -1,34 +1,7 @@
 package com.matha.controller;
 
-import static com.matha.util.UtilConstants.DATE_CONV;
-import static com.matha.util.UtilConstants.NEW_LINE;
-import static com.matha.util.UtilConstants.PERCENT_SIGN;
-import static com.matha.util.UtilConstants.RUPEE_SIGN;
-import static com.matha.util.Utils.*;
-import static java.util.Comparator.comparing;
-import static java.util.stream.Collectors.summingDouble;
-import static java.util.stream.Collectors.toList;
-import static java.util.stream.Collectors.toMap;
-
-import java.time.LocalDate;
-import java.util.*;
-import java.util.concurrent.atomic.AtomicInteger;
-import java.util.stream.Collector;
-import java.util.stream.Collectors;
-
 import com.matha.domain.*;
-import com.microsoft.sqlserver.jdbc.SQLServerException;
-import org.apache.commons.lang.StringUtils;
-import org.apache.logging.log4j.LogManager;
-import org.apache.logging.log4j.Logger;
-import org.controlsfx.control.textfield.AutoCompletionBinding;
-import org.controlsfx.control.textfield.TextFields;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.dao.DataIntegrityViolationException;
-import org.springframework.stereotype.Component;
-
 import com.matha.service.SchoolService;
-
 import javafx.beans.binding.Bindings;
 import javafx.beans.value.ChangeListener;
 import javafx.beans.value.ObservableValue;
@@ -37,22 +10,36 @@ import javafx.collections.ObservableList;
 import javafx.event.ActionEvent;
 import javafx.event.EventHandler;
 import javafx.fxml.FXML;
-import javafx.scene.control.Button;
-import javafx.scene.control.DatePicker;
-import javafx.scene.control.Label;
-import javafx.scene.control.ListView;
-import javafx.scene.control.RadioButton;
-import javafx.scene.control.TableColumn;
+import javafx.scene.control.*;
 import javafx.scene.control.TableColumn.CellEditEvent;
-import javafx.scene.control.TableView;
-import javafx.scene.control.TextArea;
-import javafx.scene.control.TextField;
-import javafx.scene.control.Toggle;
-import javafx.scene.control.ToggleGroup;
 import javafx.scene.control.cell.TextFieldTableCell;
 import javafx.stage.Stage;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
+import org.controlsfx.control.textfield.AutoCompletionBinding;
+import org.controlsfx.control.textfield.TextFields;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.config.ConfigurableBeanFactory;
+import org.springframework.context.annotation.Scope;
+import org.springframework.dao.DataIntegrityViolationException;
+import org.springframework.stereotype.Component;
+
+import java.time.LocalDate;
+import java.util.*;
+import java.util.concurrent.atomic.AtomicInteger;
+import java.util.stream.Collector;
+import java.util.stream.Collectors;
+
+import static com.matha.util.UtilConstants.*;
+import static com.matha.util.Utils.*;
+import static java.util.Comparator.comparing;
+import static java.util.stream.Collectors.*;
+import static org.apache.commons.lang3.StringUtils.defaultString;
+import static org.apache.commons.lang3.StringUtils.isBlank;
+import static org.apache.commons.lang3.StringUtils.isEmpty;
 
 @Component
+@Scope(value = ConfigurableBeanFactory.SCOPE_PROTOTYPE)
 public class AddPurchaseBillController
 {
 
@@ -328,7 +315,7 @@ public class AddPurchaseBillController
 			LOGGER.debug("Added Item: " + itemIn);
 
 			loadSubTotal();
-			String discAmtStr = StringUtils.defaultString(discAmt.getText());
+			String discAmtStr = defaultString(discAmt.getText());
 			calcNetAmount(discAmtStr);
 			clearBookFields();
 			this.bookName.requestFocus();
@@ -396,8 +383,8 @@ public class AddPurchaseBillController
 	@FXML
 	private void updateNetAmt()
 	{
-		String discAmtStr = StringUtils.defaultString(discAmt.getText());		
-		if (!StringUtils.isEmpty(discAmtStr))
+		String discAmtStr = defaultString(discAmt.getText());
+		if (!isEmpty(discAmtStr))
 		{
 			calcNetAmount(discAmtStr);
 		}
@@ -423,14 +410,14 @@ public class AddPurchaseBillController
 	private void calcNetAmount(String discAmtStr)
 	{
 		String netTotalStr = netAmt.getText();
-		Double netTotalDbl = StringUtils.isEmpty(netTotalStr) ? 0.0 : Double.parseDouble(netTotalStr);
+		Double netTotalDbl = isEmpty(netTotalStr) ? 0.0 : Double.parseDouble(netTotalStr);
 
 		String subTotalStr = this.subTotal.getText();
 		double discVal = 0;
 		if (subTotalStr != null)
 		{
 			double subTotalDbl = Double.parseDouble(subTotalStr);
-			double discAmtDbl = StringUtils.isEmpty(discAmtStr) ? 0 : Double.parseDouble(discAmtStr);
+			double discAmtDbl = isEmpty(discAmtStr) ? 0 : Double.parseDouble(discAmtStr);
 
 			if (subTotalDbl > 0)
 			{
@@ -512,7 +499,7 @@ public class AddPurchaseBillController
 	{
 		boolean valid = true;
 		StringBuilder errorMsg = new StringBuilder();
-		if (StringUtils.isBlank(this.invoiceNum.getText()))
+		if (isBlank(this.invoiceNum.getText()))
 		{
 			errorMsg.append("Please provide an Invoice number");
 			errorMsg.append(NEW_LINE);

@@ -14,6 +14,8 @@ import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.beans.factory.config.ConfigurableBeanFactory;
+import org.springframework.context.annotation.Scope;
 import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.stereotype.Component;
 
@@ -23,8 +25,10 @@ import java.util.List;
 
 import static com.matha.util.UtilConstants.NEW_LINE;
 import static com.matha.util.Utils.showErrorAlert;
+import static org.apache.commons.lang3.StringUtils.isBlank;
 
 @Component
+@Scope(value = ConfigurableBeanFactory.SCOPE_PROTOTYPE)
 public class AddPaymentController
 {
 
@@ -97,13 +101,13 @@ public class AddPaymentController
 	{
 		boolean valid = true;
 		StringBuilder errorMsg = new StringBuilder();
-		if(this.receiptNum.getText() == null)
+		if(isBlank(this.receiptNum.getText()))
 		{
 			errorMsg.append("Please provide a Receipt Number");
 			errorMsg.append(NEW_LINE);
 			valid = false;
 		}
-		if(this.amount.getText() == null)
+		if(isBlank(this.amount.getText()))
 		{
 			errorMsg.append("Please provide an Amount");
 			errorMsg.append(NEW_LINE);

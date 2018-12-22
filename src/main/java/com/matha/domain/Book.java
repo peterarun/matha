@@ -30,7 +30,14 @@ public class Book implements Comparable<Book>
 
 	public String getPublisherName()
 	{
-		return publisher.getName();
+		if(publisher != null)
+		{
+			return publisher.getName();
+		}
+		else
+		{
+			return null;
+		}
 	}
 
 	public Integer getId() {

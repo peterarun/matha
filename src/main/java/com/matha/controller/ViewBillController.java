@@ -15,6 +15,8 @@ import java.util.stream.Collectors;
 
 import com.matha.domain.*;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.beans.factory.config.ConfigurableBeanFactory;
+import org.springframework.context.annotation.Scope;
 import org.springframework.stereotype.Component;
 
 import javafx.collections.FXCollections;
@@ -31,6 +33,7 @@ import javafx.scene.control.TextField;
 import javafx.scene.control.ToggleGroup;
 
 @Component
+@Scope(value = ConfigurableBeanFactory.SCOPE_PROTOTYPE)
 public class ViewBillController
 {
 

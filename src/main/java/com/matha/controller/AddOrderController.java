@@ -17,6 +17,8 @@ import org.apache.logging.log4j.Logger;
 import org.controlsfx.control.textfield.AutoCompletionBinding;
 import org.controlsfx.control.textfield.TextFields;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.config.ConfigurableBeanFactory;
+import org.springframework.context.annotation.Scope;
 import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.stereotype.Component;
 
@@ -28,8 +30,10 @@ import static com.matha.util.UtilConstants.NEW_LINE;
 import static com.matha.util.Utils.*;
 import static java.util.Comparator.comparing;
 import static java.util.stream.Collectors.toList;
+import static org.apache.commons.lang3.StringUtils.isBlank;
 
 @Component
+@Scope(value = ConfigurableBeanFactory.SCOPE_PROTOTYPE)
 public class AddOrderController
 {
 
@@ -254,7 +258,7 @@ public class AddOrderController
 	{
 		boolean valid = true;
 		StringBuilder errorMsg = new StringBuilder();
-		if (StringUtils.isBlank(this.orderNum.getText()))
+		if (isBlank(this.orderNum.getText()))
 		{
 			errorMsg.append("Please provide an Order Number");
 			errorMsg.append(NEW_LINE);

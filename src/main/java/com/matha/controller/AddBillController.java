@@ -14,13 +14,14 @@ import javafx.scene.control.*;
 import javafx.scene.control.TableColumn.CellEditEvent;
 import javafx.scene.control.cell.TextFieldTableCell;
 import javafx.stage.Stage;
-import org.apache.commons.lang.StringUtils;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.controlsfx.control.textfield.AutoCompletionBinding;
 import org.controlsfx.control.textfield.TextFields;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.beans.factory.config.ConfigurableBeanFactory;
+import org.springframework.context.annotation.Scope;
 import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.stereotype.Component;
 
@@ -34,8 +35,12 @@ import static com.matha.util.Utils.*;
 import static java.util.Comparator.comparing;
 import static java.util.stream.Collectors.toList;
 import static java.util.stream.Collectors.toSet;
+import static org.apache.commons.lang3.StringUtils.defaultString;
+import static org.apache.commons.lang3.StringUtils.isBlank;
+import static org.apache.commons.lang3.StringUtils.isEmpty;
 
 @Component
+@Scope(value = ConfigurableBeanFactory.SCOPE_PROTOTYPE)
 public class AddBillController
 {
 
@@ -215,7 +220,7 @@ public class AddBillController
 			Bindings.format("%.2f", cellData.getValue().getTotalSold())
 		);
 		
-		if(StringUtils.isBlank(this.invoiceNum.getText()))
+		if(isBlank(this.invoiceNum.getText()))
 		{
 			Integer newInvNum = schoolService.fetchNextSalesInvoiceNum(calcFinYear(LocalDate.now()));
 			LOGGER.info("newInvNum " + newInvNum);
@@ -327,7 +332,7 @@ public class AddBillController
 	@FXML
 	private void updateNetAmtAfter()
 	{
-		String discAmtStr = StringUtils.defaultString(discAmt.getText());		
+		String discAmtStr = defaultString(discAmt.getText());
 		calcNetAmount(discAmtStr, otherCharges.getText());
 	}
 	
@@ -375,7 +380,7 @@ public class AddBillController
 	{
 		boolean valid = true;
 		StringBuilder errorMsg = new StringBuilder();
-		if(this.invoiceNum.getText() == null)
+		if(isBlank(this.invoiceNum.getText()))
 		{
 			errorMsg.append("Please provide an Invoice Number");
 			errorMsg.append(NEW_LINE);
@@ -424,7 +429,7 @@ public class AddBillController
 				salesTxn = sale.getSalesTxn();
 			}
 
-			if (!StringUtils.isEmpty(discAmt.getText()))
+			if (!isEmpty(discAmt.getText()))
 			{
 				Double discAmtVal = Double.parseDouble(discAmt.getText());
 				sale.setDiscAmt(discAmtVal);
@@ -441,7 +446,7 @@ public class AddBillController
 
 			List<SalesDet> orderItems = new ArrayList<>(this.addedBooks.getItems());
 
-			if (!StringUtils.isEmpty(subTotal.getText()))
+			if (!isEmpty(subTotal.getText()))
 			{
 				Double subTotalVal = Double.parseDouble(subTotal.getText());
 				sale.setSubTotal(subTotalVal);

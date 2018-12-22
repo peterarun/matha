@@ -6,6 +6,8 @@ import java.util.List;
 import java.util.Set;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.config.ConfigurableBeanFactory;
+import org.springframework.context.annotation.Scope;
 import org.springframework.stereotype.Component;
 
 import com.matha.domain.District;
@@ -24,6 +26,7 @@ import javafx.scene.control.TextField;
 import javafx.stage.Stage;
 
 @Component
+@Scope(value = ConfigurableBeanFactory.SCOPE_PROTOTYPE)
 public class AddSchoolController {
 
 	@Autowired
@@ -71,8 +74,9 @@ public class AddSchoolController {
 	private School school;
 
 	@FXML
-	protected void initialize() {
-
+	protected void initialize()
+	{
+		this.school = null;
 		List<State> stateList = schoolService.fetchAllStates();
 		states.setConverter(Converters.getStateConverter());
 		states.setItems(FXCollections.observableList(stateList));

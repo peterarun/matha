@@ -6,6 +6,8 @@ import java.util.List;
 import com.matha.util.Converters;
 import javafx.scene.control.*;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.config.ConfigurableBeanFactory;
+import org.springframework.context.annotation.Scope;
 import org.springframework.stereotype.Component;
 
 import com.matha.domain.CashBook;
@@ -23,6 +25,7 @@ import static com.matha.util.Utils.*;
 import static javafx.collections.FXCollections.observableList;
 
 @Component
+@Scope(value = ConfigurableBeanFactory.SCOPE_PROTOTYPE)
 public class AddTxnController {
 
     @FXML

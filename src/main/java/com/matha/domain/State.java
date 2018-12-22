@@ -1,5 +1,7 @@
 package com.matha.domain;
 
+import org.apache.commons.lang3.StringUtils;
+
 import java.io.Serializable;
 import java.util.Set;
 
@@ -70,20 +72,14 @@ public class State implements Serializable
 	public boolean equals(Object obj)
 	{
 		if (this == obj)
-			return true;
-		if (obj == null)
-			return false;
-		if (getClass() != obj.getClass())
-			return false;
-		State other = (State) obj;
-		if (id == null)
 		{
-			if (other.id != null)
-				return false;
+			return true;
 		}
-		else if (!id.equals(other.id))
+		if (obj == null || getClass() != obj.getClass())
+		{
 			return false;
-		return true;
+		}
+		State other = (State) obj;
+		return StringUtils.equalsIgnoreCase(other.id, this.id);
 	}
-
 }

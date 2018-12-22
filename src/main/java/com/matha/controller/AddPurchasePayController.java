@@ -4,14 +4,17 @@ import static com.matha.util.UtilConstants.NEW_LINE;
 import static com.matha.util.Utils.getDoubleVal;
 import static com.matha.util.Utils.getStringVal;
 import static com.matha.util.Utils.showErrorAlert;
+import static org.apache.commons.lang3.StringUtils.defaultString;
+import static org.apache.commons.lang3.StringUtils.isBlank;
 
 import javafx.collections.FXCollections;
 import javafx.scene.control.*;
-import org.apache.commons.lang.StringUtils;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.beans.factory.config.ConfigurableBeanFactory;
+import org.springframework.context.annotation.Scope;
 import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.stereotype.Component;
 
@@ -29,6 +32,7 @@ import java.util.Arrays;
 import java.util.List;
 
 @Component
+@Scope(value = ConfigurableBeanFactory.SCOPE_PROTOTYPE)
 public class AddPurchasePayController
 {
 
@@ -101,7 +105,7 @@ public class AddPurchasePayController
 	{
 		boolean valid = true;
 		StringBuilder errorMsg = new StringBuilder();
-		if(this.amount.getText() == null)
+		if(isBlank(this.amount.getText()))
 		{
 			errorMsg.append("Please provide an Amount");
 			errorMsg.append(NEW_LINE);
@@ -136,7 +140,7 @@ public class AddPurchasePayController
 				amount.setText(getStringVal(schoolPaymentIn.getSalesTxn().getAmount()));
 			}
 			refNum.setText(schoolPaymentIn.getReferenceNum());
-			notes.setText(StringUtils.defaultString(schoolPaymentIn.getSalesTxn().getNote()));
+			notes.setText(defaultString(schoolPaymentIn.getSalesTxn().getNote()));
 		}
 		else
 		{

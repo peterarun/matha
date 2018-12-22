@@ -10,7 +10,12 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 
+import com.matha.domain.School;
+import javafx.event.Event;
+import javafx.scene.Node;
 import javafx.scene.control.*;
+import javafx.scene.input.MouseButton;
+import javafx.scene.input.MouseEvent;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
@@ -78,6 +83,13 @@ public class BookController
 		this.pubCol.prefWidthProperty().bind(this.tableView.widthProperty().multiply(0.22));
 		this.invCol.prefWidthProperty().bind(this.tableView.widthProperty().multiply(0.11));
 		this.prcCol.prefWidthProperty().bind(this.tableView.widthProperty().multiply(0.12));
+
+		tableView.setOnMouseClicked(mouseEvent -> {
+			if (mouseEvent.getButton().equals(MouseButton.PRIMARY) && mouseEvent.getClickCount() == 2)
+			{
+				editBook(mouseEvent);
+			}
+		});
 	}
 
 	private void loadDataName(String text)
@@ -116,9 +128,13 @@ public class BookController
 		{
 			this.loadDataFromNum(this.bookNum.getText());
 		}
-		else
+		else if(StringUtils.isNotBlank(this.bookName.getText()))
 		{
 			this.loadDataName(this.bookName.getText());
+		}
+		else
+		{
+			this.initialize();
 		}
 	}
 
@@ -219,7 +235,7 @@ public class BookController
 	}
 
 	@FXML
-	void editBook(ActionEvent event)
+	void editBook(Event event)
 	{
 		try
 		{
