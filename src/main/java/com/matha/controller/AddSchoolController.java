@@ -115,6 +115,7 @@ public class AddSchoolController {
 		this.address2.setText(selectedItem.getAddress2());
 		this.address3.setText(selectedItem.getAddress3());
 		this.city.setText(selectedItem.getCity());
+		this.pin.setText(selectedItem.getPin());
 		this.states.getSelectionModel().select(selectedItem.getState());
 		if (selectedItem.getState() != null) {					
 			this.districts.getSelectionModel().select(selectedItem.getDistrict());
