@@ -11,6 +11,8 @@ import javafx.scene.control.Button;
 import javafx.scene.control.ChoiceBox;
 import javafx.scene.control.TextField;
 import javafx.stage.Stage;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.config.ConfigurableBeanFactory;
 import org.springframework.context.annotation.Scope;
@@ -28,6 +30,7 @@ import static org.apache.commons.lang3.StringUtils.isBlank;
 @Scope(value = ConfigurableBeanFactory.SCOPE_PROTOTYPE)
 public class AddBookController
 {
+	private static final Logger LOGGER = LogManager.getLogger(AddBookController.class);
 
 	@Autowired
 	private SchoolService srvc;
@@ -78,22 +81,31 @@ public class AddBookController
 	@FXML
 	void handleSave(ActionEvent event)
 	{
-		if(!this.validateData())
+		try
 		{
-			return;
-		}
-		Book bookObj = book;
-		if (bookObj == null)
-		{
-			bookObj = new Book();
-		}
-		bookObj.setName(name.getText());
-		bookObj.setBookNum(shortName.getText());
-		bookObj.setInventory(getIntegerVal(this.inventory));
-		bookObj.setPublisher(publishers.getSelectionModel().getSelectedItem());
-		srvc.saveBook(bookObj);
+			if(!this.validateData())
+			{
+				return;
+			}
+			Book bookObj = book;
+			if (bookObj == null)
+			{
+				bookObj = new Book();
+			}
+			bookObj.setName(name.getText());
+			bookObj.setBookNum(shortName.getText());
+			bookObj.setInventory(getIntegerVal(this.inventory));
+			bookObj.setPublisher(publishers.getSelectionModel().getSelectedItem());
+			srvc.saveBook(bookObj);
 
-		((Stage) cancelBtn.getScene().getWindow()).close();
+			((Stage) cancelBtn.getScene().getWindow()).close();
+		}
+		catch (Exception e)
+		{
+			LOGGER.error("Error...", e);
+			e.printStackTrace();
+			showErrorAlert("Error","An Unexpected Error Occurred", e.getMessage());
+		}
 	}
 
 	private boolean validateData()
