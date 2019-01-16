@@ -223,6 +223,10 @@ public class School implements Serializable {
 			builder.append(address2);
 			builder.append(NEW_LINE);
 		}
+		if (isNotBlank(address3)) {
+			builder.append(address3);
+			builder.append(NEW_LINE);
+		}
 		if (isNotBlank(city)) {
 			builder.append(city);
 			builder.append(NEW_LINE);

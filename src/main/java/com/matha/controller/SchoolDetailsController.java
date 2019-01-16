@@ -273,6 +273,29 @@ public class SchoolDetailsController
 		}
 	}
 
+
+	@FXML
+	void copyOrder(Event e)
+	{
+		try
+		{
+			FXMLLoader createOrderLoader = LoadUtils.loadFxml(this, createOrderFxmlFile);
+			addOrderRoot = createOrderLoader.load();
+			AddOrderController ctrl = createOrderLoader.getController();
+			Order selectedOrder = txnData.getSelectionModel().getSelectedItem();
+			selectedOrder.setId(null);
+			selectedOrder.setSerialNo(null);
+			ctrl.initData(this.school, this.bookMap, selectedOrder);
+			// ctrl.updateFormData(selectedOrder);
+			addOrderScene = new Scene(addOrderRoot);
+			prepareAndShowStage(e, addOrderScene, ev ->loadOrders());
+		}
+		catch (Exception ex)
+		{
+			showErrorAlert("Error", "An Error Occurred", "An Error ocurred while trying to edit the order");
+		}
+	}
+
 	@FXML
 	void deleteOrder(ActionEvent event)
 	{

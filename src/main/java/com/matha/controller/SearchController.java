@@ -5,6 +5,7 @@ import com.matha.service.SchoolService;
 import com.matha.util.LoadUtils;
 import javafx.collections.FXCollections;
 import javafx.event.Event;
+import javafx.event.EventHandler;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Node;
@@ -13,6 +14,7 @@ import javafx.scene.Scene;
 import javafx.scene.control.*;
 import javafx.scene.layout.BorderPane;
 import javafx.stage.Stage;
+import javafx.stage.WindowEvent;
 import net.sf.jasperreports.engine.JasperPrint;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
@@ -106,9 +108,10 @@ public class SearchController
 			List<Book> schools = schoolService.fetchAllBooks();
 			this.bookMap = this.schoolService.fetchAllBooks().stream().collect(this.bookMapCollector);
 
+			int idx = this.orderPaginator.getCurrentPageIndex();
 			ctrl.initData(selectedOrder.getSchool(), bookMap, selectedOrder);
 			Scene addOrderScene = new Scene(addOrderRoot);
-			prepareAndShowStage(event, addOrderScene);
+			prepareAndShowStage(event, addOrderScene, ev -> loadOrderTable(idx));
 
 		}
 		catch (IOException e)
@@ -130,8 +133,9 @@ public class SearchController
 			JasperPrint jasperPrint = ctrl.prepareJasperPrint(selectedOrder);
 			ctrl.initData(jasperPrint);
 			Scene addOrderScene = new Scene(addOrderRoot);
-			prepareAndShowStage(event, addOrderScene);
 
+			int idx = this.orderPaginator.getCurrentPageIndex();
+			prepareAndShowStage(event, addOrderScene, ev -> loadOrderTable(idx));
 		}
 		catch (IOException e)
 		{
@@ -162,7 +166,9 @@ public class SearchController
 			JasperPrint jasperPrint = prepareJasperPrint(purchase.getPublisher(), purchase, salesAddr, iStream);
 			ctrl.initData(jasperPrint);
 			Scene addOrderScene = new Scene(addOrderRoot);
-			prepareAndShowStage(event, addOrderScene);
+
+			int idx = this.purBillPaginator.getCurrentPageIndex();
+			prepareAndShowStage(event, addOrderScene, ev -> loadPurchaseBills(idx));
 
 		}
 		catch (IOException e)
@@ -189,7 +195,8 @@ public class SearchController
 			ctrl.initData(new HashSet<>(), selectedOrder.getPublisher(), selectedOrder, this.bookMap);
 
 			Scene addOrderScene = new Scene(addOrderRoot);
-			prepareAndShowStage(event, addOrderScene);
+			int idx = this.purBillPaginator.getCurrentPageIndex();
+			prepareAndShowStage(event, addOrderScene, ev -> loadPurchaseBills(idx));
 
 		}
 		catch (IOException e)
@@ -214,7 +221,8 @@ public class SearchController
 			ctrl.initData(null, bill.getSchool(), bill, this.bookMap);
 
 			Scene addOrderScene = new Scene(addOrderRoot);
-			prepareAndShowStage(event, addOrderScene);
+			int idx = this.billPaginator.getCurrentPageIndex();
+			prepareAndShowStage(event, addOrderScene, ev -> loadSalesBillsTab(idx));
 
 		}
 		catch (IOException e)
@@ -240,7 +248,9 @@ public class SearchController
 			JasperPrint jasperPrint = prepareSaleBillPrint(purchase.getSchool(), purchase, salesAddr, acct, iStream);
 			ctrl.initData(jasperPrint);
 			Scene addOrderScene = new Scene(addOrderRoot);
-			prepareAndShowStage(event, addOrderScene);
+
+			int idx = this.billPaginator.getCurrentPageIndex();
+			prepareAndShowStage(event, addOrderScene, ev -> loadSalesBillsTab(idx));
 		}
 		catch (IOException e)
 		{
@@ -261,7 +271,9 @@ public class SearchController
 			ctrl.initData(bill.getSchool(), bill);
 
 			Scene addOrderScene = new Scene(addOrderRoot);
-			prepareAndShowStage(event, addOrderScene);
+
+			int idx = this.billPaginator.getCurrentPageIndex();
+			prepareAndShowStage(event, addOrderScene, ev -> loadSalesBillsTab(idx));
 
 		}
 		catch (IOException e)
@@ -304,9 +316,10 @@ public class SearchController
 		}
 	}
 
-	private void prepareAndShowStage(Event e, Scene childScene)
+	private void prepareAndShowStage(Event e, Scene childScene, EventHandler<WindowEvent> eventHandler)
 	{
 		Stage stage = LoadUtils.loadChildStage(e, childScene);
+		stage.setOnHiding(eventHandler);
 		stage.showAndWait();
 	}
 
@@ -353,6 +366,7 @@ public class SearchController
 			List<Order> orderList = orderPages.getContent();
 			this.orderPaginator.setPageCount(orderPages.getTotalPages());
 			this.orderTable.setItems(FXCollections.observableList(orderList));
+			this.orderTable.refresh();
 
 			this.orderTable.setOnMouseClicked(ev -> {
 				if(verifyDblClick(ev)) editOrder(ev);
@@ -375,6 +389,7 @@ public class SearchController
 			List<Sales> orderList = purBillList.getContent();
 			this.billPaginator.setPageCount(purBillList.getTotalPages());
 			this.billData.setItems(FXCollections.observableList(orderList));
+			this.billData.refresh();
 
 			this.billData.setOnMouseClicked(ev -> {
 				if(verifyDblClick(ev)) editBill(ev);
@@ -396,6 +411,7 @@ public class SearchController
 			List<Purchase> orderList = purBillList.getContent();
 			this.purBillPaginator.setPageCount(purBillList.getTotalPages());
 			this.purBillData.setItems(FXCollections.observableList(orderList));
+			this.purBillData.refresh();
 
 			this.billData.setOnMouseClicked(ev -> {
 				if (verifyDblClick(ev)) editPurBill(ev);

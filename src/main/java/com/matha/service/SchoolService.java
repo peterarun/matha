@@ -345,9 +345,9 @@ public class SchoolService
 								List<OrderItem> orderItem,
 								List<OrderItem> removedItems)
 	{
-		if(order.getId() == null)
+//		if(order.getId() == null)
 		{
-			orderRepository.save(order);
+			order = orderRepository.save(order);
 		}
 
 		for (OrderItem orderItemIn : orderItem)

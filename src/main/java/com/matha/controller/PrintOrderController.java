@@ -100,7 +100,7 @@ public class PrintOrderController
 			hm.put("agencyAddress1", agencyAddress1);
 			hm.put("agencyAddress2", agencyAddress2);
 			hm.put("partyAddress", school.addressText());
-			hm.put("partyPhone", "Ph - " + school.getPhone1());
+			hm.put("partyPhone", school.getPhone1());
 			hm.put("txnDate", DATE_CONV.toString(orderIn.getOrderDate()));
 			hm.put("deliveryDate", DATE_CONV.toString(orderIn.getDeliveryDate()));
 			hm.put("desLocation", orderIn.getDesLocation());

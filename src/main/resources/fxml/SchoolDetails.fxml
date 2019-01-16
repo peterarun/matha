@@ -9,8 +9,7 @@
 <?import javafx.scene.layout.AnchorPane?>
 <?import javafx.scene.control.cell.PropertyValueFactory?>
 
-
-		<SplitPane dividerPositions="0.23" orientation="VERTICAL" prefHeight="600.0" prefWidth="800.0" xmlns="http://javafx.com/javafx/8" xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.matha.controller.SchoolDetailsController">
+<SplitPane dividerPositions="0.23" orientation="VERTICAL" prefHeight="600.0" prefWidth="800.0" xmlns="http://javafx.com/javafx/8" xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.matha.controller.SchoolDetailsController">
 			<items>
 				<AnchorPane minHeight="0.0" minWidth="0.0" SplitPane.resizableWithParent="false">
 					<children>
@@ -52,10 +51,11 @@
 													</columns>
 												</TableView>
 												<Button layoutX="650.0" layoutY="70.0" mnemonicParsing="false" onAction="#editOrder" prefHeight="25.0" prefWidth="120.0" text="Edit" AnchorPane.rightAnchor="28.0" />
-                              <Button layoutX="650.0" layoutY="205.0" mnemonicParsing="false" onAction="#createBill" prefHeight="52.0" prefWidth="120.0" text="Generate Bill" textAlignment="CENTER" wrapText="true" AnchorPane.rightAnchor="28.0" />
+                              <Button layoutX="650.0" layoutY="245.0" mnemonicParsing="false" onAction="#createBill" prefHeight="52.0" prefWidth="120.0" text="Generate Bill" textAlignment="CENTER" wrapText="true" AnchorPane.rightAnchor="28.0" />
                               <Button layoutX="650.0" layoutY="25.0" mnemonicParsing="false" onAction="#addOrder" prefHeight="25.0" prefWidth="120.0" text="Generate" AnchorPane.rightAnchor="28.0" />
                               <Button focusTraversable="false" layoutX="650.0" layoutY="115.0" mnemonicParsing="false" onAction="#deleteOrder" prefHeight="25.0" prefWidth="120.0" text="Delete" AnchorPane.rightAnchor="28.0" />
                               <Button layoutX="650.0" layoutY="160.0" mnemonicParsing="false" onAction="#printOrder" prefHeight="26.0" prefWidth="120.0" text="Print" AnchorPane.rightAnchor="28.0" />
+                              <Button layoutX="650.0" layoutY="204.0" mnemonicParsing="false" onAction="#copyOrder" prefHeight="25.0" prefWidth="120.0" text="Copy" AnchorPane.rightAnchor="28.0" />
 											</children>
 										</AnchorPane>
 									</content>
