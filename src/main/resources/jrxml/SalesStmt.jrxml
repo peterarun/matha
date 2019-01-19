@@ -534,14 +534,14 @@
 				</textElement>
 				<textFieldExpression><![CDATA[String.format("%.2f", $P{closingBalance}) + ($P{closingBalance} > 0 ? " CR" : " DR")]]></textFieldExpression>
 			</textField>
-			<staticText>
-				<reportElement x="417" y="75" width="138" height="15" uuid="21c4be9d-5b0b-4a99-9b15-4a56309b50c6"/>
+			<textField>
+				<reportElement x="417" y="75" width="138" height="15" uuid="0cc5b382-d8eb-444c-9740-61145d099177"/>
 				<box rightPadding="2"/>
 				<textElement textAlignment="Right" verticalAlignment="Middle">
 					<font isBold="true"/>
 				</textElement>
-				<text><![CDATA[For Matha Agencies]]></text>
-			</staticText>
+				<textFieldExpression><![CDATA["For " + $P{agencyName}]]></textFieldExpression>
+			</textField>
 		</band>
 	</lastPageFooter>
 </jasperReport>

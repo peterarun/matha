@@ -56,9 +56,9 @@ public class PrintCreditNoteController
     
 	private JasperPrint print;
 
-	public void initData(School sch, SchoolReturn schoolReturn, Address salesAddr, Account acct, InputStream jasperStream)
+	public void initData(School sch, SchoolReturn schoolReturn, Address salesAddr, String salesBankDetails, InputStream jasperStream)
 	{
-		this.print = prepareCreditNotePrint(sch, schoolReturn, salesAddr, acct, jasperStream);
+		this.print = prepareCreditNotePrint(sch, schoolReturn, salesAddr, salesBankDetails, jasperStream);
 		this.schoolName.setText(sch.getName());
 		this.loadWebInvoice(this.print);
 		List<String> saveTypes = Arrays.asList(PDF,Excel,Docx);
@@ -156,7 +156,7 @@ public class PrintCreditNoteController
 		}
 	}
 
-	public static JasperPrint prepareCreditNotePrint(School sch, SchoolReturn schoolReturn, Address salesAddr, Account acct, InputStream jasperStream)
+	public static JasperPrint prepareCreditNotePrint(School sch, SchoolReturn schoolReturn, Address salesAddr, String salesBankDetails, InputStream jasperStream)
 	{
 
 		JasperPrint jasperPrint = null;
@@ -182,25 +182,12 @@ public class PrintCreditNoteController
 			strBuild.append("Email: ");
 			strBuild.append(salesAddr.getEmail());
 
-			StringBuilder strBuildAcct = new StringBuilder(acct.getName());
-			strBuildAcct.append(COMMA_SIGN);
-			strBuildAcct.append(" State Bank of India");
-			strBuildAcct.append(COMMA_SIGN);
-			strBuildAcct.append(" Vazhakulam Branch");
-			strBuildAcct.append(COMMA_SIGN);
-			strBuildAcct.append(" A/C No: ");
-			strBuildAcct.append(acct.getAccountNum());
-			strBuildAcct.append(COMMA_SIGN);
-			strBuildAcct.append(" IFSC");
-			strBuildAcct.append(HYPHEN_SPC_SIGN);
-			strBuildAcct.append(acct.getIfsc());
-
 			List<SalesReturnDet> tableData = schoolReturn.getSalesReturnDetSet().stream().sorted(comparing(sd -> sd.getSlNum())).collect(toList());
 			Double discAmt = schoolReturn.getDiscount();
 
 			hm.put("partyName", sch.getName());
 			hm.put("partyAddress", sch.addressText());
-			hm.put("agencyName", "MATHA AGENCIES");
+			hm.put("agencyName", "MATHA BOOKS PVT LTD");
 			hm.put("agencyDetails", strBuild.toString());
 			hm.put("partyPhone", sch.getPhone1() == null ? sch.getPhone2() : sch.getPhone1());
 			hm.put("creditNoteNum", schoolReturn.getCreditNoteNum());
@@ -208,7 +195,7 @@ public class PrintCreditNoteController
 			hm.put("total", schoolReturn.getSubTotal());
 			hm.put("discount", discAmt);
 			hm.put("grandTotal", schoolReturn.getNetAmount());
-			hm.put("accountDet", strBuildAcct.toString());
+			hm.put("accountDet", salesBankDetails);
 			hm.put("grandTotalInWords", convertDouble(schoolReturn.getNetAmount()));
 
 			JasperReport compiledFile = JasperCompileManager.compileReport(jasperStream);

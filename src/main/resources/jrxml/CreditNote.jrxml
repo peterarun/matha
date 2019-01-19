@@ -51,7 +51,7 @@
 			<staticText>
 				<reportElement x="0" y="199" width="50" height="465" uuid="28c1486e-f4a4-4172-971c-2b9aae0e04c4"/>
 				<box>
-					<topPen lineWidth="1.0" lineStyle="Solid" lineColor="#000000"/>
+					<topPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
 					<leftPen lineWidth="1.25" lineStyle="Solid" lineColor="#000000"/>
 					<bottomPen lineWidth="1.0" lineStyle="Solid" lineColor="#000000"/>
 					<rightPen lineWidth="1.0" lineStyle="Solid" lineColor="#000000"/>
@@ -61,7 +61,7 @@
 			<staticText>
 				<reportElement x="50" y="199" width="280" height="465" uuid="e01dbe7b-7aa4-411e-9f35-a6060fe48c66"/>
 				<box>
-					<topPen lineWidth="1.0" lineStyle="Solid" lineColor="#000000"/>
+					<topPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
 					<leftPen lineWidth="1.0" lineStyle="Solid" lineColor="#000000"/>
 					<bottomPen lineWidth="1.0" lineStyle="Solid" lineColor="#000000"/>
 					<rightPen lineWidth="1.0" lineStyle="Solid" lineColor="#000000"/>
@@ -71,7 +71,7 @@
 			<staticText>
 				<reportElement x="330" y="199" width="45" height="465" uuid="432d37e6-7925-49b4-ab6f-ae6daba506b6"/>
 				<box>
-					<topPen lineWidth="1.0" lineStyle="Solid" lineColor="#000000"/>
+					<topPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
 					<leftPen lineWidth="1.0" lineStyle="Solid" lineColor="#000000"/>
 					<bottomPen lineWidth="1.0" lineStyle="Solid" lineColor="#000000"/>
 					<rightPen lineWidth="1.0" lineStyle="Solid" lineColor="#000000"/>
@@ -81,7 +81,7 @@
 			<staticText>
 				<reportElement x="375" y="199" width="70" height="465" uuid="a66eaf0a-58e2-46cb-b157-e4870c627100"/>
 				<box>
-					<topPen lineWidth="1.0" lineStyle="Solid" lineColor="#000000"/>
+					<topPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
 					<leftPen lineWidth="1.0" lineStyle="Solid" lineColor="#000000"/>
 					<bottomPen lineWidth="1.0" lineStyle="Solid" lineColor="#000000"/>
 					<rightPen lineWidth="1.0" lineStyle="Solid" lineColor="#000000"/>
@@ -91,7 +91,7 @@
 			<staticText>
 				<reportElement x="445" y="199" width="74" height="465" uuid="52009a88-1995-45a5-adc1-6ba8588dac28"/>
 				<box>
-					<topPen lineWidth="1.0" lineStyle="Solid" lineColor="#000000"/>
+					<topPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
 					<leftPen lineWidth="1.0" lineStyle="Solid" lineColor="#000000"/>
 					<bottomPen lineWidth="1.0" lineStyle="Solid" lineColor="#000000"/>
 					<rightPen lineWidth="1.0" lineStyle="Solid" lineColor="#000000"/>
@@ -124,7 +124,7 @@
 				</textElement>
 				<text><![CDATA[CREDIT INVOICE]]></text>
 			</staticText>
-			<textField>
+			<textField isStretchWithOverflow="true">
 				<reportElement x="50" y="130" width="230" height="55" uuid="fdb3f3a8-553e-4637-bced-038540fc9145"/>
 				<box leftPadding="2">
 					<bottomPen lineWidth="1.0"/>
@@ -428,19 +428,6 @@
 				<text><![CDATA[]]></text>
 			</staticText>
 			<staticText>
-				<reportElement x="245" y="120" width="274" height="15" isPrintWhenDetailOverflows="true" uuid="4659b3fd-c5c7-456a-b50d-8023709c8c88"/>
-				<box rightPadding="2">
-					<topPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
-					<leftPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
-					<bottomPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
-					<rightPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
-				</box>
-				<textElement textAlignment="Right">
-					<font isBold="true" pdfFontName="Helvetica-Bold"/>
-				</textElement>
-				<text><![CDATA[For Matha Agencies]]></text>
-			</staticText>
-			<staticText>
 				<reportElement x="375" y="0" width="70" height="15" uuid="0eb12910-f1b8-40e6-b953-6392e1ac9380"/>
 				<box leftPadding="2" rightPadding="2">
 					<topPen lineWidth="1.0"/>
@@ -536,6 +523,19 @@
 				</box>
 				<text><![CDATA[]]></text>
 			</staticText>
+			<textField>
+				<reportElement x="245" y="120" width="274" height="15" isPrintWhenDetailOverflows="true" uuid="e49dc7c1-769d-4c72-ab90-08e98cf8b72c"/>
+				<box rightPadding="2">
+					<topPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
+					<leftPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
+					<bottomPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
+					<rightPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
+				</box>
+				<textElement textAlignment="Right">
+					<font isBold="true" pdfFontName="Helvetica-Bold"/>
+				</textElement>
+				<textFieldExpression><![CDATA["For " + $P{agencyName}]]></textFieldExpression>
+			</textField>
 		</band>
 	</lastPageFooter>
 </jasperReport>

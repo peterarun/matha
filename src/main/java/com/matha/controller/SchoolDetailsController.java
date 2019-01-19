@@ -24,14 +24,11 @@ import java.nio.charset.Charset;
 import java.time.LocalDate;
 import java.util.*;
 import java.util.stream.Collector;
-import java.util.stream.Collectors;
 
 import com.matha.domain.*;
 import com.matha.util.Utils;
 import javafx.scene.Node;
 import javafx.scene.control.*;
-import javafx.scene.input.MouseButton;
-import javafx.scene.input.MouseEvent;
 import javafx.scene.web.WebView;
 import javafx.stage.FileChooser;
 import net.sf.jasperreports.engine.*;
@@ -90,6 +87,9 @@ public class SchoolDetailsController
 
 	@Value("${purPaymentModes}")
 	private String[] schoolPaymentModes;
+
+	@Value("${salesBankDetails}")
+	private String salesBankDetails;
 
 	@Value("#{'${datedPurPaymentModes}'.split(',')}")
 	private List<String> datedSchoolPaymentModes;
@@ -570,11 +570,10 @@ public class SchoolDetailsController
 
 			InputStream jasperStream = getClass().getResourceAsStream(creditNoteJrxml);
 			Address salesAddr = schoolService.fetchAddress("Sales");
-			Account acct = schoolService.fetchAccount("Matha Agencies");
 
 			Parent addOrderRoot = createOrderLoader.load();
 			PrintCreditNoteController ctrl = createOrderLoader.getController();
-			ctrl.initData(purchase.getSchool(), purchase, salesAddr, acct, jasperStream);
+			ctrl.initData(purchase.getSchool(), purchase, salesAddr, salesBankDetails, jasperStream);
 			addOrderScene = new Scene(addOrderRoot);
 			prepareAndShowStage(ev, addOrderScene);
 		}
@@ -746,8 +745,7 @@ public class SchoolDetailsController
 		FXMLLoader createOrderLoader = LoadUtils.loadFxml(this, printSaleFxmlFile);
 		InputStream jasperStream = getClass().getResourceAsStream(salesInvoiceJrxml);
 		Address salesAddr = schoolService.fetchAddress("Sales");
-		Account acct = schoolService.fetchAccount("Matha Agencies");
-		Scene addOrderScene = preparePrintScene(purchase, createOrderLoader, jasperStream, salesAddr, acct);
+		Scene addOrderScene = preparePrintScene(purchase, createOrderLoader, jasperStream, salesAddr, salesBankDetails);
 		prepareAndShowStage(ev, addOrderScene);
 	}
 

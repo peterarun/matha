@@ -476,19 +476,6 @@
 				<text><![CDATA[Receiver's Signature:]]></text>
 			</staticText>
 			<staticText>
-				<reportElement x="280" y="115" width="275" height="15" isPrintWhenDetailOverflows="true" uuid="4659b3fd-c5c7-456a-b50d-8023709c8c88"/>
-				<box>
-					<topPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
-					<leftPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
-					<bottomPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
-					<rightPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
-				</box>
-				<textElement textAlignment="Right">
-					<font isBold="true" pdfFontName="Helvetica-Bold"/>
-				</textElement>
-				<text><![CDATA[For Mayur Publications]]></text>
-			</staticText>
-			<staticText>
 				<reportElement x="0" y="160" width="280" height="15" uuid="a01eee22-34ab-400c-9e78-378db4bd9eb7"/>
 				<textElement verticalAlignment="Middle"/>
 				<text><![CDATA[]]></text>
@@ -586,6 +573,19 @@
 				</box>
 				<text><![CDATA[]]></text>
 			</staticText>
+			<textField>
+				<reportElement x="280" y="115" width="275" height="15" isPrintWhenDetailOverflows="true" uuid="3d482ef6-25a2-46cd-8823-1146f04fbf57"/>
+				<box>
+					<topPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
+					<leftPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
+					<bottomPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
+					<rightPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
+				</box>
+				<textElement textAlignment="Right">
+					<font isBold="true" pdfFontName="Helvetica-Bold"/>
+				</textElement>
+				<textFieldExpression><![CDATA["For " + $P{publisherName}]]></textFieldExpression>
+			</textField>
 		</band>
 	</lastPageFooter>
 </jasperReport>

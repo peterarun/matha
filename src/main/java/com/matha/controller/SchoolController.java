@@ -128,9 +128,9 @@ public class SchoolController
 	@FXML
 	void nameSearch(KeyEvent event)
 	{
-		String schoolNamePart = EMPTY_STR;
 		String schText = this.schoolName.getText();
-		if(event.getCharacter() != null && !event.getCharacter().isEmpty())
+		String schoolNamePart = schText;
+		if(event != null && event.getCharacter() != null && !event.getCharacter().isEmpty())
 		{
 			char charVal = event.getCharacter().charAt(0);
 			int intVal = event.getCharacter().codePointAt(0);
@@ -138,16 +138,7 @@ public class SchoolController
 			{
 				schoolNamePart = schText + charVal;
 			}
-			else
-			{
-				schoolNamePart = schText;
-			}
-//			else if(charVal == '\b' && schText.length() > 0)
-//			{
-//				schoolNamePart = schText.substring(0, schText.length() - 1);
-//			}
 		}
-
 		String pin = this.pin.getText();
 
 		loadSchools(schoolNamePart, pin);
@@ -166,7 +157,7 @@ public class SchoolController
 	private void loadSchools(String schoolNamePart, String pin)
 	{
 
-		LOGGER.debug(this.states.getSelectionModel().getSelectedItem() + " - " + this.district.getSelectionModel().getSelectedItem() + " - " + schoolNamePart + " - " + pin);
+		LOGGER.info(this.states.getSelectionModel().getSelectedItem() + " - " + this.district.getSelectionModel().getSelectedItem() + " - " + schoolNamePart + " - " + pin);
 		List<School> schools = srvc.fetchByStateAndPart(this.states.getSelectionModel().getSelectedItem(), this.district.getSelectionModel().getSelectedItem(), schoolNamePart, null, pin);
 		tableView.setItems(FXCollections.observableList(schools));
 
@@ -183,12 +174,8 @@ public class SchoolController
 			Scene scene = new Scene(root);
 
 			Stage stage = LoadUtils.loadChildStage(ev, scene);
-			stage.setOnHiding(new EventHandler<WindowEvent>() {
-				@Override
-				public void handle(final WindowEvent event)
-				{
-					initData();
-				}
+			stage.setOnHiding(event -> {
+				nameSearch(null);
 			});
 			stage.show();
 		}
@@ -213,13 +200,7 @@ public class SchoolController
 			ctrl.initEdit(tableView.getSelectionModel().getSelectedItem());
 
 			Stage stage = LoadUtils.loadChildStage(event, scene);
-			stage.setOnHiding(new EventHandler<WindowEvent>() {
-				@Override
-				public void handle(final WindowEvent event)
-				{
-					initData();
-				}
-			});
+			stage.setOnHiding(ev -> nameSearch(null) );
 			stage.show();
 		}
 		catch (IOException e)
@@ -282,17 +263,19 @@ public class SchoolController
 
 			srvc.deleteSchool(selectedOrder, ordersIn, bills, returns, payments, purchasesIn);
 			initData();
+			nameSearch(null);
 		}
 	}
 
 	@FXML
 	void changedState(ActionEvent evt)
 	{
-
-		Set<District> districtSet = this.states.getSelectionModel().getSelectedItem().getDistricts();
-		List<District> distList = new ArrayList<>(districtSet);
-		this.district.setItems(FXCollections.observableList(distList));
-
+		if(this.states.getSelectionModel().getSelectedItem() != null)
+		{
+			Set<District> districtSet = this.states.getSelectionModel().getSelectedItem().getDistricts();
+			List<District> distList = new ArrayList<>(districtSet);
+			this.district.setItems(FXCollections.observableList(distList));
+		}
 		String schoolNamePart = this.schoolName.getText();
 		String pin = this.pin.getText();
 

@@ -19,6 +19,7 @@ import net.sf.jasperreports.engine.JasperPrint;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.data.domain.Page;
 import org.springframework.stereotype.Component;
 
@@ -38,6 +39,9 @@ public class SearchController
 {
 	private static final int ROWS_PER_PAGE = 10;
 	private static final Logger LOGGER = LogManager.getLogger(SearchController.class);
+
+	@Value("${salesBankDetails}")
+	private String salesBankDetails;
 
 	@Autowired
 	private SchoolService schoolService;
@@ -244,8 +248,7 @@ public class SearchController
 			Sales purchase = billData.getSelectionModel().getSelectedItem();
 			InputStream iStream = getClass().getResourceAsStream(salesInvoiceJrxml);
 			Address salesAddr = schoolService.fetchAddress("Sales");
-			Account acct = schoolService.fetchAccount("Matha Agencies");
-			JasperPrint jasperPrint = prepareSaleBillPrint(purchase.getSchool(), purchase, salesAddr, acct, iStream);
+			JasperPrint jasperPrint = prepareSaleBillPrint(purchase.getSchool(), purchase, salesAddr, iStream, salesBankDetails);
 			ctrl.initData(jasperPrint);
 			Scene addOrderScene = new Scene(addOrderRoot);
 

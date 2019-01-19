@@ -17,7 +17,6 @@ import javax.print.attribute.standard.OrientationRequested;
 import javax.print.attribute.standard.PrinterName;
 
 import com.matha.domain.*;
-import javafx.event.ActionEvent;
 import javafx.scene.control.*;
 import javafx.scene.input.MouseButton;
 import javafx.scene.input.MouseEvent;
@@ -189,14 +188,14 @@ public class Utils
 		}
 	}
 
-	public static Scene preparePrintScene(Sales purchase, FXMLLoader createOrderLoader, InputStream jasperStream, Address addrIn, Account acct)
+	public static Scene preparePrintScene(Sales purchase, FXMLLoader createOrderLoader, InputStream jasperStream, Address addrIn, String salesBankDetails)
 	{
 		Scene addOrderScene = null;
 		try
 		{			
 			Parent addOrderRoot = createOrderLoader.load();
 			PrintSalesBillController ctrl = createOrderLoader.getController();						
-			JasperPrint jasperPrint = prepareSaleBillPrint(purchase.getSchool(), purchase, addrIn, acct, jasperStream);
+			JasperPrint jasperPrint = prepareSaleBillPrint(purchase.getSchool(), purchase, addrIn, jasperStream, salesBankDetails);
 			ctrl.initData(jasperPrint);
 			addOrderScene = new Scene(addOrderRoot);			
 		}
@@ -263,7 +262,7 @@ public class Utils
 			hm.put("publisherDetails", pub.getInvAddress());
 			hm.put("partyName", "MATHA DISTRIBUTORS.");
 			hm.put("partyAddress", strBuild.toString());
-			hm.put("partyPhone", "Ph - " + salesAddr.getPhone1());
+			hm.put("partyPhone", salesAddr.getPhone1());
 			hm.put("documentsThrough", purchase.getDocsThrough());
 			hm.put("despatchedTo", purchase.getDespatchedTo());
 			hm.put("invoiceNo", purchase.getId());
@@ -295,7 +294,7 @@ public class Utils
 		return jasperPrint;
 	}
 
-	public static JasperPrint prepareSaleBillPrint(School sch, Sales sale, Address salesAddr, Account acct, InputStream jasperStream)
+	public static JasperPrint prepareSaleBillPrint(School sch, Sales sale, Address salesAddr, InputStream jasperStream, String salesBankDetails)
 	{
 
 		JasperPrint jasperPrint = null;		
@@ -321,19 +320,6 @@ public class Utils
 			strBuild.append("Email: ");
 			strBuild.append(salesAddr.getEmail());
 
-			StringBuilder strBuildAcct = new StringBuilder(acct.getName());
-			strBuildAcct.append(COMMA_SIGN);
-			strBuildAcct.append(" State Bank of India");
-			strBuildAcct.append(COMMA_SIGN);
-			strBuildAcct.append(" Vazhakulam Branch");
-			strBuildAcct.append(COMMA_SIGN);
-			strBuildAcct.append(" A/C No: ");			
-			strBuildAcct.append(acct.getAccountNum());
-			strBuildAcct.append(COMMA_SIGN);
-			strBuildAcct.append(" IFSC");
-			strBuildAcct.append(HYPHEN_SPC_SIGN);
-			strBuildAcct.append(acct.getIfsc());
-			
 			List<SalesDet> tableData = sale.getSaleItems().stream().sorted(comparing(sd -> sd.getSlNum())).collect(toList());
 			Set<String> orderIdSet = tableData.stream()
 					.map(SalesDet::getOrderItem)
@@ -350,7 +336,7 @@ public class Utils
 			 			
 			hm.put("partyName", sch.getName());
 			hm.put("partyAddress", sch.addressText());
-			hm.put("agencyName", "MATHA AGENCIES");
+			hm.put("agencyName", "MATHA BOOKS PVT LTD");
 			hm.put("agencyDetails", strBuild.toString());
 			hm.put("partyPhone", sch.getPhone1() == null ? sch.getPhone2() : sch.getPhone1());
 			hm.put("documentsThrough", sale.getDocsThru());
@@ -363,7 +349,7 @@ public class Utils
 			hm.put("total", sale.getSubTotal());
 			hm.put("discount", discAmt);
 			hm.put("grandTotal", sale.getNetAmount());
-			hm.put("accountDet", strBuildAcct.toString());
+			hm.put("accountDet", salesBankDetails);
 			hm.put("grandTotalInWords", convertDouble(sale.getNetAmount()));
 			hm.put("otherCharges", sale.getOtherAmount());
 			
