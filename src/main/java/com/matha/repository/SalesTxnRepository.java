@@ -13,7 +13,7 @@ import java.util.List;
 @Repository
 public interface SalesTxnRepository extends JpaRepository<SalesTransaction, Integer> {
 
-	@Query("select salesTxn from SalesTransaction salesTxn where salesTxn.school = ?1 and salesTxn.txnDate between ?2 and ?3")
+	@Query("select salesTxn from SalesTransaction salesTxn where salesTxn.school = ?1 and salesTxn.txnDate between ?2 and ?3 order by salesTxn.id ")
 	List<SalesTransaction> findByFromToDate(School school, LocalDate fromDate, LocalDate toDate);
 	
 //	@Query("select sum(salesTxn.amount) from SalesTransaction salesTxn where salesTxn.school = ?1 ")

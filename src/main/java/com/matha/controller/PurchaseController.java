@@ -89,6 +89,9 @@ public class PurchaseController
 	@Value("${defaultPublisher}")
 	private String defaultPublisher;
 
+	@Value("${agencyName}")
+	private String agencyName;
+
 	@Autowired
 	private SchoolService schoolService;
 
@@ -694,7 +697,7 @@ public class PurchaseController
 				toDateVal = LocalDate.now();
 			}
 
-			Sort sort = new Sort(new Sort.Order(Direction.ASC, "txnDate"), new Sort.Order(Direction.ASC, "id"));
+			Sort sort = new Sort(new Sort.Order(Direction.ASC, "id"), new Sort.Order(Direction.ASC, "txnDate") );
 			Publisher pub = publishers.getSelectionModel().getSelectedItem();
 			List<PurchaseTransaction> tableData = schoolService.fetchPurTransactions(pub, fromDateVal, toDateVal, sort);
 			Double openingBalance = 0.0;
@@ -713,7 +716,7 @@ public class PurchaseController
 			hm.put("publisherDetails", pub.getStmtAddress());
 			hm.put("fromDate", fromDateVal);
 			hm.put("toDate", toDateVal);
-			hm.put("accountDetails", "Matha Distributors (Chennai)");
+			hm.put("accountDetails", agencyName);
 			hm.put("totalDebit", totalDebit);
 			hm.put("totalCredit", totalCredit);
 			hm.put("datedSchoolPaymentModes", datedSchoolPaymentModes);
