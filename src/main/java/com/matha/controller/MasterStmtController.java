@@ -48,6 +48,12 @@ public class MasterStmtController
 	@Value("${agencyAddress2}")
 	private String agencyAddress2;
 
+	@Value("${purchaceAccountDetails}")
+	private String purchaceAccountDetails;
+
+	@Value("${salesAccountDetails}")
+	private String salesAccountDetails;
+
 	@FXML
 	private DatePicker purToDate;
 
@@ -148,7 +154,7 @@ public class MasterStmtController
 			hm.put("publisherDetails", "N/A");
 			hm.put("fromDate", fromDateVal);
 			hm.put("toDate", toDateVal);
-			hm.put("accountDetails", "Matha Distributors (Chennai)");
+			hm.put("accountDetails", purchaceAccountDetails);
 			hm.put("totalDebit", totalDebit);
 			hm.put("totalCredit", totalCredit);
 
@@ -203,7 +209,7 @@ public class MasterStmtController
 			hm.put("openingBalance", openingBalance);
 			hm.put("fromDate", fromDateVal);
 			hm.put("toDate", toDateVal);
-			hm.put("accountDetails", "Matha Distributors (Chennai)");
+			hm.put("accountDetails", salesAccountDetails);
 			hm.put("totalDebit", totalDebit);
 			hm.put("totalCredit", totalCredit);
 

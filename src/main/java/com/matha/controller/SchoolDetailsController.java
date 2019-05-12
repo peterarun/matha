@@ -26,6 +26,7 @@ import java.util.*;
 import java.util.stream.Collector;
 
 import com.matha.domain.*;
+import com.matha.service.UtilityService;
 import com.matha.util.Utils;
 import javafx.scene.Node;
 import javafx.scene.control.*;
@@ -75,6 +76,9 @@ public class SchoolDetailsController
 
 	@Autowired
 	SchoolService schoolService;
+
+	@Autowired
+	private UtilityService utilityService;
 
 	@Value("${agencyName}")
 	private String agencyName;
@@ -745,7 +749,7 @@ public class SchoolDetailsController
 		FXMLLoader createOrderLoader = LoadUtils.loadFxml(this, printSaleFxmlFile);
 		InputStream jasperStream = getClass().getResourceAsStream(salesInvoiceJrxml);
 		Address salesAddr = schoolService.fetchAddress("Sales");
-		Scene addOrderScene = preparePrintScene(purchase, createOrderLoader, jasperStream, salesAddr, salesBankDetails);
+		Scene addOrderScene = utilityService.preparePrintScene(purchase, createOrderLoader, jasperStream, salesAddr, salesBankDetails);
 		prepareAndShowStage(ev, addOrderScene);
 	}
 

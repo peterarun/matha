@@ -1,1 +1,1 @@
-sqlcmd -S .\SQLEXPRESS2014 /d Matha /E /i alterBooks.sql
+sqlcmd -S .\SQLEXPRESS2014 /d MathaDist /E /i alterBooks.sql

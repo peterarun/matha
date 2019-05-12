@@ -1,4 +1,4 @@
-USE [Matha]
+USE [MathaDist]
 GO
 
 UPDATE [dbo].[State]

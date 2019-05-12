@@ -1,4 +1,4 @@
-USE [Matha]
+USE [MathaDist]
 GO
 
 /****** Object:  Table [dbo].[State]    Script Date: 25-Aug-18 12:10:01 PM ******/

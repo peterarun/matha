@@ -1,4 +1,4 @@
-USE [Matha]
+USE [MathaDist]
 GO
 
 /****** Object:  Table [dbo].[SOrderDet]    Script Date: 25-Aug-18 11:51:50 AM ******/

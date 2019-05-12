@@ -1,6 +1,7 @@
 package com.matha.controller;
 
 import com.matha.domain.*;
+import com.matha.service.UtilityService;
 import javafx.collections.FXCollections;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
@@ -20,6 +21,7 @@ import net.sf.jasperreports.export.SimpleOutputStreamExporterOutput;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
 import java.io.ByteArrayOutputStream;
@@ -45,6 +47,9 @@ public class PrintCreditNoteController
 
 	private static final Logger LOGGER = LogManager.getLogger(PrintCreditNoteController.class);
 
+	@Autowired
+	private UtilityService utilityService;
+
     @FXML
     private TextField schoolName;
 
@@ -58,7 +63,7 @@ public class PrintCreditNoteController
 
 	public void initData(School sch, SchoolReturn schoolReturn, Address salesAddr, String salesBankDetails, InputStream jasperStream)
 	{
-		this.print = prepareCreditNotePrint(sch, schoolReturn, salesAddr, salesBankDetails, jasperStream);
+		this.print = utilityService.prepareCreditNotePrint(sch, schoolReturn, salesAddr, salesBankDetails, jasperStream);
 		this.schoolName.setText(sch.getName());
 		this.loadWebInvoice(this.print);
 		List<String> saveTypes = Arrays.asList(PDF,Excel,Docx);
@@ -155,66 +160,4 @@ public class PrintCreditNoteController
 			e.printStackTrace();
 		}
 	}
-
-	public static JasperPrint prepareCreditNotePrint(School sch, SchoolReturn schoolReturn, Address salesAddr, String salesBankDetails, InputStream jasperStream)
-	{
-
-		JasperPrint jasperPrint = null;
-		HashMap<String, Object> hm = new HashMap<>();
-		try
-		{
-			StringBuilder strBuild = new StringBuilder();
-			strBuild.append(salesAddr.getAddress1());
-			strBuild.append(NEW_LINE);
-			strBuild.append(salesAddr.getAddress2());
-			strBuild.append(COMMA_SIGN);
-			strBuild.append(SPACE_SIGN);
-			strBuild.append(salesAddr.getAddress3());
-			strBuild.append(HYPHEN_SPC_SIGN);
-			strBuild.append(salesAddr.getPin());
-			strBuild.append(NEW_LINE);
-			strBuild.append("Ph: ");
-			strBuild.append(salesAddr.getPhone1());
-			strBuild.append(SPACE_SIGN);
-			strBuild.append("Mob: ");
-			strBuild.append(salesAddr.getPhone2());
-			strBuild.append(NEW_LINE);
-			strBuild.append("Email: ");
-			strBuild.append(salesAddr.getEmail());
-
-			List<SalesReturnDet> tableData = schoolReturn.getSalesReturnDetSet().stream().sorted(comparing(sd -> sd.getSlNum())).collect(toList());
-			Double discAmt = schoolReturn.getDiscount();
-
-			hm.put("partyName", sch.getName());
-			hm.put("partyAddress", sch.addressText());
-			hm.put("agencyName", "MATHA BOOKS PVT LTD");
-			hm.put("agencyDetails", strBuild.toString());
-			hm.put("partyPhone", sch.getPhone1() == null ? sch.getPhone2() : sch.getPhone1());
-			hm.put("creditNoteNum", schoolReturn.getCreditNoteNum());
-			hm.put("txnDate", schoolReturn.getTxnDateStr());
-			hm.put("total", schoolReturn.getSubTotal());
-			hm.put("discount", discAmt);
-			hm.put("grandTotal", schoolReturn.getNetAmount());
-			hm.put("accountDet", salesBankDetails);
-			hm.put("grandTotalInWords", convertDouble(schoolReturn.getNetAmount()));
-
-			JasperReport compiledFile = JasperCompileManager.compileReport(jasperStream);
-
-			jasperPrint = JasperFillManager.fillReport(compiledFile, hm, new JRBeanCollectionDataSource(tableData));
-		}
-		catch (JRException e)
-		{
-			LOGGER.error("Error...", e);
-			e.printStackTrace();
-		}
-		catch (Exception e)
-		{
-			LOGGER.error("Error...", e);
-			e.printStackTrace();
-		}
-
-		return jasperPrint;
-
-	}
-
 }

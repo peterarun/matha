@@ -1,4 +1,4 @@
-USE [Matha]
+USE [MathaDist]
 GO
 
 /****** Object:  Table [dbo].[STransactions]    Script Date: 25-Aug-18 12:10:53 PM ******/

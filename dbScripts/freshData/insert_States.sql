@@ -1,4 +1,4 @@
-USE [Matha]
+USE [MathaDist]
 GO
 
 INSERT INTO [dbo].[State]

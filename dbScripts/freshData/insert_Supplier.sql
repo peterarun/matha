@@ -1,4 +1,4 @@
-USE [Matha]
+USE [MathaDist]
 GO
 
 /****** Object:  Table [dbo].[Supplier]    Script Date: 25-Aug-18 12:13:19 PM ******/
@@ -8,7 +8,7 @@ GO
 SET QUOTED_IDENTIFIER ON
 GO
 
-INSERT INTO [Matha].[dbo].[Supplier]
+INSERT INTO [dbo].[Supplier]
            ([PublisherId]
            ,[SName]
            ,[Address1]

@@ -1,4 +1,4 @@
-USE [Matha]
+USE [MathaDist]
 GO
 
 /****** Object:  Table [dbo].[Addresses]    Script Date: 24-Aug-18 6:56:50 PM ******/

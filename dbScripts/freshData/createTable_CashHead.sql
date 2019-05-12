@@ -1,4 +1,4 @@
-USE [Matha]
+USE [MathaDist]
 GO
 
 /****** Object:  Table [dbo].[CashHead]    Script Date: 24-Aug-18 7:03:33 PM ******/

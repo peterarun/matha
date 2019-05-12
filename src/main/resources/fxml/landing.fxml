@@ -59,7 +59,7 @@
             </Tab>
 			</tabs>
 		</TabPane>
-		<Label alignment="CENTER" contentDisplay="CENTER" maxHeight="30.0" prefHeight="30.0" prefWidth="1024.0" text="All Rights Reserved - Matha Books Pvt Ltd." textAlignment="CENTER" VBox.vgrow="NEVER" />
+		<Label alignment="CENTER" contentDisplay="CENTER" maxHeight="30.0" prefHeight="30.0" prefWidth="1024.0" text="All Rights Reserved - Matha Distributors Pvt Ltd." textAlignment="CENTER" VBox.vgrow="NEVER" />
 	</children>
 	<effect>
 		<DropShadow />

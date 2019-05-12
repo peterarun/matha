@@ -1,4 +1,4 @@
-USE [Matha]
+USE [MathaDist]
 GO
 
 /****** Object:  Table [dbo].[PReturnDet]    Script Date: 25-Aug-18 10:51:43 AM ******/

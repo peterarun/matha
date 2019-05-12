@@ -1,4 +1,4 @@
-USE [Matha]
+USE [MathaDist]
 GO
 
 /****** Object:  Table [dbo].[Addresses]    Script Date: 25-Aug-18 12:13:19 PM ******/
@@ -8,7 +8,10 @@ GO
 SET QUOTED_IDENTIFIER ON
 GO
 
-INSERT INTO [Matha].[dbo].[Addresses]
+USE [MathaDist]
+GO
+
+INSERT INTO [dbo].[Addresses]
            ([Name]
            ,[address1]
            ,[address2]
@@ -17,14 +20,35 @@ INSERT INTO [Matha].[dbo].[Addresses]
            ,[phone2]
            ,[Email]
            ,[PIN])
-          SELECT [Name]
+     VALUES
+            ('Purchase'
+            ,'No.88, 8th Street, A.K.Swamy Nagar'
+            ,'Kilpauk'
+            ,'Chennai'
+            ,'09444026149'
+            ,NULL
+            ,NULL
+            ,'600010');
+
+GO
+
+INSERT INTO [dbo].[Addresses]
+           ([Name]
            ,[address1]
            ,[address2]
            ,[address3]
            ,[phone1]
            ,[phone2]
            ,[Email]
-           ,[PIN]
-		   from [Matha_Old].[dbo].[Addresses];
+           ,[PIN])
+     VALUES
+            ('Sales'
+            ,'No.88, 8th Street, A.K.Swamy Nagar'
+            ,'Kilpauk'
+            ,'Chennai'
+            ,'9444026149'
+            ,'8281461689'
+            ,'mathaabooks@gmail.com'
+            ,'600010');
 
 GO

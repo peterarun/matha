@@ -1,4 +1,4 @@
-USE [Matha]
+USE [MathaDist]
 GO
 
 update [dbo].[Districts]

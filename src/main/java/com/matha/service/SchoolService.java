@@ -1,14 +1,5 @@
 package com.matha.service;
 
-import java.time.LocalDate;
-import java.util.*;
-import java.util.stream.Collectors;
-import java.util.stream.Stream;
-
-import javax.persistence.EntityManager;
-import javax.persistence.PersistenceContext;
-import javax.transaction.Transactional;
-
 import com.matha.domain.*;
 import com.matha.repository.*;
 import org.apache.logging.log4j.LogManager;
@@ -20,6 +11,14 @@ import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Sort;
 import org.springframework.data.domain.Sort.Direction;
 import org.springframework.stereotype.Service;
+
+import javax.persistence.EntityManager;
+import javax.persistence.PersistenceContext;
+import javax.transaction.Transactional;
+import java.time.LocalDate;
+import java.util.*;
+import java.util.stream.Collectors;
+import java.util.stream.Stream;
 
 import static com.matha.util.UtilConstants.*;
 import static java.util.Comparator.comparing;
@@ -102,9 +101,6 @@ public class SchoolService
 
 	@Autowired
 	private AddressesRepository addressRepository;
-
-	@Autowired
-	private AccountsRepository accountRepository;
 
 	public List<Publisher> fetchAllPublishers()
 	{
@@ -1569,11 +1565,6 @@ public class SchoolService
 	public Address fetchAddress(String name)
 	{
 		return addressRepository.findOne(name);
-	}
-
-	public Account fetchAccount(String name)
-	{
-		return accountRepository.findOne(name);
 	}
 
 	public List<PurchaseTransaction> fetchAllPurchaseTxnsBetween(LocalDate fromDateVal, LocalDate toDateVal, Sort sort)

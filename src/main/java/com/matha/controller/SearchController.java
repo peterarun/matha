@@ -2,6 +2,7 @@ package com.matha.controller;
 
 import com.matha.domain.*;
 import com.matha.service.SchoolService;
+import com.matha.service.UtilityService;
 import com.matha.util.LoadUtils;
 import javafx.collections.FXCollections;
 import javafx.event.Event;
@@ -29,8 +30,6 @@ import java.util.*;
 import java.util.stream.Collector;
 
 import static com.matha.util.UtilConstants.*;
-import static com.matha.util.Utils.prepareJasperPrint;
-import static com.matha.util.Utils.prepareSaleBillPrint;
 import static com.matha.util.Utils.verifyDblClick;
 import static java.util.stream.Collectors.toMap;
 
@@ -45,6 +44,9 @@ public class SearchController
 
 	@Autowired
 	private SchoolService schoolService;
+
+	@Autowired
+	private UtilityService utilityService;
 
 	@FXML
 	private TabPane saleTabs;
@@ -167,7 +169,7 @@ public class SearchController
 			Purchase purchase = purBillData.getSelectionModel().getSelectedItem();
 			Address salesAddr = schoolService.fetchAddress("Purchase");
 			InputStream iStream = getClass().getResourceAsStream(invoiceJrxml);
-			JasperPrint jasperPrint = prepareJasperPrint(purchase.getPublisher(), purchase, salesAddr, iStream);
+			JasperPrint jasperPrint = utilityService.prepareJasperPrint(purchase.getPublisher(), purchase, salesAddr, iStream);
 			ctrl.initData(jasperPrint);
 			Scene addOrderScene = new Scene(addOrderRoot);
 
@@ -248,7 +250,7 @@ public class SearchController
 			Sales purchase = billData.getSelectionModel().getSelectedItem();
 			InputStream iStream = getClass().getResourceAsStream(salesInvoiceJrxml);
 			Address salesAddr = schoolService.fetchAddress("Sales");
-			JasperPrint jasperPrint = prepareSaleBillPrint(purchase.getSchool(), purchase, salesAddr, iStream, salesBankDetails);
+			JasperPrint jasperPrint = utilityService.prepareSaleBillPrint(purchase.getSchool(), purchase, salesAddr, iStream, salesBankDetails);
 			ctrl.initData(jasperPrint);
 			Scene addOrderScene = new Scene(addOrderRoot);
 
