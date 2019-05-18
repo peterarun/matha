@@ -25,6 +25,10 @@ import javafx.scene.control.ChoiceBox;
 import javafx.scene.control.TextField;
 import javafx.stage.Stage;
 
+import static com.matha.util.UtilConstants.NEW_LINE;
+import static com.matha.util.Utils.showErrorAlert;
+import static org.apache.commons.lang3.StringUtils.isBlank;
+
 @Component
 @Scope(value = ConfigurableBeanFactory.SCOPE_PROTOTYPE)
 public class AddSchoolController {
@@ -92,11 +96,17 @@ public class AddSchoolController {
 	}
 
 	@FXML
-	void handleSave(ActionEvent event) throws IOException {
+	void handleSave(ActionEvent event) throws IOException
+	{
+		if(!validateData())
+		{
+			return;
+		}
 
 		School schoolIn = SchoolConverter.createSchoolObj(name, address1, address2, address3, city, pin, states,
 				districts, phone1, phone2, principal, email);
-		if (this.school != null) {
+		if (this.school != null)
+		{
 			schoolIn.setId(this.school.getId());
 		}
 		schoolService.saveSchool(schoolIn);
@@ -125,5 +135,27 @@ public class AddSchoolController {
 		this.principal.setText(selectedItem.getPrincipal());
 		this.email.setText(selectedItem.getEmail());
 
+	}
+
+	private boolean validateData()
+	{
+		boolean valid = true;
+		StringBuilder errorMsg = new StringBuilder();
+		if(isBlank(this.name.getText()))
+		{
+			errorMsg.append("Please provide a School Name");
+			errorMsg.append(NEW_LINE);
+			valid = false;
+		}
+		if (this.states.getSelectionModel().getSelectedItem() == null)
+		{
+			errorMsg.append("Please select a State before Saving");
+			valid = false;
+		}
+		if(!valid)
+		{
+			showErrorAlert("Error in Saving Bill", "Please correct the following errors", errorMsg.toString());
+		}
+		return valid;
 	}
 }

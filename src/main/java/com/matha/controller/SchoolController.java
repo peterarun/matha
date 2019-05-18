@@ -229,7 +229,6 @@ public class SchoolController
 	@FXML
 	void deleteSchool(ActionEvent event)
 	{
-
 		School selectedOrder = tableView.getSelectionModel().getSelectedItem();
 		Alert alert = new Alert(AlertType.CONFIRMATION);
 		alert.setTitle("Delete Order Confirmation");
@@ -244,23 +243,26 @@ public class SchoolController
 			List<SchoolPayment> payments = srvc.fetchPayments(selectedOrder);
 
 			List<Order> ordersIn = srvc.fetchOrderForSchool(selectedOrder);
-			List<PurchaseDet> purchasesIn = srvc.fetchPurDetForOrders(ordersIn);
-//			Set<PurchaseDet> purchasesIn = ordersIn.stream().map(o -> o.getOrderItem()).flatMap(List::stream).map(oi -> oi.getPurchaseDet()).flatMap(Set::stream).collect(toSet());
+			List<PurchaseDet> purchasesIn = new ArrayList<>();
 
-			if((bills != null && !bills.isEmpty()) ||
+			if(ordersIn != null && !ordersIn.isEmpty())
+			{
+				purchasesIn = srvc.fetchPurDetForOrders(ordersIn);
+//				Set<PurchaseDet> purchasesIn = ordersIn.stream().map(o -> o.getOrderItem()).flatMap(List::stream).map(oi -> oi.getPurchaseDet()).flatMap(Set::stream).collect(toSet());
+
+				if ((bills != null && !bills.isEmpty()) ||
 					(returns != null && !returns.isEmpty()) ||
 					(payments != null && !payments.isEmpty()) ||
 					(purchasesIn != null && !purchasesIn.isEmpty()))
-			{
-				if(!showConfirmation("Bill/Return/Payment transactions available",
-						"There are Bill/Return/Payment transactions already created for the school getting removed. Are you sure you want to remove?",
-						"Click Ok to Delete"))
 				{
-					return;
+					if (!showConfirmation("Bill/Return/Payment transactions available",
+							"There are Bill/Return/Payment transactions already created for the school getting removed. Are you sure you want to remove?",
+							"Click Ok to Delete"))
+					{
+						return;
+					}
 				}
-
 			}
-
 			srvc.deleteSchool(selectedOrder, ordersIn, bills, returns, payments, purchasesIn);
 			initData();
 			nameSearch(null);

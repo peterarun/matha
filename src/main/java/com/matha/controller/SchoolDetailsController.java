@@ -573,7 +573,7 @@ public class SchoolDetailsController
 
 			Parent addOrderRoot = createOrderLoader.load();
 			PrintCreditNoteController ctrl = createOrderLoader.getController();
-			ctrl.initData(purchase.getSchool(), purchase, salesAddr, salesBankDetails, jasperStream);
+			ctrl.initData(purchase.getSalesTxn().getSchool(), purchase, salesAddr, salesBankDetails, jasperStream);
 			addOrderScene = new Scene(addOrderRoot);
 			prepareAndShowStage(ev, addOrderScene);
 		}

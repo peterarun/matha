@@ -141,6 +141,7 @@ public class AddPaymentController
 				SalesTransaction sTransaction = new SalesTransaction();
 				sTransaction.setSchool(school);
 				sPayment.setSalesTxn(sTransaction);
+				sPayment.setSchool(school);
 			}
 
 			sPayment.setReceiptNum(receiptNum.getText());

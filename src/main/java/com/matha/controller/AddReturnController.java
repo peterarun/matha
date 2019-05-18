@@ -228,11 +228,15 @@ public class AddReturnController
 			}
 			SchoolReturn returnIn = this.schoolReturn;
 			SalesTransaction salesTxn = null;
-			if (returnIn == null) {
+			if (returnIn == null)
+			{
 				returnIn = new SchoolReturn();
 				salesTxn = new SalesTransaction();
 				salesTxn.setSchool(school);
-			} else {
+				returnIn.setSchool(school);
+			}
+			else
+			{
 				salesTxn = returnIn.getSalesTxn();
 			}
 

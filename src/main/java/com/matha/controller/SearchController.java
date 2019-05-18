@@ -248,7 +248,7 @@ public class SearchController
 			Sales purchase = billData.getSelectionModel().getSelectedItem();
 			InputStream iStream = getClass().getResourceAsStream(salesInvoiceJrxml);
 			Address salesAddr = schoolService.fetchAddress("Sales");
-			JasperPrint jasperPrint = prepareSaleBillPrint(purchase.getSchool(), purchase, salesAddr, iStream, salesBankDetails);
+			JasperPrint jasperPrint = prepareSaleBillPrint(purchase.getSalesTxn().getSchool(), purchase, salesAddr, iStream, salesBankDetails);
 			ctrl.initData(jasperPrint);
 			Scene addOrderScene = new Scene(addOrderRoot);
 
