@@ -55,7 +55,7 @@ public class UtilityService
 		{
 			Parent addOrderRoot = createOrderLoader.load();
 			PrintSalesBillController ctrl = createOrderLoader.getController();
-			JasperPrint jasperPrint = prepareSaleBillPrint(purchase.getSchool(), purchase, addrIn, jasperStream, salesBankDetails);
+			JasperPrint jasperPrint = prepareSaleBillPrint(purchase.getSalesTxn().getSchool(), purchase, addrIn, jasperStream, salesBankDetails);
 			ctrl.initData(jasperPrint);
 			addOrderScene = new Scene(addOrderRoot);
 		}
