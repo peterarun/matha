@@ -851,7 +851,7 @@ public class SchoolDetailsController
 				int fromIndex = i * 38;
 				int toIndex = Math.min(fromIndex + 38, tableDataIn.size());
 				List<SalesTransaction> tableData = tableDataIn.subList(fromIndex, toIndex);
-				LOGGER.info("i: " + i + " fromIndex: " + fromIndex + " toIndex: " + toIndex + " tabSize: " + tableData.size());
+				LOGGER.debug("i: " + i + " fromIndex: " + fromIndex + " toIndex: " + toIndex + " tabSize: " + tableData.size());
 
 				Map<String, Object> hmOut = Utils.prepareSalesStmtParmMap(hm, tableData);
 				LOGGER.debug("hmOut");

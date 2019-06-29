@@ -953,13 +953,23 @@ public class SchoolService
 	}
 
 	@Transactional
-	public void deletePurchaseReturn(PurchaseReturn purchase)
+	public void deletePurchaseReturn(PurchaseReturn pur)
 	{
-		PurchaseTransaction txn = purchase.getSalesTxn();
-		deletePurchaseTxn(txn);
+//		PurchaseTransaction txn = purchase.getSalesTxn();
+//		deletePurchaseTxn(txn);
+//
+//		purchase.setStatusInd(Integer.valueOf(-2));
+//		purchaseReturnRepository.delete(purchase);
 
-		purchase.setStatusInd(Integer.valueOf(-2));
-		purchaseReturnRepository.delete(purchase);
+		double netAmt = pur.getAmount();
+		PurchaseTransaction txn = pur.getSalesTxn();
+
+		pur.setSalesTxn(null);
+		pur.setDeletedAmt(netAmt);
+		pur.setStatusInd(DELETED_IND);
+		purchaseReturnRepository.save(pur);
+
+		deletePurchaseTxn(txn);
 	}
 
 	public List<PurchasePayment> fetchPurchasePayments(Publisher pub)
@@ -990,11 +1000,22 @@ public class SchoolService
 
 	}
 
+	@Transactional
 	public void deletePurchasePayment(PurchasePayment pur)
 	{
+//		PurchaseTransaction txn = pur.getSalesTxn();
+//		deletePurchaseTxn(txn);
+//		purchasePayRepository.delete(pur);
+
+		double netAmt = pur.getAmount();
 		PurchaseTransaction txn = pur.getSalesTxn();
+
+		pur.setSalesTxn(null);
+		pur.setDeletedAmt(netAmt);
+		pur.setStatusInd(DELETED_IND);
+		purchasePayRepository.save(pur);
+
 		deletePurchaseTxn(txn);
-		purchasePayRepository.delete(pur);
 	}
 
 	public void saveCashBook(CashBook item)
@@ -1201,6 +1222,9 @@ public class SchoolService
 		{
 			return;
 		}
+		LOGGER.info("Deleting Transaction: " + txn.getId() + " for customer: " + txn.getSchool().getId());
+		LOGGER.info("Type: " + txn.getType() + " InvoiceNum: " + txn.getInvoiceNum());
+
 		SalesTransaction prevTxn = txn.getPrevTxn();
 		SalesTransaction nextTxn = txn.getNextTxn();
 		SalesTransaction updateFromTxn = null;
@@ -1467,9 +1491,20 @@ public class SchoolService
 	@Transactional
 	public void deletePayment(SchoolPayment selectedPayment)
 	{
-		deleteSalesTxn(selectedPayment.getSalesTxn());
+//		deleteSalesTxn(selectedPayment.getSalesTxn());
+//		selectedPayment.setSalesTxn(null);
+//		schoolPayRepository.delete(selectedPayment);
+
+		SalesTransaction salesTransaction = selectedPayment.getSalesTxn();
+		double netAmt = selectedPayment.getAmount();
+
 		selectedPayment.setSalesTxn(null);
-		schoolPayRepository.delete(selectedPayment);
+		selectedPayment.setDeletedAmt(netAmt);
+		selectedPayment.setStatusInd(DELETED_IND);
+		schoolPayRepository.save(selectedPayment);
+
+		deleteSalesTxn(salesTransaction);
+
 	}
 
 	public List<SalesTransaction> fetchTransactions(School school, LocalDate fromDateVal, LocalDate toDateVal)
@@ -1553,12 +1588,28 @@ public class SchoolService
 		return schoolReturnRepository.findAllBySchool(school);
 	}
 
+	@Transactional
 	public void deleteReturn(SchoolReturn selectedReturn)
 	{
-		deleteSalesTxn(selectedReturn.getSalesTxn());
 
-		selectedReturn.setStatusInd(Integer.valueOf(-2));
-		schoolReturnRepository.delete(selectedReturn);
+//		deleteSalesTxn(selectedReturn.getSalesTxn());
+//
+//		selectedReturn.setStatusInd(Integer.valueOf(-2));
+//		schoolReturnRepository.delete(selectedReturn);
+
+		List<SalesReturnDet> ordersIn = new ArrayList<>(selectedReturn.getSalesReturnDetSet());
+		Set<Integer> bookSet = ordersIn.stream().map(SalesReturnDet::getBook).map(Book::getId).collect(toSet());
+		updateBookInventory(new ArrayList<>(), new ArrayList<>(), ordersIn, new ArrayList<>(), bookSet, Integer.valueOf(-1));
+
+		SalesTransaction salesTransaction = selectedReturn.getSalesTxn();
+		double netAmt = selectedReturn.getNetAmount();
+
+		selectedReturn.setSalesTxn(null);
+		selectedReturn.setDeletedAmt(netAmt);
+		selectedReturn.setStatusInd(DELETED_IND);
+		schoolReturnRepository.save(selectedReturn);
+
+		deleteSalesTxn(salesTransaction);
 	}
 
 	public List<Book> fetchBooksForPublisher(Publisher publisher)

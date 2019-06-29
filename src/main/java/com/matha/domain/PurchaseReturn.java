@@ -48,6 +48,9 @@ public class PurchaseReturn {
 	@Column(name = "Fy")
 	private Integer fy;
 
+	@Column(name = "DelAmt")
+	private Double deletedAmt;
+
 	@ManyToOne
 	@JoinColumn(name = "PublisherId")
 	private Publisher publisher;
@@ -201,5 +204,15 @@ public class PurchaseReturn {
 
 	public void setFy(Integer fy) {
 		this.fy = fy;
+	}
+
+	public Double getDeletedAmt()
+	{
+		return deletedAmt;
+	}
+
+	public void setDeletedAmt(Double deletedAmt)
+	{
+		this.deletedAmt = deletedAmt;
 	}
 }

@@ -42,6 +42,9 @@ public class PurchasePayment {
 	@JoinColumn(name = "TxnId")
 	private PurchaseTransaction salesTxn;
 
+	@Column(name = "DelAmt")
+	private Double deletedAmt;
+
 	public String getStatusStr()
 	{
 		return STATUS_MAP.get(getStatusInd());
@@ -116,5 +119,15 @@ public class PurchasePayment {
 
 	public void setStatusInd(Integer statusInd) {
 		this.statusInd = statusInd;
+	}
+
+	public Double getDeletedAmt()
+	{
+		return deletedAmt;
+	}
+
+	public void setDeletedAmt(Double deletedAmt)
+	{
+		this.deletedAmt = deletedAmt;
 	}
 }

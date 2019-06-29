@@ -1,7 +1,6 @@
 package com.matha.domain;
 
-import static com.matha.util.UtilConstants.EMPTY_STR;
-import static com.matha.util.UtilConstants.NEW_LINE;
+import static com.matha.util.UtilConstants.*;
 import static org.apache.commons.lang3.StringUtils.isBlank;
 import static org.apache.commons.lang3.StringUtils.isNotBlank;
 
@@ -240,6 +239,70 @@ public class School implements Serializable {
 			builder.append(NEW_LINE);
 		}
 		if (state != null && isNotBlank(state.getId())) {
+			builder.append(state.getId());
+		}
+
+		return builder.toString();
+	}
+
+	public String fetchCreditNoteAddr()
+	{
+		StringBuilder builder = new StringBuilder();
+		if (isNotBlank(address1))
+		{
+			builder.append(address1);
+		}
+		if (isNotBlank(address2))
+		{
+			builder.append(NEW_LINE);
+			builder.append(address2);
+		}
+		if (isNotBlank(address3))
+		{
+			if (isNotBlank(address2))
+			{
+				builder.append(COMMA_SIGN);
+				builder.append(SPACE_SIGN);
+			}
+			else
+			{
+				builder.append(NEW_LINE);
+			}
+			builder.append(address3);
+		}
+		if (isNotBlank(city))
+		{
+			builder.append(NEW_LINE);
+			builder.append(city);
+		}
+		if (isNotBlank(pin))
+		{
+			if (isNotBlank(city))
+			{
+				builder.append(HYPHEN_SPC_SIGN);
+			}
+			else
+			{
+				builder.append(NEW_LINE);
+			}
+			builder.append(pin);
+		}
+		if (district != null && isNotBlank(district.getId()))
+		{
+			builder.append(NEW_LINE);
+			builder.append(district.getId());
+		}
+		if (state != null && isNotBlank(state.getId()))
+		{
+			if (district != null && isNotBlank(district.getId()))
+			{
+				builder.append(COMMA_SIGN);
+				builder.append(SPACE_SIGN);
+			}
+			else
+			{
+				builder.append(NEW_LINE);
+			}
 			builder.append(state.getId());
 		}
 

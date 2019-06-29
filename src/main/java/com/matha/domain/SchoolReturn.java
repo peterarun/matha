@@ -31,6 +31,9 @@ public class SchoolReturn {
 	@Column(name = "discType")
 	private Boolean discType;
 
+	@Column(name = "NetAmt")
+	private Double deletedAmt;
+
 	@Column(name = "SubTotal")
 	private Double subTotal;
 
@@ -158,6 +161,16 @@ public class SchoolReturn {
 
 	public void setDiscType(Boolean discType) {
 		this.discType = discType;
+	}
+
+	public Double getDeletedAmt()
+	{
+		return deletedAmt;
+	}
+
+	public void setDeletedAmt(Double deletedAmt)
+	{
+		this.deletedAmt = deletedAmt;
 	}
 
 	public Double getSubTotal() {

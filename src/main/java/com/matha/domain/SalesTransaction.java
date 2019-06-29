@@ -144,6 +144,26 @@ public class SalesTransaction
 		}
 	}
 
+	public String getDependentId()
+	{
+		if(this.sale != null)
+		{
+			return this.sale.getId();
+		}
+		else if(this.payment != null)
+		{
+			return String.valueOf(this.payment.getId());
+		}
+		else if(this.salesReturn != null)
+		{
+			return this.salesReturn.getId();
+		}
+		else
+		{
+			return EMPTY_STR;
+		}
+	}
+
 	public String getRefNum()
 	{
 		if(this.payment != null && this.payment.getReferenceNum() != null)

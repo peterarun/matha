@@ -186,7 +186,7 @@ public class PrintCreditNoteController
 			Double discAmt = schoolReturn.getDiscount();
 
 			hm.put("partyName", sch.getName());
-			hm.put("partyAddress", sch.addressText());
+			hm.put("partyAddress", sch.fetchCreditNoteAddr());
 			hm.put("agencyName", "MATHA BOOKS PVT LTD");
 			hm.put("agencyDetails", strBuild.toString());
 			hm.put("partyPhone", sch.getPhone1() == null ? sch.getPhone2() : sch.getPhone1());

@@ -39,6 +39,9 @@ public class SchoolPayment {
 	@JoinColumn(name = "TxnId")
 	private SalesTransaction salesTxn;
 
+	@Column(name = "DelAmt")
+	private Double deletedAmt;
+
 	public String getTxnDateStr()
 	{
 		if(salesTxn != null)
@@ -128,5 +131,15 @@ public class SchoolPayment {
 
 	public void setSchool(School school) {
 		this.school = school;
+	}
+
+	public Double getDeletedAmt()
+	{
+		return deletedAmt;
+	}
+
+	public void setDeletedAmt(Double deletedAmt)
+	{
+		this.deletedAmt = deletedAmt;
 	}
 }
