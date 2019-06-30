@@ -49,7 +49,7 @@
 	<background>
 		<band height="802" splitType="Stretch">
 			<staticText>
-				<reportElement x="0" y="200" width="50" height="465" uuid="28c1486e-f4a4-4172-971c-2b9aae0e04c4">
+				<reportElement x="0" y="200" width="50" height="525" uuid="28c1486e-f4a4-4172-971c-2b9aae0e04c4">
 					<property name="com.jaspersoft.studio.unit.height" value="px"/>
 					<property name="com.jaspersoft.studio.unit.y" value="px"/>
 				</reportElement>
@@ -62,7 +62,7 @@
 				<text><![CDATA[]]></text>
 			</staticText>
 			<staticText>
-				<reportElement x="50" y="200" width="280" height="465" uuid="e01dbe7b-7aa4-411e-9f35-a6060fe48c66">
+				<reportElement x="50" y="200" width="280" height="525" uuid="e01dbe7b-7aa4-411e-9f35-a6060fe48c66">
 					<property name="com.jaspersoft.studio.unit.y" value="px"/>
 					<property name="com.jaspersoft.studio.unit.height" value="px"/>
 				</reportElement>
@@ -75,7 +75,7 @@
 				<text><![CDATA[]]></text>
 			</staticText>
 			<staticText>
-				<reportElement x="330" y="200" width="45" height="465" uuid="432d37e6-7925-49b4-ab6f-ae6daba506b6">
+				<reportElement x="330" y="200" width="45" height="525" uuid="432d37e6-7925-49b4-ab6f-ae6daba506b6">
 					<property name="com.jaspersoft.studio.unit.y" value="px"/>
 					<property name="com.jaspersoft.studio.unit.height" value="px"/>
 				</reportElement>
@@ -88,7 +88,7 @@
 				<text><![CDATA[]]></text>
 			</staticText>
 			<staticText>
-				<reportElement x="375" y="200" width="70" height="465" uuid="a66eaf0a-58e2-46cb-b157-e4870c627100">
+				<reportElement x="375" y="200" width="70" height="525" uuid="a66eaf0a-58e2-46cb-b157-e4870c627100">
 					<property name="com.jaspersoft.studio.unit.y" value="px"/>
 					<property name="com.jaspersoft.studio.unit.height" value="px"/>
 				</reportElement>
@@ -101,7 +101,7 @@
 				<text><![CDATA[]]></text>
 			</staticText>
 			<staticText>
-				<reportElement x="445" y="200" width="74" height="465" uuid="52009a88-1995-45a5-adc1-6ba8588dac28">
+				<reportElement x="445" y="200" width="74" height="525" uuid="52009a88-1995-45a5-adc1-6ba8588dac28">
 					<property name="com.jaspersoft.studio.unit.y" value="px"/>
 					<property name="com.jaspersoft.studio.unit.height" value="px"/>
 				</reportElement>
