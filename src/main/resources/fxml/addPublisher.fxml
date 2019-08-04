@@ -6,7 +6,7 @@
 <?import javafx.scene.layout.*?>
 <?import javafx.scene.layout.AnchorPane?>
 
-<AnchorPane prefHeight="349.0" prefWidth="450.0" xmlns="http://javafx.com/javafx/8" xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.matha.controller.AddPublisherController">
+<AnchorPane prefHeight="349.0" prefWidth="450.0" styleClass="mathaf" stylesheets="@matha.css" xmlns="http://javafx.com/javafx/8" xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.matha.controller.AddPublisherController">
    <children>
       <SplitPane dividerPositions="0.2200557103064067" orientation="VERTICAL" prefHeight="361.0" prefWidth="450.0">
         <items>

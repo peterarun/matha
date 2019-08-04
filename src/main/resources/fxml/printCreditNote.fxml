@@ -10,7 +10,7 @@
 <?import javafx.scene.layout.AnchorPane?>
 <?import javafx.collections.*?>
 
-<SplitPane dividerPositions="0.15384615384615385" maxHeight="1.7976931348623157E308" maxWidth="1.7976931348623157E308" minHeight="-Infinity" minWidth="-Infinity" orientation="VERTICAL" prefHeight="600.0" prefWidth="800.0" xmlns="http://javafx.com/javafx/8" xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.matha.controller.PrintCreditNoteController">
+<SplitPane styleClass="mathaf" stylesheets="@matha.css" dividerPositions="0.15384615384615385" maxHeight="1.7976931348623157E308" maxWidth="1.7976931348623157E308" minHeight="-Infinity" minWidth="-Infinity" orientation="VERTICAL" prefHeight="600.0" prefWidth="800.0" xmlns="http://javafx.com/javafx/8" xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.matha.controller.PrintCreditNoteController">
 	<items>
 		<AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="96.0" prefWidth="798.0">
 			<children>

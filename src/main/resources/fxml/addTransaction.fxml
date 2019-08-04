@@ -3,7 +3,7 @@
 <?import javafx.scene.control.*?>
 <?import javafx.scene.layout.AnchorPane?>
 <?import javafx.scene.text.Font?>
-<SplitPane dividerPositions="0.24727272727272728" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" orientation="VERTICAL" prefHeight="345.0" prefWidth="400.0" xmlns="http://javafx.com/javafx/8" xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.matha.controller.AddTxnController">
+<SplitPane dividerPositions="0.24727272727272728" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" orientation="VERTICAL" prefHeight="345.0" prefWidth="400.0" styleClass="mathaf" stylesheets="@matha.css" xmlns="http://javafx.com/javafx/8" xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.matha.controller.AddTxnController">
   <items>
     <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="89.0" prefWidth="398.0">
          <children>

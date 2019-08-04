@@ -9,7 +9,7 @@
 <?import javafx.scene.layout.AnchorPane?>
 <?import javafx.scene.control.cell.PropertyValueFactory?>
 
-<SplitPane dividerPositions="0.15640599001663893" maxHeight="-Infinity" maxWidth="709.0" minHeight="-Infinity" minWidth="-Infinity" orientation="VERTICAL" prefHeight="590.0" prefWidth="709.0" xmlns="http://javafx.com/javafx/8" xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.matha.controller.AddBillController">
+<SplitPane  styleClass="mathaf" stylesheets="@matha.css" dividerPositions="0.15640599001663893" maxHeight="-Infinity" maxWidth="709.0" minHeight="-Infinity" minWidth="-Infinity" orientation="VERTICAL" prefHeight="590.0" prefWidth="709.0" xmlns="http://javafx.com/javafx/8" xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.matha.controller.AddBillController">
 	<items>
 		<AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="60.0" prefWidth="398.0" SplitPane.resizableWithParent="false">
 			<children>

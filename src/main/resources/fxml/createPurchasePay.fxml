@@ -8,7 +8,7 @@
 <?import javafx.scene.layout.AnchorPane?>
 <?import javafx.scene.control.cell.PropertyValueFactory?>
 
-<SplitPane dividerPositions="0.23" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" orientation="VERTICAL" prefHeight="456.0" prefWidth="358.0" xmlns="http://javafx.com/javafx/8" xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.matha.controller.AddPurchasePayController">
+<SplitPane  styleClass="mathaf" stylesheets="@matha.css" dividerPositions="0.23" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" orientation="VERTICAL" prefHeight="456.0" prefWidth="358.0" xmlns="http://javafx.com/javafx/8" xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.matha.controller.AddPurchasePayController">
 	<items>
 		<AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="60.0" prefWidth="398.0">
 			<children>
