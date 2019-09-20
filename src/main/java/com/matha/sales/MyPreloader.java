@@ -14,6 +14,7 @@ import javafx.scene.layout.Region;
 import javafx.scene.layout.VBox;
 import javafx.stage.Stage;
 import javafx.stage.StageStyle;
+import org.springframework.beans.factory.annotation.Value;
 
 public class MyPreloader extends Preloader
 {
@@ -22,12 +23,13 @@ public class MyPreloader extends Preloader
 	@Override
 	public void start(Stage primaryStage) throws Exception
 	{
+		String activeProfile = System.getProperty("spring.profiles.active");
 		this.preloaderStage = primaryStage;
 
 		VBox loading = new VBox(20);
 		loading.setMaxWidth(Region.USE_PREF_SIZE);
 		loading.setMaxHeight(Region.USE_PREF_SIZE);
-		Image img = new Image(new FileInputStream(new File("javaLoading.jpg")));		
+		Image img = new Image(new FileInputStream(new File("javaLoading-" + activeProfile + ".jpg")));
 		loading.getChildren().add(new ImageView(img));
 		loading.getChildren().add(new Label("Please wait..."));
 

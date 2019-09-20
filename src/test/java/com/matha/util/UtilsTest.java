@@ -11,6 +11,11 @@ import org.junit.Test;
 
 import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
+import java.util.Arrays;
+import java.util.List;
+import java.util.concurrent.ConcurrentMap;
+import java.util.stream.Collectors;
+import java.util.stream.Stream;
 
 public class UtilsTest
 {
@@ -18,11 +23,12 @@ public class UtilsTest
 	@Test
 	public void testConvertDouble()
 	{
-		Configurator.setRootLevel(Level.DEBUG);
-		
-		double dbl = 19600.80;
-		System.out.println(Utils.convertDouble(dbl));
-
+		Stream<String> cats = Stream.of("leopard","lynx","ocelot","puma").parallel();
+		Stream<String> bears = Stream.of("panda","grizzly","polar").parallel();
+		ConcurrentMap<Boolean, List<String>> data = Stream.of(cats,bears)
+		.flatMap(s -> s)
+		.collect(Collectors.groupingByConcurrent(s -> !s.startsWith("p")));
+		System.out.println(data.get(false).size()+" "+data.get(true).size());
 	}
 
 	@Test

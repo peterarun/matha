@@ -67,9 +67,6 @@ public class Order implements Serializable, Comparable<Order>
 	@Column(name = "Prefix")
 	private String prefix;
 
-//	@Column(name = "NumSerialNo", insertable=false, updatable=false)
-//	private Integer calcSerialNum;
-
 	public Integer getOrderCount()
 	{
 		return orderItem == null ? 0 : orderItem.size();
@@ -183,14 +180,6 @@ public class Order implements Serializable, Comparable<Order>
 	public void setPrefix(String prefix) {
 		this.prefix = prefix;
 	}
-
-//	public Integer getCalcSerialNum() {
-//		return calcSerialNum;
-//	}
-//
-//	public void setCalcSerialNum(Integer calcSerialNum) {
-//		this.calcSerialNum = calcSerialNum;
-//	}
 
 	@Override
 	public String toString()

@@ -291,6 +291,20 @@ public class AddPurchaseRetController
 			valid = false;
 		}
 
+		if(this.addedBooks == null || this.addedBooks.getItems() == null || this.addedBooks.getItems().isEmpty())
+		{
+			errorMsg.append("Please add some records");
+			valid = false;
+		}
+		else
+		{
+			valid = isFilled(this.addedBooks.getItems());
+			if(!valid)
+			{
+				errorMsg.append("Please provide quantity and rate for all records");
+			}
+		}
+
 		if(!valid)
 		{
 			showErrorAlert("Error in Saving Purchase Bill", "Please correct the following errors", errorMsg.toString());

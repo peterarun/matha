@@ -12,6 +12,7 @@ import com.matha.domain.*;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Controller;
 
 import com.matha.service.SchoolService;
@@ -47,7 +48,10 @@ public class SchoolController
 	private static final Logger LOGGER = LogManager.getLogger(SchoolController.class);
 	
 	private Parent root;
-	
+
+	@Value("${defaultState}")
+	private String defaultState;
+
 	@Autowired
 	SchoolService srvc;
 
@@ -112,7 +116,14 @@ public class SchoolController
 			}
 		});
 
-		states.getSelectionModel().selectFirst();
+		List<State> allStates = srvc.fetchAllStates();
+		State state = allStates.get(0);
+		if(defaultState != null)
+		{
+			Optional<State> stateOpt = allStates.stream().filter(st -> st.getId().equalsIgnoreCase(defaultState)).findFirst();
+			state = stateOpt.get();
+		}
+		states.getSelectionModel().select(state);
 	}
 
 	private void initData()
@@ -229,6 +240,7 @@ public class SchoolController
 	@FXML
 	void deleteSchool(ActionEvent event)
 	{
+
 		School selectedOrder = tableView.getSelectionModel().getSelectedItem();
 		Alert alert = new Alert(AlertType.CONFIRMATION);
 		alert.setTitle("Delete Order Confirmation");
@@ -243,26 +255,23 @@ public class SchoolController
 			List<SchoolPayment> payments = srvc.fetchPayments(selectedOrder);
 
 			List<Order> ordersIn = srvc.fetchOrderForSchool(selectedOrder);
-			List<PurchaseDet> purchasesIn = new ArrayList<>();
+			List<PurchaseDet> purchasesIn = srvc.fetchPurDetForOrders(ordersIn);
+//			Set<PurchaseDet> purchasesIn = ordersIn.stream().map(o -> o.getOrderItem()).flatMap(List::stream).map(oi -> oi.getPurchaseDet()).flatMap(Set::stream).collect(toSet());
 
-			if(ordersIn != null && !ordersIn.isEmpty())
-			{
-				purchasesIn = srvc.fetchPurDetForOrders(ordersIn);
-//				Set<PurchaseDet> purchasesIn = ordersIn.stream().map(o -> o.getOrderItem()).flatMap(List::stream).map(oi -> oi.getPurchaseDet()).flatMap(Set::stream).collect(toSet());
-
-				if ((bills != null && !bills.isEmpty()) ||
+			if((bills != null && !bills.isEmpty()) ||
 					(returns != null && !returns.isEmpty()) ||
 					(payments != null && !payments.isEmpty()) ||
 					(purchasesIn != null && !purchasesIn.isEmpty()))
+			{
+				if(!showConfirmation("Bill/Return/Payment transactions available",
+						"There are Bill/Return/Payment transactions already created for the school getting removed. Are you sure you want to remove?",
+						"Click Ok to Delete"))
 				{
-					if (!showConfirmation("Bill/Return/Payment transactions available",
-							"There are Bill/Return/Payment transactions already created for the school getting removed. Are you sure you want to remove?",
-							"Click Ok to Delete"))
-					{
-						return;
-					}
+					return;
 				}
+
 			}
+
 			srvc.deleteSchool(selectedOrder, ordersIn, bills, returns, payments, purchasesIn);
 			initData();
 			nameSearch(null);

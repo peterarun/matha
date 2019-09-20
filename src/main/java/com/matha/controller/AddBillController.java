@@ -6,6 +6,7 @@ import javafx.beans.binding.Bindings;
 import javafx.beans.value.ChangeListener;
 import javafx.beans.value.ObservableValue;
 import javafx.collections.FXCollections;
+import javafx.collections.ListChangeListener;
 import javafx.collections.ObservableList;
 import javafx.event.ActionEvent;
 import javafx.event.EventHandler;
@@ -145,6 +146,8 @@ public class AddBillController
 	@Value("${listOfDespatchers}")
 	private String[] despatcherArray;
 
+	private boolean dirty;
+
 	void initData(ObservableList<Order> ordersIn, School schoolIn, Sales sale, Map<String, Book> bookMapIn)
 	{
 		this.school = schoolIn;
@@ -186,6 +189,17 @@ public class AddBillController
 		this.bookText.prefWidthProperty().bind(this.addedBooks.widthProperty().multiply(0.42));
 		this.bookCnt.prefWidthProperty().bind(this.addedBooks.widthProperty().multiply(0.1));
 
+		this.dirty = false;
+		ObservableList<SalesDet> fxObs = this.addedBooks.getItems();
+		if(fxObs != null)
+		{
+			LOGGER.info("Adding Listener");
+			ListChangeListener<SalesDet> lcL= c -> {
+				LOGGER.info("Setting Dirty");
+				dirty = true;
+			};
+			fxObs.addListener(lcL);
+		}
 	}
 
 	private void loadAddDefaults()
@@ -247,7 +261,8 @@ public class AddBillController
 			if(sale.getSaleItems() != null)
 			{
 				List<SalesDet> addedBookList = sale.getSaleItems().stream().sorted(comparing(sd -> sd.getSlNum())).collect(toList());
-				this.addedBooks.setItems(FXCollections.observableArrayList(addedBookList));
+				ObservableList<SalesDet> fxObs = FXCollections.observableArrayList(addedBookList);
+				this.addedBooks.setItems(fxObs);
 
 				Set<String> orderListIn = sale.getSaleItems().stream()
 						.filter(sa -> sa.getOrderItem() != null)
@@ -391,6 +406,21 @@ public class AddBillController
 			errorMsg.append("Please provide a Bill Date");
 			valid = false;
 		}
+
+		if(this.addedBooks == null || this.addedBooks.getItems() == null || this.addedBooks.getItems().isEmpty())
+		{
+			errorMsg.append("Please add some records");
+			valid = false;
+		}
+		else
+		{
+			valid = isFilled(this.addedBooks.getItems());
+			if(!valid)
+			{
+				errorMsg.append("Please provide quantity and rate for all records");
+			}
+		}
+		
 		if(!valid)
 		{
 			showErrorAlert("Error in Saving Bill", "Please correct the following errors", errorMsg.toString());
@@ -469,6 +499,7 @@ public class AddBillController
 
 			Sales saleOut = schoolService.saveSalesData(sale, orderItems, salesTxn);
 			this.selectedSale = saleOut;
+			this.dirty = false;
 
 			((Stage) cancelBtn.getScene().getWindow()).close();
 		}
@@ -553,6 +584,11 @@ public class AddBillController
 		return selectedSale;
 	}
 
+	public boolean isDirty()
+	{
+		return this.dirty;
+	}
+
 	public EventHandler<CellEditEvent<OrderItem, String>> fetchPriceEventHandler()
 	{
 		return new EventHandler<CellEditEvent<OrderItem, String>>() {
@@ -634,7 +670,7 @@ public class AddBillController
 			public void handle(CellEditEvent<SalesDet, String> t)
 			{
 				SalesDet oItem = ((SalesDet) t.getTableView().getItems().get(t.getTablePosition().getRow()));
-				oItem.setQty(Integer.parseInt(t.getNewValue()));
+				oItem.setQty(t.getNewValue() == null ? 0 : Integer.parseInt(t.getNewValue()));
 				t.getTableView().refresh();
 				loadSubTotal();
 				calcNetAmount(discAmt.getText(), otherCharges.getText());

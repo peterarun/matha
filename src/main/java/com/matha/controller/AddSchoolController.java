@@ -5,9 +5,12 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Set;
 
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.config.ConfigurableBeanFactory;
 import org.springframework.context.annotation.Scope;
+import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.stereotype.Component;
 
 import com.matha.domain.District;
@@ -31,7 +34,10 @@ import static org.apache.commons.lang3.StringUtils.isBlank;
 
 @Component
 @Scope(value = ConfigurableBeanFactory.SCOPE_PROTOTYPE)
-public class AddSchoolController {
+public class AddSchoolController
+{
+
+	private static Logger LOGGER = LogManager.getLogger(AddSchoolController.class);
 
 	@Autowired
 	private SchoolService schoolService;
@@ -96,7 +102,7 @@ public class AddSchoolController {
 	}
 
 	@FXML
-	void handleSave(ActionEvent event) throws IOException
+	void handleSave(ActionEvent event)
 	{
 		if(!validateData())
 		{
@@ -109,7 +115,22 @@ public class AddSchoolController {
 		{
 			schoolIn.setId(this.school.getId());
 		}
-		schoolService.saveSchool(schoolIn);
+		try
+		{
+			schoolService.saveSchool(schoolIn);
+		}
+		catch (DataIntegrityViolationException dve)
+		{
+			LOGGER.error("Exception Occurred", dve);
+			showErrorAlert("An Error Occurred", "Duplicate School Name", "The school name appears to be duplicate. Please chnage before saving");
+			return;
+		}
+		catch (Exception e)
+		{
+			LOGGER.error("Exception Occurred", e);
+			showErrorAlert("An Error Occurred", "Unexpected Error", e.getMessage());
+			return;
+		}
 		((Stage) cancelBtn.getScene().getWindow()).close();
 	}
 
@@ -154,7 +175,7 @@ public class AddSchoolController {
 		}
 		if(!valid)
 		{
-			showErrorAlert("Error in Saving Bill", "Please correct the following errors", errorMsg.toString());
+			showErrorAlert("Error in Saving School", "Please correct the following errors", errorMsg.toString());
 		}
 		return valid;
 	}

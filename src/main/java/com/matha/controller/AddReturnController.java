@@ -2,14 +2,18 @@ package com.matha.controller;
 
 import com.matha.domain.*;
 import com.matha.service.SchoolService;
+import javafx.beans.property.ReadOnlyStringWrapper;
 import javafx.beans.value.ChangeListener;
 import javafx.beans.value.ObservableValue;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.event.ActionEvent;
+import javafx.event.EventHandler;
 import javafx.fxml.FXML;
 import javafx.scene.control.*;
+import javafx.scene.control.cell.TextFieldTableCell;
 import javafx.stage.Stage;
+import javafx.util.Callback;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.controlsfx.control.textfield.TextFields;
@@ -90,6 +94,15 @@ public class AddReturnController
 	@FXML
 	private TextField netTotal;
 
+	@FXML
+	private TableColumn<SalesReturnDet, String> priceColumn;
+
+	@FXML
+	private TableColumn<SalesReturnDet, String> totalColumn;
+
+	@FXML
+	private TableColumn<SalesReturnDet, String> qtyColumn;
+
 	private School school;
 	private SchoolReturn schoolReturn;
 	private Map<String, Book> bookMap;
@@ -160,6 +173,14 @@ public class AddReturnController
 		{
 			this.addedBooks.setItems(FXCollections.observableList(new ArrayList<>()));
 		}
+
+		this.priceColumn.setCellFactory(TextFieldTableCell.forTableColumn());
+		this.priceColumn.setCellValueFactory(fetchSalesPrcColFactory());
+		this.priceColumn.setOnEditCommit(fetchSalesPrcEventHandler());
+
+		this.qtyColumn.setCellFactory(TextFieldTableCell.forTableColumn());
+		this.qtyColumn.setCellValueFactory(fetchSalesCntFactory());
+		this.qtyColumn.setOnEditCommit(fetchSalesQtyEventHandler());
 	}
 
 	private void loadSubTotal()
@@ -211,6 +232,21 @@ public class AddReturnController
 			errorMsg.append("Please provide a date");
 			valid = false;
 		}
+
+		if(this.addedBooks == null || this.addedBooks.getItems() == null || this.addedBooks.getItems().isEmpty())
+		{
+			errorMsg.append("Please add some records");
+			valid = false;
+		}
+		else
+		{
+			valid = isFilled(this.addedBooks.getItems());
+			if(!valid)
+			{
+				errorMsg.append("Please provide quantity and rate for all records");
+			}
+		}
+
 		if(!valid)
 		{
 			showErrorAlert("Error in Saving Order", "Please correct the following errors", errorMsg.toString());
@@ -346,6 +382,80 @@ public class AddReturnController
 		{
 			this.discTypeInd.setText(RUPEE_SIGN);
 		}
+	}
+
+	public static Callback<TableColumn.CellDataFeatures<SalesReturnDet, String>, ObservableValue<String>> fetchSalesPrcColFactory()
+	{
+		Callback<TableColumn.CellDataFeatures<SalesReturnDet, String>, ObservableValue<String>> priceColumnFactory = new Callback<TableColumn.CellDataFeatures<SalesReturnDet, String>, ObservableValue<String>>() {
+			public ObservableValue<String> call(TableColumn.CellDataFeatures<SalesReturnDet, String> p)
+			{
+				// p.getValue() returns the Person instance for a particular TableView row
+				return new ReadOnlyStringWrapper(getStringVal(p.getValue().getBookPrice()));
+			}
+		};
+		return priceColumnFactory;
+	}
+
+	public EventHandler<TableColumn.CellEditEvent<SalesReturnDet, String>> fetchSalesPrcEventHandler()
+	{
+		return new EventHandler<TableColumn.CellEditEvent<SalesReturnDet, String>>() {
+			public void handle(TableColumn.CellEditEvent<SalesReturnDet, String> t)
+			{
+				SalesReturnDet oItem = ((SalesReturnDet) t.getTableView().getItems().get(t.getTablePosition().getRow()));
+				oItem.setRate(Double.parseDouble(t.getNewValue()));
+				t.getTableView().refresh();
+				loadSubTotal();
+				calcNetAmount(discText.getText());
+				t.getTableView().getSelectionModel().selectBelowCell();
+
+				int rowId = t.getTableView().getSelectionModel().getSelectedIndex();
+				if (rowId < t.getTableView().getItems().size())
+				{
+					if(rowId > 0)
+					{
+						t.getTableView().scrollTo(rowId - 1);
+					}
+					t.getTableView().edit(rowId, t.getTablePosition().getTableColumn());
+				}
+			}
+		};
+	}
+
+	public static Callback<TableColumn.CellDataFeatures<SalesReturnDet, String>, ObservableValue<String>> fetchSalesCntFactory()
+	{
+		Callback<TableColumn.CellDataFeatures<SalesReturnDet, String>, ObservableValue<String>> qtyColumnFactory = new Callback<TableColumn.CellDataFeatures<SalesReturnDet, String>, ObservableValue<String>>() {
+			public ObservableValue<String> call(TableColumn.CellDataFeatures<SalesReturnDet, String> p)
+			{
+				// p.getValue() returns the Person instance for a particular TableView row
+				return new ReadOnlyStringWrapper(getStringVal(p.getValue().getQty()));
+			}
+		};
+		return qtyColumnFactory;
+	}
+
+	public EventHandler<TableColumn.CellEditEvent<SalesReturnDet, String>> fetchSalesQtyEventHandler()
+	{
+		return new EventHandler<TableColumn.CellEditEvent<SalesReturnDet, String>>() {
+			public void handle(TableColumn.CellEditEvent<SalesReturnDet, String> t)
+			{
+				SalesReturnDet oItem = ((SalesReturnDet) t.getTableView().getItems().get(t.getTablePosition().getRow()));
+				oItem.setQty(Integer.parseInt(t.getNewValue()));
+				t.getTableView().refresh();
+				loadSubTotal();
+				calcNetAmount(discText.getText());
+				t.getTableView().getSelectionModel().selectBelowCell();
+
+				int rowId = t.getTableView().getSelectionModel().getSelectedIndex();
+				if (rowId < t.getTableView().getItems().size())
+				{
+					if(rowId > 0)
+					{
+						t.getTableView().scrollTo(rowId - 1);
+					}
+					t.getTableView().edit(rowId, t.getTablePosition().getTableColumn());
+				}
+			}
+		};
 	}
 
 }

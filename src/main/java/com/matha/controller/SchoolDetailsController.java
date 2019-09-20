@@ -23,9 +23,11 @@ import java.io.InputStream;
 import java.nio.charset.Charset;
 import java.time.LocalDate;
 import java.util.*;
+import java.util.function.Consumer;
 import java.util.stream.Collector;
 
 import com.matha.domain.*;
+import com.matha.service.UtilityService;
 import com.matha.util.Utils;
 import javafx.scene.Node;
 import javafx.scene.control.*;
@@ -75,6 +77,9 @@ public class SchoolDetailsController
 
 	@Autowired
 	SchoolService schoolService;
+
+	@Autowired
+	private UtilityService utilityService;
 
 	@Value("${agencyName}")
 	private String agencyName;
@@ -367,6 +372,11 @@ public class SchoolDetailsController
 			prepareAndShowStage(event, addBillScene, ev ->loadBills());
 			saleTabs.getSelectionModel().select(billsTab);
 
+			if(ctrl.isDirty())
+			{
+				showWarning("Data is not saved", "There is unsaved data in this page. Are you sure you want to close?");
+			}
+
 			if(ctrl.getSelectedSale() != null && ctrl.getSelectedSale().getId() != null)
 			{
 				Sales savedSale = schoolService.fetchSale(ctrl.getSelectedSale().getId());
@@ -422,7 +432,8 @@ public class SchoolDetailsController
 			AddBillController ctrl = createBillLoader.getController();
 			ctrl.initData(null, this.school, selectedSale, this.bookMap);
 			Scene addBillScene = new Scene(addBillRoot);
-			prepareAndShowStage(event, addBillScene, ev ->loadBills());
+			prepareAndShowStage(event, addBillScene, ev ->consumeAndPass(ev, ctrl.isDirty()));
+
 			if(ctrl.getSelectedSale() != null && ctrl.getSelectedSale().getId() != null)
 			{
 				Sales saleIn = schoolService.fetchSale(ctrl.getSelectedSale().getId());
@@ -437,6 +448,22 @@ public class SchoolDetailsController
 
 	}
 
+	private void consumeAndPass(Event ev, boolean stop)
+	{
+		if(stop)
+		{
+			boolean closeit = showWarning("Data Modified Warning", "Data has been modified. Are you sure to exit without saving?");
+			LOGGER.info(!closeit);
+			if(!closeit)
+			{
+				ev.consume();
+				return;
+			}
+		}
+
+		this.loadBills();
+	}
+
 	private void showAlert(Sales selectedSale)
 	{
 		Alert alert = new Alert(AlertType.ERROR);
@@ -444,6 +471,23 @@ public class SchoolDetailsController
 		alert.setHeaderText("Unable to edit a deleted bill: " + selectedSale.getSerialNo());
 		alert.setContentText("Cannot Edit; Please use View option");
 		alert.showAndWait();
+	}
+
+	private boolean showWarning(String header, String message)
+	{
+		boolean retVal = false;
+		Alert alert = new Alert(AlertType.CONFIRMATION);
+		alert.setTitle("Warning!");
+		alert.setHeaderText(header);
+		alert.setContentText(message);
+		alert.getButtonTypes().setAll(buttonTypeOne, buttonTypeCancel);
+
+		Optional<ButtonType> result = alert.showAndWait();
+		if (result.get() == buttonTypeOne)
+		{
+			retVal = true;
+		}
+		return retVal;
 	}
 
 	@FXML
@@ -745,7 +789,7 @@ public class SchoolDetailsController
 		FXMLLoader createOrderLoader = LoadUtils.loadFxml(this, printSaleFxmlFile);
 		InputStream jasperStream = getClass().getResourceAsStream(salesInvoiceJrxml);
 		Address salesAddr = schoolService.fetchAddress("Sales");
-		Scene addOrderScene = preparePrintScene(purchase, createOrderLoader, jasperStream, salesAddr, salesBankDetails);
+		Scene addOrderScene = utilityService.preparePrintScene(purchase, createOrderLoader, jasperStream, salesAddr, salesBankDetails);
 		prepareAndShowStage(ev, addOrderScene);
 	}
 
@@ -766,7 +810,7 @@ public class SchoolDetailsController
 	private void prepareAndShowStage(Event e, Scene childScene, EventHandler<WindowEvent> eventHandler)
 	{
 		Stage stage = LoadUtils.loadChildStage(e, childScene);
-		stage.setOnHiding(eventHandler);
+		stage.setOnCloseRequest(eventHandler);
 		stage.showAndWait();
 	}
 
@@ -851,7 +895,7 @@ public class SchoolDetailsController
 				int fromIndex = i * 38;
 				int toIndex = Math.min(fromIndex + 38, tableDataIn.size());
 				List<SalesTransaction> tableData = tableDataIn.subList(fromIndex, toIndex);
-				LOGGER.debug("i: " + i + " fromIndex: " + fromIndex + " toIndex: " + toIndex + " tabSize: " + tableData.size());
+				LOGGER.info("i: " + i + " fromIndex: " + fromIndex + " toIndex: " + toIndex + " tabSize: " + tableData.size());
 
 				Map<String, Object> hmOut = Utils.prepareSalesStmtParmMap(hm, tableData);
 				LOGGER.debug("hmOut");

@@ -510,6 +510,21 @@ public class AddPurchaseBillController
 			errorMsg.append("Please provide a date");
 			valid = false;
 		}
+
+		if(this.addedBooks == null || this.addedBooks.getItems() == null || this.addedBooks.getItems().isEmpty())
+		{
+			errorMsg.append("Please add some records");
+			valid = false;
+		}
+		else
+		{
+			valid = isFilled(this.addedBooks.getItems());
+			if(!valid)
+			{
+				errorMsg.append("Please provide quantity and rate for all records");
+			}
+		}
+
 		if(!valid)
 		{
 			showErrorAlert("Error in Saving Order", "Please correct the following errors", errorMsg.toString());

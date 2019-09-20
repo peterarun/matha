@@ -1622,11 +1622,6 @@ public class SchoolService
 		return addressRepository.findOne(name);
 	}
 
-	public Account fetchAccount(String name)
-	{
-		return accountRepository.findOne(name);
-	}
-
 	public List<PurchaseTransaction> fetchAllPurchaseTxnsBetween(LocalDate fromDateVal, LocalDate toDateVal, Sort sort)
 	{
 		return purchaseTxnRepository.findByTxnDateBetween(fromDateVal, toDateVal, sort);

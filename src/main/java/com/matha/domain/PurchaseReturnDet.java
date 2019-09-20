@@ -108,6 +108,12 @@ public class PurchaseReturnDet implements InventoryData
 		return book;
 	}
 
+	@Override
+	public boolean isUnFilled()
+	{
+		return this.qty == null || this.qty == 0 || this.rate == null || this.rate == 0;
+	}
+
 	public void setBook(Book book) {
 		this.book = book;
 	}

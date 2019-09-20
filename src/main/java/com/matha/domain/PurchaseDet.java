@@ -188,4 +188,11 @@ public class PurchaseDet implements InventoryData
 	{
 		return this.qty;
 	}
+
+
+	@Override
+	public boolean isUnFilled()
+	{
+		return this.qty == null || this.qty == 0 || this.rate == null || this.rate == 0;
+	}
 }

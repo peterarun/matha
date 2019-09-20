@@ -2,7 +2,9 @@ package com.matha.domain;
 
 public interface InventoryData
 {
-	public Integer getQuantity();
+	Integer getQuantity();
 
-	public Book getBook();
+	Book getBook();
+
+	boolean isUnFilled();
 }
