@@ -255,7 +255,53 @@ public class UtilityService
 		}
 
 		return jasperPrint;
+	}
 
+	public JasperPrint prepareJasperPrint(Publisher pub, PurchaseReturn purchase, Address salesAddr, InputStream jasperStream)
+	{
+		JasperPrint jasperPrint = null;
+		HashMap<String, Object> hm = new HashMap<>();
+		try
+		{
+			StringBuilder strBuild = new StringBuilder();
+			strBuild.append(salesAddr.getAddress1());
+			strBuild.append(NEW_LINE);
+			strBuild.append(salesAddr.getAddress2());
+			strBuild.append(COMMA_SIGN);
+			strBuild.append(salesAddr.getAddress3());
+			strBuild.append(HYPHEN_SPC_SIGN);
+			strBuild.append(salesAddr.getPin());
+
+			Double discAmt = purchase.getDiscAmt();
+
+			hm.put("publisherName", pub.getName());
+			hm.put("publisherDetails", pub.getInvAddress());
+			hm.put("partyName", purchasePartyName);
+			hm.put("partyAddress", strBuild.toString());
+			hm.put("partyPhone", salesAddr.getPhone1());
+			hm.put("returnNum", purchase.getId());
+			hm.put("txnDate", purchase.getTxnDate());
+			hm.put("total", purchase.getSubTotal());
+			hm.put("discount", discAmt);
+			hm.put("grandTotal", purchase.getNetAmount());
+			hm.put("grandTotalInWords", convertDouble(purchase.getNetAmount()));
+
+			JasperReport compiledFile = JasperCompileManager.compileReport(jasperStream);
+
+			jasperPrint = JasperFillManager.fillReport(compiledFile, hm, new JRBeanCollectionDataSource(purchase.getPurchaseReturnDetSet()));
+		}
+		catch (JRException e)
+		{
+			LOGGER.error("Error...", e);
+			e.printStackTrace();
+		}
+		catch (Exception e)
+		{
+			LOGGER.error("Error...", e);
+			e.printStackTrace();
+		}
+
+		return jasperPrint;
 	}
 
 }

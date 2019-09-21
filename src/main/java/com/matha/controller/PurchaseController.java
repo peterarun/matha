@@ -538,6 +538,33 @@ public class PurchaseController
 	}
 
 	@FXML
+	void printCreditNote(ActionEvent ev)
+	{
+		try
+		{
+			PurchaseReturn purchase = this.returnsData.getSelectionModel().getSelectedItem();
+			FXMLLoader createOrderLoader = LoadUtils.loadFxml(this, printPurchaseReturnFxmlFile);
+			Parent addOrderRoot = createOrderLoader.load();
+
+			InputStream iStream = getClass().getResourceAsStream(puReturnJrxml);
+
+			Address salesAddr = schoolService.fetchAddress("Purchase");
+			JasperPrint jasperPrint = utilityService.prepareJasperPrint(purchase.getSalesTxn().getPublisher(), purchase, salesAddr, iStream);
+
+			PrintPurchaseReturnController ctrl = createOrderLoader.getController();
+			ctrl.initData(jasperPrint);
+
+			Scene addOrderScene = new Scene(addOrderRoot);
+			prepareAndShowStage(ev, addOrderScene);
+		}
+		catch (Exception e)
+		{
+			LOGGER.error("Error....", e);
+			e.printStackTrace();
+		}
+	}
+
+	@FXML
 	public void loadPayments()
 	{
 		if (this.paymentTab.isSelected())

@@ -329,6 +329,7 @@ public class AddPurchaseRetController
 			{
 				returnIn = new PurchaseReturn();
 			}
+
 			PurchaseTransaction salesTxn = returnIn.getSalesTxn();
 			if(salesTxn == null)
 			{
@@ -338,6 +339,11 @@ public class AddPurchaseRetController
 			salesTxn.setTxnDate(returnDate);
 			salesTxn.setNote(this.notes.getText());
 			salesTxn.setAmount(getDoubleVal(this.netTotal));
+
+			if(returnIn.getPublisher() == null && salesTxn.getPublisher() != null)
+			{
+				returnIn.setPublisher(salesTxn.getPublisher());
+			}
 
 			if(percentRad.isSelected())
 			{

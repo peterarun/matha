@@ -136,6 +136,17 @@ public class AddReturnController
 		});
 	}
 
+	public void initReturn(School school, Map<String,Book> bookMap, Sales sale)
+	{
+		this.initData(school, bookMap, null);
+		if(sale != null && sale.getSaleItems() != null && !sale.getSaleItems().isEmpty())
+		{
+			sale.getSaleItems().forEach(sd -> {
+				SalesReturnDet srd = new SalesReturnDet(this.addedBooks.getItems().size(), 0, sd.getRate(), sd.getBook());
+				this.addedBooks.getItems().add(srd);
+			});
+		}
+	}
 	private void loadReturnData(SchoolReturn returnIn)
 	{
 		if (returnIn != null)
@@ -240,10 +251,11 @@ public class AddReturnController
 		}
 		else
 		{
-			valid = isFilled(this.addedBooks.getItems());
-			if(!valid)
+			boolean filled = isFilled(this.addedBooks.getItems());
+			if(!filled)
 			{
 				errorMsg.append("Please provide quantity and rate for all records");
+				valid = false;
 			}
 		}
 
@@ -457,5 +469,4 @@ public class AddReturnController
 			}
 		};
 	}
-
 }

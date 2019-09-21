@@ -156,6 +156,7 @@
 										<Button layoutX="902.0" layoutY="70.0" mnemonicParsing="false" onAction="#addReturn" prefHeight="25.0" prefWidth="100.0" text="Generate" AnchorPane.rightAnchor="30.0" />
 										<Button layoutX="902.0" layoutY="110.0" mnemonicParsing="false" onAction="#editReturn" prefHeight="25.0" prefWidth="100.0" text="Edit" AnchorPane.rightAnchor="30.0" />
 										<Button layoutX="902.0" layoutY="150.0" mnemonicParsing="false" onAction="#deleteReturn" prefHeight="25.0" prefWidth="100.0" text="Delete" AnchorPane.rightAnchor="30.0" />
+                              <Button layoutX="892.0" layoutY="190.0" mnemonicParsing="false" onAction="#printCreditNote" prefHeight="25.0" prefWidth="100.0" text="Print" AnchorPane.rightAnchor="30.0" />
 									</children>
 								</AnchorPane>
 							</content>

@@ -93,6 +93,7 @@
 												<Button focusTraversable="false" layoutX="650.0" layoutY="115.0" mnemonicParsing="false" onAction="#deleteBill" prefHeight="25.0" prefWidth="120.0" text="Delete" AnchorPane.rightAnchor="28.0" />
                               			<Button layoutX="650.0" layoutY="160.0" mnemonicParsing="false" onAction="#printPurchaseBill" prefHeight="25.0" prefWidth="120.0" text="Print" AnchorPane.rightAnchor="28.0" />
                               <Button layoutX="650.0" layoutY="205.0" mnemonicParsing="false" onAction="#viewBill" prefHeight="25.0" prefWidth="120.0" text="View" AnchorPane.rightAnchor="28.0" />
+                              <Button layoutX="650.0" layoutY="249.0" mnemonicParsing="false" onAction="#returnBooks" prefHeight="25.0" prefWidth="120.0" text="Return" AnchorPane.rightAnchor="28.0" />
 											</children>
 										</AnchorPane>
 									</content>

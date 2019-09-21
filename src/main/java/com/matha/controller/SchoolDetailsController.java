@@ -288,8 +288,18 @@ public class SchoolDetailsController
 			addOrderRoot = createOrderLoader.load();
 			AddOrderController ctrl = createOrderLoader.getController();
 			Order selectedOrder = txnData.getSelectionModel().getSelectedItem();
+			if(selectedOrder != null && selectedOrder.getOrderItem() != null && !selectedOrder.getOrderItem().isEmpty())
+			{
+				for (OrderItem orderItem : selectedOrder.getOrderItem())
+				{
+					orderItem.setCount(0);
+					orderItem.setId(null);
+					orderItem.setOrder(null);
+				}
+			}
 			selectedOrder.setId(null);
 			selectedOrder.setSerialNo(null);
+			selectedOrder.setOrderDate(null);
 			ctrl.initData(this.school, this.bookMap, selectedOrder);
 			// ctrl.updateFormData(selectedOrder);
 			addOrderScene = new Scene(addOrderRoot);
@@ -537,6 +547,28 @@ public class SchoolDetailsController
 		{
 			Sales purchase = billData.getSelectionModel().getSelectedItem();
 			printBill(purchase, ev);
+		}
+		catch (Exception e)
+		{
+			LOGGER.error("Error...", e);
+			e.printStackTrace();
+		}
+	}
+
+	@FXML
+	public void returnBooks(Event eve)
+	{
+		try
+		{
+			Sales sale = billData.getSelectionModel().getSelectedItem();
+
+			FXMLLoader createReturnLoader = LoadUtils.loadFxml(this, addReturnFxmlFile);
+			Parent addReturnRoot = createReturnLoader.load();
+			AddReturnController ctrl = createReturnLoader.getController();
+			ctrl.initReturn(this.school, this.bookMap, sale);
+			Scene addCreditNoteScene = new Scene(addReturnRoot);
+			prepareAndShowStage(eve, addCreditNoteScene, ev ->loadCreditNotes(ev));
+			saleTabs.getSelectionModel().select(creditNoteTab);
 		}
 		catch (Exception e)
 		{
@@ -810,7 +842,7 @@ public class SchoolDetailsController
 	private void prepareAndShowStage(Event e, Scene childScene, EventHandler<WindowEvent> eventHandler)
 	{
 		Stage stage = LoadUtils.loadChildStage(e, childScene);
-		stage.setOnCloseRequest(eventHandler);
+		stage.setOnHiding(eventHandler);
 		stage.showAndWait();
 	}
 

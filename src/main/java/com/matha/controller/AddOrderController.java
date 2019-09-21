@@ -270,6 +270,20 @@ public class AddOrderController
 			valid = false;
 		}
 
+		if(this.addedBooks != null && this.addedBooks.getItems() != null)
+		{
+			ObservableList<OrderItem> addedBooksIn = this.addedBooks.getItems();
+			if(addedBooksIn != null && !addedBooksIn.isEmpty())
+			{
+				Optional<OrderItem> emptyItem = addedBooksIn.stream().filter(oi -> oi.getCount() == null || oi.getCount() == 0).findFirst();
+				if(emptyItem.isPresent())
+				{
+					valid = false;
+					errorMsg.append("Please make sure that all the entries have a quantity");
+				}
+			}
+		}
+
 		if(!valid)
 		{
 			showErrorAlert("Error in Saving Order", "Please correct the following errors", errorMsg.toString());
