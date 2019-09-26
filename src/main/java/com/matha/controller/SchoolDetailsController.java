@@ -767,7 +767,9 @@ public class SchoolDetailsController
 			try
 			{
 				LocalDate toDateVal = LocalDate.now();
+				this.toDate.setValue(toDateVal);
 				LocalDate fromDateVal = toDateVal.minusMonths(6);
+				this.fromDate.setValue(fromDateVal);
 
 				List<SalesTransaction> tableData = schoolService.fetchTransactions(school, fromDateVal, toDateVal);
 
@@ -968,8 +970,8 @@ public class SchoolDetailsController
 		LocalDate fromDateVal = this.fromDate.getValue();
 		LocalDate toDateVal = this.toDate.getValue();
 		List<SalesTransaction> tableData = schoolService.fetchTransactions(school, fromDateVal, toDateVal);
-		JasperPrint jPrint = prepareJasperPrint(this.school, tableData, fromDateVal, toDateVal);
-		this.loadWebInvoice(jPrint);
+		print = prepareJasperPrint(this.school, tableData, fromDateVal, toDateVal);
+		this.loadWebInvoice(print);
 	}
 
 
