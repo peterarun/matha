@@ -1,7 +1,30 @@
 package com.matha.controller;
 
-import static com.matha.util.UtilConstants.*;
-import static com.matha.util.Utils.printJasper;
+import com.matha.domain.SalesTransaction;
+import com.matha.domain.School;
+import com.matha.service.SchoolService;
+import javafx.collections.FXCollections;
+import javafx.event.ActionEvent;
+import javafx.fxml.FXML;
+import javafx.scene.Node;
+import javafx.scene.control.ChoiceBox;
+import javafx.scene.control.DatePicker;
+import javafx.scene.web.WebView;
+import javafx.stage.FileChooser;
+import net.sf.jasperreports.engine.*;
+import net.sf.jasperreports.engine.data.JRBeanCollectionDataSource;
+import net.sf.jasperreports.engine.export.HtmlExporter;
+import net.sf.jasperreports.engine.export.ooxml.JRDocxExporter;
+import net.sf.jasperreports.engine.export.ooxml.JRXlsxExporter;
+import net.sf.jasperreports.export.SimpleExporterInput;
+import net.sf.jasperreports.export.SimpleHtmlExporterOutput;
+import net.sf.jasperreports.export.SimpleOutputStreamExporterOutput;
+import org.apache.commons.lang3.StringUtils;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
+import org.springframework.stereotype.Component;
 
 import java.io.ByteArrayOutputStream;
 import java.io.File;
@@ -13,41 +36,10 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
+import java.util.stream.Collectors;
 
-import org.apache.commons.lang3.StringUtils;
-import org.apache.logging.log4j.LogManager;
-import org.apache.logging.log4j.Logger;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.beans.factory.annotation.Value;
-import org.springframework.stereotype.Component;
-
-import com.matha.domain.SalesTransaction;
-import com.matha.domain.School;
-import com.matha.service.SchoolService;
-import com.matha.util.Utils;
-
-import javafx.collections.FXCollections;
-import javafx.event.ActionEvent;
-import javafx.fxml.FXML;
-import javafx.scene.Node;
-import javafx.scene.control.ChoiceBox;
-import javafx.scene.control.DatePicker;
-import javafx.scene.control.TextField;
-import javafx.scene.web.WebView;
-import javafx.stage.FileChooser;
-import net.sf.jasperreports.engine.JRException;
-import net.sf.jasperreports.engine.JasperCompileManager;
-import net.sf.jasperreports.engine.JasperExportManager;
-import net.sf.jasperreports.engine.JasperFillManager;
-import net.sf.jasperreports.engine.JasperPrint;
-import net.sf.jasperreports.engine.JasperReport;
-import net.sf.jasperreports.engine.data.JRBeanCollectionDataSource;
-import net.sf.jasperreports.engine.export.HtmlExporter;
-import net.sf.jasperreports.engine.export.ooxml.JRDocxExporter;
-import net.sf.jasperreports.engine.export.ooxml.JRXlsxExporter;
-import net.sf.jasperreports.export.SimpleExporterInput;
-import net.sf.jasperreports.export.SimpleHtmlExporterOutput;
-import net.sf.jasperreports.export.SimpleOutputStreamExporterOutput;
+import static com.matha.util.UtilConstants.*;
+import static com.matha.util.Utils.printJasper;
 
 @Component
 public class PrintSalesStmtController
@@ -130,8 +122,8 @@ public class PrintSalesStmtController
 				int toIndex = Math.min(fromIndex + 38, tableDataIn.size());
 				List<SalesTransaction> tableData = tableDataIn.subList(fromIndex, toIndex);
 				LOGGER.info("i: " + i + " fromIndex: " + fromIndex + " toIndex: " + toIndex + " tabSize: " + tableData.size());
-				
-				Map<String, Object> hmOut = Utils.prepareSalesStmtParmMap(hm, tableData);
+
+				Map<String, Object> hmOut = this.prepareSalesStmtParmMap(hm, tableData);
 				LOGGER.debug("hmOut");
 				for (Entry<String, Object> obj : hmOut.entrySet())
 				{
@@ -192,7 +184,7 @@ public class PrintSalesStmtController
 				List<SalesTransaction> tableData = tableDataIn.subList(fromIndex, toIndex);
 				LOGGER.info("i: " + i + " fromIndex: " + fromIndex + " toIndex: " + toIndex + " tabSize: " + tableData.size());
 
-				Map<String, Object> hmOut = Utils.prepareSalesStmtParmMap(hm, tableData);
+				Map<String, Object> hmOut = this.prepareSalesStmtParmMap(hm, tableData);
 				LOGGER.debug("hmOut");
 				for (Entry<String, Object> obj : hmOut.entrySet())
 				{
@@ -327,5 +319,31 @@ public class PrintSalesStmtController
 			e.printStackTrace();
 		}
 	}
-	
+
+	private Map<String, Object> prepareSalesStmtParmMap(HashMap<String, Object> hmIn, List<SalesTransaction> tableData)
+	{
+		HashMap<String, Object> hm = new HashMap<>();
+		Double openingBalance = 0.0;
+		Double closingBalance = 0.0;
+
+		if(tableData != null && !tableData.isEmpty())
+		{
+			SalesTransaction currTxn = tableData.get(0);
+			SalesTransaction prevTxn = schoolService.fetchPrevTxn(currTxn);
+			if(prevTxn != null)
+			{
+				openingBalance = prevTxn.getBalance();
+			}
+			closingBalance = tableData.get(tableData.size() - 1).getBalance();
+		}
+		Double totalDebit = tableData.stream().collect(Collectors.summingDouble(o->  o.getMultiplier() == 1 ? o.getAmount() : 0.0));
+		Double totalCredit = tableData.stream().collect(Collectors.summingDouble(o->  o.getMultiplier() == -1 ? o.getAmount() : 0.0));
+		hm.putAll(hmIn);
+		hm.put("openingBalance", openingBalance);
+		hm.put("totalDebit", totalDebit);
+		hm.put("totalCredit", totalCredit);
+		hm.put("closingBalance", closingBalance);
+
+		return hm;
+	}
 }

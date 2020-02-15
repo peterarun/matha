@@ -189,31 +189,6 @@ public class Utils
 		}
 	}
 
-	public static Map<String, Object> prepareSalesStmtParmMap(HashMap<String, Object> hmIn, List<SalesTransaction> tableData)
-	{		
-		HashMap<String, Object> hm = new HashMap<>();
-		Double openingBalance = 0.0;
-		Double closingBalance = 0.0;
-		
-		if(tableData != null && !tableData.isEmpty())
-		{
-			if(tableData.get(0).getPrevTxn() != null)
-			{
-				openingBalance = tableData.get(0).getPrevTxn().getBalance();
-			}			
-			closingBalance = tableData.get(tableData.size() - 1).getBalance();
-		} 
-		Double totalDebit = tableData.stream().collect(Collectors.summingDouble(o->  o.getMultiplier() == 1 ? o.getAmount() : 0.0)); 
-		Double totalCredit = tableData.stream().collect(Collectors.summingDouble(o->  o.getMultiplier() == -1 ? o.getAmount() : 0.0));
-		hm.putAll(hmIn);
-		hm.put("openingBalance", openingBalance);						
-		hm.put("totalDebit", totalDebit);
-		hm.put("totalCredit", totalCredit);
-		hm.put("closingBalance", closingBalance);
-		
-		return hm;
-	}
-
 	public static void printJasper(JasperPrint jasperPrint) throws PrintException, JRException
 	{
 		Label jobStatus = new Label();

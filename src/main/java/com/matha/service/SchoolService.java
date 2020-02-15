@@ -7,18 +7,21 @@ import java.util.stream.Stream;
 
 import javax.persistence.EntityManager;
 import javax.persistence.PersistenceContext;
+import javax.persistence.PersistenceContextType;
 import javax.transaction.Transactional;
 
 import com.matha.domain.*;
 import com.matha.repository.*;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
+import org.hibernate.Hibernate;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Sort;
 import org.springframework.data.domain.Sort.Direction;
+import org.springframework.data.jpa.provider.HibernateUtils;
 import org.springframework.stereotype.Service;
 
 import static com.matha.util.UtilConstants.*;
@@ -31,7 +34,7 @@ public class SchoolService
 
 	private static final Logger LOGGER = LogManager.getLogger(SchoolService.class);
 
-	@PersistenceContext
+	@PersistenceContext(type = PersistenceContextType.EXTENDED)
 	private EntityManager entityManager;
 
 	@Value("${matha.orderStartDate}")
@@ -331,12 +334,14 @@ public class SchoolService
 
 		for (SalesTransaction saleTxn : saleTxns)
 		{
-			updateBalance(saleTxn.getPrevTxn());
+			SalesTransaction prevTxn = fetchPrevTxn(saleTxn);
+			updateBalance(prevTxn);
 		}
 
 		for (PurchaseTransaction purTxn : purTxns)
 		{
-			updateBalance(purTxn.getPrevTxn());
+			PurchaseTransaction prevTxn = fetchPrevTxn(purTxn);
+			updateBalance(prevTxn);
 		}
 	}
 
@@ -415,7 +420,7 @@ public class SchoolService
 			LOGGER.info("Null PTxn passed in for updating balance");
 			return txn;
 		}
-		PurchaseTransaction prevTxn = txn.getPrevTxn();
+		PurchaseTransaction prevTxn = this.fetchPrevTxn(txn);
 		if (prevTxn != null)
 		{
 			txn.setBalance(prevTxn.getBalance() + txn.getNetForBalance());
@@ -719,8 +724,8 @@ public class SchoolService
 			return;
 		}
 
-		PurchaseTransaction prevTxn = txn.getPrevTxn();
-		PurchaseTransaction nextTxn = txn.getNextTxn();
+		PurchaseTransaction prevTxn = this.fetchPrevTxn(txn);
+		PurchaseTransaction nextTxn = this.fetchNextTxn(txn);
 		PurchaseTransaction updateFromTxn = null;
 
 		purchaseTxnRepository.delete(txn);
@@ -1044,6 +1049,41 @@ public class SchoolService
 		return purchaseTxnRepository.findByFromToDate(pub, fromDateVal, toDateVal, sort);
 	}
 
+	@Transactional
+	public SalesTransaction fetchPrevTxn(SalesTransaction salesTransaction)
+	{
+		SalesTransaction currTxn = salesTxnRepository.findOne(salesTransaction.getId());
+		SalesTransaction prevTxn = currTxn.getPrevTxn();
+		Hibernate.initialize(prevTxn);
+		return prevTxn;
+	}
+
+	@Transactional
+	public SalesTransaction fetchNextTxn(SalesTransaction salesTransaction)
+	{
+		SalesTransaction currTxn = salesTxnRepository.findOne(salesTransaction.getId());
+		SalesTransaction nextTxn = currTxn.getNextTxn();
+		Hibernate.initialize(nextTxn);
+		return nextTxn;
+	}
+
+	@Transactional
+	public PurchaseTransaction fetchPrevTxn(PurchaseTransaction purchaseTransaction)
+	{
+		PurchaseTransaction currTxn = purchaseTxnRepository.findOne(purchaseTransaction.getId());
+		PurchaseTransaction prevTxn = currTxn.getPrevTxn();
+		Hibernate.initialize(prevTxn);
+		return prevTxn;
+	}
+
+	@Transactional
+	public PurchaseTransaction fetchNextTxn(PurchaseTransaction purchaseTransaction)
+	{
+		PurchaseTransaction currTxn = purchaseTxnRepository.findOne(purchaseTransaction.getId());
+		PurchaseTransaction nextTxn = currTxn.getNextTxn();
+		Hibernate.initialize(nextTxn);
+		return nextTxn;
+	}
 
 	public List<CashHead> fetchCashHeads()
 	{
@@ -1154,7 +1194,7 @@ public class SchoolService
 			LOGGER.info("Null STxn passed in for updating balance");
 			return txn;
 		}
-		SalesTransaction prevTxn = txn.getPrevTxn();
+		SalesTransaction prevTxn = this.fetchPrevTxn(txn);
 		if (prevTxn != null)
 		{
 			txn.setBalance(prevTxn.getBalance() + txn.getNetForBalance());
@@ -1165,14 +1205,14 @@ public class SchoolService
 		}
 		txn = salesTxnRepository.save(txn);
 
-		SalesTransaction nextTxn = txn.getNextTxn();
+		SalesTransaction nextTxn = this.fetchNextTxn(txn);
 		SalesTransaction currTxn = txn;
 		while (nextTxn != null)
 		{
 			nextTxn.setBalance(currTxn.getBalance() + nextTxn.getNetForBalance());
 			salesTxnRepository.save(nextTxn);
 			currTxn = nextTxn;
-			nextTxn = currTxn.getNextTxn();
+			nextTxn = this.fetchNextTxn(currTxn);
 		}
 
 		return txn;
@@ -1225,8 +1265,8 @@ public class SchoolService
 		LOGGER.info("Deleting Transaction: " + txn.getId() + " for customer: " + txn.getSchool().getId());
 		LOGGER.info("Type: " + txn.getType() + " InvoiceNum: " + txn.getInvoiceNum());
 
-		SalesTransaction prevTxn = txn.getPrevTxn();
-		SalesTransaction nextTxn = txn.getNextTxn();
+		SalesTransaction prevTxn = this.fetchPrevTxn(txn);
+		SalesTransaction nextTxn = this.fetchNextTxn(txn);
 		SalesTransaction updateFromTxn = null;
 
 		salesTxnRepository.delete(txn);

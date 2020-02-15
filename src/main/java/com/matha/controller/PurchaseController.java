@@ -715,9 +715,10 @@ public class PurchaseController
 			Double openingBalance = 0.0;
 			if(tableData != null && !tableData.isEmpty())
 			{
-				if(tableData.get(0).getPrevTxn() != null)
+				PurchaseTransaction prevTxn = schoolService.fetchPrevTxn(tableData.get(0));
+				if(prevTxn != null)
 				{
-					openingBalance = tableData.get(0).getPrevTxn().getBalance();
+					openingBalance = prevTxn.getBalance();
 				}
 			} 
 			Double totalDebit = tableData.stream().collect(Collectors.summingDouble(o->  o.getMultiplier() == 1 ? o.getAmount() : 0.0)); 

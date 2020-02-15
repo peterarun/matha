@@ -25,6 +25,7 @@ import java.time.LocalDate;
 import java.util.*;
 import java.util.function.Consumer;
 import java.util.stream.Collector;
+import java.util.stream.Collectors;
 
 import com.matha.domain.*;
 import com.matha.service.UtilityService;
@@ -931,7 +932,7 @@ public class SchoolDetailsController
 				List<SalesTransaction> tableData = tableDataIn.subList(fromIndex, toIndex);
 				LOGGER.info("i: " + i + " fromIndex: " + fromIndex + " toIndex: " + toIndex + " tabSize: " + tableData.size());
 
-				Map<String, Object> hmOut = Utils.prepareSalesStmtParmMap(hm, tableData);
+				Map<String, Object> hmOut = this.prepareSalesStmtParmMap(hm, tableData);
 				LOGGER.debug("hmOut");
 				for (Map.Entry<String, Object> obj : hmOut.entrySet())
 				{
@@ -1068,4 +1069,31 @@ public class SchoolDetailsController
 
 	}
 
+
+	private Map<String, Object> prepareSalesStmtParmMap(HashMap<String, Object> hmIn, List<SalesTransaction> tableData)
+	{
+		HashMap<String, Object> hm = new HashMap<>();
+		Double openingBalance = 0.0;
+		Double closingBalance = 0.0;
+
+		if(tableData != null && !tableData.isEmpty())
+		{
+			SalesTransaction currTxn = tableData.get(0);
+			SalesTransaction prevTxn = schoolService.fetchPrevTxn(currTxn);
+			if(prevTxn != null)
+			{
+				openingBalance = prevTxn.getBalance();
+			}
+			closingBalance = tableData.get(tableData.size() - 1).getBalance();
+		}
+		Double totalDebit = tableData.stream().collect(Collectors.summingDouble(o->  o.getMultiplier() == 1 ? o.getAmount() : 0.0));
+		Double totalCredit = tableData.stream().collect(Collectors.summingDouble(o->  o.getMultiplier() == -1 ? o.getAmount() : 0.0));
+		hm.putAll(hmIn);
+		hm.put("openingBalance", openingBalance);
+		hm.put("totalDebit", totalDebit);
+		hm.put("totalCredit", totalCredit);
+		hm.put("closingBalance", closingBalance);
+
+		return hm;
+	}
 }

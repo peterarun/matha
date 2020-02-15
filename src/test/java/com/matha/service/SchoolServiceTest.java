@@ -26,12 +26,14 @@ import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.context.ApplicationContext;
 import org.springframework.context.ConfigurableApplicationContext;
 import org.springframework.data.domain.Page;
+import org.springframework.test.context.ActiveProfiles;
 import org.springframework.test.context.junit4.SpringRunner;
 
 import com.matha.sales.SalesApplication;
 
 @RunWith(SpringRunner.class)
 @SpringBootTest(classes = SalesApplication.class)
+@ActiveProfiles("vazhakulam")
 public class SchoolServiceTest
 {
 
@@ -60,6 +62,9 @@ public class SchoolServiceTest
 
 	@Autowired
 	private SchoolRepository schoolRepository;
+
+	@Autowired
+	private PurchaseTxnRepository purchaseTxnRepository;
 
 	@Value("#{'${datedPurPaymentModes}'.split(',')}")
 	private List<String> datedSchoolPaymentModes;
@@ -102,6 +107,14 @@ public class SchoolServiceTest
 	@Test
 	public void testFetchOrderItems() {
 		fail("Not yet implemented");
+	}
+
+	@Test
+	public void testOne()
+	{
+		PurchaseTransaction currTrans = this.purchaseTxnRepository.findOne(2);
+		this.schoolService.fetchPrevTxn(currTrans);
+
 	}
 
 	@Test

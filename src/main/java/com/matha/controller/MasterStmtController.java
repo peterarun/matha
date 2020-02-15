@@ -141,9 +141,10 @@ public class MasterStmtController
 			Double openingBalance = 0.0;
 			if(tableData != null && !tableData.isEmpty())
 			{
-				if(tableData.get(0).getPrevTxn() != null)
+				PurchaseTransaction prevTxn = schoolService.fetchPrevTxn(tableData.get(0));
+				if(prevTxn != null)
 				{
-					openingBalance = tableData.get(0).getPrevTxn().getBalance();
+					openingBalance = prevTxn.getBalance();
 				}
 			}
 			Double totalDebit = tableData.stream().collect(Collectors.summingDouble(o->  o.getMultiplier() == 1 ? o.getAmount() : 0.0));
@@ -196,9 +197,11 @@ public class MasterStmtController
 			Double openingBalance = 0.0;
 			if(tableData != null && !tableData.isEmpty())
 			{
-				if(tableData.get(0).getPrevTxn() != null)
+				SalesTransaction currTxn = tableData.get(0);
+				SalesTransaction prevTxn = schoolService.fetchPrevTxn(currTxn);
+				if(prevTxn != null)
 				{
-					openingBalance = tableData.get(0).getPrevTxn().getBalance();
+					openingBalance = prevTxn.getBalance();
 				}
 			}
 			Double totalDebit = tableData.stream().collect(Collectors.summingDouble(o->  o.getMultiplier() == 1 ? o.getAmount() : 0.0));
