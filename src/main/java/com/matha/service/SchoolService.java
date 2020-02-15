@@ -74,6 +74,9 @@ public class SchoolService
 	private PurchaseRepository purchaseRepoitory;
 
 	@Autowired
+	private PurchaseDetRepository purchaseDetRepository;
+
+	@Autowired
 	private CashBookRepository cashBookRepository;
 
 	@Autowired
@@ -133,7 +136,7 @@ public class SchoolService
 
 	public School fetchSchoolById(Integer id)
 	{
-		return schoolRepoitory.findOne(id);
+		return schoolRepoitory.getOne(id);
 	}
 
 	public School saveSchool(School school)
@@ -205,11 +208,11 @@ public class SchoolService
 			orderItem.setBook(null);
 		}
 
-		orderItemRepository.save(orderItems);
-		salesDetRepository.save(billItems);
-		salesReturnDetRepository.save(billRetItems);
-		purDetRepository.save(purItems);
-		purchaseReturnDetRepository.save(purRetItems);
+		orderItemRepository.saveAll(orderItems);
+		salesDetRepository.saveAll(billItems);
+		salesReturnDetRepository.saveAll(billRetItems);
+		purDetRepository.saveAll(purItems);
+		purchaseReturnDetRepository.saveAll(purRetItems);
 
 		bookRepository.delete(selectedOrder);
 	}
@@ -229,7 +232,7 @@ public class SchoolService
 //		int page = 0;
 //		int size = 10;
 //		PageRequest pageable = new PageRequest(page, size, Direction.ASC, "calcSerialNum");
-		PageRequest pageable = new PageRequest(page, size, Direction.DESC, "orderDate");
+		PageRequest pageable = PageRequest.of(page, size, Direction.DESC, "orderDate");
 
 		return orderRepository.findOrdersBySerialNoStartingWith(searchStr, pageable);
 	}
@@ -256,7 +259,7 @@ public class SchoolService
 
 	public List<Order> fetchOrders(List<String> orderIds)
 	{
-		return orderRepository.findAll(orderIds);
+		return orderRepository.findAllById(orderIds);
 	}
 
 	public List<Order> fetchOrderForSchool(School school)
@@ -277,7 +280,7 @@ public class SchoolService
 			{
 				saleDet.setOrderItem(null);
 			}
-			salesDetRepository.save(saleDets);
+			salesDetRepository.saveAll(saleDets);
 		}
 
 		// Removing the link to Order Item from Purchase Det
@@ -289,7 +292,7 @@ public class SchoolService
 			{
 				purchaseDet.setOrderItem(null);
 			}
-			purDetRepository.save(purchaseDets);
+			purDetRepository.saveAll(purchaseDets);
 		}
 
 		orderRepository.delete(order);
@@ -297,17 +300,17 @@ public class SchoolService
 
 	public void saveOrderItems(List<OrderItem> orderItem)
 	{
-		orderItemRepository.save(orderItem);
+		orderItemRepository.saveAll(orderItem);
 	}
 
 	public void deleteOrderItems(List<OrderItem> orderItem)
 	{
-		orderItemRepository.delete(orderItem);
+		orderItemRepository.deleteAll(orderItem);
 	}
 
 	public Order fetchOrder(String id)
 	{
-		return orderRepository.findOne(id);
+		return orderRepository.getOne(id);
 	}
 
 	@Transactional
@@ -326,8 +329,8 @@ public class SchoolService
 		{
 			orderItemIn.setOrder(order);
 		}
-		orderItemRepository.save(orderItem);
-		orderItemRepository.delete(removedItems);
+		orderItemRepository.saveAll(orderItem);
+		orderItemRepository.deleteAll(removedItems);
 
 		for (SalesTransaction saleTxn : saleTxns)
 		{
@@ -354,7 +357,7 @@ public class SchoolService
 		{
 			orderItemIn.setOrder(order);
 		}
-		orderItemRepository.save(orderItem);
+		orderItemRepository.saveAll(orderItem);
 
 		// Removing the link to Order Item from Sales Det
 		for (OrderItem removedItem : removedItems)
@@ -365,7 +368,7 @@ public class SchoolService
 			{
 				saleDet.setOrderItem(null);
 			}
-			salesDetRepository.save(saleDets);
+			salesDetRepository.saveAll(saleDets);
 		}
 
 		// Removing the link to Order Item from Purchase Det
@@ -377,10 +380,10 @@ public class SchoolService
 			{
 				purchaseDet.setOrderItem(null);
 			}
-			purDetRepository.save(purchaseDets);
+			purDetRepository.saveAll(purchaseDets);
 		}
 
-		orderItemRepository.delete(removedItems);
+		orderItemRepository.deleteAll(removedItems);
 	}
 
 	@Transactional
@@ -393,18 +396,18 @@ public class SchoolService
 		allTxns.addAll(returnTxns);
 		allTxns.addAll(paymentTxns);
 
-		salesRepository.delete(bills);
-		schoolReturnRepository.delete(returns);
-		schoolPayRepository.delete(payments);
-		salesTxnRepository.delete(allTxns);
+		salesRepository.deleteAll(bills);
+		schoolReturnRepository.deleteAll(returns);
+		schoolPayRepository.deleteAll(payments);
+		salesTxnRepository.deleteAll(allTxns);
 
 		for (PurchaseDet purDet : purchasesIn)
 		{
 			purDet.setOrderItem(null);
 		}
-		purDetRepository.save(purchasesIn);
+		purDetRepository.saveAll(purchasesIn);
 
-		orderRepository.delete(ordersIn);
+		orderRepository.deleteAll(ordersIn);
 		schoolRepoitory.delete(school);
 	}
 
@@ -772,7 +775,7 @@ public class SchoolService
 			{
 				orderIn.setPurchase(pur);
 			}
-			purDetRepository.save(orderItems);
+			purDetRepository.saveAll(orderItems);
 			Set<Integer> bookSet = orderItems.stream().map(PurchaseDet::getBook).map(Book::getId).collect(toSet());
 			updateBookInventory(orderItemsOrig, new ArrayList<>(orderItems), new ArrayList<>(), new ArrayList<>(), bookSet, Integer.valueOf(1));
 
@@ -788,7 +791,7 @@ public class SchoolService
 			purchaseTxnRepository.save(txn);
 
 			List<Integer> orderIds = pur.getPurchaseItems().stream().map(PurchaseDet::getPurDetId).collect(Collectors.toList());
-			orderItemsOrig.addAll(purDetRepository.findAll(orderIds));
+			orderItemsOrig.addAll(purDetRepository.findAllById(orderIds));
 
 			saveOrderItemUpdates(orderItemsOrig, orderItems, pur);
 		}
@@ -833,14 +836,14 @@ public class SchoolService
 			orderIn.setPurDetId(null);
 			orderIn.setPurchase(pur);
 		}
-		purDetRepository.save(addedOrders);
+		purDetRepository.saveAll(addedOrders);
 
 		for (PurchaseDet orderIn : removedOrders)
 		{
 			orderIn.setPurchase(null);
 		}
-		purDetRepository.save(removedOrders);
-		purDetRepository.save(affectedOrders);
+		purDetRepository.saveAll(removedOrders);
+		purDetRepository.saveAll(affectedOrders);
 		updateBookInventory(ordersOrig, addedOrders, removedOrders, affectedOrders, bookNums, Integer.valueOf(1));
 	}
 
@@ -861,15 +864,20 @@ public class SchoolService
 
 	public Page<Purchase> fetchPurchasesForPublisher(Publisher pub, int page, int size)
 	{
-		PageRequest pageable = new PageRequest(page, size, Direction.DESC, "purchaseDate");
+		PageRequest pageable = PageRequest.of(page, size, Direction.DESC, "purchaseDate");
 		return purchaseRepoitory.findAllByPublisher(pub, pageable);
+	}
+
+	public List<PurchaseDet> fetchPurchaseDet(Purchase pur)
+	{
+		return purchaseDetRepository.findAllByPurchase(pur);
 	}
 
 	public Page<Purchase> fetchPurchasesForSearchStr(String searchStr, int page, int size)
 	{
 //		int page = 0;
 //		int size = 10;
-		PageRequest pageable = new PageRequest(page, size, Direction.DESC, "purchaseDate");
+		PageRequest pageable = PageRequest.of(page, size, Direction.DESC, "purchaseDate");
 		return purchaseRepoitory.findByInvoiceNoLike(searchStr + "%", pageable);
 	}
 
@@ -910,7 +918,7 @@ public class SchoolService
 		List<PurchaseReturnDet> origBooks = new ArrayList<>();
 		if(returnIn.getId() != null)
 		{
-			PurchaseReturn returnOrig = purchaseReturnRepository.findOne(returnIn.getId());
+			PurchaseReturn returnOrig = purchaseReturnRepository.getOne(returnIn.getId());
 			origBooks = new ArrayList<>(returnOrig.getPurchaseReturnDetSet());
 		}
 		List<PurchaseReturnDet> addedBooks = new ArrayList<>(orderItems);
@@ -927,7 +935,7 @@ public class SchoolService
 
 		updateBookInventory(origBooks, addedBooks, removedBooks, affectedBooks, bookSet, Integer.valueOf(-1));
 
-		purchaseReturnDetRepository.delete(removedBooks);
+		purchaseReturnDetRepository.deleteAll(removedBooks);
 
 		returnIn.setSalesTxn(txn);
 		returnIn = purchaseReturnRepository.save(returnIn);
@@ -937,13 +945,13 @@ public class SchoolService
 
 		PurchaseReturn returnFinal = returnIn;
 		orderItems.forEach(it -> it.setPurchaseReturn(returnFinal));
-		purchaseReturnDetRepository.save(orderItems);
+		purchaseReturnDetRepository.saveAll(orderItems);
 
 	}
 
 	public List<PurchaseReturn> fetchPurchaseReturns(Publisher pub)
 	{
-		Sort dateSort = new Sort(new Sort.Order(Direction.DESC, "salesTxn.txnDate"));
+		Sort dateSort = Sort.by(new Sort.Order(Direction.DESC, "salesTxn.txnDate"));
 		return purchaseReturnRepository.findAllByPublisher(pub, dateSort);
 	}
 
@@ -974,7 +982,7 @@ public class SchoolService
 
 	public List<PurchasePayment> fetchPurchasePayments(Publisher pub)
 	{
-		Sort dateSort = new Sort(new Sort.Order(Direction.DESC, "salesTxn.txnDate"));
+		Sort dateSort = Sort.by(new Sort.Order(Direction.DESC, "salesTxn.txnDate"));
 		return purchasePayRepository.findAllByPublisher(pub, dateSort);
 	}
 
@@ -1099,13 +1107,13 @@ public class SchoolService
 		LocalDate orderStartDate = LocalDate.parse(orderStartDateStr);
 		if (billed)
 		{
-			PageRequest pageable = new PageRequest(page, size, Direction.DESC, "orderDate");
+			PageRequest pageable = PageRequest.of(page, size, Direction.DESC, "orderDate");
 			orderList = orderRepository.findAllByPublisherAndOrderDateAfter(pub, orderStartDate, pageable);
 		}
 		else
 		{
-			PageRequest pageable = new PageRequest(page, size, Direction.DESC, "oDet.order.orderDate");
-			orderList = orderRepository.fetchUnBilledOrdersForPub(pub, orderStartDate, pageable);
+			PageRequest pageable = PageRequest.of(page, size, Direction.DESC, "oDet.order.orderDate");
+			orderList = orderRepository.fetchUnBilledOrdersForPub(pub, pageable);
 		}
 
 		return orderList;
@@ -1116,12 +1124,12 @@ public class SchoolService
 		Page<Order> orderList = null;
 		if (billed)
 		{
-			PageRequest pageable = new PageRequest(page, size, Direction.DESC, "orderDate");
+			PageRequest pageable = PageRequest.of(page, size, Direction.DESC, "orderDate");
 			orderList = orderRepository.fetchOrdersForPublisherAndSearchStr(pub, searchText, pageable);
 		}
 		else
 		{
-			PageRequest pageable = new PageRequest(page, size, Direction.DESC, "ord.orderDate");
+			PageRequest pageable = PageRequest.of(page, size, Direction.DESC, "ord.orderDate");
 			orderList = orderRepository.fetchUnBilledOrdersForPubAndSearchStr(pub, searchText, pageable);
 		}
 
@@ -1276,7 +1284,7 @@ public class SchoolService
 
 	public Sales fetchSale(String saleId)
 	{
-		return salesRepository.findOne(saleId);
+		return salesRepository.getOne(saleId);
 	}
 
 	@Transactional
@@ -1299,7 +1307,7 @@ public class SchoolService
 			{
 				orderIn.setSale(pur);
 			}
-			salesDetRepository.save(ordersIn);
+			salesDetRepository.saveAll(ordersIn);
 			Set<Integer> bookSet = ordersIn.stream().map(SalesDet::getBook).map(Book::getId).collect(toSet());
 			updateBookInventory(ordersOrig, new ArrayList<>(ordersIn), new ArrayList<>(), new ArrayList<>(), bookSet, Integer.valueOf(-1));
 		}
@@ -1314,7 +1322,7 @@ public class SchoolService
 			salesTxnRepository.save(txn);
 
 			List<Integer> orderItemIds = pur.getSaleItems().stream().map(SalesDet::getSalesDetId).collect(Collectors.toList());
-			ordersOrig = salesDetRepository.findAll(orderItemIds);
+			ordersOrig = salesDetRepository.findAllById(orderItemIds);
 			saveSalesDetUpdates(ordersOrig, ordersIn, pur);
 		}
 		return pur;
@@ -1358,14 +1366,14 @@ public class SchoolService
 			orderIn.setSalesDetId(null);
 			orderIn.setSale(pur);
 		}
-		salesDetRepository.save(addedOrders);
+		salesDetRepository.saveAll(addedOrders);
 
 		for (SalesDet orderIn : removedOrders)
 		{
 			orderIn.setSale(null);
 		}
-		salesDetRepository.save(removedOrders);
-		salesDetRepository.save(affectedOrders);
+		salesDetRepository.saveAll(removedOrders);
+		salesDetRepository.saveAll(affectedOrders);
 		updateBookInventory(ordersOrig, addedOrders, removedOrders, affectedOrders, bookNums, Integer.valueOf(-1));
 	}
 
@@ -1399,7 +1407,7 @@ public class SchoolService
 			}
 		}
 
-		List<Book> origBooks = bookRepository.findAll(bookNums);
+		List<Book> origBooks = bookRepository.findAllById(bookNums);
 		for (Book book : origBooks)
 		{
 			if (bookCounts.containsKey(book.getBookNum()))
@@ -1408,7 +1416,7 @@ public class SchoolService
 				book.addInventory(diff * multiplier);
 			}
 		}
-		bookRepository.save(origBooks);
+		bookRepository.saveAll(origBooks);
 	}
 
 	public List<Sales> fetchBills(School school)
@@ -1421,7 +1429,7 @@ public class SchoolService
 	{
 //		int page = 0;
 //		int size = 10;
-		PageRequest pageable = new PageRequest(page, size, Direction.DESC, "txnDate");
+		PageRequest pageable = PageRequest.of(page, size, Direction.DESC, "txnDate");
 		return salesRepository.findAllByIdLike(searchStr + "%", pageable);
 	}
 
@@ -1562,11 +1570,11 @@ public class SchoolService
 		txn.setSalesReturn(returnIn);
 		txn = salesTxnRepository.save(txn);
 
-		salesReturnDetRepository.delete(removedBooks);
+		salesReturnDetRepository.deleteAll(removedBooks);
 
 		final SchoolReturn returnInFinal = returnIn;
 		orderItemsIn.forEach(it -> it.setSchoolReturn(returnInFinal));
-		salesReturnDetRepository.save(orderItemsIn);
+		salesReturnDetRepository.saveAll(orderItemsIn);
 
 	}
 
@@ -1619,7 +1627,7 @@ public class SchoolService
 
 	public Address fetchAddress(String name)
 	{
-		return addressRepository.findOne(name);
+		return addressRepository.getOne(name);
 	}
 
 	public List<PurchaseTransaction> fetchAllPurchaseTxnsBetween(LocalDate fromDateVal, LocalDate toDateVal, Sort sort)

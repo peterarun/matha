@@ -1,11 +1,13 @@
 package com.matha.domain;
 
+import static com.matha.util.Converters.convertTimestamp;
 import static com.matha.util.UtilConstants.DATE_CONV;
 import static com.matha.util.UtilConstants.EMPTY_STR;
 import static com.matha.util.UtilConstants.STATUS_MAP;
 import static org.hibernate.annotations.CascadeType.DELETE;
 import static org.hibernate.annotations.CascadeType.SAVE_UPDATE;
 
+import java.sql.Timestamp;
 import java.time.LocalDate;
 import java.util.Date;
 import java.util.Set;
@@ -80,7 +82,7 @@ public class Sales
 	private School school;
 
 	@Column(name = "TDate")
-	private LocalDate txnDate;
+	private Timestamp txnDate;
 
 	@Column(name = "Status")
 	private Integer statusInd;
@@ -94,11 +96,11 @@ public class Sales
 	{
 		if(getTxnDate() != null)
 		{
-			return getTxnDate();
+			return convertTimestamp(getTxnDate());
 		}
 		else if(salesTxn != null)
 		{
-			return salesTxn.getTxnDate();
+			return convertTimestamp(salesTxn.getTxnDate());
 		}
 		else
 		{
@@ -293,11 +295,11 @@ public class Sales
 		this.school = school;
 	}
 
-	public LocalDate getTxnDate() {
+	public Timestamp getTxnDate() {
 		return txnDate;
 	}
 
-	public void setTxnDate(LocalDate txnDate) {
+	public void setTxnDate(Timestamp txnDate) {
 		this.txnDate = txnDate;
 	}
 

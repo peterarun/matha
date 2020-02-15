@@ -1,11 +1,14 @@
 package com.matha.domain;
 
 import javax.persistence.*;
+import java.io.Serializable;
 
 @Entity
 @Table(name = "Book")
-public class Book implements Comparable<Book>
+public class Book implements Serializable, Comparable<Book>
 {
+
+	private static final long serialVersionUID = 1L;
 
 	@Id
 	@Column(name = "BookId")

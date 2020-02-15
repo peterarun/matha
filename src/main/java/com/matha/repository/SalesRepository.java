@@ -39,5 +39,5 @@ public interface SalesRepository extends JpaRepository<Sales, String> {
 
 	public List<Sales> findAllBySalesTxnIsNull();
 
-	Sales findById(String salesId);
+//	Sales findById(String salesId);
 }

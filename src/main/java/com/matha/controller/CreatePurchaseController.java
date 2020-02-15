@@ -1,6 +1,9 @@
 package com.matha.controller;
 
+import java.sql.Timestamp;
 import java.time.LocalDate;
+import java.time.LocalDateTime;
+import java.time.LocalTime;
 import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.List;
@@ -110,7 +113,7 @@ public class CreatePurchaseController {
 		if (pur == null) {
 			pur = new Purchase();
 		}
-		pur.setPurchaseDate(this.purchaseDate.getValue());
+		pur.setPurchaseDate(Timestamp.valueOf(LocalDateTime.of(this.purchaseDate.getValue(), LocalTime.MIN)));
 //		pur.setGrNo(grNum.getText());
 //		pur.setNotes(notes.getText());
 //		pur.setPublisher(this.publisher);

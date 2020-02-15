@@ -3,12 +3,14 @@ package com.matha.domain;
 import org.hibernate.annotations.Cascade;
 import org.hibernate.annotations.GenericGenerator;
 
+import static com.matha.util.Converters.convertTimestamp;
 import static com.matha.util.UtilConstants.DATE_CONV;
 import static com.matha.util.UtilConstants.STATUS_MAP;
 import static org.hibernate.annotations.CascadeType.DELETE;
 import static org.hibernate.annotations.CascadeType.SAVE_UPDATE;
 
 import java.io.Serializable;
+import java.sql.Timestamp;
 import java.time.LocalDate;
 import java.util.Set;
 import java.util.stream.Collectors;
@@ -61,7 +63,7 @@ public class Purchase implements Serializable
 	private Integer financialYear;
 
 	@Column(name = "TDate")
-	private LocalDate purchaseDate;
+	private Timestamp purchaseDate;
 
 	@Column(name = "NetAmt")
 	private Double deletedAmt;
@@ -81,6 +83,9 @@ public class Purchase implements Serializable
 	@Column(name = "Status")
 	private Integer statusInd;
 
+	@Transient
+	private Integer unitCount;
+
 	public String getPublisherName()
 	{
 		return publisher.getName();
@@ -90,9 +95,9 @@ public class Purchase implements Serializable
 	{
 		if(salesTxn != null)
 		{
-			return salesTxn.getTxnDate();
+			return convertTimestamp(salesTxn.getTxnDate());
 		}
-		return this.getPurchaseDate();
+		return convertTimestamp(this.getPurchaseDate());
 	}
 
 	public String getTxnDateStr()
@@ -100,16 +105,17 @@ public class Purchase implements Serializable
 		return DATE_CONV.toString(getTxnDate());
 	}
 	
-	public Integer getUnitCount()
-	{
-		int unitCount = 0;
-		if(getPurchaseItems() != null)
-		{
-			unitCount = getPurchaseItems().stream().collect(Collectors.summingInt(PurchaseDet::getQty));
-		}
-		
-		return unitCount;
-	}
+//	public Integer getUnitCount()
+//	{
+//		int unitCount = 0;
+//		if(getPurchaseItems() != null)
+//		{
+//			unitCount = getPurchaseItems().stream().collect(Collectors.summingInt(PurchaseDet::getQty));
+//			System.out.println("unitCount " + unitCount);
+//		}
+//
+//		return unitCount;
+//	}
 	
 	public Double getCalculatedDisc()
 	{
@@ -237,12 +243,12 @@ public class Purchase implements Serializable
 		this.financialYear = financialYear;
 	}
 
-	public LocalDate getPurchaseDate()
+	public Timestamp getPurchaseDate()
 	{
 		return purchaseDate;
 	}
 
-	public void setPurchaseDate(LocalDate purchaseDate)
+	public void setPurchaseDate(Timestamp purchaseDate)
 	{
 		this.purchaseDate = purchaseDate;
 	}
@@ -318,5 +324,15 @@ public class Purchase implements Serializable
 		sb.append(", publisher=").append(publisher == null ? "" : publisher.getName());
 		sb.append('}');
 		return sb.toString();
+	}
+
+	public Integer getUnitCount()
+	{
+		return unitCount;
+	}
+
+	public void setUnitCount(Integer unitCount)
+	{
+		this.unitCount = unitCount;
 	}
 }

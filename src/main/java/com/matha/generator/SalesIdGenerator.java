@@ -4,6 +4,7 @@ import java.io.Serializable;
 
 import org.hibernate.HibernateException;
 import org.hibernate.engine.spi.SessionImplementor;
+import org.hibernate.engine.spi.SharedSessionContractImplementor;
 import org.hibernate.id.IdentifierGenerator;
 
 import com.matha.repository.SalesRepository;
@@ -16,7 +17,7 @@ public class SalesIdGenerator implements IdentifierGenerator {
 //	private OrderRepository orderRepository = SalesApplication.ctx.getBean(OrderRepository.class);
 
 	@Override
-	public Serializable generate(SessionImplementor arg0, Object arg1) throws HibernateException {
+	public Serializable generate(SharedSessionContractImplementor arg0, Object arg1) throws HibernateException {
 		SalesRepository salesRepository = SalesApplication.ctx.getBean(SalesRepository.class);
 		return "S-"+ salesRepository.fetchNextSeqVal();
 	}

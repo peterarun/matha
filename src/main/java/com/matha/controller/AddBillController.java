@@ -26,11 +26,16 @@ import org.springframework.context.annotation.Scope;
 import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.stereotype.Component;
 
+import java.sql.Timestamp;
 import java.time.LocalDate;
+import java.time.LocalDateTime;
+import java.time.LocalTime;
 import java.util.*;
 import java.util.stream.Collector;
 import java.util.stream.Collectors;
 
+import static com.matha.util.Converters.convertLocalDate;
+import static com.matha.util.Converters.convertTimestamp;
 import static com.matha.util.UtilConstants.*;
 import static com.matha.util.Utils.*;
 import static java.util.Comparator.comparing;
@@ -442,8 +447,8 @@ public class AddBillController
 			if (selectedSale == null)
 			{
 				sale = new Sales();
-				sale.setTxnDate(LocalDate.now());
-				sale.setFinancialYear(calcFinYear(sale.getTxnDate()));
+				sale.setTxnDate(Timestamp.valueOf(LocalDateTime.of(LocalDate.now(), LocalTime.MIN)));
+				sale.setFinancialYear(calcFinYear(sale.getTxnDate().toLocalDateTime().toLocalDate()));
 				sale.setSchool(school);
 				salesTxn = new SalesTransaction();
 				salesTxn.setSchool(school);
@@ -487,7 +492,7 @@ public class AddBillController
 			sale.setDeletedAmt(netAmtVal);
 
 			salesTxn.setNote(SALES_NOTE);
-			salesTxn.setTxnDate(billDate.getValue());
+			salesTxn.setTxnDate(convertLocalDate(billDate.getValue()));
 
 			sale.setDespatch(this.despatchPer.getText());
 			sale.setDocsThru(this.docsThru.getText());
@@ -495,7 +500,7 @@ public class AddBillController
 			sale.setSerialNo(getIntegerVal(this.invoiceNum));
 			sale.setPackages(this.packageCnt.getText());
 			sale.setOtherAmount(getDoubleVal(this.otherCharges));
-			sale.setFinancialYear(calcFinYear(salesTxn.getTxnDate()));
+			sale.setFinancialYear(calcFinYear(convertTimestamp(salesTxn.getTxnDate())));
 
 			Sales saleOut = schoolService.saveSalesData(sale, orderItems, salesTxn);
 			this.selectedSale = saleOut;

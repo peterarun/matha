@@ -1,8 +1,10 @@
 package com.matha.domain;
 
+import static com.matha.util.Converters.convertTimestamp;
 import static com.matha.util.UtilConstants.DATE_CONV;
 import static com.matha.util.UtilConstants.STATUS_MAP;
 
+import java.sql.Timestamp;
 import java.time.LocalDate;
 
 import javax.persistence.Column;
@@ -30,7 +32,7 @@ public class PurchasePayment {
 	private String paymentMode;
 
 	@Column(name = "Dated")
-	private LocalDate dated;
+	private Timestamp dated;
 
 	@Column(name = "RefNum")
 	private String referenceNum;
@@ -52,7 +54,7 @@ public class PurchasePayment {
 
 	public LocalDate getTxnDate()
 	{
-		return salesTxn.getTxnDate();
+		return convertTimestamp(salesTxn.getTxnDate());
 	}
 	
 	public String getTxnDateStr()
@@ -81,11 +83,11 @@ public class PurchasePayment {
 		this.paymentMode = paymentMode;
 	}
 
-	public LocalDate getDated() {
+	public Timestamp getDated() {
 		return dated;
 	}
 
-	public void setDated(LocalDate dated) {
+	public void setDated(Timestamp dated) {
 		this.dated = dated;
 	}
 

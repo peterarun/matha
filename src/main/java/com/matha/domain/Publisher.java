@@ -5,12 +5,15 @@ import org.hibernate.annotations.GenericGenerator;
 
 import javax.persistence.*;
 
+import java.io.Serializable;
+
 import static com.matha.util.UtilConstants.NEW_LINE;
 
 @Entity
 @Table(name = "Supplier")
-public class Publisher
+public class Publisher implements Serializable
 {
+	private static final long serialVersionUID = 1L;
 
 	@Id
 	@Column(name = "PublisherId")

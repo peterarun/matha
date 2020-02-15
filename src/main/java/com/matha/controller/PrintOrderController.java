@@ -101,8 +101,8 @@ public class PrintOrderController
 			hm.put("agencyAddress2", agencyAddress2);
 			hm.put("partyAddress", school.addressText());
 			hm.put("partyPhone", school.getPhone1());
-			hm.put("txnDate", DATE_CONV.toString(orderIn.getOrderDate()));
-			hm.put("deliveryDate", DATE_CONV.toString(orderIn.getDeliveryDate()));
+			hm.put("txnDate", DATE_TIME_CONV.toString(orderIn.getOrderDate().toLocalDateTime()));
+			hm.put("deliveryDate", DATE_TIME_CONV.toString(orderIn.getDeliveryDate().toLocalDateTime()));
 			hm.put("desLocation", orderIn.getDesLocation());
 			hm.put("orderNumber", orderIn.getSerialNo());
 			

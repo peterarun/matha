@@ -24,12 +24,15 @@ import org.springframework.context.annotation.Scope;
 import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.stereotype.Component;
 
+import java.sql.Timestamp;
 import java.time.LocalDate;
+import java.time.LocalDateTime;
 import java.util.*;
 import java.util.concurrent.atomic.AtomicInteger;
 import java.util.stream.Collector;
 import java.util.stream.Collectors;
 
+import static com.matha.util.Converters.convertLocalDate;
 import static com.matha.util.UtilConstants.*;
 import static com.matha.util.Utils.*;
 import static java.util.Comparator.comparing;
@@ -463,7 +466,7 @@ public class AddPurchaseBillController
 			if (purchaseIn == null)
 			{
 				purchaseIn = new Purchase();
-				purchaseIn.setPurchaseDate(LocalDate.now());
+				purchaseIn.setPurchaseDate(Timestamp.valueOf(LocalDateTime.now()));
 				purchaseIn.setFinancialYear(calcFinYear(purchaseIn.getTxnDate()));
 //				purchaseIn.setSerialNo(this.schoolService.fetchNextPurchaseSerialNum(purchaseIn.getFinancialYear()));
 				purchaseIn.setPublisher(this.publisher);
@@ -556,7 +559,7 @@ public class AddPurchaseBillController
 	{
 		txn.setAmount(getDoubleVal(this.netAmt));
 		txn.setNote(this.note.getText());
-		txn.setTxnDate(this.invoiceDate.getValue());
+		txn.setTxnDate(convertLocalDate(this.invoiceDate.getValue()));
 	}
 
 	@FXML

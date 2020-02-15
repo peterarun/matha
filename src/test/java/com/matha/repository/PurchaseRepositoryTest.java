@@ -30,7 +30,7 @@ public class PurchaseRepositoryTest {
 	{
 		int page = 0;
 		int size = 10;
-		PageRequest pageable = new PageRequest(page, size, Sort.Direction.DESC, "purchaseDate");
+		PageRequest pageable = PageRequest.of(page, size, Sort.Direction.DESC, "purchaseDate");
 		String searchStr = "2%";
 		List<Purchase> purList = purchaseRepository.findByInvoiceNoLike(searchStr, pageable).getContent();
 		for (int i = 0; i < purList.size(); i++)

@@ -156,7 +156,7 @@ public class PurchaseDet implements InventoryData
 	public String toString() {
 		final StringBuilder sb = new StringBuilder("PurchaseDet{");
 		sb.append("purDetId=").append(purDetId);
-		sb.append(", purchase=").append(purchase);
+//		sb.append(", purchase=").append(purchase);
 		sb.append(", slNum=").append(slNum);
 		sb.append(", qty=").append(qty);
 		sb.append(", rate=").append(rate);

@@ -35,7 +35,7 @@ public class SalesDetRepositoryTest {
 
         for (int i = 0; i < 5; i++)
         {
-            OrderItem item1 = orderItemRepository.findOne(i);
+            OrderItem item1 = orderItemRepository.getOne(i);
             if(item1 != null)
             {
                 orderItems.add(item1);

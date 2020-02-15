@@ -42,7 +42,7 @@ public class AllCorrectors
 		for (Integer paymentId : paymentIds)
 		{
 			LOGGER.debug(paymentId);
-			SchoolPayment payment = schoolPayRepository.findOne(paymentId);
+			SchoolPayment payment = schoolPayRepository.getOne(paymentId);
 			LOGGER.debug(payment);
 			schoolService.deletePayment(payment);
 		}

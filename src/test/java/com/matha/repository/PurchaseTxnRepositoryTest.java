@@ -26,7 +26,7 @@ public class PurchaseTxnRepositoryTest
     @Test
     public void test_findByTypeAndTxnDateBetween()
     {
-        Sort sort = new Sort(new Sort.Order(Sort.Direction.ASC, "txnDate"), new Sort.Order(Sort.Direction.ASC, "id"));
+        Sort sort = Sort.by(new Sort.Order(Sort.Direction.ASC, "txnDate"), new Sort.Order(Sort.Direction.ASC, "id"));
         List<PurchaseTransaction> purTxns = purchaseTxnRepository.findByPurchaseIsNotNullAndTxnDateBetween(LocalDate.of(2017, Month.FEBRUARY, 1), LocalDate.now(), sort);
     }
 }
