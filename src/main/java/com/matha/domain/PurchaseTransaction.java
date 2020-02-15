@@ -1,5 +1,6 @@
 package com.matha.domain;
 
+import java.sql.Timestamp;
 import java.time.LocalDate;
 import java.util.Date;
 
@@ -33,7 +34,7 @@ public class PurchaseTransaction
     protected Date lastModifiedDate;
     
 	@Column(name = "TxnDate")
-	private LocalDate txnDate;
+	private Timestamp txnDate;
 
 	@Column(name = "Amount")
 	private Double amount;
@@ -198,12 +199,12 @@ public class PurchaseTransaction
 		this.lastModifiedDate = lastModifiedDate;
 	}
 
-	public LocalDate getTxnDate()
+	public Timestamp getTxnDate()
 	{
 		return txnDate;
 	}
 
-	public void setTxnDate(LocalDate txnDate)
+	public void setTxnDate(Timestamp txnDate)
 	{
 		this.txnDate = txnDate;
 	}

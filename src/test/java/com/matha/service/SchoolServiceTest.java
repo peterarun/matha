@@ -1,12 +1,15 @@
 package com.matha.service;
 
+import static com.matha.util.Converters.convertLocalDate;
 import static com.matha.util.Utils.calcFinYear;
 import static com.matha.util.Utils.getDoubleVal;
 import static java.util.stream.Collectors.toList;
 import static java.util.stream.Collectors.toSet;
 import static org.junit.Assert.fail;
 
+import java.sql.Timestamp;
 import java.time.LocalDate;
+import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.List;
@@ -120,7 +123,7 @@ public class SchoolServiceTest
 	@Test
 	public void testFetchOrders()
 	{
-		Publisher pub = publisherRepository.findOne(48);
+		Publisher pub = publisherRepository.getOne(48);
 		Page<Order> orders = schoolService.fetchOrders(pub, 1, 5, false);
 		LOGGER.info(orders.getTotalPages());
 		for (Order order : orders)
@@ -132,7 +135,7 @@ public class SchoolServiceTest
 	@Test
 	public void test_fetchUnBilledOrders()
 	{
-		Publisher pub = publisherRepository.findOne(48);
+		Publisher pub = publisherRepository.getOne(48);
 		List<Order> orders = schoolService.fetchUnBilledOrders(pub);
 		for (Order order : orders)
 		{
@@ -173,7 +176,7 @@ public class SchoolServiceTest
 			double amountVal = 100.00;
 			sTxn.setAmount(amountVal);
 			sTxn.setNote("TetsNotes ");
-			sTxn.setTxnDate(LocalDate.of(2018, 1, 15));
+			sTxn.setTxnDate(convertLocalDate(LocalDate.of(2018, 1, 15)));
 
 			schoolService.savePurchasePay(sPayment, sTxn);
 			
@@ -190,7 +193,7 @@ public class SchoolServiceTest
 	{
 		try
 		{
-			PurchasePayment sPayment = purchasePayRepository.findOne(17);			
+			PurchasePayment sPayment = purchasePayRepository.getOne(17);
 			PurchaseTransaction sTxn = sPayment.getSalesTxn();
 
 			sPayment.setPaymentMode("TestUpd II");
@@ -198,7 +201,7 @@ public class SchoolServiceTest
 			double amountVal = 100.00;
 			sTxn.setAmount(amountVal);
 			sTxn.setNote("TetsNotes Upd II");
-			sTxn.setTxnDate(LocalDate.of(2018, 1, 21));
+			sTxn.setTxnDate(convertLocalDate(LocalDate.of(2018, 1, 21)));
 
 			schoolService.savePurchasePay(sPayment, sTxn);
 			
@@ -216,11 +219,11 @@ public class SchoolServiceTest
 		try
 		{
 
-			Purchase pur = purchaseRepository.findOne("9765");
+			Purchase pur = purchaseRepository.getOne("9765");
 			
 			PurchaseTransaction sTxn = pur.getSalesTxn();
 			sTxn.setAmount(2200.00);
-			sTxn.setTxnDate(LocalDate.of(2018, 1, 27));
+			sTxn.setTxnDate(convertLocalDate(LocalDate.of(2018, 1, 27)));
 			
 			ArrayList<PurchaseDet> items = new ArrayList<>(pur.getPurchaseItems());
 			
@@ -237,7 +240,7 @@ public class SchoolServiceTest
 	@Test
 	public void test_fetchBills()
 	{
-		School school = schoolRepository.findOne(369);
+		School school = schoolRepository.getOne(369);
 		List<Sales> bills = schoolService.fetchBills(school);
 		for (Sales bill : bills) {
 			LOGGER.info(bill);
@@ -247,7 +250,7 @@ public class SchoolServiceTest
 	@Test
 	public void test_saveSchoolReturn()
 	{
-		School school = schoolRepository.findOne(359);
+		School school = schoolRepository.getOne(359);
 
 		SchoolReturn returnIn = new SchoolReturn();
 		returnIn.setId("SR-100");
@@ -262,7 +265,7 @@ public class SchoolServiceTest
 			orderItems = new ArrayList<>();
 		}
 
-		salesTxn.setTxnDate(LocalDate.now());
+		salesTxn.setTxnDate(convertLocalDate(LocalDate.now()));
 
 		String subTotalStr = "0";
 		if (StringUtils.isNotBlank(subTotalStr))
@@ -280,14 +283,14 @@ public class SchoolServiceTest
 		try
 		{
 			SalesApplication.ctx = (ConfigurableApplicationContext) context;
-			Publisher publisher = publisherRepository.findOne(48);
-			Order orderIn = orderRepository.findOne("SO-765");
+			Publisher publisher = publisherRepository.getOne(48);
+			Order orderIn = orderRepository.getOne("SO-765");
 
 			Purchase purchaseIn = null;
 			if (purchaseIn == null)
 			{
 				purchaseIn = new Purchase();
-				purchaseIn.setPurchaseDate(LocalDate.now());
+				purchaseIn.setPurchaseDate(Timestamp.valueOf(LocalDateTime.now()));
 				purchaseIn.setFinancialYear(calcFinYear(purchaseIn.getTxnDate()));
 //				purchaseIn.setSerialNo(this.schoolService.fetchNextPurchaseSerialNum(purchaseIn.getFinancialYear()));
 				purchaseIn.setPublisher(publisher);
@@ -303,7 +306,7 @@ public class SchoolServiceTest
 			purchaseIn.setDiscType(true);
 			purchaseIn.setSubTotal(5400.0);
 			salesTxn.setAmount(5400.0);
-			salesTxn.setTxnDate(LocalDate.now());
+			salesTxn.setTxnDate(convertLocalDate(LocalDate.now()));
 
 			AtomicInteger index = new AtomicInteger();
 			List<PurchaseDet> bookList = orderIn.getOrderItem().stream()
@@ -442,7 +445,7 @@ public class SchoolServiceTest
 	@Test
 	public void test_deleteSchool()
 	{
-		School sc = schoolRepository.findOne(551);
+		School sc = schoolRepository.getOne(551);
 		List<Sales> bills = schoolService.fetchBills(sc);
 		List<SchoolReturn> returns = schoolService.fetchReturnsForSchool(sc);
 		List<SchoolPayment> payments = schoolService.fetchPayments(sc);

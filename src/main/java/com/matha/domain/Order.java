@@ -1,7 +1,9 @@
 package com.matha.domain;
 
 import java.io.Serializable;
+import java.sql.Timestamp;
 import java.time.LocalDate;
+import java.time.LocalDateTime;
 import java.util.List;
 
 import javax.persistence.Column;
@@ -26,7 +28,7 @@ import static org.hibernate.annotations.CascadeType.SAVE_UPDATE;
 
 @Entity
 @Table(name = "SOrder")
-public class Order implements Serializable, Comparable<Order>
+public class  Order implements Serializable, Comparable<Order>
 {
 
 	private static final long serialVersionUID = 2735264048303888145L;
@@ -53,10 +55,10 @@ public class Order implements Serializable, Comparable<Order>
 	private List<OrderItem> orderItem;
 
 	@Column(name = "TDate")
-	private LocalDate orderDate;
+	private Timestamp orderDate;
 
 	@Column(name = "DlyDate")
-	private LocalDate deliveryDate;
+	private Timestamp deliveryDate;
 
 	@Column(name = "desLocation")
 	private String desLocation;
@@ -74,8 +76,12 @@ public class Order implements Serializable, Comparable<Order>
 
 	public String getOrderDateStr()
 	{
-		StringConverter<LocalDate> conv = Converters.getLocalDateConverter();
-		return conv.toString(orderDate);
+//		StringConverter<LocalDateTime> conv = Converters.getLocalDateTimeConverter();
+//		return conv.toString(orderDate);
+
+		LocalDateTime ldt = orderDate.toLocalDateTime();
+		StringConverter<LocalDateTime> conv = Converters.getLocalDateTimeConverter();
+		return conv.toString(ldt);
 	}
 	
 	public String getId()
@@ -133,22 +139,22 @@ public class Order implements Serializable, Comparable<Order>
 		this.orderItem = orderItem;
 	}
 
-	public LocalDate getOrderDate()
+	public Timestamp getOrderDate()
 	{
 		return orderDate;
 	}
 
-	public void setOrderDate(LocalDate dt)
+	public void setOrderDate(Timestamp dt)
 	{
 		this.orderDate = dt;
 	}
 
-	public LocalDate getDeliveryDate()
+	public Timestamp getDeliveryDate()
 	{
 		return deliveryDate;
 	}
 
-	public void setDeliveryDate(LocalDate deliveryDate)
+	public void setDeliveryDate(Timestamp deliveryDate)
 	{
 		this.deliveryDate = deliveryDate;
 	}

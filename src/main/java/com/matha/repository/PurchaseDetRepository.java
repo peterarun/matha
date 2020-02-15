@@ -14,6 +14,8 @@ public interface PurchaseDetRepository extends JpaRepository<PurchaseDet, Intege
 
     List<PurchaseDet> findAllByOrderItem(OrderItem orderItem);
 
+    List<PurchaseDet> findAllByPurchase(Purchase purchase);
+
     @Query("select distinct pDet from PurchaseDet pDet where pDet.orderItem in (?1)")
     List<PurchaseDet> findAllByOrderItems(List<OrderItem> orderItems);
 

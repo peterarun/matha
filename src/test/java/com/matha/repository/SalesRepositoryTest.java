@@ -43,7 +43,7 @@ public class SalesRepositoryTest {
     {
         int page = 0;
         int size = 10;
-        PageRequest pageable = new PageRequest(page, size, Sort.Direction.DESC, "txnDate");
+        PageRequest pageable = PageRequest.of(page, size, Sort.Direction.DESC, "txnDate");
         String searchStr = "%";
         List<Sales> purList = salesRepository.findAllByIdLike(searchStr, pageable).getContent();
         for (int i = 0; i < purList.size(); i++)

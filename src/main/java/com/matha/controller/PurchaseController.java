@@ -450,8 +450,22 @@ public class PurchaseController
 		if (purchaseBillTab.isSelected())
 		{
 			Publisher pub = publishers.getSelectionModel().getSelectedItem();
+			System.out.println("After pub ");
 			Page<Purchase> purchasePages = schoolService.fetchPurchasesForPublisher(pub, pageNum, ROWS_PER_PAGE);
+			System.out.println("After purchasePages ");
 			List<Purchase> purchaseList	= purchasePages.getContent();
+			for (Purchase purchase : purchaseList)
+			{
+				List<PurchaseDet> purDetList = schoolService.fetchPurchaseDet(purchase);
+				int unitCnt = 0;
+				for (PurchaseDet purchaseDet : purDetList)
+				{
+					unitCnt += purchaseDet.getQty();
+				}
+				purchase.setUnitCount(unitCnt);
+			}
+			System.out.println("After unitCount ");
+
 			this.billPaginator.setPageCount(purchasePages.getTotalPages());
 			this.purchaseData.setItems(FXCollections.observableList(purchaseList));
 
@@ -709,7 +723,7 @@ public class PurchaseController
 				toDateVal = LocalDate.now();
 			}
 
-			Sort sort = new Sort(new Sort.Order(Direction.ASC, "id"), new Sort.Order(Direction.ASC, "txnDate") );
+			Sort sort = Sort.by(new Sort.Order(Direction.ASC, "id"), new Sort.Order(Direction.ASC, "txnDate") );
 			Publisher pub = publishers.getSelectionModel().getSelectedItem();
 			List<PurchaseTransaction> tableData = schoolService.fetchPurTransactions(pub, fromDateVal, toDateVal, sort);
 			Double openingBalance = 0.0;

@@ -9,12 +9,18 @@ import org.apache.logging.log4j.core.config.LoggerConfig;
 import org.apache.logging.log4j.spi.LoggerContext;
 import org.junit.Test;
 
+import java.io.BufferedReader;
+import java.io.IOException;
+import java.io.InputStreamReader;
 import java.time.LocalDate;
+import java.time.LocalDateTime;
+import java.time.LocalTime;
 import java.time.format.DateTimeFormatter;
 import java.util.Arrays;
 import java.util.List;
 import java.util.concurrent.ConcurrentMap;
 import java.util.stream.Collectors;
+import java.util.stream.IntStream;
 import java.util.stream.Stream;
 
 public class UtilsTest
@@ -23,6 +29,9 @@ public class UtilsTest
 	@Test
 	public void testConvertDouble()
 	{
+		LocalDateTime dt = LocalDateTime.of(LocalDate.now(), LocalTime.MIN);
+		System.out.println(dt);
+
 		Stream<String> cats = Stream.of("leopard","lynx","ocelot","puma").parallel();
 		Stream<String> bears = Stream.of("panda","grizzly","polar").parallel();
 		ConcurrentMap<Boolean, List<String>> data = Stream.of(cats,bears)
@@ -42,6 +51,30 @@ public class UtilsTest
 				.format(DateTimeFormatter.ISO_DATE_TIME) ;
 		System.out.println(date);
 
+	}
+
+	public static void main(String[] args) throws IOException
+	{
+
+		BufferedReader nStr = new BufferedReader((new InputStreamReader(System.in)));
+		String fLine = nStr.readLine();
+		String[] fVals = fLine.split(" ");
+		int lineCnt = Integer.parseInt(fVals[0]);
+		int divisor = Integer.parseInt(fVals[1]);
+
+		long res = IntStream.range(0, lineCnt).filter(i -> {
+			try
+			{
+				int currLine = Integer.parseInt(nStr.readLine());
+				return currLine % divisor == 0;
+			}
+			catch (IOException e)
+			{
+				e.printStackTrace();
+			}
+			return false;
+		}).count();
+		System.out.println(res);
 	}
 
 }

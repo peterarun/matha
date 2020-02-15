@@ -5,6 +5,7 @@ import com.matha.repository.PurchaseReturnRepository;
 import com.matha.sales.SalesApplication;
 import org.hibernate.HibernateException;
 import org.hibernate.engine.spi.SessionImplementor;
+import org.hibernate.engine.spi.SharedSessionContractImplementor;
 import org.hibernate.id.IdentifierGenerator;
 
 import java.io.Serializable;
@@ -16,7 +17,7 @@ public class PurchaseRetIdGenerator implements IdentifierGenerator {
 //	private OrderRepository orderRepository = SalesApplication.ctx.getBean(OrderRepository.class);
 
 	@Override
-	public Serializable generate(SessionImplementor arg0, Object arg1) throws HibernateException {
+	public Serializable generate(SharedSessionContractImplementor arg0, Object arg1) throws HibernateException {
 		PurchaseReturnRepository purchaseReturnRepository = SalesApplication.ctx.getBean(PurchaseReturnRepository.class);
 		return "PR-" + purchaseReturnRepository.fetchNextSeqVal();
 	}

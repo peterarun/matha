@@ -15,7 +15,7 @@ public class OrderItem implements Serializable, Comparable<OrderItem>
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
 	private Integer id;
 
-	@ManyToOne
+	@ManyToOne(fetch = FetchType.LAZY)
 	@JoinColumn(name = "SerialId")
 	private Order order;
 
@@ -127,7 +127,7 @@ public class OrderItem implements Serializable, Comparable<OrderItem>
 	public String toString() {
 		final StringBuilder sb = new StringBuilder("OrderItem{");
 		sb.append("id=").append(id);
-		sb.append(", order=").append(order);
+//		sb.append(", orderId=").append(getOrderId());
 //		sb.append(", bookId=").append(bookId);
 		sb.append(", bookName='").append(bookName).append('\'');
 		sb.append(", count=").append(count);

@@ -135,7 +135,7 @@ public class MasterStmtController
 				toDateVal = LocalDate.now();
 			}
 
-			Sort sort = new Sort(new Sort.Order(Sort.Direction.ASC, "txnDate"), new Sort.Order(Sort.Direction.ASC, "id"));
+			Sort sort = Sort.by(new Sort.Order(Sort.Direction.ASC, "txnDate"), new Sort.Order(Sort.Direction.ASC, "id"));
 			List<PurchaseTransaction> tableData = schoolService.fetchPurchaseTxnsBetween(fromDateVal, toDateVal, Optional.ofNullable(purTypeStr), sort);
 
 			Double openingBalance = 0.0;
@@ -191,7 +191,7 @@ public class MasterStmtController
 				toDateVal = LocalDate.now();
 			}
 
-			Sort sort = new Sort(new Sort.Order(Sort.Direction.ASC, "txnDate"), new Sort.Order(Sort.Direction.ASC, "id"));
+			Sort sort = Sort.by(new Sort.Order(Sort.Direction.ASC, "txnDate"), new Sort.Order(Sort.Direction.ASC, "id"));
 			List<SalesTransaction> tableData = schoolService.fetchSaleTxnsBetween(fromDateVal, toDateVal, Optional.ofNullable(purTypeStr), sort);
 
 			Double openingBalance = 0.0;
