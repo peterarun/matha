@@ -3,14 +3,12 @@ package com.matha.domain;
 import org.hibernate.annotations.Cascade;
 import org.hibernate.annotations.GenericGenerator;
 
-import static com.matha.util.Converters.convertTimestamp;
 import static com.matha.util.UtilConstants.DATE_CONV;
 import static com.matha.util.UtilConstants.STATUS_MAP;
 import static org.hibernate.annotations.CascadeType.DELETE;
 import static org.hibernate.annotations.CascadeType.SAVE_UPDATE;
 
 import java.io.Serializable;
-import java.sql.Timestamp;
 import java.time.LocalDate;
 import java.util.Set;
 import java.util.stream.Collectors;
@@ -63,7 +61,7 @@ public class Purchase implements Serializable
 	private Integer financialYear;
 
 	@Column(name = "TDate")
-	private Timestamp purchaseDate;
+	private LocalDate purchaseDate;
 
 	@Column(name = "NetAmt")
 	private Double deletedAmt;
@@ -95,9 +93,9 @@ public class Purchase implements Serializable
 	{
 		if(salesTxn != null)
 		{
-			return convertTimestamp(salesTxn.getTxnDate());
+			return salesTxn.getTxnDate();
 		}
-		return convertTimestamp(this.getPurchaseDate());
+		return this.getPurchaseDate();
 	}
 
 	public String getTxnDateStr()
@@ -243,12 +241,12 @@ public class Purchase implements Serializable
 		this.financialYear = financialYear;
 	}
 
-	public Timestamp getPurchaseDate()
+	public LocalDate getPurchaseDate()
 	{
 		return purchaseDate;
 	}
 
-	public void setPurchaseDate(Timestamp purchaseDate)
+	public void setPurchaseDate(LocalDate purchaseDate)
 	{
 		this.purchaseDate = purchaseDate;
 	}

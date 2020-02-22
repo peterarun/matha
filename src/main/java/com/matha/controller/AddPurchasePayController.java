@@ -1,7 +1,5 @@
 package com.matha.controller;
 
-import static com.matha.util.Converters.convertLocalDate;
-import static com.matha.util.Converters.convertTimestamp;
 import static com.matha.util.UtilConstants.NEW_LINE;
 import static com.matha.util.Utils.getDoubleVal;
 import static com.matha.util.Utils.getStringVal;
@@ -135,7 +133,7 @@ public class AddPurchasePayController
 		{
 			payDate.setValue(schoolPaymentIn.getTxnDate());
 			mode.getSelectionModel().select(schoolPaymentIn.getPaymentMode());
-			dated.setValue(convertTimestamp(schoolPaymentIn.getDated()));
+			dated.setValue(schoolPaymentIn.getDated());
 			receiptNum.setText(schoolPaymentIn.getReceiptNum());
 			if (schoolPaymentIn.getSalesTxn() != null && schoolPaymentIn.getSalesTxn().getAmount() != null)
 			{
@@ -175,13 +173,13 @@ public class AddPurchasePayController
 
 			sPayment.setReceiptNum(receiptNum.getText());
 			sPayment.setPaymentMode(mode.getValue());
-			sPayment.setDated(convertLocalDate(dated.getValue()));
+			sPayment.setDated(dated.getValue());
 			sPayment.setReferenceNum(refNum.getText());
 
 			double amountVal = getDoubleVal(amount);
 			sTxn.setAmount(amountVal);
 			sTxn.setNote(notes.getText());
-			sTxn.setTxnDate(convertLocalDate(payDate.getValue()));
+			sTxn.setTxnDate(payDate.getValue());
 
 			schoolService.savePurchasePay(sPayment, sTxn);
 			((Stage) cancelBtn.getScene().getWindow()).close();

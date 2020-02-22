@@ -58,7 +58,7 @@
 								<PropertyValueFactory property="bookName" />
 							</cellValueFactory>
 						</TableColumn>
-						<TableColumn fx:id="qtyCol" prefWidth="59.0" text="Quantity">
+						<TableColumn fx:id="qtyColumn" prefWidth="59.0" text="Quantity">
 							<cellValueFactory>
 								<PropertyValueFactory property="qty" />
 							</cellValueFactory>

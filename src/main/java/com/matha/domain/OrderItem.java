@@ -15,7 +15,7 @@ public class OrderItem implements Serializable, Comparable<OrderItem>
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
 	private Integer id;
 
-	@ManyToOne(fetch = FetchType.LAZY)
+	@ManyToOne
 	@JoinColumn(name = "SerialId")
 	private Order order;
 

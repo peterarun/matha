@@ -23,8 +23,6 @@ import java.io.IOException;
 import java.util.Arrays;
 import java.util.List;
 
-import static com.matha.util.Converters.convertLocalDate;
-import static com.matha.util.Converters.convertTimestamp;
 import static com.matha.util.UtilConstants.NEW_LINE;
 import static com.matha.util.Utils.showErrorAlert;
 import static org.apache.commons.lang3.StringUtils.isBlank;
@@ -148,7 +146,7 @@ public class AddPaymentController
 
 			sPayment.setReceiptNum(receiptNum.getText());
 			sPayment.setPaymentMode(mode.getValue());
-			sPayment.setDated(convertLocalDate(dated.getValue()));
+			sPayment.setDated(dated.getValue());
 			sPayment.setReferenceNum(refNum.getText());
 
 			SalesTransaction sTxn = sPayment.getSalesTxn();
@@ -160,7 +158,7 @@ public class AddPaymentController
 			}
 			sTxn.setAmount(amountVal);
 			sTxn.setNote(notes.getText());
-			sTxn.setTxnDate(convertLocalDate(payDate.getValue()));
+			sTxn.setTxnDate(payDate.getValue());
 
 			schoolService.savePayment(sPayment);
 			((Stage) cancelBtn.getScene().getWindow()).close();
@@ -192,9 +190,9 @@ public class AddPaymentController
 		if (schoolPaymentIn != null)
 		{
 			this.receiptNum.setText(schoolPaymentIn.getReceiptNum());
-			this.payDate.setValue(convertTimestamp(schoolPaymentIn.getTxnDate()));
+			this.payDate.setValue(schoolPaymentIn.getTxnDate());
 			this.mode.getSelectionModel().select(schoolPaymentIn.getPaymentMode());
-			this.dated.setValue(convertTimestamp(schoolPaymentIn.getDated()));
+			this.dated.setValue(schoolPaymentIn.getDated());
 			this.refNum.setText(schoolPaymentIn.getReferenceNum());
 			if (schoolPaymentIn.getSalesTxn().getAmount() != null)
 			{

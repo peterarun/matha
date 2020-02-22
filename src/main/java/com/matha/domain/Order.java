@@ -1,9 +1,7 @@
 package com.matha.domain;
 
 import java.io.Serializable;
-import java.sql.Timestamp;
 import java.time.LocalDate;
-import java.time.LocalDateTime;
 import java.util.List;
 
 import javax.persistence.Column;
@@ -28,7 +26,7 @@ import static org.hibernate.annotations.CascadeType.SAVE_UPDATE;
 
 @Entity
 @Table(name = "SOrder")
-public class  Order implements Serializable, Comparable<Order>
+public class Order implements Serializable, Comparable<Order>
 {
 
 	private static final long serialVersionUID = 2735264048303888145L;
@@ -55,10 +53,10 @@ public class  Order implements Serializable, Comparable<Order>
 	private List<OrderItem> orderItem;
 
 	@Column(name = "TDate")
-	private Timestamp orderDate;
+	private LocalDate orderDate;
 
 	@Column(name = "DlyDate")
-	private Timestamp deliveryDate;
+	private LocalDate deliveryDate;
 
 	@Column(name = "desLocation")
 	private String desLocation;
@@ -76,12 +74,8 @@ public class  Order implements Serializable, Comparable<Order>
 
 	public String getOrderDateStr()
 	{
-//		StringConverter<LocalDateTime> conv = Converters.getLocalDateTimeConverter();
-//		return conv.toString(orderDate);
-
-		LocalDateTime ldt = orderDate.toLocalDateTime();
-		StringConverter<LocalDateTime> conv = Converters.getLocalDateTimeConverter();
-		return conv.toString(ldt);
+		StringConverter<LocalDate> conv = Converters.getLocalDateConverter();
+		return conv.toString(orderDate);
 	}
 	
 	public String getId()
@@ -139,22 +133,22 @@ public class  Order implements Serializable, Comparable<Order>
 		this.orderItem = orderItem;
 	}
 
-	public Timestamp getOrderDate()
+	public LocalDate getOrderDate()
 	{
 		return orderDate;
 	}
 
-	public void setOrderDate(Timestamp dt)
+	public void setOrderDate(LocalDate dt)
 	{
 		this.orderDate = dt;
 	}
 
-	public Timestamp getDeliveryDate()
+	public LocalDate getDeliveryDate()
 	{
 		return deliveryDate;
 	}
 
-	public void setDeliveryDate(Timestamp deliveryDate)
+	public void setDeliveryDate(LocalDate deliveryDate)
 	{
 		this.deliveryDate = deliveryDate;
 	}

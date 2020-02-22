@@ -12,6 +12,7 @@ import org.apache.logging.log4j.Logger;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 
+import javax.transaction.Transactional;
 import java.io.InputStream;
 import java.util.HashMap;
 import java.util.List;
@@ -58,6 +59,7 @@ public class UtilityService
 		return addOrderScene;
 	}
 
+	@Transactional
 	public JasperPrint prepareJasperPrint(Publisher pub, Purchase purchase, Address salesAddr, InputStream jasperStream)
 	{
 		JasperPrint jasperPrint = null;
@@ -102,9 +104,9 @@ public class UtilityService
 			hm.put("grandTotal", purchase.getNetAmount());
 			hm.put("grandTotalInWords", convertDouble(purchase.getNetAmount()));
 
-			JasperReport compiledFile = JasperCompileManager.compileReport(jasperStream);
+//			JasperReport compiledFile = JasperCompileManager.compileReport(jasperStream);
 
-			jasperPrint = JasperFillManager.fillReport(compiledFile, hm, new JRBeanCollectionDataSource(tableData));
+			jasperPrint = JasperFillManager.fillReport(jasperStream, hm, new JRBeanCollectionDataSource(tableData));
 		}
 		catch (JRException e)
 		{
@@ -178,9 +180,9 @@ public class UtilityService
 			hm.put("grandTotalInWords", convertDouble(sale.getNetAmount()));
 			hm.put("otherCharges", sale.getOtherAmount());
 
-			JasperReport compiledFile = JasperCompileManager.compileReport(jasperStream);
+//			JasperReport compiledFile = JasperCompileManager.compileReport(jasperStream);
 
-			jasperPrint = JasperFillManager.fillReport(compiledFile, hm, new JRBeanCollectionDataSource(tableData));
+			jasperPrint = JasperFillManager.fillReport(jasperStream, hm, new JRBeanCollectionDataSource(tableData));
 		}
 		catch (JRException e)
 		{
@@ -239,9 +241,9 @@ public class UtilityService
 			hm.put("accountDet", salesBankDetails);
 			hm.put("grandTotalInWords", convertDouble(schoolReturn.getNetAmount()));
 
-			JasperReport compiledFile = JasperCompileManager.compileReport(jasperStream);
+//			JasperReport compiledFile = JasperCompileManager.compileReport(jasperStream);
 
-			jasperPrint = JasperFillManager.fillReport(compiledFile, hm, new JRBeanCollectionDataSource(tableData));
+			jasperPrint = JasperFillManager.fillReport(jasperStream, hm, new JRBeanCollectionDataSource(tableData));
 		}
 		catch (JRException e)
 		{
@@ -286,9 +288,9 @@ public class UtilityService
 			hm.put("grandTotal", purchase.getNetAmount());
 			hm.put("grandTotalInWords", convertDouble(purchase.getNetAmount()));
 
-			JasperReport compiledFile = JasperCompileManager.compileReport(jasperStream);
+//			JasperReport compiledFile = JasperCompileManager.compileReport(jasperStream);
 
-			jasperPrint = JasperFillManager.fillReport(compiledFile, hm, new JRBeanCollectionDataSource(purchase.getPurchaseReturnDetSet()));
+			jasperPrint = JasperFillManager.fillReport(jasperStream, hm, new JRBeanCollectionDataSource(purchase.getPurchaseReturnDetSet()));
 		}
 		catch (JRException e)
 		{

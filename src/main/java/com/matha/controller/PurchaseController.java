@@ -450,9 +450,7 @@ public class PurchaseController
 		if (purchaseBillTab.isSelected())
 		{
 			Publisher pub = publishers.getSelectionModel().getSelectedItem();
-			System.out.println("After pub ");
-			Page<Purchase> purchasePages = schoolService.fetchPurchasesForPublisher(pub, pageNum, ROWS_PER_PAGE);
-			System.out.println("After purchasePages ");
+			Page<Purchase> purchasePages = schoolService.fetchActivePurchasesForPublisher(pub, pageNum, ROWS_PER_PAGE);
 			List<Purchase> purchaseList	= purchasePages.getContent();
 			for (Purchase purchase : purchaseList)
 			{
@@ -464,7 +462,6 @@ public class PurchaseController
 				}
 				purchase.setUnitCount(unitCnt);
 			}
-			System.out.println("After unitCount ");
 
 			this.billPaginator.setPageCount(purchasePages.getTotalPages());
 			this.purchaseData.setItems(FXCollections.observableList(purchaseList));
@@ -483,7 +480,7 @@ public class PurchaseController
 		if (this.returnsTab.isSelected())
 		{
 			Publisher pub = this.publishers.getSelectionModel().getSelectedItem();
-			List<PurchaseReturn> returnDataList = this.schoolService.fetchPurchaseReturns(pub);
+			List<PurchaseReturn> returnDataList = this.schoolService.fetchActivePurchaseReturns(pub);
 			this.returnsData.setItems(FXCollections.observableList(returnDataList));
 
 			this.returnsData.setOnMouseClicked(ev -> {
@@ -584,7 +581,7 @@ public class PurchaseController
 		if (this.paymentTab.isSelected())
 		{
 			Publisher pub = this.publishers.getSelectionModel().getSelectedItem();
-			List<PurchasePayment> returnDataList = this.schoolService.fetchPurchasePayments(pub);
+			List<PurchasePayment> returnDataList = this.schoolService.fetchActivePurchasePayments(pub);
 			this.paymentData.setItems(FXCollections.observableList(returnDataList));
 
 			this.paymentData.setOnMouseClicked(ev -> {
@@ -747,9 +744,9 @@ public class PurchaseController
 			hm.put("totalDebit", totalDebit);
 			hm.put("totalCredit", totalCredit);
 			hm.put("datedSchoolPaymentModes", datedSchoolPaymentModes);
-			JasperReport compiledFile = JasperCompileManager.compileReport(jasperStream);
+//			JasperReport compiledFile = JasperCompileManager.compileReport(jasperStream);
 
-			jasperPrint = JasperFillManager.fillReport(compiledFile, hm, new JRBeanCollectionDataSource(tableData));
+			jasperPrint = JasperFillManager.fillReport(jasperStream, hm, new JRBeanCollectionDataSource(tableData));
 		}
 		catch (JRException e)
 		{

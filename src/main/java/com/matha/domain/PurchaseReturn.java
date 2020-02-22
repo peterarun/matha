@@ -1,10 +1,8 @@
 package com.matha.domain;
 
-import static com.matha.util.Converters.convertTimestamp;
 import static com.matha.util.UtilConstants.DATE_CONV;
 import static com.matha.util.UtilConstants.STATUS_MAP;
 
-import java.sql.Timestamp;
 import java.time.LocalDate;
 import java.util.Set;
 import java.util.stream.Collectors;
@@ -42,7 +40,7 @@ public class PurchaseReturn {
 	private Double subTotal;
 
 	@Column(name = "TDate")
-	private Timestamp returnDate;
+	private LocalDate returnDate;
 
 	@Column(name = "Status")
 	private Integer statusInd;
@@ -102,7 +100,7 @@ public class PurchaseReturn {
 
 	public LocalDate getTxnDate()
 	{
-		return convertTimestamp(salesTxn.getTxnDate());
+		return salesTxn.getTxnDate();
 	}
 	
 	public String getTxnDateStr()
@@ -176,11 +174,11 @@ public class PurchaseReturn {
 		this.creditNoteNum = creditNoteNum;
 	}
 
-	public Timestamp getReturnDate() {
+	public LocalDate getReturnDate() {
 		return returnDate;
 	}
 
-	public void setReturnDate(Timestamp returnDate) {
+	public void setReturnDate(LocalDate returnDate) {
 		this.returnDate = returnDate;
 	}
 

@@ -1,6 +1,5 @@
 package com.matha.domain;
 
-import java.sql.Timestamp;
 import java.time.LocalDate;
 
 import javax.persistence.*;
@@ -24,7 +23,7 @@ public class SchoolPayment {
 	private String paymentMode;
 
 	@Column(name = "Dated")
-	private Timestamp dated;
+	private LocalDate dated;
 
 	@Column(name = "RefNum")
 	private String referenceNum;
@@ -68,7 +67,7 @@ public class SchoolPayment {
 		this.receiptNum = receiptNum;
 	}
 
-	public Timestamp getTxnDate()
+	public LocalDate getTxnDate()
 	{
 		return salesTxn.getTxnDate();
 	}
@@ -94,11 +93,11 @@ public class SchoolPayment {
 		this.paymentMode = paymentMode;
 	}
 
-	public Timestamp getDated() {
+	public LocalDate getDated() {
 		return dated;
 	}
 
-	public void setDated(Timestamp dated) {
+	public void setDated(LocalDate dated) {
 		this.dated = dated;
 	}
 

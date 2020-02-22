@@ -3,6 +3,7 @@ package com.matha.repository;
 import com.matha.domain.Sales;
 import com.matha.domain.School;
 import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
 import org.springframework.data.jpa.repository.JpaRepository;
@@ -27,6 +28,9 @@ public interface SalesRepository extends JpaRepository<Sales, String> {
 
 	public List<Sales> findAllBySchool(School school);
 
+	@Query("select sales from Sales sales where sales.school = ?1 and sales.statusInd <> -2")
+	public List<Sales> findAllBySchoolExclStat(School school, Integer status);
+
 	public Page<Sales> findAllByIdLike(String searchStr, Pageable pageable);
 
 	public List<Sales> findAllBySchoolAndFinancialYear(School school, int fy);
@@ -38,6 +42,8 @@ public interface SalesRepository extends JpaRepository<Sales, String> {
 	public List<Sales> findAllBySchoolAndTxnDateAfter(School sc, LocalDate txnDt, Sort sortIn);
 
 	public List<Sales> findAllBySalesTxnIsNull();
+
+	Page<Sales> findAllBySerialNoLike(String s, PageRequest pageable);
 
 //	Sales findById(String salesId);
 }

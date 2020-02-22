@@ -22,10 +22,7 @@ import org.springframework.context.annotation.Scope;
 import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.stereotype.Component;
 
-import java.sql.Timestamp;
 import java.time.LocalDate;
-import java.time.LocalDateTime;
-import java.time.LocalTime;
 import java.util.*;
 
 import static com.matha.util.Converters.getIntegerConverter;
@@ -215,8 +212,8 @@ public class AddOrderController
 		item.setOrderItem(items);
 		item.setSerialNo(orderNum.getText());
 		item.setSchool(school);
-		item.setOrderDate(Timestamp.valueOf(LocalDateTime.of(orderDate.getValue(), LocalTime.MIN)));
-		item.setDeliveryDate(Timestamp.valueOf(LocalDateTime.of(despatchDate.getValue(), LocalTime.MIN)));
+		item.setOrderDate(orderDate.getValue());
+		item.setDeliveryDate(despatchDate.getValue());
 		item.setDesLocation(desLocation.getText());
 		item.setFinancialYear(calcFinYear(LocalDate.now()));
 		item.setPrefix(item.getSerialNo() + " - " + item.getFinancialYear());
@@ -250,9 +247,9 @@ public class AddOrderController
 			return;
 		}
 		this.orderNum.setText(selectedOrder.getSerialNo());
-		this.orderDate.setValue(selectedOrder.getOrderDate().toLocalDateTime().toLocalDate());
+		this.orderDate.setValue(selectedOrder.getOrderDate());
 		this.desLocation.setText(selectedOrder.getDesLocation());
-		this.despatchDate.setValue(selectedOrder.getDeliveryDate().toLocalDateTime().toLocalDate());
+		this.despatchDate.setValue(selectedOrder.getDeliveryDate());
 		List<OrderItem> items = selectedOrder.getOrderItem().stream().sorted(comparing(OrderItem::getSerialNum)).collect(toList());
 		this.addedBooks.setItems(FXCollections.observableList(items));
 	}

@@ -1,7 +1,5 @@
 package com.matha.controller;
 
-import static com.matha.util.Converters.convertLocalDate;
-import static com.matha.util.Converters.convertTimestamp;
 import static com.matha.util.UtilConstants.NEW_LINE;
 import static com.matha.util.UtilConstants.PERCENT_SIGN;
 import static com.matha.util.UtilConstants.RUPEE_SIGN;
@@ -151,7 +149,7 @@ public class AddPurchaseRetController
 				this.addedBooks.setItems(orderItemsIn);
 				this.index.set(orderItemsIn.size());
 			}
-			this.returnDate.setValue(convertTimestamp(purchaseReturn.getSalesTxn().getTxnDate()));
+			this.returnDate.setValue(purchaseReturn.getSalesTxn().getTxnDate());
 			this.notes.setText(purchaseReturn.getSalesTxn().getNote());
 			this.creditNoteNum.setText(purchaseReturn.getCreditNoteNum());
 			this.subTotal.setText(getStringVal(purchaseReturn.getSubTotal()));
@@ -338,7 +336,7 @@ public class AddPurchaseRetController
 				salesTxn = new PurchaseTransaction();
 				salesTxn.setPublisher(publisher);
 			}
-			salesTxn.setTxnDate(convertLocalDate(returnDate));
+			salesTxn.setTxnDate(returnDate);
 			salesTxn.setNote(this.notes.getText());
 			salesTxn.setAmount(getDoubleVal(this.netTotal));
 
@@ -358,7 +356,7 @@ public class AddPurchaseRetController
 			returnIn.setDiscAmt(getDoubleVal(this.discText.getText()));
 			returnIn.setSubTotal(getDoubleVal(this.subTotal.getText()));
 			returnIn.setCreditNoteNum(this.creditNoteNum.getText());
-			returnIn.setReturnDate(convertLocalDate(returnDate));
+			returnIn.setReturnDate(returnDate);
 			returnIn.setFy(calcFinYear(returnDate));
 
 			TreeSet<PurchaseReturnDet> orderItems = new TreeSet<>(comparing(PurchaseReturnDet::getSlNum));

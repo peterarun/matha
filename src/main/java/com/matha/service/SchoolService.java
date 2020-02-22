@@ -21,7 +21,6 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Sort;
 import org.springframework.data.domain.Sort.Direction;
-import org.springframework.data.jpa.provider.HibernateUtils;
 import org.springframework.stereotype.Service;
 
 import static com.matha.util.UtilConstants.*;
@@ -34,7 +33,7 @@ public class SchoolService
 
 	private static final Logger LOGGER = LogManager.getLogger(SchoolService.class);
 
-	@PersistenceContext(type = PersistenceContextType.EXTENDED)
+	@PersistenceContext
 	private EntityManager entityManager;
 
 	@Value("${matha.orderStartDate}")
@@ -139,7 +138,7 @@ public class SchoolService
 
 	public School fetchSchoolById(Integer id)
 	{
-		return schoolRepoitory.getOne(id);
+		return schoolRepoitory.findById(id).orElse(null);
 	}
 
 	public School saveSchool(School school)
@@ -313,7 +312,7 @@ public class SchoolService
 
 	public Order fetchOrder(String id)
 	{
-		return orderRepository.getOne(id);
+		return orderRepository.findById(id).orElse(null);
 	}
 
 	@Transactional
@@ -392,12 +391,12 @@ public class SchoolService
 	}
 
 	@Transactional
-	public void deleteSchool(School school, List<Order> ordersIn, List<Sales> bills, List<SchoolReturn> returns, List<SchoolPayment> payments, List<PurchaseDet> purchasesIn)
+	public void deleteSchool(School school, List<Sales> bills, List<SchoolReturn> returns, List<SchoolPayment> payments, List<Order> ordersIn, List<PurchaseDet> purchasesIn)
 	{
 		Set<SalesTransaction> billTxns = bills.stream().map(Sales::getSalesTxn).filter(st -> st != null).collect(toSet());
 		Set<SalesTransaction> returnTxns = returns.stream().map(SchoolReturn::getSalesTxn).filter(st -> st != null).collect(toSet());
 		Set<SalesTransaction> paymentTxns = payments.stream().map(SchoolPayment::getSalesTxn).filter(st -> st != null).collect(toSet());
-		Set<SalesTransaction> allTxns = new HashSet<SalesTransaction>(billTxns);
+		Set<SalesTransaction> allTxns = new HashSet<>(billTxns);
 		allTxns.addAll(returnTxns);
 		allTxns.addAll(paymentTxns);
 
@@ -867,10 +866,10 @@ public class SchoolService
 		return salesDetRepository.findAllByOrderItems(orderItems);
 	}
 
-	public Page<Purchase> fetchPurchasesForPublisher(Publisher pub, int page, int size)
+	public Page<Purchase> fetchActivePurchasesForPublisher(Publisher pub, int page, int size)
 	{
 		PageRequest pageable = PageRequest.of(page, size, Direction.DESC, "purchaseDate");
-		return purchaseRepoitory.findAllByPublisher(pub, pageable);
+		return purchaseRepoitory.findAllActiveByPublisher(pub, pageable);
 	}
 
 	public List<PurchaseDet> fetchPurchaseDet(Purchase pur)
@@ -923,8 +922,11 @@ public class SchoolService
 		List<PurchaseReturnDet> origBooks = new ArrayList<>();
 		if(returnIn.getId() != null)
 		{
-			PurchaseReturn returnOrig = purchaseReturnRepository.getOne(returnIn.getId());
-			origBooks = new ArrayList<>(returnOrig.getPurchaseReturnDetSet());
+			Optional<PurchaseReturn> returnOrig = purchaseReturnRepository.findById(returnIn.getId());
+			if(returnOrig.isPresent())
+			{
+				origBooks = new ArrayList<>(returnOrig.get().getPurchaseReturnDetSet());
+			}
 		}
 		List<PurchaseReturnDet> addedBooks = new ArrayList<>(orderItems);
 		addedBooks.removeAll(origBooks);
@@ -954,10 +956,10 @@ public class SchoolService
 
 	}
 
-	public List<PurchaseReturn> fetchPurchaseReturns(Publisher pub)
+	public List<PurchaseReturn> fetchActivePurchaseReturns(Publisher pub)
 	{
 		Sort dateSort = Sort.by(new Sort.Order(Direction.DESC, "salesTxn.txnDate"));
-		return purchaseReturnRepository.findAllByPublisher(pub, dateSort);
+		return purchaseReturnRepository.findAllActiveByPublisher(pub, dateSort);
 	}
 
 	public PurchaseReturn fetchPurchaseReturn(String creditNoteNum, Integer fy)
@@ -985,10 +987,10 @@ public class SchoolService
 		deletePurchaseTxn(txn);
 	}
 
-	public List<PurchasePayment> fetchPurchasePayments(Publisher pub)
+	public List<PurchasePayment> fetchActivePurchasePayments(Publisher pub)
 	{
 		Sort dateSort = Sort.by(new Sort.Order(Direction.DESC, "salesTxn.txnDate"));
-		return purchasePayRepository.findAllByPublisher(pub, dateSort);
+		return purchasePayRepository.findAllActiveByPublisher(pub, dateSort);
 	}
 
 	@Transactional
@@ -1060,36 +1062,52 @@ public class SchoolService
 	@Transactional
 	public SalesTransaction fetchPrevTxn(SalesTransaction salesTransaction)
 	{
-		SalesTransaction currTxn = salesTxnRepository.findOne(salesTransaction.getId());
-		SalesTransaction prevTxn = currTxn.getPrevTxn();
-		Hibernate.initialize(prevTxn);
+		SalesTransaction prevTxn = null;
+		Optional<SalesTransaction> currTxn = salesTxnRepository.findById(salesTransaction.getId());
+		if(currTxn.isPresent())
+		{
+			prevTxn = currTxn.get().getPrevTxn();
+			Hibernate.initialize(prevTxn);
+		}
 		return prevTxn;
 	}
 
 	@Transactional
 	public SalesTransaction fetchNextTxn(SalesTransaction salesTransaction)
 	{
-		SalesTransaction currTxn = salesTxnRepository.findOne(salesTransaction.getId());
-		SalesTransaction nextTxn = currTxn.getNextTxn();
-		Hibernate.initialize(nextTxn);
+		SalesTransaction nextTxn = null;
+		Optional<SalesTransaction> currTxn = salesTxnRepository.findById(salesTransaction.getId());
+		if(currTxn.isPresent())
+		{
+			nextTxn = currTxn.get().getNextTxn();
+			Hibernate.initialize(nextTxn);
+		}
 		return nextTxn;
 	}
 
 	@Transactional
 	public PurchaseTransaction fetchPrevTxn(PurchaseTransaction purchaseTransaction)
 	{
-		PurchaseTransaction currTxn = purchaseTxnRepository.findOne(purchaseTransaction.getId());
-		PurchaseTransaction prevTxn = currTxn.getPrevTxn();
-		Hibernate.initialize(prevTxn);
+		PurchaseTransaction prevTxn = null;
+		Optional<PurchaseTransaction> currTxn = purchaseTxnRepository.findById(purchaseTransaction.getId());
+		if(currTxn.isPresent())
+		{
+			prevTxn = currTxn.get().getPrevTxn();
+			Hibernate.initialize(prevTxn);
+		}
 		return prevTxn;
 	}
 
 	@Transactional
 	public PurchaseTransaction fetchNextTxn(PurchaseTransaction purchaseTransaction)
 	{
-		PurchaseTransaction currTxn = purchaseTxnRepository.findOne(purchaseTransaction.getId());
-		PurchaseTransaction nextTxn = currTxn.getNextTxn();
-		Hibernate.initialize(nextTxn);
+		PurchaseTransaction nextTxn = null;
+		Optional<PurchaseTransaction> currTxn = purchaseTxnRepository.findById(purchaseTransaction.getId());
+		if(currTxn.isPresent())
+		{
+			nextTxn = currTxn.get().getNextTxn();
+			Hibernate.initialize(nextTxn);
+		}
 		return nextTxn;
 	}
 
@@ -1324,7 +1342,7 @@ public class SchoolService
 
 	public Sales fetchSale(String saleId)
 	{
-		return salesRepository.getOne(saleId);
+		return salesRepository.findById(saleId).orElse(null);
 	}
 
 	@Transactional
@@ -1470,7 +1488,7 @@ public class SchoolService
 //		int page = 0;
 //		int size = 10;
 		PageRequest pageable = PageRequest.of(page, size, Direction.DESC, "txnDate");
-		return salesRepository.findAllByIdLike(searchStr + "%", pageable);
+		return salesRepository.findAllBySerialNoLike(searchStr + "%", pageable);
 	}
 
 	@Transactional
@@ -1586,7 +1604,11 @@ public class SchoolService
 		}
 		else
 		{
-			origBooks = new ArrayList<>(schoolReturnRepository.getOne(returnIn.getId()).getSalesReturnDetSet());
+			Optional<SchoolReturn> salesRet = schoolReturnRepository.findById(returnIn.getId());
+			if(salesRet.isPresent())
+			{
+				origBooks = new ArrayList<>(salesRet.get().getSalesReturnDetSet());
+			}
 			addedBooks = new ArrayList<>(orderItemsIn);
 			addedBooks.removeAll(origBooks);
 
@@ -1665,9 +1687,12 @@ public class SchoolService
 		return bookRepository.findAllByPublisher(publisher);
 	}
 
+	@Transactional
 	public Address fetchAddress(String name)
 	{
-		return addressRepository.getOne(name);
+		Address address = addressRepository.findById(name).orElse(null);
+		Hibernate.initialize(address);
+		return address;
 	}
 
 	public List<PurchaseTransaction> fetchAllPurchaseTxnsBetween(LocalDate fromDateVal, LocalDate toDateVal, Sort sort)

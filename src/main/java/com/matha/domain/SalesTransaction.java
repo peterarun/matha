@@ -1,10 +1,8 @@
 package com.matha.domain;
 
-import static com.matha.util.Converters.convertTimestamp;
 import static com.matha.util.UtilConstants.*;
 import static com.matha.util.Utils.getStringVal;
 
-import java.sql.Timestamp;
 import java.time.LocalDate;
 import java.util.Date;
 
@@ -34,7 +32,7 @@ public class SalesTransaction
 	protected Date lastModifiedDate;
 
 	@Column(name = "TxnDate")
-	private Timestamp txnDate;
+	private LocalDate txnDate;
 
 	@Column(name = "Amount")
 	private Double amount;
@@ -213,17 +211,17 @@ public class SalesTransaction
 		this.lastModifiedDate = lastModifiedDate;
 	}
 
-	public Timestamp getTxnDate()
+	public LocalDate getTxnDate()
 	{
 		return txnDate;
 	}
 
 	public String getTxnDateStr()
 	{
-		return DATE_CONV.toString(convertTimestamp(getTxnDate()));
+		return DATE_CONV.toString(getTxnDate());
 	}
 
-	public void setTxnDate(Timestamp txnDate)
+	public void setTxnDate(LocalDate txnDate)
 	{
 		this.txnDate = txnDate;
 	}

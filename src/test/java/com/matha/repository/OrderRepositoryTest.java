@@ -50,7 +50,8 @@ public class OrderRepositoryTest {
 		Publisher pub = publisherRepository.getOne(48);
 		int pageNum = 1;
 		int ROWS_PER_PAGE = 10;
-		Page<Purchase> purchasePages = schoolService.fetchPurchasesForPublisher(pub, pageNum, ROWS_PER_PAGE);
+		Page<Purchase> purchasePages = schoolService.fetchActivePurchasesForPublisher(pub, pageNum, ROWS_PER_PAGE);
+		System.out.println(purchasePages.getContent());
 	}
 
 	@Test

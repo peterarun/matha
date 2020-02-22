@@ -160,10 +160,10 @@ public class MasterStmtController
 			hm.put("totalCredit", totalCredit);
 
 			LOGGER.info("Before" + new Date());
-			JasperReport compiledFile = JasperCompileManager.compileReport(jasperStream);
+//			JasperReport compiledFile = JasperCompileManager.compileReport(jasperStream);
 			LOGGER.info("After" + new Date());
 
-			jasperPrint = JasperFillManager.fillReport(compiledFile, hm, new JRBeanCollectionDataSource(tableData));
+			jasperPrint = JasperFillManager.fillReport(jasperStream, hm, new JRBeanCollectionDataSource(tableData));
 		}
 		catch (JRException e)
 		{
@@ -217,10 +217,10 @@ public class MasterStmtController
 			hm.put("totalCredit", totalCredit);
 
 			LOGGER.info("Before" + new Date());
-			JasperReport compiledFile = JasperCompileManager.compileReport(jasperStream);
+//			JasperReport compiledFile = JasperCompileManager.compileReport(jasperStream);
 			LOGGER.info("After" + new Date());
 
-			jasperPrint = JasperFillManager.fillReport(compiledFile, hm, new JRBeanCollectionDataSource(tableData));
+			jasperPrint = JasperFillManager.fillReport(jasperStream, hm, new JRBeanCollectionDataSource(tableData));
 		}
 		catch (JRException e)
 		{

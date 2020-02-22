@@ -9,7 +9,6 @@ import org.hibernate.annotations.Cascade;
 import org.hibernate.annotations.CascadeType;
 import org.hibernate.annotations.GenericGenerator;
 
-import static com.matha.util.Converters.convertTimestamp;
 import static com.matha.util.UtilConstants.DATE_CONV;
 import static com.matha.util.UtilConstants.STATUS_MAP;
 
@@ -78,7 +77,7 @@ public class SchoolReturn {
 
 	public String getTxnDateStr()
 	{
-		return DATE_CONV.toString(convertTimestamp(salesTxn.getTxnDate()));
+		return DATE_CONV.toString(salesTxn.getTxnDate());
 	}
 
 	public String getNotes()
@@ -88,7 +87,7 @@ public class SchoolReturn {
 
 	public LocalDate getTxnDate()
 	{
-		return convertTimestamp(salesTxn.getTxnDate());
+		return salesTxn.getTxnDate();
 	}
 	
 	public Double getNetAmount()

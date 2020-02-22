@@ -29,7 +29,6 @@ import java.util.Map;
 import java.util.stream.Collector;
 import java.util.stream.Collectors;
 
-import static com.matha.util.Converters.convertLocalDate;
 import static com.matha.util.UtilConstants.*;
 import static com.matha.util.Utils.*;
 import static org.apache.commons.lang3.StringUtils.*;
@@ -163,7 +162,7 @@ public class AddReturnController
 				this.addedBooks.setItems(FXCollections.observableList(new ArrayList<>()));
 			}
 			this.creditNoteNum.setText(returnIn.getCreditNoteNum());
-			this.returnDate.setValue(returnIn.getSalesTxn().getTxnDate().toLocalDateTime().toLocalDate());
+			this.returnDate.setValue(returnIn.getSalesTxn().getTxnDate());
 			this.notes.setText(returnIn.getSalesTxn().getNote());
 			
 			Double subTotalDbl = returnIn.getSubTotal();
@@ -303,7 +302,7 @@ public class AddReturnController
 
 			List<SalesReturnDet> orderItems = new ArrayList<>(this.addedBooks.getItems());
 
-			salesTxn.setTxnDate(convertLocalDate(this.returnDate.getValue()));
+			salesTxn.setTxnDate(this.returnDate.getValue());
 			salesTxn.setNote(this.notes.getText());
 
 			String subTotalStr = this.netTotal.getText();

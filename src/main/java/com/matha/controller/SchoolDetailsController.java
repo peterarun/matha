@@ -356,7 +356,8 @@ public class SchoolDetailsController
 		if (this.billsTab.isSelected())
 		{
 			List<Sales> billDataList = schoolService.fetchBills(this.school);
-			this.billData.setItems(FXCollections.observableList(billDataList.stream().sorted(comparing(s -> ((Sales) s).getTxnDate()).reversed()).collect(toList())));
+			List<Sales> sortedFilteredList = billDataList.stream().filter(sl -> sl.getStatusInd() != DELETED_IND).sorted(comparing(s -> ((Sales) s).getTxnDate()).reversed()).collect(toList());
+			this.billData.setItems(FXCollections.observableList(sortedFilteredList));
 			this.loadBalance();
 
 			this.billData.setOnMouseClicked(ev -> {
@@ -923,7 +924,7 @@ public class SchoolDetailsController
 			hm.put("toDate", DATE_CONV.toString(toDateVal));
 			hm.put("datedSchoolPaymentModes", datedSchoolPaymentModes);
 
-			JasperReport compiledFile = JasperCompileManager.compileReport(jasperStream);
+//			JasperReport compiledFile = JasperCompileManager.compileReport(jasperStream);
 			LOGGER.info("Total Size: " + tableDataIn.size());
 			for (int i = 0; i <= tableDataIn.size() / 38; i++)
 			{
@@ -942,11 +943,11 @@ public class SchoolDetailsController
 
 				if(jasperPrint == null)
 				{
-					jasperPrint = JasperFillManager.fillReport(compiledFile, hmOut, new JRBeanCollectionDataSource(tableData));
+					jasperPrint = JasperFillManager.fillReport(jasperStream, hmOut, new JRBeanCollectionDataSource(tableData));
 				}
 				else
 				{
-					JasperPrint jasperPrintNxt = JasperFillManager.fillReport(compiledFile, hmOut, new JRBeanCollectionDataSource(tableData));
+					JasperPrint jasperPrintNxt = JasperFillManager.fillReport(jasperStream, hmOut, new JRBeanCollectionDataSource(tableData));
 					jasperPrint.addPage(jasperPrintNxt.getPages().get(0));
 				}
 			}

@@ -85,15 +85,25 @@ public interface UtilConstants {
 
 	public static final String masterSearchFxmlFile = "/fxml/masterSearch.fxml";
 	
-	public static final String statementJrxml = "/jrxml/Statement.jrxml";
-	public static final String salesStmtJrxml = "/jrxml/SalesStmt.jrxml";
-	public static final String invoiceJrxml = "/jrxml/Invoice.jrxml";
-	public static final String salesInvoiceJrxml = "/jrxml/SalesInvoice.jrxml";
-    public static final String creditNoteJrxml = "/jrxml/CreditNote.jrxml";
-	public static final String puReturnJrxml = "/jrxml/PurReturn.jrxml";
-	public static final String orderJrxml = "/jrxml/Order.jrxml";
-	public static final String masterPurStmtJrxml = "/jrxml/MasterPurchaseStmt.jrxml";
-	public static final String masterSaleStmtJrxml = "/jrxml/MasterSalesStmt.jrxml";
+//	public static final String statementJrxml = "/jrxml/Statement.jrxml";
+//	public static final String salesStmtJrxml = "/jrxml/SalesStmt.jrxml";
+//	public static final String invoiceJrxml = "/jrxml/Invoice.jrxml";
+//	public static final String salesInvoiceJrxml = "/jrxml/SalesInvoice.jrxml";
+//  public static final String creditNoteJrxml = "/jrxml/CreditNote.jrxml";
+//	public static final String puReturnJrxml = "/jrxml/PurReturn.jrxml";
+//	public static final String orderJrxml = "/jrxml/Order.jrxml";
+//	public static final String masterPurStmtJrxml = "/jrxml/MasterPurchaseStmt.jrxml";
+//	public static final String masterSaleStmtJrxml = "/jrxml/MasterSalesStmt.jrxml";
+
+	public static final String salesInvoiceJrxml = "/jasper/SalesInvoice.jasper";
+	public static final String salesStmtJrxml = "/jasper/SalesStmt.jasper";
+	public static final String creditNoteJrxml = "/jasper/CreditNote.jasper";
+	public static final String invoiceJrxml = "/jasper/Invoice.jasper";
+	public static final String puReturnJrxml = "/jasper/PurReturn.jasper";
+	public static final String statementJrxml = "/jasper/Statement.jasper";
+	public static final String masterPurStmtJrxml = "/jasper/MasterPurchaseStmt.jasper";
+	public static final String masterSaleStmtJrxml = "/jasper/MasterSalesStmt.jasper";
+	public static final String orderJrxml = "/jasper/Order.jasper";
 
 	public static final ButtonType buttonTypeOne = new ButtonType("Yes", ButtonData.YES);
 	public static final ButtonType buttonTypeCancel = new ButtonType("Cancel", ButtonData.CANCEL_CLOSE);

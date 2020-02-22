@@ -1,15 +1,12 @@
 package com.matha.service;
 
-import static com.matha.util.Converters.convertLocalDate;
 import static com.matha.util.Utils.calcFinYear;
 import static com.matha.util.Utils.getDoubleVal;
 import static java.util.stream.Collectors.toList;
 import static java.util.stream.Collectors.toSet;
 import static org.junit.Assert.fail;
 
-import java.sql.Timestamp;
 import java.time.LocalDate;
-import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.List;
@@ -115,7 +112,7 @@ public class SchoolServiceTest
 	@Test
 	public void testOne()
 	{
-		PurchaseTransaction currTrans = this.purchaseTxnRepository.findOne(2);
+		PurchaseTransaction currTrans = this.purchaseTxnRepository.getOne(2);
 		this.schoolService.fetchPrevTxn(currTrans);
 
 	}
@@ -176,7 +173,7 @@ public class SchoolServiceTest
 			double amountVal = 100.00;
 			sTxn.setAmount(amountVal);
 			sTxn.setNote("TetsNotes ");
-			sTxn.setTxnDate(convertLocalDate(LocalDate.of(2018, 1, 15)));
+			sTxn.setTxnDate(LocalDate.of(2018, 1, 15));
 
 			schoolService.savePurchasePay(sPayment, sTxn);
 			
@@ -201,7 +198,7 @@ public class SchoolServiceTest
 			double amountVal = 100.00;
 			sTxn.setAmount(amountVal);
 			sTxn.setNote("TetsNotes Upd II");
-			sTxn.setTxnDate(convertLocalDate(LocalDate.of(2018, 1, 21)));
+			sTxn.setTxnDate(LocalDate.of(2018, 1, 21));
 
 			schoolService.savePurchasePay(sPayment, sTxn);
 			
@@ -223,7 +220,7 @@ public class SchoolServiceTest
 			
 			PurchaseTransaction sTxn = pur.getSalesTxn();
 			sTxn.setAmount(2200.00);
-			sTxn.setTxnDate(convertLocalDate(LocalDate.of(2018, 1, 27)));
+			sTxn.setTxnDate(LocalDate.of(2018, 1, 27));
 			
 			ArrayList<PurchaseDet> items = new ArrayList<>(pur.getPurchaseItems());
 			
@@ -265,7 +262,7 @@ public class SchoolServiceTest
 			orderItems = new ArrayList<>();
 		}
 
-		salesTxn.setTxnDate(convertLocalDate(LocalDate.now()));
+		salesTxn.setTxnDate(LocalDate.now());
 
 		String subTotalStr = "0";
 		if (StringUtils.isNotBlank(subTotalStr))
@@ -290,7 +287,7 @@ public class SchoolServiceTest
 			if (purchaseIn == null)
 			{
 				purchaseIn = new Purchase();
-				purchaseIn.setPurchaseDate(Timestamp.valueOf(LocalDateTime.now()));
+				purchaseIn.setPurchaseDate(LocalDate.now());
 				purchaseIn.setFinancialYear(calcFinYear(purchaseIn.getTxnDate()));
 //				purchaseIn.setSerialNo(this.schoolService.fetchNextPurchaseSerialNum(purchaseIn.getFinancialYear()));
 				purchaseIn.setPublisher(publisher);
@@ -306,7 +303,7 @@ public class SchoolServiceTest
 			purchaseIn.setDiscType(true);
 			purchaseIn.setSubTotal(5400.0);
 			salesTxn.setAmount(5400.0);
-			salesTxn.setTxnDate(convertLocalDate(LocalDate.now()));
+			salesTxn.setTxnDate(LocalDate.now());
 
 			AtomicInteger index = new AtomicInteger();
 			List<PurchaseDet> bookList = orderIn.getOrderItem().stream()
@@ -454,7 +451,7 @@ public class SchoolServiceTest
 		List<PurchaseDet> purchasesIn = schoolService.fetchPurDetForOrders(ordersIn);
 //				Set<PurchaseDet> purchasesIn = ordersIn.stream().map(o -> o.getOrderItem()).flatMap(List::stream).map(oi -> oi.getPurchaseDet()).flatMap(Set::stream).collect(toSet());
 
-		schoolService.deleteSchool(sc, ordersIn, bills, returns, payments, purchasesIn);
+		schoolService.deleteSchool(sc, bills, returns, payments, ordersIn, purchasesIn);
 	}
 
 	@Test

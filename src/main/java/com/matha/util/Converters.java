@@ -2,11 +2,8 @@ package com.matha.util;
 
 import static com.matha.util.UtilConstants.DATE_FORMAT;
 
-import java.sql.Time;
-import java.sql.Timestamp;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
-import java.time.LocalTime;
 import java.time.format.DateTimeFormatter;
 
 import com.matha.domain.*;
@@ -121,16 +118,6 @@ public class Converters
 			}
 		};
 		return c;
-	}
-
-	public static Timestamp convertLocalDate(LocalDate localDate)
-	{
-		return Timestamp.valueOf(LocalDateTime.of(localDate, LocalTime.MIN));
-	}
-
-	public static LocalDate convertTimestamp(Timestamp timestamp)
-	{
-		return timestamp.toLocalDateTime().toLocalDate();
 	}
 
 	public static StringConverter<LocalDate> getLocalDateConverter()

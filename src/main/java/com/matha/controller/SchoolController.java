@@ -1,24 +1,9 @@
 package com.matha.controller;
 
-import static com.matha.util.UtilConstants.*;
-import static com.matha.util.Utils.showConfirmation;
-import static java.util.stream.Collectors.toSet;
-import static org.apache.commons.lang3.StringUtils.isBlank;
-
-import java.io.IOException;
-import java.util.*;
-
 import com.matha.domain.*;
-import org.apache.logging.log4j.LogManager;
-import org.apache.logging.log4j.Logger;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.beans.factory.annotation.Value;
-import org.springframework.stereotype.Controller;
-
 import com.matha.service.SchoolService;
 import com.matha.util.Converters;
 import com.matha.util.LoadUtils;
-
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.event.ActionEvent;
@@ -28,18 +13,27 @@ import javafx.fxml.FXMLLoader;
 import javafx.scene.Node;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
-import javafx.scene.control.Alert;
+import javafx.scene.control.*;
 import javafx.scene.control.Alert.AlertType;
-import javafx.scene.control.ButtonType;
-import javafx.scene.control.ChoiceBox;
-import javafx.scene.control.SplitPane;
-import javafx.scene.control.TableView;
-import javafx.scene.control.TextField;
 import javafx.scene.input.KeyEvent;
 import javafx.scene.input.MouseButton;
 import javafx.scene.input.MouseEvent;
 import javafx.stage.Stage;
-import javafx.stage.WindowEvent;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
+import org.springframework.stereotype.Controller;
+
+import java.io.IOException;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Optional;
+import java.util.Set;
+
+import static com.matha.util.UtilConstants.*;
+import static com.matha.util.Utils.showConfirmation;
+import static java.util.stream.Collectors.toList;
 
 @Controller
 public class SchoolController
@@ -241,22 +235,27 @@ public class SchoolController
 	void deleteSchool(ActionEvent event)
 	{
 
-		School selectedOrder = tableView.getSelectionModel().getSelectedItem();
+		School school = tableView.getSelectionModel().getSelectedItem();
 		Alert alert = new Alert(AlertType.CONFIRMATION);
 		alert.setTitle("Delete Order Confirmation");
-		alert.setHeaderText("Are you sure you want to delete the school: " + selectedOrder.getName() + NEW_LINE + selectedOrder.getAddress1());
+		alert.setHeaderText("Are you sure you want to delete the school: " + school.getName() + NEW_LINE + school.getAddress1());
 		alert.setContentText("Click Ok to Delete");
 
 		Optional<ButtonType> result = alert.showAndWait();
 		if (result.get() == ButtonType.OK)
 		{
-			List<Sales> bills = srvc.fetchBills(selectedOrder);
-			List<SchoolReturn> returns = srvc.fetchReturnsForSchool(selectedOrder);
-			List<SchoolPayment> payments = srvc.fetchPayments(selectedOrder);
+			List<Sales> billsAll = srvc.fetchBills(school);
+			List<Sales> bills = billsAll.stream().filter(ret -> ret.getStatusInd() != DELETED_IND).collect(toList());
 
-			List<Order> ordersIn = srvc.fetchOrderForSchool(selectedOrder);
-			List<PurchaseDet> purchasesIn = srvc.fetchPurDetForOrders(ordersIn);
-//			Set<PurchaseDet> purchasesIn = ordersIn.stream().map(o -> o.getOrderItem()).flatMap(List::stream).map(oi -> oi.getPurchaseDet()).flatMap(Set::stream).collect(toSet());
+			List<SchoolReturn> returnsAll = srvc.fetchReturnsForSchool(school);
+			List<SchoolReturn> returns = returnsAll.stream().filter(ret -> ret.getStatusInd() != DELETED_IND).collect(toList());
+
+			List<SchoolPayment> paymentsAll = srvc.fetchPayments(school);
+			List<SchoolPayment> payments = paymentsAll.stream().filter(ret -> ret.getStatusInd() != DELETED_IND).collect(toList());
+
+			List<Order> ordersIn = srvc.fetchOrderForSchool(school);
+			List<PurchaseDet> purchasesAll = srvc.fetchPurDetForOrders(ordersIn);
+			List<PurchaseDet> purchasesIn = purchasesAll.stream().filter(pur -> pur.getPurchase().getStatusInd() != DELETED_IND).collect(toList());
 
 			if((bills != null && !bills.isEmpty()) ||
 					(returns != null && !returns.isEmpty()) ||
@@ -272,7 +271,7 @@ public class SchoolController
 
 			}
 
-			srvc.deleteSchool(selectedOrder, ordersIn, bills, returns, payments, purchasesIn);
+			srvc.deleteSchool(school, billsAll, returnsAll, paymentsAll, ordersIn, purchasesAll);
 			initData();
 			nameSearch(null);
 		}

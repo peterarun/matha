@@ -16,8 +16,8 @@ import com.matha.domain.Purchase;
 @Repository
 public interface PurchaseRepository extends JpaRepository<Purchase, String> {
 
-//	@Query("select sales from Purchase sales where sales.salesTxn.publisher = ?1")
-	Page<Purchase> findAllByPublisher(Publisher pub, Pageable pageable);
+	@Query("select sales from Purchase sales where sales.salesTxn.publisher = ?1 and (sales.statusInd is null or sales.statusInd <> -2)")
+	Page<Purchase> findAllActiveByPublisher(Publisher pub, Pageable pageable);
 
 	Page<Purchase> findByInvoiceNoLike(String searchStr, Pageable pageable);
 

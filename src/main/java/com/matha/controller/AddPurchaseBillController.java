@@ -3,6 +3,7 @@ package com.matha.controller;
 import com.matha.domain.*;
 import com.matha.service.SchoolService;
 import javafx.beans.binding.Bindings;
+import javafx.beans.property.ReadOnlyStringWrapper;
 import javafx.beans.value.ChangeListener;
 import javafx.beans.value.ObservableValue;
 import javafx.collections.FXCollections;
@@ -24,15 +25,12 @@ import org.springframework.context.annotation.Scope;
 import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.stereotype.Component;
 
-import java.sql.Timestamp;
 import java.time.LocalDate;
-import java.time.LocalDateTime;
 import java.util.*;
 import java.util.concurrent.atomic.AtomicInteger;
 import java.util.stream.Collector;
 import java.util.stream.Collectors;
 
-import static com.matha.util.Converters.convertLocalDate;
 import static com.matha.util.UtilConstants.*;
 import static com.matha.util.Utils.*;
 import static java.util.Comparator.comparing;
@@ -89,6 +87,9 @@ public class AddPurchaseBillController
 
 	@FXML
 	private TableView<PurchaseDet> addedBooks;
+
+	@FXML
+	private TableColumn<PurchaseDet, String> qtyColumn;
 
 	@FXML
 	private TableColumn<PurchaseDet, String> priceColumn;
@@ -149,29 +150,15 @@ public class AddPurchaseBillController
 	{
 		this.invoiceDate.setConverter(DATE_CONV);
 		this.addedBooks.getSelectionModel().cellSelectionEnabledProperty().set(true);
+
 		this.priceColumn.setCellFactory(TextFieldTableCell.forTableColumn());
-		this.priceColumn.setCellValueFactory(fetchPurPriceColumnFactory());
-		this.priceColumn.setOnEditCommit(new EventHandler<CellEditEvent<PurchaseDet, String>>() {
-			public void handle(CellEditEvent<PurchaseDet, String> t)
-			{
-				PurchaseDet oItem = ((PurchaseDet) t.getTableView().getItems().get(t.getTablePosition().getRow()));
-				oItem.setRate(Double.parseDouble(t.getNewValue()));
-				t.getTableView().refresh();
-				loadSubTotal();
-				calcNetAmount(discAmt.getText());
-				calculateTotalQty();
-				t.getTableView().getSelectionModel().selectBelowCell();
-				int rowId = t.getTableView().getSelectionModel().getSelectedIndex();
-				if (rowId < t.getTableView().getItems().size())
-				{
-					if(rowId > 0)
-					{
-						t.getTableView().scrollTo(rowId - 1);
-					}
-					t.getTableView().edit(rowId, t.getTablePosition().getTableColumn());
-				}
-			}
-		});
+		this.priceColumn.setCellValueFactory(p -> new ReadOnlyStringWrapper(getStringVal(p.getValue().getBookPrice())));
+		this.priceColumn.setOnEditCommit(t -> loadRateCol(t));
+
+		this.qtyColumn.setCellFactory(TextFieldTableCell.forTableColumn());
+		this.qtyColumn.setCellValueFactory(p -> new ReadOnlyStringWrapper(getStringVal(p.getValue().getQty())));
+		this.qtyColumn.setOnEditCommit(t -> loadQtyCol(t));
+
 		this.publisherDetails.setText(this.publisher.getName());
 		this.totalColumn.setCellValueFactory(cellData -> 
 			Bindings.format("%.2f", cellData.getValue().getTotalBought()));
@@ -179,6 +166,38 @@ public class AddPurchaseBillController
 		this.discAmt.textProperty().addListener((observable, oldValue, newValue) -> {		    
 		    updateNetAmt();
 		});
+	}
+
+	private void loadRateCol(CellEditEvent<PurchaseDet, String> t)
+	{
+		PurchaseDet oItem = ((PurchaseDet) t.getTableView().getItems().get(t.getTablePosition().getRow()));
+		oItem.setRate(Double.parseDouble(t.getNewValue()));
+		reCalculate(t);
+	}
+
+	private void loadQtyCol(CellEditEvent<PurchaseDet, String> t)
+	{
+		PurchaseDet oItem = ((PurchaseDet) t.getTableView().getItems().get(t.getTablePosition().getRow()));
+		oItem.setQty(Integer.parseInt(t.getNewValue()));
+		reCalculate(t);
+	}
+
+	private void reCalculate(CellEditEvent<PurchaseDet, String> t)
+	{
+		t.getTableView().refresh();
+		loadSubTotal();
+		calcNetAmount(discAmt.getText());
+		calculateTotalQty();
+		t.getTableView().getSelectionModel().selectBelowCell();
+		int rowId = t.getTableView().getSelectionModel().getSelectedIndex();
+		if (rowId < t.getTableView().getItems().size())
+		{
+			if(rowId > 0)
+			{
+				t.getTableView().scrollTo(rowId - 1);
+			}
+			t.getTableView().edit(rowId, t.getTablePosition().getTableColumn());
+		}
 	}
 
 	private void prepareEditData(Purchase purchaseIn)
@@ -466,7 +485,7 @@ public class AddPurchaseBillController
 			if (purchaseIn == null)
 			{
 				purchaseIn = new Purchase();
-				purchaseIn.setPurchaseDate(Timestamp.valueOf(LocalDateTime.now()));
+				purchaseIn.setPurchaseDate(LocalDate.now());
 				purchaseIn.setFinancialYear(calcFinYear(purchaseIn.getTxnDate()));
 //				purchaseIn.setSerialNo(this.schoolService.fetchNextPurchaseSerialNum(purchaseIn.getFinancialYear()));
 				purchaseIn.setPublisher(this.publisher);
@@ -559,7 +578,7 @@ public class AddPurchaseBillController
 	{
 		txn.setAmount(getDoubleVal(this.netAmt));
 		txn.setNote(this.note.getText());
-		txn.setTxnDate(convertLocalDate(this.invoiceDate.getValue()));
+		txn.setTxnDate(this.invoiceDate.getValue());
 	}
 
 	@FXML

@@ -13,7 +13,7 @@ import com.matha.domain.PurchasePayment;
 @Repository
 public interface PurchasePayRepository extends JpaRepository<PurchasePayment, Integer>
 {
-	@Query("select payment from PurchasePayment payment where payment.salesTxn.publisher = ?1")
-	public List<PurchasePayment> findAllByPublisher(Publisher school, Sort dateSort);
+	@Query("select payment from PurchasePayment payment where payment.salesTxn.publisher = ?1 and (payment.statusInd is null or payment.statusInd <> -2)")
+	public List<PurchasePayment> findAllActiveByPublisher(Publisher school, Sort dateSort);
 
 }

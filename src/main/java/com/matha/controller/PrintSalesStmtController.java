@@ -114,7 +114,7 @@ public class PrintSalesStmtController
 			hm.put("toDate", DATE_CONV.toString(toDateVal));
 			hm.put("datedSchoolPaymentModes", datedSchoolPaymentModes);
 
-			JasperReport compiledFile = JasperCompileManager.compileReport(jasperStream);
+//			JasperReport compiledFile = JasperCompileManager.compileReport(jasperStream);
 			LOGGER.info("Total Size: " + tableDataIn.size());
 			for (int i = 0; i <= tableDataIn.size() / 38; i++)
 			{
@@ -133,11 +133,11 @@ public class PrintSalesStmtController
 	
 				if(jasperPrint == null)
 				{
-					jasperPrint = JasperFillManager.fillReport(compiledFile, hmOut, new JRBeanCollectionDataSource(tableData));
+					jasperPrint = JasperFillManager.fillReport(jasperStream, hmOut, new JRBeanCollectionDataSource(tableData));
 				}
 				else
 				{
-					JasperPrint jasperPrintNxt = JasperFillManager.fillReport(compiledFile, hmOut, new JRBeanCollectionDataSource(tableData));
+					JasperPrint jasperPrintNxt = JasperFillManager.fillReport(jasperStream, hmOut, new JRBeanCollectionDataSource(tableData));
 					jasperPrint.addPage(jasperPrintNxt.getPages().get(0));
 				}				
 			}
@@ -175,7 +175,7 @@ public class PrintSalesStmtController
 			hm.put("fromDate", fromDateVal);
 			hm.put("toDate", toDateVal);
 
-			JasperReport compiledFile = JasperCompileManager.compileReport(jasperStream);
+//			JasperReport compiledFile = JasperCompileManager.compileReport(jasperStream);
 			LOGGER.info("Total Size: " + tableDataIn.size());
 			for (int i = 0; i <= tableDataIn.size() / 38; i++)
 			{
@@ -194,11 +194,11 @@ public class PrintSalesStmtController
 
 				if(jasperPrint == null)
 				{
-					jasperPrint = JasperFillManager.fillReport(compiledFile, hmOut, new JRBeanCollectionDataSource(tableData));
+					jasperPrint = JasperFillManager.fillReport(jasperStream, hmOut, new JRBeanCollectionDataSource(tableData));
 				}
 				else
 				{
-					JasperPrint jasperPrintNxt = JasperFillManager.fillReport(compiledFile, hmOut, new JRBeanCollectionDataSource(tableData));
+					JasperPrint jasperPrintNxt = JasperFillManager.fillReport(jasperStream, hmOut, new JRBeanCollectionDataSource(tableData));
 					jasperPrint.addPage(jasperPrintNxt.getPages().get(0));
 				}
 			}

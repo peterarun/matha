@@ -101,14 +101,14 @@ public class PrintOrderController
 			hm.put("agencyAddress2", agencyAddress2);
 			hm.put("partyAddress", school.addressText());
 			hm.put("partyPhone", school.getPhone1());
-			hm.put("txnDate", DATE_TIME_CONV.toString(orderIn.getOrderDate().toLocalDateTime()));
-			hm.put("deliveryDate", DATE_TIME_CONV.toString(orderIn.getDeliveryDate().toLocalDateTime()));
+			hm.put("txnDate", DATE_CONV.toString(orderIn.getOrderDate()));
+			hm.put("deliveryDate", DATE_CONV.toString(orderIn.getDeliveryDate()));
 			hm.put("desLocation", orderIn.getDesLocation());
 			hm.put("orderNumber", orderIn.getSerialNo());
 			
-			JasperReport compiledFile = JasperCompileManager.compileReport(jasperStream);
+//			JasperReport compiledFile = JasperCompileManager.compileReport(jasperStream);
 
-			jasperPrint = JasperFillManager.fillReport(compiledFile, hm, new JRBeanCollectionDataSource(tableData));
+			jasperPrint = JasperFillManager.fillReport(jasperStream, hm, new JRBeanCollectionDataSource(tableData));
 		}
 		catch (JRException e)
 		{
