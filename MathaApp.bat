@@ -1,1 +1,1 @@
-start "" javaw -jar sales-0.0.1-SNAPSHOT.jar 2>&1 > javalog.log 
+java -jar -Dspring.profiles.active=vazhakulam -jar sales-0.0.1-SNAPSHOT.jar 2>&1 > javalog.log
