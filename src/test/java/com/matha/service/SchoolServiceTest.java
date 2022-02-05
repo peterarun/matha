@@ -562,6 +562,7 @@ public class SchoolServiceTest
 
 	@Test
 	public void fetchBillsForSearchStr() {
+		this.schoolService.fetchBillsForSearchStr("", 1, 10);
 	}
 
 	@Test
@@ -623,4 +624,104 @@ public class SchoolServiceTest
 	@Test
 	public void fetchSaleTxnsBetween() {
 	}
+
+    @Test
+    public void fetchBooksByNum()
+    {
+    }
+
+    @Test
+    public void updateOrderDataOld()
+    {
+    }
+
+    @Test
+    public void deleteSchool()
+    {
+    }
+
+    @Test
+    public void fetchPurDetForOrders()
+    {
+    }
+
+    @Test
+    public void fetchPurDetForOrderItems()
+    {
+    }
+
+    @Test
+    public void fetchSalesDetForOrderItems()
+    {
+    }
+
+    @Test
+    public void fetchActivePurchasesForPublisher()
+    {
+    }
+
+    @Test
+    public void fetchPurchaseDet()
+    {
+    }
+
+    @Test
+    public void fetchActivePurchaseReturns()
+    {
+    }
+
+    @Test
+    public void fetchPurchaseReturn()
+    {
+    }
+
+    @Test
+    public void fetchActivePurchasePayments()
+    {
+    }
+
+    @Test
+    public void fetchNextTxnVal()
+    {
+    }
+
+    @Test
+    public void fetchPrevTxn()
+    {
+    }
+
+    @Test
+    public void fetchNextTxn()
+    {
+    }
+
+    @Test
+    public void testFetchPrevTxn()
+    {
+    }
+
+    @Test
+    public void testFetchNextTxn()
+    {
+    }
+
+    @Test
+    public void fetchCashHeads()
+    {
+    }
+
+    @Test
+    public void testFetchBillsForSearchStr()
+    {
+    }
+
+    @Test
+    public void fetchAllBills()
+    {
+    }
+
+    @Test
+    public void deleteBillPerm()
+    {
+    }
 }

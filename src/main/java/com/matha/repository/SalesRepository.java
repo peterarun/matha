@@ -43,7 +43,8 @@ public interface SalesRepository extends JpaRepository<Sales, String> {
 
 	public List<Sales> findAllBySalesTxnIsNull();
 
-	Page<Sales> findAllBySerialNoLike(String s, PageRequest pageable);
+	@Query(value = "select sales from Sales sales where cast(sales.serialNo as string) like ?1%",nativeQuery = false)
+	Page<Sales> fetchBySerialNoStartingWith(String s, Pageable pageable);
 
 //	Sales findById(String salesId);
 }

@@ -23,7 +23,10 @@ import javafx.scene.web.WebView;
 import javafx.stage.FileChooser;
 import javafx.stage.Stage;
 import javafx.stage.WindowEvent;
-import net.sf.jasperreports.engine.*;
+import net.sf.jasperreports.engine.JRException;
+import net.sf.jasperreports.engine.JasperExportManager;
+import net.sf.jasperreports.engine.JasperFillManager;
+import net.sf.jasperreports.engine.JasperPrint;
 import net.sf.jasperreports.engine.data.JRBeanCollectionDataSource;
 import net.sf.jasperreports.engine.export.HtmlExporter;
 import net.sf.jasperreports.engine.export.ooxml.JRDocxExporter;
@@ -73,6 +76,9 @@ public class PurchaseController
 
 	@Value("${agencyName}")
 	private String agencyName;
+
+	@Autowired
+	private Address purchaseProps;
 
 	@Autowired
 	private SchoolService schoolService;
@@ -380,7 +386,8 @@ public class PurchaseController
 			Parent addOrderRoot = createOrderLoader.load();
 			PrintPurchaseBillController ctrl = createOrderLoader.getController();
 			Purchase purchase = purchaseData.getSelectionModel().getSelectedItem();
-			Address salesAddr = schoolService.fetchAddress("Purchase");
+//			Address salesAddr = schoolService.fetchAddress("Purchase");
+			Address salesAddr = purchaseProps;
 			InputStream iStream = getClass().getResourceAsStream(invoiceJrxml);
 			JasperPrint jasperPrint = utilityService.prepareJasperPrint(purchase.getPublisher(), purchase, salesAddr, iStream);
 			ctrl.initData(jasperPrint);
@@ -559,7 +566,8 @@ public class PurchaseController
 
 			InputStream iStream = getClass().getResourceAsStream(puReturnJrxml);
 
-			Address salesAddr = schoolService.fetchAddress("Purchase");
+//			Address salesAddr = schoolService.fetchAddress("Purchase");
+			Address salesAddr = purchaseProps;
 			JasperPrint jasperPrint = utilityService.prepareJasperPrint(purchase.getSalesTxn().getPublisher(), purchase, salesAddr, iStream);
 
 			PrintPurchaseReturnController ctrl = createOrderLoader.getController();

@@ -7,7 +7,6 @@ import java.util.stream.Stream;
 
 import javax.persistence.EntityManager;
 import javax.persistence.PersistenceContext;
-import javax.persistence.PersistenceContextType;
 import javax.transaction.Transactional;
 
 import com.matha.domain.*;
@@ -1488,7 +1487,7 @@ public class SchoolService
 //		int page = 0;
 //		int size = 10;
 		PageRequest pageable = PageRequest.of(page, size, Direction.DESC, "txnDate");
-		return salesRepository.findAllBySerialNoLike(searchStr + "%", pageable);
+		return salesRepository.fetchBySerialNoStartingWith(searchStr, pageable);
 	}
 
 	@Transactional
