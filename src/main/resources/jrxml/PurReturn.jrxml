@@ -142,7 +142,7 @@
 				<textElement textAlignment="Center" verticalAlignment="Middle">
 					<font size="12" isBold="true" isUnderline="false"/>
 				</textElement>
-				<text><![CDATA[CREDIT NOTE]]></text>
+				<text><![CDATA[PURCHASE RETURN]]></text>
 			</staticText>
 			<frame>
 				<reportElement x="0" y="115" width="519" height="70" uuid="95e504c8-5434-40ca-a17e-6dbc7d71e0f5"/>

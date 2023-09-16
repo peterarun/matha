@@ -26,6 +26,14 @@
 		<jasperreports.version>6.5.1</jasperreports.version>
 	</properties>
 
+	<repositories>
+	  <repository>
+		<id>jasper-3rd-party</id>
+		<name>Jasper3rdParty</name>
+		<url>https://jaspersoft.jfrog.io/jaspersoft/third-party-ce-artifacts/</url>
+	  </repository>
+	</repositories>
+
 	<dependencies>
 		<dependency>
 			<groupId>org.springframework.boot</groupId>
@@ -98,7 +106,18 @@
 		</dependency>
 	</dependencies>
 
-	<build>    	
+	<pluginRepositories>
+		<pluginRepository>
+			<id>jasper-3rd-party</id>
+			<name>Jasper3rdParty</name>
+			<url>https://jaspersoft.jfrog.io/jaspersoft/third-party-ce-artifacts/</url>
+			<releases>
+				<enabled>false</enabled>
+			</releases>
+		</pluginRepository>
+	</pluginRepositories>
+
+	<build>
 		<plugins>
 			<plugin>
 				<groupId>org.springframework.boot</groupId>
