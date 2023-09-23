@@ -5,6 +5,7 @@ import java.util.Date;
 
 import javax.persistence.*;
 
+import org.apache.commons.lang3.builder.ToStringBuilder;
 import org.springframework.data.jpa.domain.support.AuditingEntityListener;
 
 import static com.matha.util.UtilConstants.*;
@@ -309,4 +310,22 @@ public class PurchaseTransaction
     public void onPreUpdate() {
         setLastModifiedDate(new Date());
     }
+
+	@Override
+	public String toString()
+	{
+		return new ToStringBuilder(this)
+				.append("id", id)
+				.append("txnDate", txnDate)
+				.append("amount", amount)
+				.append("publisher", publisher == null ? null : publisher.getName())
+				.append("purchase", purchase == null ? null: purchase.getId())
+				.append("payment", payment == null ? null: payment.getId() + "::" + payment.getReceiptNum())
+				.append("purchaseReturn", purchaseReturn == null ? null : purchaseReturn.getId())
+				.append("balance", balance)
+				.append("note", note)
+				.append("prevTxn", prevTxn == null ? null : prevTxn.getId())
+				.append("nextTxn", nextTxn == null ? null : nextTxn.getId())
+				.toString();
+	}
 }

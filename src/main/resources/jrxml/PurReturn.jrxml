@@ -122,14 +122,14 @@
 				<textElement textAlignment="Center" verticalAlignment="Top">
 					<font size="12" isBold="false"/>
 				</textElement>
-				<textFieldExpression><![CDATA[$P{publisherDetails}]]></textFieldExpression>
+				<textFieldExpression><![CDATA[$P{partyAddress}]]></textFieldExpression>
 			</textField>
 			<textField>
 				<reportElement x="0" y="0" width="519" height="30" uuid="5abb62ef-9181-4276-964a-d8c491c0804b"/>
 				<textElement textAlignment="Center" verticalAlignment="Bottom">
 					<font size="22" isBold="true"/>
 				</textElement>
-				<textFieldExpression><![CDATA[$P{publisherName}]]></textFieldExpression>
+				<textFieldExpression><![CDATA[$P{partyName}]]></textFieldExpression>
 			</textField>
 			<staticText>
 				<reportElement mode="Opaque" x="150" y="95" width="200" height="20" backcolor="#F2EDED" uuid="ac062728-e1d8-4a13-b092-b40cea3701ad"/>
@@ -161,7 +161,7 @@
 						<rightPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
 					</box>
 					<textElement verticalAlignment="Top"/>
-					<textFieldExpression><![CDATA[$P{partyAddress}]]></textFieldExpression>
+					<textFieldExpression><![CDATA[$P{publisherDetails}]]></textFieldExpression>
 				</textField>
 				<textField>
 					<reportElement x="393" y="30" width="126" height="15" uuid="048f987b-cc64-4b99-aa28-d3f50ea9eec9"/>
@@ -299,7 +299,7 @@
 						<rightPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
 					</box>
 					<textElement verticalAlignment="Top"/>
-					<textFieldExpression><![CDATA[$P{partyName}]]></textFieldExpression>
+					<textFieldExpression><![CDATA[$P{publisherName}]]></textFieldExpression>
 				</textField>
 			</frame>
 		</band>

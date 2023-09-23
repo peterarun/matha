@@ -14,6 +14,7 @@ import com.matha.repository.*;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.hibernate.Hibernate;
+import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.data.domain.Page;
@@ -90,6 +91,9 @@ public class SchoolService
 	private SalesTxnRepository salesTxnRepository;
 
 	@Autowired
+	private DeletedSalesTxnRepository deletedSalesTxnRepository;
+
+	@Autowired
 	private SchoolPayRepository schoolPayRepository;
 
 	@Autowired
@@ -97,6 +101,9 @@ public class SchoolService
 
 	@Autowired
 	private PurchaseTxnRepository purchaseTxnRepository;
+
+	@Autowired
+	private DeletedPurchaseTxnRepository deletedPurchaseTxnRepository;
 
 	@Autowired
 	private PurchasePayRepository purchasePayRepository;
@@ -416,6 +423,7 @@ public class SchoolService
 
 	private PurchaseTransaction updateBalance(PurchaseTransaction txn)
 	{
+		LOGGER.warn("Updating Balance for {}", txn);
 		if (txn == null)
 		{
 			LOGGER.info("Null PTxn passed in for updating balance");
@@ -441,7 +449,7 @@ public class SchoolService
 			currTxn = nextTxn;
 			nextTxn = currTxn.getNextTxn();
 		}
-
+		LOGGER.warn("Balance update completed");
 		return txn;
 	}
 
@@ -720,6 +728,7 @@ public class SchoolService
 
 	private void deletePurchaseTxn(PurchaseTransaction txn)
 	{
+		LOGGER.warn("Deleting Purchase Transaction: {}", txn);
 		if(txn == null)
 		{
 			return;
@@ -729,8 +738,16 @@ public class SchoolService
 		PurchaseTransaction nextTxn = this.fetchNextTxn(txn);
 		PurchaseTransaction updateFromTxn = null;
 
+		DeletedPurchaseTransaction deletedTxn = new DeletedPurchaseTransaction();
+		BeanUtils.copyProperties(txn, deletedTxn);
+		deletedTxn.setPrevTxn(prevTxn == null ? null : prevTxn.getId());
+		deletedTxn.setNextTxn(nextTxn == null ? null : nextTxn.getId());
+		deletedPurchaseTxnRepository.save(deletedTxn);
+
 		purchaseTxnRepository.delete(txn);
 		purchaseTxnRepository.flush();
+		LOGGER.warn("Purchase Transaction delete completed; Updating previous/next references");
+
 		if (prevTxn != null)
 		{
 			updateFromTxn = prevTxn;
@@ -747,6 +764,7 @@ public class SchoolService
 			nextTxn.setPrevTxn(prevTxn);
 			nextTxn = purchaseTxnRepository.save(nextTxn);
 		}
+		LOGGER.warn("previous/next reference update completed; Updating balance");
 		updateBalance(updateFromTxn);
 	}
 
@@ -887,6 +905,7 @@ public class SchoolService
 	@Transactional
 	public void deletePurchase(Purchase pur)
 	{
+		LOGGER.warn("Deleting Purchase: {}" + pur);
 		double netAmt = pur.getNetAmount();
 		PurchaseTransaction txn = pur.getSalesTxn();
 
@@ -895,9 +914,11 @@ public class SchoolService
 		pur.setDeletedAmt(netAmt);
 		pur.setStatusInd(DELETED_IND);
 		purchaseRepoitory.save(pur);
+		LOGGER.warn("Deleted purchase record; Deleting the associated transaction");
 
+		// Deleting the transaction
 		deletePurchaseTxn(txn);
-
+		LOGGER.warn("Purchase delete completed.");
 	}
 
 	@Transactional
@@ -969,11 +990,7 @@ public class SchoolService
 	@Transactional
 	public void deletePurchaseReturn(PurchaseReturn pur)
 	{
-//		PurchaseTransaction txn = purchase.getSalesTxn();
-//		deletePurchaseTxn(txn);
-//
-//		purchase.setStatusInd(Integer.valueOf(-2));
-//		purchaseReturnRepository.delete(purchase);
+		LOGGER.warn("Deleting Purchase Return: {}" + pur);
 
 		double netAmt = pur.getAmount();
 		PurchaseTransaction txn = pur.getSalesTxn();
@@ -983,7 +1000,11 @@ public class SchoolService
 		pur.setStatusInd(DELETED_IND);
 		purchaseReturnRepository.save(pur);
 
+		LOGGER.warn("Deleted purchase return record; Deleting the associated transaction");
+
 		deletePurchaseTxn(txn);
+
+		LOGGER.warn("Purchase return delete completed.");
 	}
 
 	public List<PurchasePayment> fetchActivePurchasePayments(Publisher pub)
@@ -1017,9 +1038,7 @@ public class SchoolService
 	@Transactional
 	public void deletePurchasePayment(PurchasePayment pur)
 	{
-//		PurchaseTransaction txn = pur.getSalesTxn();
-//		deletePurchaseTxn(txn);
-//		purchasePayRepository.delete(pur);
+		LOGGER.warn("Deleting Purchase payment: {}" + pur);
 
 		double netAmt = pur.getAmount();
 		PurchaseTransaction txn = pur.getSalesTxn();
@@ -1029,13 +1048,16 @@ public class SchoolService
 		pur.setStatusInd(DELETED_IND);
 		purchasePayRepository.save(pur);
 
+		LOGGER.warn("Deleted purchase payment record; Deleting the associated transaction");
+
 		deletePurchaseTxn(txn);
+
+		LOGGER.warn("Purchase payment delete completed.");
 	}
 
 	public void saveCashBook(CashBook item)
 	{
 		cashBookRepository.save(item);
-
 	}
 
 	public Integer fetchNextTxnVal()
@@ -1214,6 +1236,7 @@ public class SchoolService
 
 	private SalesTransaction updateBalance(SalesTransaction txn)
 	{
+		LOGGER.warn("Updating Balance for txn: {}", txn);
 		if (txn == null)
 		{
 			LOGGER.info("Null STxn passed in for updating balance");
@@ -1239,6 +1262,7 @@ public class SchoolService
 			currTxn = nextTxn;
 			nextTxn = this.fetchNextTxn(currTxn);
 		}
+		LOGGER.warn("Balance updated");
 
 		return txn;
 	}
@@ -1283,19 +1307,28 @@ public class SchoolService
 
 	private void deleteSalesTxn(SalesTransaction txn)
 	{
+		LOGGER.warn("Deleting Transaction: {}", txn);
 		if(txn  == null)
 		{
 			return;
 		}
-		LOGGER.info("Deleting Transaction: " + txn.getId() + " for customer: " + txn.getSchool().getId());
+
 		LOGGER.info("Type: " + txn.getType() + " InvoiceNum: " + txn.getInvoiceNum());
 
 		SalesTransaction prevTxn = this.fetchPrevTxn(txn);
 		SalesTransaction nextTxn = this.fetchNextTxn(txn);
 		SalesTransaction updateFromTxn = null;
 
+		DeletedSalesTransaction deletedTxn = new DeletedSalesTransaction();
+		BeanUtils.copyProperties(txn, deletedTxn);
+		deletedTxn.setPrevTxn(prevTxn == null ? null : prevTxn.getId());
+		deletedTxn.setNextTxn(nextTxn == null ? null : nextTxn.getId());
+		deletedSalesTxnRepository.save(deletedTxn);
+
 		salesTxnRepository.delete(txn);
 		salesTxnRepository.flush();
+		LOGGER.warn("Deleted Transaction; Updating Previous/Next references");
+
 		if (prevTxn != null)
 		{
 			updateFromTxn = prevTxn;
@@ -1312,6 +1345,8 @@ public class SchoolService
 			nextTxn.setPrevTxn(prevTxn);
 			nextTxn = salesTxnRepository.save(nextTxn);
 		}
+
+		LOGGER.warn("Updated references; Updating balance");
 		updateBalance(updateFromTxn);
 	}
 //

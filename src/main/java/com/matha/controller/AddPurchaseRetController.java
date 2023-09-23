@@ -298,10 +298,10 @@ public class AddPurchaseRetController
 		}
 		else
 		{
-			valid = isFilled(this.addedBooks.getItems());
-			if(!valid)
+			if(!isFilled(this.addedBooks.getItems()))
 			{
 				errorMsg.append("Please provide quantity and rate for all records");
+				valid = false;
 			}
 		}
 
@@ -365,11 +365,6 @@ public class AddPurchaseRetController
 
 			schoolService.savePurchaseReturn(returnIn, salesTxn, orderItems);
 			((Stage) cancelBtn.getScene().getWindow()).close();
-		}
-		catch (DataIntegrityViolationException e)
-		{
-			LOGGER.error("Error...", e);
-			showErrorAlert("Error in Saving Purchase Bill", "Please correct the following errors", "Duplicate Entry Found");
 		}
 		catch (Exception e)
 		{

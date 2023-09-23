@@ -1,20 +1,19 @@
 package com.matha.domain;
 
-import static com.matha.util.UtilConstants.*;
-import static com.matha.util.Utils.getStringVal;
-
-import java.time.LocalDate;
-import java.util.Date;
-
-import javax.persistence.*;
-
 import org.apache.commons.lang3.builder.ToStringBuilder;
 import org.springframework.data.jpa.domain.support.AuditingEntityListener;
 
+import javax.persistence.*;
+import java.time.LocalDate;
+import java.util.Date;
+
+import static com.matha.util.UtilConstants.*;
+import static com.matha.util.Utils.getStringVal;
+
 @Entity
-@Table(name = "STransactions")
+@Table(name = "DeletedSTransactions")
 @EntityListeners(AuditingEntityListener.class)
-public class SalesTransaction
+public class DeletedSalesTransaction
 {
 
 	@Id
@@ -60,122 +59,11 @@ public class SalesTransaction
 	@Column(name = "Note")
 	private String note;
 
-	@OneToOne(fetch = FetchType.LAZY)
-	@JoinColumn(name = "PrevTxnId")
-	private SalesTransaction prevTxn;
+	@Column(name = "PrevTxnId")
+	private Integer prevTxn;
 
-	@OneToOne(fetch = FetchType.LAZY)
-	@JoinColumn(name = "NextTxnId")
-	private SalesTransaction nextTxn;
-
-	public String getSchoolName()
-	{
-		if(school != null)
-		{
-			return school.getName();
-		}
-		else
-		{
-			return EMPTY_STR;
-		}
-	}
-
-	public String getType()
-	{
-		String type = "";
-		if (sale != null)
-			type = SALE_STR;
-		else if (payment != null)
-			type = PAYMENT_STR;
-		else if (salesReturn != null)
-			type = CREDIT_NOTE_STR;
-
-		return type;
-	}
-
-	public Integer getMultiplier()
-	{
-		Integer multiplier = null;
-		if (sale != null)
-		{
-			multiplier = 1;
-		}
-		else if (payment != null || salesReturn != null)
-		{
-			multiplier = -1;
-		}
-		return multiplier;
-	}
-
-	public Double getNetForBalance()
-	{
-		return this.amount * getMultiplier();
-	}
-	
-	public String getInvoiceNum()
-	{
-		if(this.sale != null)
-		{
-			return getStringVal(this.sale.getSerialNo());
-		}
-		else if(this.payment != null)
-		{
-			return this.payment.getReceiptNum();
-		}
-		else if(this.salesReturn != null)
-		{
-			return this.salesReturn.getCreditNoteNum();
-		}
-		else
-		{
-			return EMPTY_STR;
-		}
-	}
-
-	public String getDependentId()
-	{
-		if(this.sale != null)
-		{
-			return this.sale.getId();
-		}
-		else if(this.payment != null)
-		{
-			return String.valueOf(this.payment.getId());
-		}
-		else if(this.salesReturn != null)
-		{
-			return this.salesReturn.getId();
-		}
-		else
-		{
-			return EMPTY_STR;
-		}
-	}
-
-	public String getRefNum()
-	{
-		if(this.payment != null && this.payment.getReferenceNum() != null)
-		{
-			return this.payment.getReferenceNum();
-		}
-		else
-		{
-			return EMPTY_STR;
-		}
-	}
-
-
-	public String getMode()
-	{
-		if(this.payment != null)
-		{
-			return this.payment.getPaymentMode();
-		}
-		else
-		{
-			return EMPTY_STR;
-		}
-	}
+	@Column(name = "NextTxnId")
+	private Integer nextTxn;
 
 	public String getParticulars()
 	{
@@ -297,22 +185,22 @@ public class SalesTransaction
 		this.balance = balance;
 	}
 
-	public SalesTransaction getPrevTxn()
+	public Integer getPrevTxn()
 	{
 		return prevTxn;
 	}
 
-	public void setPrevTxn(SalesTransaction prevTxn)
+	public void setPrevTxn(Integer prevTxn)
 	{
 		this.prevTxn = prevTxn;
 	}
 
-	public SalesTransaction getNextTxn()
+	public Integer getNextTxn()
 	{
 		return nextTxn;
 	}
 
-	public void setNextTxn(SalesTransaction nextTxn)
+	public void setNextTxn(Integer nextTxn)
 	{
 		this.nextTxn = nextTxn;
 	}
@@ -342,8 +230,8 @@ public class SalesTransaction
 				.append("salesReturn", salesReturn == null ? null : salesReturn.getId() + "::" + salesReturn.getCreditNoteNum())
 				.append("balance", balance)
 				.append("note", note)
-				.append("prevTxn", prevTxn == null ? null : prevTxn.getId())
-				.append("nextTxn", nextTxn == null ? null : nextTxn.getId())
+				.append("prevTxn", prevTxn)
+				.append("nextTxn", nextTxn)
 				.toString();
 	}
 }

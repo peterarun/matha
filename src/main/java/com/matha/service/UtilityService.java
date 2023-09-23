@@ -273,15 +273,17 @@ public class UtilityService
 			strBuild.append(salesAddr.getAddress3());
 			strBuild.append(HYPHEN_SPC_SIGN);
 			strBuild.append(salesAddr.getPin());
+			strBuild.append(NEW_LINE);
+			strBuild.append(salesAddr.getPhone1());
 
-			Double discAmt = purchase.getDiscAmt();
+			Double discAmt = purchase.getDiscount();
 
 			hm.put("publisherName", pub.getName());
 			hm.put("publisherDetails", pub.getInvAddress());
 			hm.put("partyName", purchasePartyName);
 			hm.put("partyAddress", strBuild.toString());
-			hm.put("partyPhone", salesAddr.getPhone1());
-			hm.put("returnNum", purchase.getId());
+			hm.put("partyPhone", pub.getPhone1());
+			hm.put("returnNum", purchase.getCreditNoteNum());
 			hm.put("txnDate", purchase.getTxnDate());
 			hm.put("total", purchase.getSubTotal());
 			hm.put("discount", discAmt);
