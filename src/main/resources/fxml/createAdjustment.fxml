@@ -1,0 +1,36 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.scene.control.cell.*?>
+<?import javafx.scene.text.*?>
+<?import java.lang.*?>
+<?import javafx.scene.control.*?>
+<?import javafx.scene.layout.*?>
+<?import javafx.scene.layout.AnchorPane?>
+<?import javafx.scene.control.cell.PropertyValueFactory?>
+
+<SplitPane dividerPositions="0.23" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" orientation="VERTICAL" prefHeight="307.0" prefWidth="358.0" xmlns="http://javafx.com/javafx/8" xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.matha.controller.AddAdjustmentController">
+  <items>
+    <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="60.0" prefWidth="398.0">
+         <children>
+            <Label layoutX="24.0" layoutY="14.0" text="Add/Edit Adjustment">
+               <font>
+                  <Font name="Tahoma" size="24.0" />
+               </font>
+            </Label>
+            <Label fx:id="schoolName" layoutX="24.0" layoutY="51.0" prefHeight="30.0" prefWidth="300.0" />
+         </children></AnchorPane>
+    <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="251.0" prefWidth="356.0">
+         <children>
+             <Label layoutX="188.0" layoutY="14.0" text="Date" />
+             <DatePicker fx:id="adjDate" layoutX="187.0" layoutY="31.0" prefHeight="25.0" prefWidth="140.0" />
+             <Label layoutX="29.0" layoutY="15.0" text="Amount" />
+             <TextField fx:id="amount" layoutX="28.0" layoutY="31.0" prefHeight="25.0" prefWidth="140.0" />
+             <Label layoutX="29.0" layoutY="66.0" text="Type" />
+             <ChoiceBox fx:id="type" layoutX="28.0" layoutY="85.0" prefHeight="25.0" prefWidth="140.0" />
+             <Label fx:id="datedStr" layoutX="25.0" layoutY="190.0" text="Dated" visible="false" />
+             <Button layoutX="29.0" layoutY="178.0" mnemonicParsing="false" onAction="#saveData" prefHeight="17.0" prefWidth="140.0" text="Save" />
+             <Button fx:id="cancelBtn" layoutX="188.0" layoutY="178.0" mnemonicParsing="false" onAction="#cancelOperation" prefHeight="25.0" prefWidth="140.0" text="Cancel" />
+             <TextField fx:id="notes" layoutX="28.0" layoutY="130.0" prefHeight="25.0" prefWidth="300.0" promptText="Notes" />
+         </children></AnchorPane>
+  </items>
+</SplitPane>

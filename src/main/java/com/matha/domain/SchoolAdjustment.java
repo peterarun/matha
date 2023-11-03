@@ -1,32 +1,25 @@
 package com.matha.domain;
 
-import java.time.LocalDate;
-
 import javax.persistence.*;
+import java.time.LocalDate;
 
 import static com.matha.util.UtilConstants.EMPTY_STR;
 import static com.matha.util.UtilConstants.STATUS_MAP;
 
 @Entity
-@Table(name = "SPayment")
-public class SchoolPayment {
+@Table(name = "SAdjustment")
+public class SchoolAdjustment {
 
 	@Id
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
 	@Column(name = "SerialId")
 	private Integer id;
 
-	@Column(name = "ReceiptNum")
-	private String receiptNum;
-
-	@Column(name = "Mode")
-	private String paymentMode;
+	@Column(name = "Type")
+	private String adjType;
 
 	@Column(name = "Dated")
-	private LocalDate dated;
-
-	@Column(name = "RefNum")
-	private String referenceNum;
+	private LocalDate adjDate;
 
 	@Column(name = "Status")
 	private Integer statusInd;
@@ -59,14 +52,6 @@ public class SchoolPayment {
 		return STATUS_MAP.get(getStatusInd());
 	}
 
-	public String getReceiptNum() {
-		return receiptNum;
-	}
-
-	public void setReceiptNum(String receiptNum) {
-		this.receiptNum = receiptNum;
-	}
-
 	public LocalDate getTxnDate()
 	{
 		return salesTxn.getTxnDate();
@@ -75,11 +60,6 @@ public class SchoolPayment {
 	public Double getAmount()
 	{
 		return salesTxn.getAmount();
-	}
-
-	public String getNote()
-	{
-		return salesTxn.getNote();
 	}
 	
 	public Integer getId() {
@@ -90,28 +70,20 @@ public class SchoolPayment {
 		this.id = id;
 	}
 
-	public String getPaymentMode() {
-		return paymentMode;
+	public String getAdjType() {
+		return adjType;
 	}
 
-	public void setPaymentMode(String paymentMode) {
-		this.paymentMode = paymentMode;
+	public void setAdjType(String adjType) {
+		this.adjType = adjType;
 	}
 
-	public LocalDate getDated() {
-		return dated;
+	public LocalDate getAdjDate() {
+		return adjDate;
 	}
 
-	public void setDated(LocalDate dated) {
-		this.dated = dated;
-	}
-
-	public String getReferenceNum() {
-		return referenceNum;
-	}
-
-	public void setReferenceNum(String referenceNum) {
-		this.referenceNum = referenceNum;
+	public void setAdjDate(LocalDate adjDate) {
+		this.adjDate = adjDate;
 	}
 
 	public SalesTransaction getSalesTxn() {

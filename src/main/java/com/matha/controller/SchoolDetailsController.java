@@ -125,6 +125,12 @@ public class SchoolDetailsController
 	private TableView<SchoolPayment> paymentData;
 
 	@FXML
+	private Tab adjustmentTab;
+
+	@FXML
+	private TableView<SchoolAdjustment> adjustmentData;
+
+	@FXML
 	private Tab statementTab;
 
 	@FXML
@@ -757,6 +763,47 @@ public class SchoolDetailsController
 		{
 			schoolService.deletePayment(selectedPayment);
 			loadPayments(event);
+		}
+
+	}
+
+	@FXML
+	void loadAdjustments(Event event)
+	{
+		if (this.adjustmentTab.isSelected())
+		{
+			List<SchoolAdjustment> paymentList = this.schoolService.fetchAdjustments(this.school);
+			ObservableList<SchoolAdjustment> paymentItems = FXCollections.observableList(paymentList.stream().sorted(comparing(SchoolAdjustment::getTxnDate).reversed()).collect(toList()));
+			this.adjustmentData.setItems(paymentItems);
+			this.loadBalance();
+
+			this.adjustmentData.setOnMouseClicked(ev -> {
+				if(verifyDblClick(ev)) editPayment(ev); ;
+			});
+		}
+		else
+		{
+			adjustmentData.getSelectionModel().clearSelection();
+		}
+	}
+
+	@FXML
+	void addAdjustment(ActionEvent event)
+	{
+		try
+		{
+			FXMLLoader createBillLoader = LoadUtils.loadFxml(this, addAdjustmentFxmlFile);
+			Parent addBillRoot = createBillLoader.load();
+			AddAdjustmentController ctrl = createBillLoader.getController();
+			ctrl.initData(this.school, null);
+			Scene addBillScene = new Scene(addBillRoot);
+			prepareAndShowStage(event, addBillScene, this::loadAdjustments);
+
+		}
+		catch (Exception e)
+		{
+			LOGGER.error("Error...", e);
+			e.printStackTrace();
 		}
 
 	}

@@ -51,6 +51,10 @@ public class SalesTransaction
 	private SchoolPayment payment;
 
 	@OneToOne
+	@JoinColumn(name = "AdjustmentId")
+	private SchoolAdjustment adjustment;
+
+	@OneToOne
 	@JoinColumn(name = "ReturnId")
 	private SchoolReturn salesReturn;
 
@@ -83,12 +87,15 @@ public class SalesTransaction
 	public String getType()
 	{
 		String type = "";
-		if (sale != null)
+		if (sale != null) {
 			type = SALE_STR;
-		else if (payment != null)
+		} else if (payment != null) {
 			type = PAYMENT_STR;
-		else if (salesReturn != null)
+		} else if (salesReturn != null) {
 			type = CREDIT_NOTE_STR;
+		} else if (adjustment != null) {
+			type = adjustment.getAdjType();
+		}
 
 		return type;
 	}
@@ -100,7 +107,7 @@ public class SalesTransaction
 		{
 			multiplier = 1;
 		}
-		else if (payment != null || salesReturn != null)
+		else if (payment != null || salesReturn != null || adjustment != null)
 		{
 			multiplier = -1;
 		}
@@ -265,6 +272,14 @@ public class SalesTransaction
 	public void setPayment(SchoolPayment paymentId)
 	{
 		this.payment = paymentId;
+	}
+
+	public SchoolAdjustment getAdjustment() {
+		return adjustment;
+	}
+
+	public void setAdjustment(SchoolAdjustment adjustment) {
+		this.adjustment = adjustment;
 	}
 
 	public SchoolReturn getSalesReturn()

@@ -164,6 +164,41 @@
 										</AnchorPane>
 									</content>
 								</Tab>
+                  <Tab fx:id="adjustmentTab" onSelectionChanged="#loadAdjustments" text="Adjustments">
+                     <content>
+                        <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="180.0" prefWidth="200.0">
+                           <children>
+                              <TableView fx:id="adjustmentData" prefHeight="415.0" prefWidth="625.0" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="173.0" AnchorPane.topAnchor="0.0">
+                                 <columns>
+                                    <TableColumn prefWidth="120.0" text="Date">
+                                       <cellValueFactory>
+                                          <PropertyValueFactory property="txnDateStr" />
+                                       </cellValueFactory>
+                                    </TableColumn>
+                                    <TableColumn prefWidth="170.0" text="Type">
+                                       <cellValueFactory>
+                                          <PropertyValueFactory property="adjType" />
+                                       </cellValueFactory>
+                                    </TableColumn>
+                                    <TableColumn prefWidth="120.0" text="Amount">
+                                       <cellValueFactory>
+                                          <PropertyValueFactory property="amount" />
+                                       </cellValueFactory>
+                                    </TableColumn>
+                                    <TableColumn prefWidth="214.0" text="Notes">
+                                       <cellValueFactory>
+                                          <PropertyValueFactory property="note" />
+                                       </cellValueFactory>
+                                    </TableColumn>
+                                 </columns>
+                              </TableView>
+                              <Button layoutX="650.0" layoutY="25.0" mnemonicParsing="false" onAction="#addAdjustment" prefHeight="25.0" prefWidth="120.0" text="Add" AnchorPane.rightAnchor="28.0" />
+                              <Button layoutX="650.0" layoutY="70.0" mnemonicParsing="false" onAction="#editPayment" prefHeight="25.0" prefWidth="120.0" text="Edit" AnchorPane.rightAnchor="28.0" />
+                              <Button layoutX="650.0" layoutY="115.0" mnemonicParsing="false" onAction="#deletePayment" prefHeight="25.0" prefWidth="120.0" text="Delete" AnchorPane.rightAnchor="28.0" />
+                           </children>
+                        </AnchorPane>
+                     </content>
+                  </Tab>
                   <Tab fx:id="statementTab" onSelectionChanged="#loadStatement" text="Statement">
                     <content>
                       <AnchorPane minHeight="0.0" minWidth="0.0" prefWidth="200.0">

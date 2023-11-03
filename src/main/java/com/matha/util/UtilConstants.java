@@ -39,6 +39,7 @@ public interface UtilConstants {
 	public static final String RETURN_STR = "Return";
 	public static final String SALE_STR = "Sales";
 	public static final String CREDIT_NOTE_STR = "Credit Note";
+	public static final String ADJUSTMENT_STR = "Adjustment";
 	public static final String ORDER_SEARCH_STR = "Order Search";
 	public static final String PUR_BILL_SEARCH_STR = "Purchase Search";
 	public static final String SALE_BILL_SEARCH_STR = "Sale Search";
@@ -71,6 +72,7 @@ public interface UtilConstants {
 	public static final String addBillFxmlFile = "/fxml/createBill.fxml";
 	public static final String viewBillFxmlFile = "/fxml/viewBill.fxml";
 	public static final String addPaymentFxmlFile = "/fxml/createPayment.fxml";
+	public static final String addAdjustmentFxmlFile = "/fxml/createAdjustment.fxml";
 	public static final String addReturnFxmlFile = "/fxml/createReturn.fxml";
 	public static final String createPurchaseFxmlFile = "/fxml/createPurchaseBill.fxml";
 	public static final String printPurchaseFxmlFile = "/fxml/printPurchase.fxml";

@@ -285,9 +285,9 @@ public class AddPurchaseRetController
 		}
 		Integer fy = calcFinYear(retDt);
 		PurchaseReturn existingRet = schoolService.fetchPurchaseReturn(creditNoteNum, fy);
-		if(existingRet != null)
+		if(this.purchaseReturn == null && existingRet != null)
 		{
-			errorMsg.append("Credit Note Number provided already exists for the Financial Year");
+			errorMsg.append("Return reference provided already exists for the Financial Year");
 			valid = false;
 		}
 

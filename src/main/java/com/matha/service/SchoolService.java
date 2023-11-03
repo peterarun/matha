@@ -97,6 +97,9 @@ public class SchoolService
 	private SchoolPayRepository schoolPayRepository;
 
 	@Autowired
+	private SchoolAdjustmentRepository schoolAdjustmentRepository;
+
+	@Autowired
 	private SchoolReturnRepository schoolReturnRepository;
 
 	@Autowired
@@ -1583,6 +1586,7 @@ public class SchoolService
 
 	}
 
+
 	public List<SchoolPayment> fetchPayments(School school)
 	{
 		return schoolPayRepository.findAllBySchool(school);
@@ -1605,6 +1609,34 @@ public class SchoolService
 
 		deleteSalesTxn(salesTransaction);
 
+	}
+
+	@Transactional
+	public void saveAdjustment(SchoolAdjustment sPayment)
+	{
+		SalesTransaction txn = sPayment.getSalesTxn();
+		txn.setAdjustment(sPayment);
+
+		if (txn.getId() == null)
+		{
+			txn = saveNewSalesTxn(txn);
+		}
+		else
+		{
+			txn = updateSalesTxn(txn);
+		}
+
+		sPayment.setSalesTxn(txn);
+		schoolAdjustmentRepository.save(sPayment);
+
+		txn.setAdjustment(sPayment);
+		salesTxnRepository.save(txn);
+
+	}
+
+	public List<SchoolAdjustment> fetchAdjustments(School school)
+	{
+		return schoolAdjustmentRepository.findAllBySchool(school);
 	}
 
 	public List<SalesTransaction> fetchTransactions(School school, LocalDate fromDateVal, LocalDate toDateVal)

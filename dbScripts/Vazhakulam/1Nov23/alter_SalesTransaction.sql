@@ -1,0 +1,11 @@
+USE [MathaBooks]
+GO
+
+SET ANSI_NULLS ON
+GO
+
+SET QUOTED_IDENTIFIER ON
+GO
+
+ALTER TABLE [dbo].[STransactions] ADD AdjustmentId INT NULL;
+GO
