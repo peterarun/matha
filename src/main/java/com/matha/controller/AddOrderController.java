@@ -149,6 +149,20 @@ public class AddOrderController
 		reArrangeItems(addedBooks.getItems());
 	}
 
+	@FXML
+	void moveUp(ActionEvent event)
+	{
+		moveUpPos(addedBooks);
+		reArrangeItems(addedBooks.getItems());
+	}
+
+	@FXML
+	void moveDown(ActionEvent event)
+	{
+		moveDownPos(addedBooks);
+		reArrangeItems(addedBooks.getItems());
+	}
+
 	private void reArrangeItems(ObservableList<OrderItem> items)
 	{
 		int idx = 0;

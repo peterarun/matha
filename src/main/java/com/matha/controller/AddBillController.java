@@ -25,6 +25,7 @@ import org.springframework.beans.factory.config.ConfigurableBeanFactory;
 import org.springframework.context.annotation.Scope;
 import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.stereotype.Component;
+import org.springframework.util.StopWatch;
 
 import java.time.LocalDate;
 import java.util.*;
@@ -150,18 +151,21 @@ public class AddBillController
 
 	void initData(ObservableList<Order> ordersIn, School schoolIn, Sales sale, Map<String, Book> bookMapIn)
 	{
+		StopWatch stopwatch = new StopWatch("Edit Bill");
+		stopwatch.start("Prepare Edit");
 		this.school = schoolIn;
 		this.selectedSale = sale;
 		this.bookMap = bookMapIn;
 		this.prepareEditData(sale);
-		this.loadAddDefaults();
 
+		printResetStopWatch(stopwatch, "Add defaults");
+		this.loadAddDefaults();
 		List<Order> allOrders = schoolService.fetchOrderForSchool(schoolIn);
 		this.orderMap = allOrders.stream().collect(orderMapCollector);
 
+		printResetStopWatch(stopwatch, "Auto Completions");
 		List<String> items = new ArrayList<>(this.orderMap.keySet());
 		TextFields.bindAutoCompletion(this.orderNum, items);
-
 		
 		LOGGER.debug("despatcherArray: " + despatcherArray);
 		TextFields.bindAutoCompletion(this.despatchPer, Arrays.asList(despatcherArray));
@@ -177,7 +181,7 @@ public class AddBillController
 				orderMap.put(order.getSerialNo(), order);
 			}
 		}
-
+		printResetStopWatch(stopwatch, "Load books and sub total");
 		loadNewBooksAndSubTotal(ordersIn);
 		loadDiscSymbol(percentRad, rupeeRad, discTypeInd);
 
@@ -200,6 +204,7 @@ public class AddBillController
 			};
 			fxObs.addListener(lcL);
 		}
+		printResetStopWatch(stopwatch, null);
 	}
 
 	private void loadAddDefaults()
@@ -551,6 +556,20 @@ public class AddBillController
 		addedBooks.getItems().remove(sels);
 
 		loadNewBooksAndSubTotal(null);
+	}
+
+	@FXML
+	void moveUp(ActionEvent event)
+	{
+		moveUpPos(addedBooks);
+		reArrangeItems(addedBooks.getItems());
+	}
+
+	@FXML
+	void moveDown(ActionEvent event)
+	{
+		moveDownPos(addedBooks);
+		reArrangeItems(addedBooks.getItems());
 	}
 
 	@FXML

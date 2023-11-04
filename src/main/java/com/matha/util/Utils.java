@@ -5,6 +5,7 @@ import java.io.InputStream;
 import java.nio.charset.Charset;
 import java.time.LocalDate;
 import java.util.*;
+import java.util.function.Function;
 import java.util.stream.Collectors;
 
 import javax.print.PrintException;
@@ -18,6 +19,8 @@ import javax.print.attribute.standard.PrinterName;
 
 import com.matha.domain.*;
 import javafx.collections.ObservableList;
+import javafx.event.ActionEvent;
+import javafx.fxml.FXML;
 import javafx.scene.control.*;
 import javafx.scene.input.MouseButton;
 import javafx.scene.input.MouseEvent;
@@ -57,11 +60,13 @@ import net.sf.jasperreports.engine.export.JRPrintServiceExporter;
 import net.sf.jasperreports.export.SimpleExporterInput;
 import net.sf.jasperreports.export.SimpleHtmlExporterOutput;
 import net.sf.jasperreports.export.SimplePrintServiceExporterConfiguration;
+import org.springframework.util.StopWatch;
 
 import static com.matha.util.UtilConstants.*;
 import static java.util.Comparator.comparing;
 import static java.util.stream.Collectors.toList;
 import static java.util.stream.Collectors.toSet;
+import static org.apache.commons.lang3.StringUtils.isNotBlank;
 
 public class Utils
 {
@@ -72,7 +77,7 @@ public class Utils
 	{
 		Double dblVal = null;
 		String txtStr = txt.getText();
-		if (StringUtils.isNotBlank(txtStr))
+		if (isNotBlank(txtStr))
 		{
 			dblVal = Double.parseDouble(txtStr);
 		}
@@ -82,7 +87,7 @@ public class Utils
 	public static Double getDoubleVal(String txt)
 	{
 		Double dblVal = null;		
-		if (StringUtils.isNotBlank(txt))
+		if (isNotBlank(txt))
 		{
 			dblVal = Double.parseDouble(txt);
 		}
@@ -93,7 +98,7 @@ public class Utils
 	{
 		Integer dblVal = null;
 		String txtStr = txt.getText();
-		if (StringUtils.isNotBlank(txtStr))
+		if (isNotBlank(txtStr))
 		{
 			dblVal = Integer.parseInt(txtStr);
 		}
@@ -103,7 +108,7 @@ public class Utils
 	public static Integer getIntegerVal(String txtStr)
 	{
 		Integer dblVal = null;
-		if (StringUtils.isNotBlank(txtStr))
+		if (isNotBlank(txtStr))
 		{
 			dblVal = Integer.parseInt(txtStr);
 		}
@@ -543,5 +548,32 @@ public class Utils
 			}
 		}
 		return filled;
+	}
+
+	public static void printResetStopWatch(StopWatch stopWatch, String newTask) {
+		stopWatch.stop();
+		LOGGER.info("Task: {} took {} ms", stopWatch.getLastTaskName(), stopWatch.getLastTaskTimeMillis());
+		if (isNotBlank(newTask)) {
+			stopWatch.start(newTask);
+		}
+	}
+
+	public static <T> void moveUpPos(TableView<T> addedBooks) {
+		int selIdx = addedBooks.getSelectionModel().getSelectedIndex();
+		int destIdx = Math.max(selIdx - 1, 0);
+		swapPos(addedBooks, selIdx, destIdx);
+	}
+
+	public static <T> void moveDownPos(TableView<T> addedBooks) {
+		int selIdx = addedBooks.getSelectionModel().getSelectedIndex();
+		int destIdx = Math.min(selIdx + 1, addedBooks.getItems().size() - 1);
+		swapPos(addedBooks, selIdx, destIdx);
+	}
+
+	public static <T> void swapPos(TableView<T> addedBooks, int selIdx, int destIdx) {
+		T selectedItem = addedBooks.getSelectionModel().getSelectedItem();
+		T swapItem = addedBooks.getItems().get(destIdx);
+		addedBooks.getItems().set(destIdx, selectedItem);
+		addedBooks.getItems().set(selIdx, swapItem);
 	}
 }

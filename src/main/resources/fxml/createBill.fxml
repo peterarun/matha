@@ -9,9 +9,9 @@
 <?import javafx.scene.layout.AnchorPane?>
 <?import javafx.scene.control.cell.PropertyValueFactory?>
 
-<SplitPane dividerPositions="0.15640599001663893" maxHeight="-Infinity" maxWidth="709.0" minHeight="-Infinity" minWidth="-Infinity" orientation="VERTICAL" prefHeight="590.0" prefWidth="709.0" xmlns="http://javafx.com/javafx/8" xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.matha.controller.AddBillController">
+<SplitPane dividerPositions="0.15640599001663893" maxHeight="-Infinity" maxWidth="781.0" minHeight="-Infinity" minWidth="-Infinity" orientation="VERTICAL" prefHeight="590.0" prefWidth="781.0" xmlns="http://javafx.com/javafx/8" xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.matha.controller.AddBillController">
 	<items>
-		<AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="60.0" prefWidth="398.0" SplitPane.resizableWithParent="false">
+		<AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="85.0" prefWidth="773.0" SplitPane.resizableWithParent="false">
 			<children>
 				<Label layoutX="24.0" layoutY="30.0" text="Add/Edit Bill">
 					<font>
@@ -68,7 +68,7 @@
 								<PropertyValueFactory property="bookPrice" />
 							</cellValueFactory>
 						</TableColumn>
-    	              <TableColumn fx:id="totalColumn" prefWidth="81.0" text="Total">
+    	              <TableColumn fx:id="totalColumn" prefWidth="125.0" text="Total">
 						  <cellValueFactory>
 							  <PropertyValueFactory property="totalSold" />
 						  </cellValueFactory>
@@ -115,6 +115,8 @@
             <Label layoutX="375.0" layoutY="419.0" text="Discount" AnchorPane.bottomAnchor="57.0" />
             <TextField fx:id="calculatedDisc" editable="false" focusTraversable="false" layoutX="428.0" layoutY="415.0" prefHeight="25.0" prefWidth="109.0" style="-fx-background-color: beige;" AnchorPane.bottomAnchor="53.0" />
             <TextField fx:id="bookPrice" layoutX="487.0" layoutY="341.0" onAction="#addBookData" prefHeight="25.0" prefWidth="47.0" promptText="Price" AnchorPane.bottomAnchor="127.0" AnchorPane.rightAnchor="173.0" />
+            <Button fx:id="upBtn" layoutX="560.0" layoutY="157.0" mnemonicParsing="false" onAction="#moveUp" text="↑" AnchorPane.rightAnchor="176.0" />
+            <Button fx:id="downBtn" layoutX="560.0" layoutY="185.0" mnemonicParsing="false" onAction="#moveDown" text="↓" AnchorPane.rightAnchor="176.0" />
 				
 			</children>
 		</AnchorPane>
