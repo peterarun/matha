@@ -18,7 +18,7 @@
 						<Font name="Tahoma" size="24.0" />
 					</font>
 				</Label>
-				<TextArea fx:id="schoolDetails" editable="false" focusTraversable="false" layoutX="171.0" layoutY="4.0" prefHeight="81.0" prefWidth="532.0" />
+				<TextArea fx:id="schoolDetails" editable="false" focusTraversable="false" layoutX="171.0" layoutY="4.0" prefHeight="81.0" prefWidth="585.0" />
 			</children>
 		</AnchorPane>
 		
@@ -46,7 +46,7 @@
 				<Label layoutX="558.0" layoutY="274.0" text="No. of packages" AnchorPane.rightAnchor="64.0" />
 				<TextField fx:id="packageCnt" layoutX="558.0" layoutY="291.0" prefHeight="25.0" prefWidth="129.0" AnchorPane.rightAnchor="22.0" />
 																											
-				<TableView fx:id="addedBooks" editable="true" layoutX="23.0" layoutY="23.0" prefHeight="318.0" AnchorPane.bottomAnchor="152.0" AnchorPane.leftAnchor="23.0" AnchorPane.rightAnchor="172.0" AnchorPane.topAnchor="23.0">
+				<TableView fx:id="addedBooks" editable="true" layoutX="23.0" layoutY="23.0" prefHeight="318.0" prefWidth="564.0" AnchorPane.bottomAnchor="152.0" AnchorPane.leftAnchor="23.0" AnchorPane.rightAnchor="192.0" AnchorPane.topAnchor="23.0">
 					<columns>
 					  <TableColumn fx:id="slNoCol" prefWidth="45.0" text="Sl. No.">
 						  <cellValueFactory>
@@ -68,7 +68,7 @@
 								<PropertyValueFactory property="bookPrice" />
 							</cellValueFactory>
 						</TableColumn>
-    	              <TableColumn fx:id="totalColumn" prefWidth="125.0" text="Total">
+    	              <TableColumn fx:id="totalColumn" prefWidth="134.0" text="Total">
 						  <cellValueFactory>
 							  <PropertyValueFactory property="totalSold" />
 						  </cellValueFactory>
@@ -83,8 +83,8 @@
 				<Button focusTraversable="false" layoutX="559.0" layoutY="449.0" mnemonicParsing="false" onAction="#removeOperation" prefHeight="25.0" prefWidth="129.0" text="Remove Order" AnchorPane.rightAnchor="22.0" />
 
 
-				<Label layoutX="368.0" layoutY="382.0" text="Sub Total" AnchorPane.bottomAnchor="94.0" />
-				<TextField fx:id="subTotal" layoutX="426.0" layoutY="380.0" prefHeight="25.0" prefWidth="109.0" AnchorPane.bottomAnchor="88.0" />
+				<Label layoutX="418.0" layoutY="382.0" text="Sub Total" AnchorPane.bottomAnchor="94.0" />
+				<TextField fx:id="subTotal" layoutX="475.0" layoutY="380.0" prefHeight="25.0" prefWidth="109.0" AnchorPane.bottomAnchor="88.0" />
 
 				<Label layoutX="167.0" layoutY="419.0" text="Disc Type:" AnchorPane.bottomAnchor="57.0" />
 				<RadioButton fx:id="rupeeRad" contentDisplay="RIGHT" layoutX="227.0" layoutY="419.0" mnemonicParsing="false" prefHeight="17.0" prefWidth="50.0" text="Rs." AnchorPane.bottomAnchor="57.0">
@@ -101,22 +101,22 @@
 	            <Label layoutX="176.0" layoutY="382.0" text="Others" AnchorPane.bottomAnchor="94.0" />
 	            <TextField fx:id="otherCharges" layoutX="227.0" layoutY="378.0" prefHeight="25.0" prefWidth="86.0" AnchorPane.bottomAnchor="90.0" />
 
-				<Label layoutX="355.0" layoutY="453.0" text="Net Amount:" AnchorPane.bottomAnchor="23.0" />
-				<TextField fx:id="netAmt" editable="false" focusTraversable="false" layoutX="426.0" layoutY="449.0" prefHeight="25.0" prefWidth="109.0" style="-fx-background-color: beige;" AnchorPane.bottomAnchor="19.0" />
+				<Label layoutX="404.0" layoutY="453.0" text="Net Amount:" AnchorPane.bottomAnchor="23.0" />
+				<TextField fx:id="netAmt" editable="false" focusTraversable="false" layoutX="475.0" layoutY="449.0" prefHeight="25.0" prefWidth="109.0" style="-fx-background-color: beige;" AnchorPane.bottomAnchor="19.0" />
 
 				<Button layoutX="23.0" layoutY="414.0" mnemonicParsing="false" onAction="#saveData" prefHeight="59.0" prefWidth="109.0" text="Save" AnchorPane.bottomAnchor="20.0" />
 				<Button fx:id="cancelBtn" layoutX="23.0" layoutY="382.0" mnemonicParsing="false" onAction="#cancelOperation" prefHeight="25.0" prefWidth="109.0" text="Cancel" AnchorPane.bottomAnchor="86.0" />
-            <TextField fx:id="bookText" layoutX="142.0" layoutY="341.0" prefHeight="25.0" prefWidth="298.0" promptText="Search Book to Add" AnchorPane.bottomAnchor="127.0">
+            <TextField fx:id="bookText" layoutX="142.0" layoutY="341.0" prefHeight="25.0" prefWidth="352.0" promptText="Search Book to Add" AnchorPane.bottomAnchor="127.0">
                <effect>
                   <Blend />
                </effect>
             </TextField>
-            <TextField fx:id="bookCnt" layoutX="445.0" layoutY="341.0" onAction="#addBookData" prefHeight="25.0" prefWidth="36.0" promptText="Qty." AnchorPane.bottomAnchor="127.0" AnchorPane.rightAnchor="225.0" />
-            <Label layoutX="375.0" layoutY="419.0" text="Discount" AnchorPane.bottomAnchor="57.0" />
-            <TextField fx:id="calculatedDisc" editable="false" focusTraversable="false" layoutX="428.0" layoutY="415.0" prefHeight="25.0" prefWidth="109.0" style="-fx-background-color: beige;" AnchorPane.bottomAnchor="53.0" />
-            <TextField fx:id="bookPrice" layoutX="487.0" layoutY="341.0" onAction="#addBookData" prefHeight="25.0" prefWidth="47.0" promptText="Price" AnchorPane.bottomAnchor="127.0" AnchorPane.rightAnchor="173.0" />
-            <Button fx:id="upBtn" layoutX="560.0" layoutY="157.0" mnemonicParsing="false" onAction="#moveUp" text="↑" AnchorPane.rightAnchor="176.0" />
-            <Button fx:id="downBtn" layoutX="560.0" layoutY="185.0" mnemonicParsing="false" onAction="#moveDown" text="↓" AnchorPane.rightAnchor="176.0" />
+            <TextField fx:id="bookCnt" layoutX="499.0" layoutY="341.0" onAction="#addBookData" prefHeight="25.0" prefWidth="36.0" promptText="Qty." AnchorPane.bottomAnchor="127.0" AnchorPane.rightAnchor="244.0" />
+            <Label layoutX="424.0" layoutY="419.0" text="Discount" AnchorPane.bottomAnchor="57.0" />
+            <TextField fx:id="calculatedDisc" editable="false" focusTraversable="false" layoutX="477.0" layoutY="415.0" prefHeight="25.0" prefWidth="109.0" style="-fx-background-color: beige;" AnchorPane.bottomAnchor="53.0" />
+            <TextField fx:id="bookPrice" layoutX="540.0" layoutY="341.0" onAction="#addBookData" prefHeight="25.0" prefWidth="47.0" promptText="Price" AnchorPane.bottomAnchor="127.0" AnchorPane.rightAnchor="192.0" />
+            <Button fx:id="upBtn" layoutX="590.0" layoutY="157.0" mnemonicParsing="false" onAction="#moveUp" text="↑" AnchorPane.rightAnchor="167.0" />
+            <Button fx:id="downBtn" layoutX="590.0" layoutY="185.0" mnemonicParsing="false" onAction="#moveDown" text="↓" AnchorPane.rightAnchor="167.0" />
 				
 			</children>
 		</AnchorPane>

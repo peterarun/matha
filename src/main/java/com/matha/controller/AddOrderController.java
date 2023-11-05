@@ -152,15 +152,17 @@ public class AddOrderController
 	@FXML
 	void moveUp(ActionEvent event)
 	{
-		moveUpPos(addedBooks);
-		reArrangeItems(addedBooks.getItems());
+		if (moveUpPos(addedBooks)) {
+			reArrangeItems(addedBooks.getItems());
+		}
 	}
 
 	@FXML
 	void moveDown(ActionEvent event)
 	{
-		moveDownPos(addedBooks);
-		reArrangeItems(addedBooks.getItems());
+		if (moveDownPos(addedBooks)) {
+			reArrangeItems(addedBooks.getItems());
+		}
 	}
 
 	private void reArrangeItems(ObservableList<OrderItem> items)

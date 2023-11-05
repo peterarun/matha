@@ -24,16 +24,16 @@
             <Label layoutX="25.0" layoutY="18.0" text="Order No." AnchorPane.topAnchor="18.0" />
             <TextField fx:id="orderNum" layoutX="24.0" layoutY="35.0" prefHeight="25.0" prefWidth="130.0" AnchorPane.topAnchor="35.0" />
             
-            <Label layoutX="175.0" layoutY="18.0" text="Date" AnchorPane.topAnchor="18.0" />
-            <DatePicker fx:id="orderDate" layoutX="174.0" layoutY="35.0" prefHeight="25.0" prefWidth="130.0" AnchorPane.topAnchor="35.0" />
+            <Label layoutX="168.0" layoutY="18.0" text="Date" AnchorPane.topAnchor="18.0" />
+            <DatePicker fx:id="orderDate" layoutX="167.0" layoutY="35.0" prefHeight="25.0" prefWidth="130.0" AnchorPane.topAnchor="35.0" />
 
-             <Label layoutX="324.0" layoutY="18.0" text="To Be Sent to" AnchorPane.topAnchor="18.0" />
-             <TextField fx:id="desLocation" layoutX="323.0" layoutY="35.0" prefHeight="25.0" prefWidth="140.0" AnchorPane.topAnchor="35.0" />
+             <Label layoutX="311.0" layoutY="18.0" text="To Be Sent to" AnchorPane.topAnchor="18.0" />
+             <TextField fx:id="desLocation" layoutX="310.0" layoutY="35.0" prefHeight="25.0" prefWidth="140.0" AnchorPane.topAnchor="35.0" />
 
-            <Label layoutX="482.0" layoutY="18.0" text="To Be Despatched On" AnchorPane.rightAnchor="45.0" />
-            <DatePicker fx:id="despatchDate" layoutX="502.0" layoutY="35.0" prefHeight="25.0" prefWidth="140.0" AnchorPane.rightAnchor="20.0" />
+            <Label layoutX="461.0" layoutY="18.0" text="To Be Despatched On" AnchorPane.rightAnchor="66.0" />
+            <DatePicker fx:id="despatchDate" layoutX="461.0" layoutY="35.0" prefHeight="25.0" prefWidth="140.0" AnchorPane.rightAnchor="41.0" />
 
-            <TableView fx:id="addedBooks" editable="true" layoutX="25.0" layoutY="76.0" prefHeight="243.0" prefWidth="554.0" AnchorPane.bottomAnchor="92.0" AnchorPane.leftAnchor="25.0" AnchorPane.rightAnchor="19.0" AnchorPane.topAnchor="76.0">
+            <TableView fx:id="addedBooks" editable="true" layoutX="25.0" layoutY="76.0" prefHeight="243.0" prefWidth="576.0" AnchorPane.bottomAnchor="92.0" AnchorPane.leftAnchor="25.0" AnchorPane.rightAnchor="41.0" AnchorPane.topAnchor="76.0">
               <columns>
                   <TableColumn fx:id="slNumColumn" prefWidth="51.0" text="Sl No.">
                       <cellValueFactory>
@@ -45,21 +45,21 @@
                       <PropertyValueFactory property="bookName" />
                   </cellValueFactory>                
                 </TableColumn>
-                <TableColumn fx:id="qtyCol" prefWidth="117.0" text="Quantity">
+                <TableColumn fx:id="qtyCol" prefWidth="126.0" text="Quantity">
                   <cellValueFactory>
                       <PropertyValueFactory property="count" />
                   </cellValueFactory>                
                 </TableColumn>
               </columns>
             </TableView>
-            <TextField fx:id="bookText" layoutX="25.0" layoutY="319.0" prefHeight="25.0" prefWidth="396.0" promptText="Book Name" AnchorPane.bottomAnchor="67.0" AnchorPane.leftAnchor="25.0" />            
-            <TextField fx:id="bookCount" layoutX="430.0" layoutY="319.0" onAction="#addBookData" prefHeight="25.0" prefWidth="52.0" promptText="Quantity" AnchorPane.bottomAnchor="67.0" AnchorPane.rightAnchor="116.0" />
-            <Button focusTraversable="false" layoutX="491.0" layoutY="319.0" mnemonicParsing="false" onAction="#removeEntry" prefHeight="25.0" prefWidth="88.0" text="Remove Item" AnchorPane.bottomAnchor="67.0" AnchorPane.rightAnchor="19.0" />
+            <TextField fx:id="bookText" layoutX="25.0" layoutY="319.0" prefHeight="25.0" prefWidth="411.0" promptText="Book Name" AnchorPane.bottomAnchor="67.0" AnchorPane.leftAnchor="25.0" />            
+            <TextField fx:id="bookCount" layoutX="452.0" layoutY="319.0" onAction="#addBookData" prefHeight="25.0" prefWidth="61.0" promptText="Quantity" AnchorPane.bottomAnchor="67.0" AnchorPane.rightAnchor="138.0" />
+            <Button focusTraversable="false" layoutX="513.0" layoutY="319.0" mnemonicParsing="false" onAction="#removeEntry" prefHeight="25.0" prefWidth="88.0" text="Remove Item" AnchorPane.bottomAnchor="67.0" AnchorPane.rightAnchor="41.0" />
 
             <Button fx:id="cancelBtn" layoutX="26.0" layoutY="361.0" mnemonicParsing="false" onAction="#cancelOperation" prefHeight="25.0" prefWidth="88.0" text="Cancel" AnchorPane.bottomAnchor="25.0" />
-            <Button layoutX="491.0" layoutY="361.0" mnemonicParsing="false" onAction="#saveData" prefHeight="25.0" prefWidth="88.0" text="Save" AnchorPane.bottomAnchor="25.0" AnchorPane.rightAnchor="19.0" />
-            <Button fx:id="downBtn" layoutX="597.0" layoutY="195.0" mnemonicParsing="false" onAction="#moveDown" text="↓" AnchorPane.rightAnchor="23.0" />
-            <Button fx:id="upBtn" layoutX="597.0" layoutY="167.0" mnemonicParsing="false" onAction="#moveUp" text="↑" AnchorPane.rightAnchor="23.0" />
+            <Button layoutX="513.0" layoutY="361.0" mnemonicParsing="false" onAction="#saveData" prefHeight="25.0" prefWidth="88.0" text="Save" AnchorPane.bottomAnchor="25.0" AnchorPane.rightAnchor="41.0" />
+            <Button fx:id="downBtn" layoutX="610.0" layoutY="195.0" mnemonicParsing="false" onAction="#moveDown" text="↓" AnchorPane.rightAnchor="10.0" />
+            <Button fx:id="upBtn" layoutX="610.0" layoutY="167.0" mnemonicParsing="false" onAction="#moveUp" text="↑" AnchorPane.rightAnchor="10.0" />
             
          </children></AnchorPane>
   </items>

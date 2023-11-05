@@ -5,8 +5,6 @@ import java.io.InputStream;
 import java.nio.charset.Charset;
 import java.time.LocalDate;
 import java.util.*;
-import java.util.function.Function;
-import java.util.stream.Collectors;
 
 import javax.print.PrintException;
 import javax.print.attribute.HashPrintRequestAttributeSet;
@@ -19,8 +17,6 @@ import javax.print.attribute.standard.PrinterName;
 
 import com.matha.domain.*;
 import javafx.collections.ObservableList;
-import javafx.event.ActionEvent;
-import javafx.fxml.FXML;
 import javafx.scene.control.*;
 import javafx.scene.input.MouseButton;
 import javafx.scene.input.MouseEvent;
@@ -29,7 +25,6 @@ import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
 import com.matha.controller.PrintOrderController;
-import com.matha.controller.PrintSalesBillController;
 import com.matha.service.SchoolService;
 
 import javafx.beans.property.ReadOnlyStringWrapper;
@@ -50,11 +45,7 @@ import javafx.scene.web.WebView;
 import javafx.stage.Window;
 import javafx.util.Callback;
 import net.sf.jasperreports.engine.JRException;
-import net.sf.jasperreports.engine.JasperCompileManager;
-import net.sf.jasperreports.engine.JasperFillManager;
 import net.sf.jasperreports.engine.JasperPrint;
-import net.sf.jasperreports.engine.JasperReport;
-import net.sf.jasperreports.engine.data.JRBeanCollectionDataSource;
 import net.sf.jasperreports.engine.export.HtmlExporter;
 import net.sf.jasperreports.engine.export.JRPrintServiceExporter;
 import net.sf.jasperreports.export.SimpleExporterInput;
@@ -64,8 +55,6 @@ import org.springframework.util.StopWatch;
 
 import static com.matha.util.UtilConstants.*;
 import static java.util.Comparator.comparing;
-import static java.util.stream.Collectors.toList;
-import static java.util.stream.Collectors.toSet;
 import static org.apache.commons.lang3.StringUtils.isNotBlank;
 
 public class Utils
@@ -558,16 +547,24 @@ public class Utils
 		}
 	}
 
-	public static <T> void moveUpPos(TableView<T> addedBooks) {
+	public static <T> boolean moveUpPos(TableView<T> addedBooks) {
 		int selIdx = addedBooks.getSelectionModel().getSelectedIndex();
+		if (selIdx < 0) {
+			return false;
+		}
 		int destIdx = Math.max(selIdx - 1, 0);
 		swapPos(addedBooks, selIdx, destIdx);
+		return true;
 	}
 
-	public static <T> void moveDownPos(TableView<T> addedBooks) {
+	public static <T> boolean moveDownPos(TableView<T> addedBooks) {
 		int selIdx = addedBooks.getSelectionModel().getSelectedIndex();
+		if (selIdx < 0) {
+			return false;
+		}
 		int destIdx = Math.min(selIdx + 1, addedBooks.getItems().size() - 1);
 		swapPos(addedBooks, selIdx, destIdx);
+		return true;
 	}
 
 	public static <T> void swapPos(TableView<T> addedBooks, int selIdx, int destIdx) {
