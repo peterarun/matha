@@ -1,8 +1,6 @@
 package com.matha.controller;
 
-import static com.matha.util.UtilConstants.NEW_LINE;
-import static com.matha.util.UtilConstants.PERCENT_SIGN;
-import static com.matha.util.UtilConstants.RUPEE_SIGN;
+import static com.matha.util.UtilConstants.*;
 import static com.matha.util.Utils.*;
 import static java.util.Comparator.comparing;
 import static org.apache.commons.lang3.StringUtils.isBlank;
@@ -19,9 +17,12 @@ import java.util.stream.Collectors;
 
 import com.matha.domain.*;
 import com.matha.util.Utils;
+import javafx.beans.binding.Bindings;
+import javafx.beans.property.ReadOnlyStringWrapper;
 import javafx.beans.value.ChangeListener;
 import javafx.beans.value.ObservableValue;
 import javafx.scene.control.*;
+import javafx.scene.control.cell.TextFieldTableCell;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
@@ -101,6 +102,15 @@ public class AddPurchaseRetController
 	@FXML
 	private Button cancelBtn;
 
+	@FXML
+	private TableColumn<PurchaseReturnDet, String> qtyColumn;
+
+	@FXML
+	private TableColumn<PurchaseReturnDet, String> priceColumn;
+
+	@FXML
+	private TableColumn<PurchaseReturnDet, String> totalColumn;
+
 	private Publisher publisher;
 	private PurchaseReturn purchaseReturn;
 	private Map<String, Book> bookMap;
@@ -115,6 +125,7 @@ public class AddPurchaseRetController
 		this.publisherDetails.setText(this.publisher.getName());
 		
 		this.loadReturnData();
+		this.loadAddDefaults();
 
 		List<Book> allOrders = schoolService.fetchBooksForPublisher(publisher);
 		bookMap = allOrders.stream().collect(bookMapCollector);
@@ -122,20 +133,6 @@ public class AddPurchaseRetController
 		List<String> items = new ArrayList<>(bookMap.keySet());
 		TextFields.bindAutoCompletion(bookName, items);
 
-		this.discText.textProperty().addListener((observable, oldValue, newValue) -> {
-			updateNetAmt();
-		});
-
-		discType.selectedToggleProperty().addListener(new ChangeListener<Toggle>() {
-			public void changed(ObservableValue<? extends Toggle> ov, Toggle old_toggle, Toggle new_toggle)
-			{
-				if (discType.getSelectedToggle() != null)
-				{
-					calcNetAmount(discText.getText());
-					loadDiscSymbol();
-				}
-			}
-		});
 	}
 
 	private void loadReturnData()
@@ -168,6 +165,67 @@ public class AddPurchaseRetController
 		else
 		{
 			purchaseReturn = new PurchaseReturn();
+		}
+	}
+
+	private void loadAddDefaults()
+	{
+		this.addedBooks.getSelectionModel().cellSelectionEnabledProperty().set(true);
+
+		this.priceColumn.setCellFactory(TextFieldTableCell.forTableColumn());
+		this.priceColumn.setCellValueFactory(p -> new ReadOnlyStringWrapper(getStringVal(p.getValue().getBookPrice())));
+		this.priceColumn.setOnEditCommit(t -> loadRateCol(t));
+
+		this.qtyColumn.setCellFactory(TextFieldTableCell.forTableColumn());
+		this.qtyColumn.setCellValueFactory(p -> new ReadOnlyStringWrapper(getStringVal(p.getValue().getQty())));
+		this.qtyColumn.setOnEditCommit(t -> loadQtyCol(t));
+
+		this.publisherDetails.setText(this.publisher.getName());
+		this.totalColumn.setCellValueFactory(cellData ->
+				Bindings.format("%.2f", cellData.getValue().getTotalBought()));
+
+		this.discText.textProperty().addListener((observable, oldValue, newValue) -> {
+			calcNetAmount(this.discText.getText());
+		});
+
+		discType.selectedToggleProperty().addListener((ov, old_toggle, new_toggle) -> {
+            if (discType.getSelectedToggle() != null)
+            {
+                calcNetAmount(discText.getText());
+                loadDiscSymbol();
+            }
+        });
+	}
+
+
+	private void loadRateCol(TableColumn.CellEditEvent<PurchaseReturnDet, String> t)
+	{
+		PurchaseReturnDet oItem = ((PurchaseReturnDet) t.getTableView().getItems().get(t.getTablePosition().getRow()));
+		oItem.setRate(Double.parseDouble(t.getNewValue()));
+		reCalculate(t);
+	}
+
+	private void loadQtyCol(TableColumn.CellEditEvent<PurchaseReturnDet, String> t)
+	{
+		PurchaseReturnDet oItem = ((PurchaseReturnDet) t.getTableView().getItems().get(t.getTablePosition().getRow()));
+		oItem.setQty(Integer.parseInt(t.getNewValue()));
+		reCalculate(t);
+	}
+
+	private void reCalculate(TableColumn.CellEditEvent<PurchaseReturnDet, String> t)
+	{
+		t.getTableView().refresh();
+		loadSubTotal();
+		calcNetAmount(this.discText.getText());
+		t.getTableView().getSelectionModel().selectBelowCell();
+		int rowId = t.getTableView().getSelectionModel().getSelectedIndex();
+		if (rowId < t.getTableView().getItems().size())
+		{
+			if(rowId > 0)
+			{
+				t.getTableView().scrollTo(rowId - 1);
+			}
+			t.getTableView().edit(rowId, t.getTablePosition().getTableColumn());
 		}
 	}
 
@@ -370,15 +428,6 @@ public class AddPurchaseRetController
 		{
 			LOGGER.error("Error...", e);
 			showErrorAlert("Error in Saving Purchase Bill", "Please correct the following errors", e.getMessage());
-		}
-	}
-
-	private void updateNetAmt()
-	{
-		String discAmtStr = StringUtils.defaultString(discText.getText());
-		if (!isEmpty(discAmtStr))
-		{
-			calcNetAmount(discAmtStr);
 		}
 	}
 
