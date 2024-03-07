@@ -143,7 +143,7 @@ public class AddPurchaseBillController
 	private List<String> items = new ArrayList<>();
 	private Set<Order> orderSet = new HashSet<>();
 	private Map<String, Book> bookMap;
-	private Collector<Order, ?, Map<String, Order>> orderMapCollector = toMap(o -> o.getSerialNo(), o -> o);
+	private Collector<Order, ?, Map<String, Order>> orderMapCollector = toMap(o -> o.getSerialNo(), o -> o, (u,v) -> u);
 	private Collector<PurchaseDet, ?, Double> summingDblCollector = summingDouble(PurchaseDet::getTotalBought);
 
 	private void loadAddDefaults()
