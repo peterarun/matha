@@ -809,6 +809,41 @@ public class SchoolDetailsController
 	}
 
 	@FXML
+	void editAdjustment(ActionEvent event)
+	{
+		try
+		{
+			FXMLLoader createBillLoader = LoadUtils.loadFxml(this, addAdjustmentFxmlFile);
+			Parent addBillRoot = createBillLoader.load();
+			AddAdjustmentController ctrl = createBillLoader.getController();
+			SchoolAdjustment adjustment = adjustmentData.getSelectionModel().getSelectedItem();
+			ctrl.initData(this.school, adjustment);
+			Scene addBillScene = new Scene(addBillRoot);
+			prepareAndShowStage(event, addBillScene, this::loadAdjustments);
+
+		}
+		catch (Exception e)
+		{
+			LOGGER.error("Error...", e);
+			e.printStackTrace();
+		}
+
+	}
+
+	@FXML
+	void deleteAdjustment(ActionEvent event)
+	{
+
+		SchoolAdjustment adjustment = adjustmentData.getSelectionModel().getSelectedItem();
+		Alert alert = new Alert(AlertType.CONFIRMATION);
+		alert.setTitle("Delete Adjustment not available yet");
+		alert.setHeaderText("Not able to delete the adjustment: " + adjustment.getAmount());
+		alert.setContentText("Unable to Delete");
+
+
+	}
+
+	@FXML
 	void loadStatement(Event ev)
 	{
 		if (statementTab.isSelected())

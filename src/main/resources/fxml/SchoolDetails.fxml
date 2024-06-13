@@ -193,8 +193,8 @@
                                  </columns>
                               </TableView>
                               <Button layoutX="650.0" layoutY="25.0" mnemonicParsing="false" onAction="#addAdjustment" prefHeight="25.0" prefWidth="120.0" text="Add" AnchorPane.rightAnchor="28.0" />
-                              <Button layoutX="650.0" layoutY="70.0" mnemonicParsing="false" onAction="#editPayment" prefHeight="25.0" prefWidth="120.0" text="Edit" AnchorPane.rightAnchor="28.0" />
-                              <Button layoutX="650.0" layoutY="115.0" mnemonicParsing="false" onAction="#deletePayment" prefHeight="25.0" prefWidth="120.0" text="Delete" AnchorPane.rightAnchor="28.0" />
+                              <Button layoutX="650.0" layoutY="70.0" mnemonicParsing="false" onAction="#editAdjustment" prefHeight="25.0" prefWidth="120.0" text="Edit" AnchorPane.rightAnchor="28.0" />
+                              <Button layoutX="650.0" layoutY="115.0" mnemonicParsing="false" onAction="#deleteAdjustment" prefHeight="25.0" prefWidth="120.0" text="Delete" AnchorPane.rightAnchor="28.0" />
                            </children>
                         </AnchorPane>
                      </content>
